@@ -1,0 +1,298 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:k="urn:import:tv.dyndns.kishibe.qmaclone.client.ui">
+	<ui:style>
+		.qmaclone-lobby-start-Button {
+			margin: 0;
+			padding: 3px 5px;
+			text-decoration: none;
+			font-size: small;
+			cursor: pointer;
+			cursor: hand;
+			background:
+				url("tv.dyndns.kishibe.qmaclone.QMAClone/gwt/standard/images/hborder.png")
+				repeat-x 0px -27px;
+			border: 1px outset #ccc;
+			font-size: 40px;
+			width: 256px;
+			height: 48px;
+		}
+
+		.qmaclone-lobby-start-Button:active {
+			border: 1px inset #ccc;
+		}
+
+		.qmaclone-lobby-start-Button:hover {
+			border-color: #9cf #69e #69e #7af;
+		}
+
+		.qmaclone-lobby-start-Button[disabled] {
+			cursor: default;
+			color: #888;
+		}
+
+		.qmaclone-lobby-start-Button[disabled]:hover {
+			border: 1px outset #ccc;
+		}
+
+		.qmaclone-Grid td {
+			border-right: 1px solid #bbb;
+			border-bottom: 1px solid #bbb;
+		}
+	</ui:style>
+	<g:HTMLPanel width="800px">
+		<center>
+			クイズマジックアカデミー シミュレーションゲーム QMAClone by nodchip (ノドチップ)
+			<p>
+				バグ報告・要望は
+				<a href='http://kishibe.dyndns.tv/qmaclone/wiki/wiki.cgi' target='_blank'>QMACloneバグトラッカー</a>
+				へお願いいたします。
+			</p>
+			<p>
+				<a href='http://www.facebook.com/pages/QMAClone/335236273163550'
+					target='_blank'>Facebookページ</a>
+				を開設しました。
+				<a href='https://twitter.com/qmaclone' target='_blank'>Twitterアカウント</a>
+				と合わせてご利用下さい。
+			</p>
+			<p>2013年9月1日から複数のアカウントを用いた問題作成が禁止されます（されました）。
+				問題作成者は自身のユーザーコードを必ず保存してください。</p>
+			<table>
+				<tr>
+					<td>
+						<table>
+							<tr>
+								<td align="right">階級(自己申告)</td>
+								<td>
+									<g:ListBox ui:field="listBoxLevelName" width="100px"
+										title="名前欄に表示する階級を設定します。階級は表示のみでゲーム内容には一切関係しません。" />
+									<g:ListBox ui:field="listBoxLevelNumber" width="60px"
+										title="名前欄に表示する階級を設定します。階級は表示のみでゲーム内容には一切関係しません。" />
+								</td>
+							</tr>
+							<tr>
+								<td align="right">地域</td>
+								<td>
+									<g:ListBox ui:field="listBoxPrefecture" width="100px"
+										title="お住いの地域を選んでください。" />
+								</td>
+							</tr>
+							<tr>
+								<td align="right">プレイヤー名</td>
+								<td>
+									<g:TextBox ui:field="textBoxPlayerName" width="150px"
+										maxLength="8" title="ゲーム中に表示されるプレイヤー名を入力してください。全角半角問わず最大8文字までです。" />
+								</td>
+							</tr>
+							<tr>
+								<td align="right">対戦前の挨拶</td>
+								<td>
+									<g:TextBox ui:field="textBoxGreeting" width="150px"
+										maxLength="10" title="対戦前に表示されるあいさつ文を入力してください。全角半角を問わず10文字までです。"
+										text="よろしく～！" />
+								</td>
+							</tr>
+						</table>
+					</td>
+					<td>
+						<table>
+							<tr>
+								<td align="right">ジャンル</td>
+								<td>
+									<k:WidgetMultiItemSelector ui:field="multiItemSelectorGenre" />
+								</td>
+							</tr>
+							<tr>
+								<td align="right">出題形式</td>
+								<td>
+									<k:WidgetMultiItemSelector ui:field="multiItemSelectorType" />
+								</td>
+							</tr>
+							<tr>
+								<td align="right">難易度</td>
+								<td>
+									<g:ListBox ui:field="listBoxDifficultSelect" />
+								</td>
+							</tr>
+							<tr>
+								<td align="center" colspan="2">
+									<g:ListBox ui:field="listBoxNewProblem"
+										visibleItemCount='1'>
+										<g:item>新問と旧問を出題する</g:item>
+										<g:item>旧問のみ出題する</g:item>
+										<g:item>新問のみ出題する</g:item>
+									</g:ListBox>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+			<table>
+				<tr>
+					<td>
+						<g:Button ui:field="buttonGameVsCom" text="COM対戦"
+							styleName="{style.qmaclone-lobby-start-Button}" title="COMと対戦する一人用モードです。問題とCOMの難易度は階級により変化します。" />
+					</td>
+					<td>
+						<g:Button ui:field="buttonGameAllClass" text="全体対戦"
+							styleName="{style.qmaclone-lobby-start-Button}" title="他の参加者全員と対戦します。問題は全問題から出題されます。" />
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<g:Button ui:field="buttonGameEvent" text="イベント対戦"
+							styleName="{style.qmaclone-lobby-start-Button}" title="同じイベント名を指定した人と対戦します。問題は全問題から出題されます。" />
+					</td>
+					<td>
+						<g:Button ui:field="buttonGameTheme" text="テーマモード"
+							styleName="{style.qmaclone-lobby-start-Button}" title="選んだテーマの問題が出題されるモードです。同じテーマを選んだプレイヤーと対戦できます。" />
+					</td>
+				</tr>
+				<tr>
+					<td align="center">
+						イベント名
+						<g:TextBox ui:field="textBoxEventName" maxLength="16"
+							title="イベント対戦で使用するイベント名を入力して下さい。" />
+						<g:Button ui:field="buttonShowEventRooms" text="参照" />
+						<br />
+						<g:CheckBox ui:field="checkBoxPublicEvent" text="イベント戦を公開する"
+							title="公開すると他の人が参照ボタンを使って選べるようになります" />
+					</td>
+					<td align="center">
+						テーマ
+						<g:ListBox ui:field="listBoxTheme" />
+					</td>
+				</tr>
+			</table>
+			<g:HTMLPanel ui:field="panelInformation">
+				<table valign="top">
+					<tr>
+						<td>
+							<table class="{style.qmaclone-Grid}">
+								<tr>
+									<td align="right">ﾄｯﾌﾟﾍﾟｰｼﾞｶｳﾝﾄ</td>
+									<td>
+										<span ui:field='spanTopPageCount'>-</span>
+									</td>
+								</tr>
+								<tr>
+									<td align="right">総問題数</td>
+									<td>
+										<span ui:field='spanProblems'>-</span>
+										問
+									</td>
+								</tr>
+								<tr>
+									<td align="right">のべｾｯｼｮﾝ数</td>
+									<td>
+										<span ui:field='spanTotalSessions'>-</span>
+										ｾｯｼｮﾝ
+									</td>
+								</tr>
+								<tr>
+									<td align="right">稼動中ｾｯｼｮﾝ数</td>
+									<td>
+										<span ui:field='spanCurrentSessions'>-</span>
+										ｾｯｼｮﾝ
+									</td>
+								</tr>
+								<tr>
+									<td align="right">のべﾌﾟﾚｲﾔｰ人数</td>
+									<td>
+										<span ui:field='spanTotalPlayers'>-</span>
+										人
+									</td>
+								</tr>
+								<tr>
+									<td align="right">ﾌﾟﾚｲ中人数</td>
+									<td>
+										<span ui:field='spanCurrentPlayers'>-</span>
+										人
+									</td>
+								</tr>
+								<tr>
+									<td align="right">ﾛｸﾞｲﾝﾌﾟﾚｲﾔｰ数</td>
+									<td>
+										<span ui:field='spanLoginPlayers'>-</span>
+										人
+									</td>
+								</tr>
+								<tr>
+									<td align="right">ｱｸﾃｨﾌﾞﾌﾟﾚｲﾔｰ数</td>
+									<td>
+										<span ui:field='spanActivePlayers'>-</span>
+										人
+									</td>
+								</tr>
+								<tr>
+									<td align="right">全体対戦待機中</td>
+									<td>
+										<span ui:field='spanWaiting'>-</span>
+										人
+									</td>
+								</tr>
+							</table>
+						</td>
+						<td>
+							<table class="{style.qmaclone-Grid}">
+								<tr>
+									<td align="right">ﾌﾟﾚｲ回数</td>
+									<td>
+										<span ui:field='spanPlayCount'>-</span>
+										回
+									</td>
+								</tr>
+								<tr>
+									<td align="right">ﾊｲｽｺｱ</td>
+									<td>
+										<span ui:field='spanHighScore'>-</span>
+										点
+									</td>
+								</tr>
+								<tr>
+									<td align="right">平均ｽｺｱ</td>
+									<td>
+										<span ui:field='spanAverageScore'>-</span>
+										点
+									</td>
+								</tr>
+								<tr>
+									<td align="right">ﾚｰﾃｨﾝｸﾞ</td>
+									<td>
+										<span ui:field='spanRating'>-</span>
+									</td>
+								</tr>
+								<tr>
+									<td align="right">平均順位</td>
+									<td>
+										<span ui:field='spanAverageRank'>-</span>
+										位
+									</td>
+								</tr>
+								<tr>
+									<td align="right">クラス</td>
+									<td>
+										<span ui:field='spanClass'>-</span>
+									</td>
+								</tr>
+								<tr>
+									<td align="right">ﾕｰｻﾞｰｺｰﾄﾞ</td>
+									<td>
+										<span ui:field="spanUserCode" />
+										<g:Button ui:field="buttonShowUserCode" text="表示" />
+									</td>
+								</tr>
+							</table>
+						</td>
+						<td>
+							↓プレイヤー履歴↓
+							<br />
+							<span ui:field='spanPlayerHistory' />
+						</td>
+					</tr>
+				</table>
+			</g:HTMLPanel>
+		</center>
+	</g:HTMLPanel>
+</ui:UiBinder>

@@ -1,0 +1,75 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<g:HTMLPanel>
+		<g:DecoratorPanel>
+			<g:HTMLPanel>
+				<g:HTML>▼効果音のオン／オフ</g:HTML>
+				<g:RadioButton ui:field="radioButtonSeOn" name="SE">オン</g:RadioButton>
+				<g:RadioButton ui:field="radioButtonSeOff" name="SE">オフ</g:RadioButton>
+			</g:HTMLPanel>
+		</g:DecoratorPanel>
+		<g:DecoratorPanel>
+			<g:HTMLPanel>
+				<g:HTML>▼ゲーム中のランキング上下変動表示</g:HTML>
+				<g:RadioButton ui:field="radioButtonRankingMoveOn"
+					name="RANKING_MOVE">オン</g:RadioButton>
+				<g:RadioButton ui:field="radioButtonRankingMoveOff"
+					name="RANKING_MOVE">オフ</g:RadioButton>
+			</g:HTMLPanel>
+		</g:DecoratorPanel>
+		<g:DecoratorPanel>
+			<g:HTMLPanel>
+				<g:HTML>▼解答後に解答を隠す</g:HTML>
+				<g:RadioButton ui:field="radioButtonHideAnswerOn"
+					name="GROUP_HIDE_ANSWER">オン</g:RadioButton>
+				<g:RadioButton ui:field="radioButtonHideAnswerOff"
+					name="GROUP_HIDE_ANSWER">オフ</g:RadioButton>
+			</g:HTMLPanel>
+		</g:DecoratorPanel>
+		<g:DecoratorPanel>
+			<g:HTMLPanel>
+				<g:HTML>▼ログイン画面の情報を表示する</g:HTML>
+				<g:RadioButton ui:field="radioButtonShowInfoOn" name="GROUP_SHOW_INFO">オン</g:RadioButton>
+				<g:RadioButton ui:field="radioButtonShowInfoOff" name="GROUP_SHOW_INFO">オフ</g:RadioButton>
+			</g:HTMLPanel>
+		</g:DecoratorPanel>
+		<g:DecoratorPanel>
+			<g:HTMLPanel>
+				<g:HTML>▼イベント戦の成績を個人戦績に反映する</g:HTML>
+				<g:RadioButton ui:field="radioButtonReflectEventResultOn"
+					name="GROUP_REFLECT_EVENT_RESULT">オン</g:RadioButton>
+				<g:RadioButton ui:field="radioButtonReflectEventResultOff"
+					name="GROUP_REFLECT_EVENT_RESULT">オフ</g:RadioButton>
+			</g:HTMLPanel>
+		</g:DecoratorPanel>
+		<g:DecoratorPanel>
+			<g:HTMLPanel>
+				<g:HTML>▼サーバーとの通信にWebSocketを使用する</g:HTML>
+				<g:RadioButton ui:field="radioButtonWebSocketDefault"
+					name="GROUP_WEB_SOCKET">初期値</g:RadioButton>
+				<g:RadioButton ui:field="radioButtonWebSocketOn" name="GROUP_WEB_SOCKET">オン</g:RadioButton>
+				<g:RadioButton ui:field="radioButtonWebSocketOff"
+					name="GROUP_WEB_SOCKET">オフ</g:RadioButton>
+			</g:HTMLPanel>
+		</g:DecoratorPanel>
+		<g:DecoratorPanel>
+			<g:HTMLPanel>
+				<g:HTML>▼問題作成時に自動的に正解率統計に登録する</g:HTML>
+				<g:RadioButton ui:field="radioButtonRegisterCreatedProblemOn"
+					name="GROUP_REGISTER_CREATED_PROBLEM">オン</g:RadioButton>
+				<g:RadioButton ui:field="radioButtonRegisterCreatedProblemOff"
+					name="GROUP_REGISTER_CREATED_PROBLEM">オフ</g:RadioButton>
+			</g:HTMLPanel>
+		</g:DecoratorPanel>
+		<g:DecoratorPanel>
+			<g:HTMLPanel>
+				<g:HTML>▼問題指摘時に自動的に正解率統計に登録する</g:HTML>
+				<g:RadioButton ui:field="radioButtonRegisterIndicatedProblemOn"
+					name="GROUP_REGISTER_INDICATED_PROBLEM">オン</g:RadioButton>
+				<g:RadioButton ui:field="radioButtonRegisterIndicatedProblemOff"
+					name="GROUP_REGISTER_INDICATED_PROBLEM">オフ</g:RadioButton>
+			</g:HTMLPanel>
+		</g:DecoratorPanel>
+	</g:HTMLPanel>
+</ui:UiBinder> 

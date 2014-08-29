@@ -1,0 +1,9 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<g:HTMLPanel>
+		<h1>問題変更履歴</h1>
+		<g:Grid ui:field="gridHistory"></g:Grid>
+		<g:HTML ui:field="htmlDiff">問題変更履歴を読み込み中です</g:HTML>
+	</g:HTMLPanel>
+</ui:UiBinder>

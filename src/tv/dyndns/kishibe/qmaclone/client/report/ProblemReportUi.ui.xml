@@ -1,0 +1,23 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:c="urn:import:com.google.gwt.user.cellview.client"
+	xmlns:my="urn:import:tv.dyndns.kishibe.qmaclone.client.report">
+	<ui:style>
+		.panel {
+			text-align: center;
+		}
+		
+		.problem {
+			font-size: 18px;
+			margin: 0px;
+			padding: 0px;
+		}
+	</ui:style>
+	<g:HTMLPanel styleName="{style.panel}">
+		<g:HTML ui:field="htmlHits"></g:HTML>
+		<c:SimplePager ui:field="pager"></c:SimplePager>
+		<my:CellTableProblem ui:field="cellTableProblem"
+			styleName="{style.problem}"></my:CellTableProblem>
+		<g:Button ui:field="buttonRegisterAll">全ての問題を登録する</g:Button>
+	</g:HTMLPanel>
+</ui:UiBinder> 

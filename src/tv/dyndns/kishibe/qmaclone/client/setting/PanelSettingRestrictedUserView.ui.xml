@@ -1,0 +1,27 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<g:HTMLPanel>
+		<h2>制限ユーザー設定</h2>
+		制限タイプ
+		<g:ListBox ui:field="listBoxType"></g:ListBox>
+
+		<h3>ユーザーコード</h3>
+		<g:FlowPanel ui:field="panelUserCodes"></g:FlowPanel>
+		<g:HorizontalPanel>
+			<g:TextBox ui:field="textBoxUserCode" width="200px"></g:TextBox>
+			<g:Button ui:field="buttonAddUserCode" text="追加"></g:Button>
+			<g:Button ui:field="buttonRemoveUserCode" text="削除"></g:Button>
+			<g:Button ui:field="buttonClearUserCode" text="クリア"></g:Button>
+		</g:HorizontalPanel>
+
+		<h3>リモートアドレス</h3>
+		<g:FlowPanel ui:field="panelRemoteAddresses"></g:FlowPanel>
+		<g:HorizontalPanel>
+			<g:TextBox ui:field="textBoxRemoteAddress" width="200px"></g:TextBox>
+			<g:Button ui:field="buttonAddRemoteAddress" text="追加"></g:Button>
+			<g:Button ui:field="buttonRemoveRemoteAddress" text="削除"></g:Button>
+			<g:Button ui:field="buttonClearRemoteAddress" text="クリア"></g:Button>
+		</g:HorizontalPanel>
+	</g:HTMLPanel>
+</ui:UiBinder> 

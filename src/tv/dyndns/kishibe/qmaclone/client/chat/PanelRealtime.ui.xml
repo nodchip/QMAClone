@@ -1,0 +1,17 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder" xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:my="urn:import:tv.dyndns.kishibe.qmaclone.client.chat">
+	<g:HTMLPanel>
+		<g:HorizontalPanel>
+			<g:cell>
+				<g:TextBox ui:field="textBoxName" width="130px" maxLength="6" />
+			</g:cell>
+			<g:cell>
+				<g:TextBox ui:field="textBoxBody" width="600px" maxLength="50" />
+			</g:cell>
+			<g:cell>
+				<g:Button ui:field="buttonSend">送信</g:Button>
+			</g:cell>
+		</g:HorizontalPanel>
+		<my:CellListChatLog ui:field="cellListChatLog" />
+	</g:HTMLPanel>
+</ui:UiBinder> 

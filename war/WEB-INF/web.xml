@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	id="QMAClone" version="2.5">
+
+
+	<servlet>
+		<servlet-name>serviceServlet</servlet-name>
+		<servlet-class>tv.dyndns.kishibe.qmaclone.server.ServiceServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>serviceServlet</servlet-name>
+		<url-pattern>/tv.dyndns.kishibe.qmaclone.QMAClone/service</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>statsServlet</servlet-name>
+		<servlet-class>tv.dyndns.kishibe.qmaclone.server.StatsServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>statsServlet</servlet-name>
+		<url-pattern>/stats</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>iconUploadServlet</servlet-name>
+		<servlet-class>tv.dyndns.kishibe.qmaclone.server.IconUploadServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>iconUploadServlet</servlet-name>
+		<url-pattern>/icon</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>imageProxyServlet</servlet-name>
+		<servlet-class>tv.dyndns.kishibe.qmaclone.server.ImageProxyServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>imageProxyServlet</servlet-name>
+		<url-pattern>/image/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>linkServlet</servlet-name>
+		<servlet-class>tv.dyndns.kishibe.qmaclone.server.service.LinkServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>linkServlet</servlet-name>
+		<url-pattern>/link</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>rssServlet</servlet-name>
+		<servlet-class>tv.dyndns.kishibe.qmaclone.server.RssServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>rssServlet</servlet-name>
+		<url-pattern>/rss.xml</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>remoteLoggingServlet</servlet-name>
+		<servlet-class>tv.dyndns.kishibe.qmaclone.server.RemoteLoggingServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>remoteLoggingServlet</servlet-name>
+		<url-pattern>/tv.dyndns.kishibe.qmaclone.QMAClone/remote_logging</url-pattern>
+	</servlet-mapping>
+
+
+	<!-- Default page to serve -->
+	<welcome-file-list>
+		<welcome-file>QMAClone.html</welcome-file>
+	</welcome-file-list>
+
+</web-app>

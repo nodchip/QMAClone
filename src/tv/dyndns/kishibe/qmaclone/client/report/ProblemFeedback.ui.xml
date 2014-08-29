@@ -1,0 +1,16 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:style>
+		.important {
+			font-weight: bold;
+		}
+	</ui:style>
+	<g:HTMLPanel>
+		<g:HTML>投票理由をお書きください</g:HTML>
+		<g:TextBox ui:field="reasonTextBox"></g:TextBox>
+		<g:Button ui:field="submitButton">送信</g:Button>
+		<g:HTML>よろしければ下記のボタンもどうぞ</g:HTML>
+		<g:HTML ui:field="plusOneHtml"></g:HTML>
+	</g:HTMLPanel>
+</ui:UiBinder>
