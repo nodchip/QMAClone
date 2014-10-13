@@ -1,5 +1,6 @@
 package tv.dyndns.kishibe.qmaclone.server.database;
 
+import static com.google.common.truth.Truth.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.hasItem;
@@ -65,6 +66,7 @@ import tv.dyndns.kishibe.qmaclone.server.database.DirectDatabase.WrongAnswerHand
 import tv.dyndns.kishibe.qmaclone.server.testing.QMACloneTestEnv;
 import tv.dyndns.kishibe.qmaclone.server.util.Normalizer;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -693,7 +695,7 @@ public class DatabaseTest {
     database.addCreationLog(problem, 111, "222");
 
     List<PacketProblemCreationLog> log1 = database.getProblemCreationHistory(0);
-    assertEquals(log1.size(), log0.size() + 1);
+    assertThat(log1.size()).isInclusivelyInRange(log0.size(), log0.size() + 1);
 
     assertEquals(countUserCode + 1, database.getNumberOfCreationLogWithUserCode(111, 0));
     assertEquals(countMachineIp + 1, database.getNumberOfCreationLogWithUserCode(111, 0));
@@ -873,21 +875,21 @@ public class DatabaseTest {
 
   @Test
   public void testVoteToProblem() throws Exception {
-    long voteGood = (long) Objects.firstNonNull(
+    long voteGood = (long) MoreObjects.firstNonNull(
         runner.query("SELECT VOTE_GOOD FROM problem WHERE ID = 1", new ScalarHandler<Long>()), 0L);
-    long voteBad = (long) Objects.firstNonNull(
+    long voteBad = (long) MoreObjects.firstNonNull(
         runner.query("SELECT VOTE_BAD FROM problem WHERE ID = 1", new ScalarHandler<Long>()), 0L);
 
     database.voteToProblem(1, true, "");
-    assertEquals(voteGood + 1, (long) Objects.firstNonNull(
+    assertEquals(voteGood + 1, (long) MoreObjects.firstNonNull(
         runner.query("SELECT VOTE_GOOD FROM problem WHERE ID = 1", new ScalarHandler<Long>()), 0L));
-    assertEquals(voteBad, (long) Objects.firstNonNull(
+    assertEquals(voteBad, (long) MoreObjects.firstNonNull(
         runner.query("SELECT VOTE_BAD FROM problem WHERE ID = 1", new ScalarHandler<Long>()), 0L));
 
     database.voteToProblem(1, false, "");
-    assertEquals(voteGood + 1, (long) Objects.firstNonNull(
+    assertEquals(voteGood + 1, (long) MoreObjects.firstNonNull(
         runner.query("SELECT VOTE_GOOD FROM problem WHERE ID = 1", new ScalarHandler<Long>()), 0L));
-    assertEquals(voteBad + 1, (long) Objects.firstNonNull(
+    assertEquals(voteBad + 1, (long) MoreObjects.firstNonNull(
         runner.query("SELECT VOTE_BAD FROM problem WHERE ID = 1", new ScalarHandler<Long>()), 0L));
   }
 

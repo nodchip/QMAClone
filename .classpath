@@ -155,17 +155,17 @@
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/lucene-4.9.0/core/lucene-core-4.9.0.jar" sourcepath="/JAVA_DIRECTORY/lucene-4.6.0/src/lucene/analysis/common/src/java/org/apache">
+	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/lucene-4.10.1/core/lucene-core-4.10.1.jar" sourcepath="/JAVA_DIRECTORY/lucene-4.6.0/src/lucene/analysis/common/src/java/org/apache">
 		<attributes>
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/lucene-4.9.0/analysis/common/lucene-analyzers-common-4.9.0.jar">
+	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/lucene-4.10.1/analysis/common/lucene-analyzers-common-4.10.1.jar">
 		<attributes>
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/lucene-4.9.0/queries/lucene-queries-4.9.0.jar">
+	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/lucene-4.10.1/queries/lucene-queries-4.10.1.jar">
 		<attributes>
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
@@ -265,12 +265,12 @@
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/guava-17.0.jar">
+	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/guava-18.0.jar">
 		<attributes>
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/guava-gwt-17.0.jar">
+	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/guava-gwt-18.0.jar">
 		<attributes>
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
@@ -425,12 +425,41 @@
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/httpcomponents-client-4.3.5/lib/commons-codec-1.6.jar"/>
-	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/httpcomponents-client-4.3.5/lib/commons-logging-1.1.3.jar"/>
-	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/httpcomponents-client-4.3.5/lib/fluent-hc-4.3.5.jar"/>
-	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/httpcomponents-client-4.3.5/lib/httpclient-4.3.5.jar"/>
-	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/httpcomponents-client-4.3.5/lib/httpclient-cache-4.3.5.jar"/>
-	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/httpcomponents-client-4.3.5/lib/httpcore-4.3.2.jar"/>
-	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/httpcomponents-client-4.3.5/lib/httpmime-4.3.5.jar"/>
+	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/httpcomponents-client-4.3.5/lib/commons-codec-1.6.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/httpcomponents-client-4.3.5/lib/commons-logging-1.1.3.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/httpcomponents-client-4.3.5/lib/fluent-hc-4.3.5.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/httpcomponents-client-4.3.5/lib/httpclient-4.3.5.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/httpcomponents-client-4.3.5/lib/httpclient-cache-4.3.5.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/httpcomponents-client-4.3.5/lib/httpcore-4.3.2.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/httpcomponents-client-4.3.5/lib/httpmime-4.3.5.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/truth-0.23.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

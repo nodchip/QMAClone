@@ -78,6 +78,7 @@ import tv.dyndns.kishibe.qmaclone.client.packet.PacketThemeModeEditor;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketThemeQuery;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketUserData;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketWrongAnswer;
+import tv.dyndns.kishibe.qmaclone.client.packet.ProblemIndicationEligibility;
 import tv.dyndns.kishibe.qmaclone.client.packet.RestrictionType;
 import tv.dyndns.kishibe.qmaclone.client.service.ServiceException;
 import tv.dyndns.kishibe.qmaclone.server.database.Database;
@@ -165,7 +166,8 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
   }
 
   @Inject
-  public ServiceServletStub(ChatManager chatManager, NormalModeProblemManager normalModeProblemManager,
+  public ServiceServletStub(ChatManager chatManager,
+      NormalModeProblemManager normalModeProblemManager,
       ThemeModeProblemManager themeModeProblemManager, GameManager gameManager,
       ServerStatusManager serverStatusManager, PlayerHistoryManager playerHistoryManager,
       VoteManager voteManager, Recognizable recognizer,
@@ -1260,8 +1262,19 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
   }
 
   @Override
-  public boolean getProblemIndicationEligibility(int userCode) throws ServiceException {
-    return problemIndicationCounter.isAbleToIndicate(userCode);
+  public ProblemIndicationEligibility getProblemIndicationEligibility(int userCode)
+      throws ServiceException {
+    if (!problemIndicationCounter.isAbleToIndicate(userCode)) {
+      return ProblemIndicationEligibility.REACHED_MAX_NUMBER_OF_REQUESTS_PER_UNIT_TIME;
+    }
+    try {
+      if (database.getUserData(userCode).playerName.equals("未初期化です")) {
+        return ProblemIndicationEligibility.PLAYER_NAME_UNCHANGED;
+      }
+    } catch (DatabaseException e) {
+      throw new ServiceException("ユーザー情報の取得に失敗しました", e);
+    }
+    return ProblemIndicationEligibility.OK;
   }
 
   @Override

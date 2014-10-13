@@ -1,5 +1,6 @@
 package tv.dyndns.kishibe.qmaclone.server;
 
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doThrow;
@@ -19,6 +20,8 @@ import tv.dyndns.kishibe.qmaclone.client.game.ProblemGenre;
 import tv.dyndns.kishibe.qmaclone.client.game.ProblemType;
 import tv.dyndns.kishibe.qmaclone.client.game.RandomFlag;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblem;
+import tv.dyndns.kishibe.qmaclone.client.packet.PacketUserData;
+import tv.dyndns.kishibe.qmaclone.client.packet.ProblemIndicationEligibility;
 import tv.dyndns.kishibe.qmaclone.client.packet.RestrictionType;
 import tv.dyndns.kishibe.qmaclone.client.service.ServiceException;
 import tv.dyndns.kishibe.qmaclone.client.testing.TestDataProvider;
@@ -152,10 +155,39 @@ public class ServiceServletStubTest {
   }
 
   @Test
-  public void getProblemIndicationEligibilityShouldDelegateToBadUserManager() throws Exception {
-    when(mockProblemIndicationCounter.isAbleToIndicate(FAKE_USER_CODE)).thenReturn(true);
+  public void getProblemIndicationEligibilityShouldReturnOkForAvailableEligibile() throws Exception {
+    PacketUserData userData = new PacketUserData();
+    userData.playerName = "プレイヤー名";
 
-    assertTrue(service.getProblemIndicationEligibility(FAKE_USER_CODE));
+    when(mockProblemIndicationCounter.isAbleToIndicate(FAKE_USER_CODE)).thenReturn(true);
+    when(mockDatabase.getUserData(FAKE_USER_CODE)).thenReturn(userData);
+
+    assertThat(service.getProblemIndicationEligibility(FAKE_USER_CODE)).isEqualTo(
+        ProblemIndicationEligibility.OK);
+  }
+
+  @Test
+  public void getProblemIndicationEligibilityShouldRejectIfTooManyRequests() throws Exception {
+    PacketUserData userData = new PacketUserData();
+    userData.playerName = "プレイヤー名";
+
+    when(mockProblemIndicationCounter.isAbleToIndicate(FAKE_USER_CODE)).thenReturn(false);
+    when(mockDatabase.getUserData(FAKE_USER_CODE)).thenReturn(userData);
+
+    assertThat(service.getProblemIndicationEligibility(FAKE_USER_CODE)).isEqualTo(
+        ProblemIndicationEligibility.REACHED_MAX_NUMBER_OF_REQUESTS_PER_UNIT_TIME);
+  }
+
+  @Test
+  public void getProblemIndicationEligibilityShouldRejectIfPlayerNameUnchanged() throws Exception {
+    PacketUserData userData = new PacketUserData();
+    userData.playerName = "未初期化です";
+
+    when(mockProblemIndicationCounter.isAbleToIndicate(FAKE_USER_CODE)).thenReturn(true);
+    when(mockDatabase.getUserData(FAKE_USER_CODE)).thenReturn(userData);
+
+    assertThat(service.getProblemIndicationEligibility(FAKE_USER_CODE)).isEqualTo(
+        ProblemIndicationEligibility.PLAYER_NAME_UNCHANGED);
   }
 
   @Test
