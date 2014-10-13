@@ -67,7 +67,6 @@ import tv.dyndns.kishibe.qmaclone.server.testing.QMACloneTestEnv;
 import tv.dyndns.kishibe.qmaclone.server.util.Normalizer;
 
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -898,9 +897,9 @@ public class DatabaseTest {
     runner.update("UPDATE problem SET VOTE_GOOD = 123, VOTE_BAD = 456 WHERE ID = 1");
 
     database.resetVote(1);
-    assertEquals(0, (long) Objects.firstNonNull(
+    assertEquals(0, (long) MoreObjects.firstNonNull(
         runner.query("SELECT VOTE_GOOD FROM problem WHERE ID = 1", new ScalarHandler<Long>()), 0L));
-    assertEquals(0, (long) Objects.firstNonNull(
+    assertEquals(0, (long) MoreObjects.firstNonNull(
         runner.query("SELECT VOTE_BAD FROM problem WHERE ID = 1", new ScalarHandler<Long>()), 0L));
   }
 
