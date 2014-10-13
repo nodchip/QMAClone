@@ -45,6 +45,7 @@ import org.apache.commons.math3.special.Erf;
 import org.eclipse.jetty.websocket.WebSocket;
 
 import tv.dyndns.kishibe.qmaclone.client.constant.Constant;
+import tv.dyndns.kishibe.qmaclone.client.game.GameMode;
 import tv.dyndns.kishibe.qmaclone.client.game.ProblemGenre;
 import tv.dyndns.kishibe.qmaclone.client.game.ProblemType;
 import tv.dyndns.kishibe.qmaclone.client.game.Transition;
@@ -63,6 +64,7 @@ import tv.dyndns.kishibe.qmaclone.server.database.DatabaseException;
 import tv.dyndns.kishibe.qmaclone.server.websocket.WebSockets;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -134,11 +136,13 @@ public class Game {
   private final WebSockets<PacketReadyForGame> readyForGameWebSockets;
   private final WebSockets<PacketGameStatus> gameStatusWebSockets;
   private final RestrictedUserUtils restrictedUserUtils;
+  private final GameMode gameMode;
 
   public static interface Factory {
     Game create(@Assisted("sessionId") int sessionId, @Assisted("classLevel") int classLevel,
-        @Assisted("event") boolean event, @Assisted("alone") boolean alone,
-        @Assisted("theme") String theme, @Assisted("publicEvent") boolean publicEvent);
+        @Assisted("EVENT") boolean event, @Assisted("alone") boolean alone,
+        @Assisted("THEME") String theme, @Assisted("publicEvent") boolean publicEvent,
+        @Assisted("gameMode") GameMode gameMode);
   }
 
   @Inject
@@ -146,10 +150,10 @@ public class Game {
       NormalModeProblemManager normalModeProblemManager,
       ThemeModeProblemManager themeModeProblemManager, Database database,
       ComputerPlayer.Factory computerPlayerFactory, ThreadPool threadPool,
-      @Assisted("sessionId") int sessionId, @Assisted("classLevel") int classLevel,
-      @Assisted("event") boolean event, @Assisted("alone") boolean alone,
-      @Nullable @Assisted("theme") String theme, @Assisted("publicEvent") boolean publicEvent,
-      RestrictedUserUtils restrictedUserUtils) {
+      RestrictedUserUtils restrictedUserUtils, @Assisted("sessionId") int sessionId,
+      @Assisted("classLevel") int classLevel, @Assisted("EVENT") boolean event,
+      @Assisted("alone") boolean alone, @Nullable @Assisted("THEME") String theme,
+      @Assisted("publicEvent") boolean publicEvent, @Assisted("gameMode") GameMode gameMode) {
     this.gameManager = gameManager;
     this.serverStatusManager = serverStatusManager;
     this.normalModeProblemManager = normalModeProblemManager;
@@ -163,6 +167,7 @@ public class Game {
     this.alone = alone;
     this.theme = theme;
     this.publicEvent = publicEvent;
+    this.gameMode = Preconditions.checkNotNull(gameMode);
     this.restrictedUserUtils = Preconditions.checkNotNull(restrictedUserUtils);
     this.matchingDataWebSockets = new WebSockets<PacketMatchingData>(threadPool) {
       @Override
@@ -184,13 +189,13 @@ public class Game {
     };
 
     if (sessionId == 0) {
-      String object = Objects.toStringHelper(this).add("gameManager", gameManager)
+      String object = MoreObjects.toStringHelper(this).add("gameManager", gameManager)
           .add("serverStatusManager", serverStatusManager)
           .add("normalModeProblemManager", normalModeProblemManager)
           .add("themeModeProblemManager", themeModeProblemManager).add("database", database)
           .add("computerPlayerFactory", computerPlayerFactory).add("threadPool", threadPool)
-          .add("sessionId", sessionId).add("classLevel", classLevel).add("event", event)
-          .add("alone", alone).add("theme", theme).add("publicEvent", publicEvent).toString();
+          .add("sessionId", sessionId).add("classLevel", classLevel).add("EVENT", event)
+          .add("alone", alone).add("THEME", theme).add("publicEvent", publicEvent).toString();
       logger.log(Level.SEVERE, "不正なセッションIDが指定されました: " + object);
     }
 
@@ -366,7 +371,7 @@ public class Game {
    *          クラスレベル
    * @param difficultSelect
    *          難易度
-   * @param theme
+   * @param THEME
    *          テーマ
    * @param newAndOldProblems
    *          新問/旧問
@@ -790,8 +795,8 @@ public class Game {
     }
 
     // データベース更新
-    // テーマモードおよびイベント戦では正解率を更新しない
-    if (theme == null || event) {
+    // 全体対戦モードでのみ正解率を更新するようにした
+    if (gameMode == GameMode.WHOLE) {
       threadPool.execute(new Runnable() {
         public void run() {
           try {

@@ -319,7 +319,7 @@ public interface Service extends RemoteService {
   /**
    * テーマのクエリを取得する
    * 
-   * @param theme
+   * @param THEME
    *          テーマ
    * @return テーマクエリのリスト
    * @throws ServiceException

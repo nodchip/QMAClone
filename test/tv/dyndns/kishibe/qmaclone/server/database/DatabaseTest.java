@@ -80,7 +80,7 @@ public class DatabaseTest {
   private static final int FAKE_BBS_ID = -98543495;
   private static final String FAKE_REMOTE_ADDRESS = "1.2.3.4";
   private static final int FAKE_SCORE = 11111;
-  private static final String FAKE_THEME = "theme";
+  private static final String FAKE_THEME = "THEME";
   private static final int FAKE_PROBLEM_ID = 11111111;
   private static final String FAKE_ANSWER = "fake answer";
   private static final int FAKE_COUNT = 22222;
@@ -1135,7 +1135,7 @@ public class DatabaseTest {
     log.setUserCode(FAKE_USER_CODE);
     log.setTimeMs(System.currentTimeMillis());
     log.setType("Add");
-    log.setTheme("theme");
+    log.setTheme("THEME");
     log.setQuery("query");
     database.addThemeModeEditLog(log);
 
@@ -1151,7 +1151,7 @@ public class DatabaseTest {
     log.setUserCode(FAKE_USER_CODE);
     log.setTimeMs(System.currentTimeMillis());
     log.setType("Add");
-    log.setTheme("theme");
+    log.setTheme("THEME");
     log.setQuery("query");
     database.addThemeModeEditLog(log);
 

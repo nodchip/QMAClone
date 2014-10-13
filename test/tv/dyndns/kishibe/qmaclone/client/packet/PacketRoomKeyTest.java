@@ -24,17 +24,17 @@ public class PacketRoomKeyTest {
 
 	@Before
 	public void setUp() throws Exception {
-		keyEvent1 = new PacketRoomKey(GameMode.event, null, ImmutableSet.of(ProblemGenre.Sports),
+		keyEvent1 = new PacketRoomKey(GameMode.EVENT, null, ImmutableSet.of(ProblemGenre.Sports),
 				ImmutableSet.of(ProblemType.YonTaku));
-		keyEvent2 = new PacketRoomKey(GameMode.event, null, ImmutableSet.of(ProblemGenre.Sports),
+		keyEvent2 = new PacketRoomKey(GameMode.EVENT, null, ImmutableSet.of(ProblemGenre.Sports),
 				ImmutableSet.of(ProblemType.YonTaku));
-		keyWhole1 = new PacketRoomKey(GameMode.whole, null, ImmutableSet.of(ProblemGenre.Geinou),
+		keyWhole1 = new PacketRoomKey(GameMode.WHOLE, null, ImmutableSet.of(ProblemGenre.Geinou),
 				ImmutableSet.of(ProblemType.Rensou));
-		keyWhole2 = new PacketRoomKey(GameMode.whole, null, ImmutableSet.of(ProblemGenre.Geinou,
+		keyWhole2 = new PacketRoomKey(GameMode.WHOLE, null, ImmutableSet.of(ProblemGenre.Geinou,
 				ProblemGenre.Gakumon), ImmutableSet.of(ProblemType.Rensou, ProblemType.Narabekae));
-		keyTheme1 = new PacketRoomKey(GameMode.theme, "theme", ImmutableSet.of(
+		keyTheme1 = new PacketRoomKey(GameMode.THEME, "THEME", ImmutableSet.of(
 				ProblemGenre.Zatsugaku, ProblemGenre.Anige), ImmutableSet.of(ProblemType.MojiPanel));
-		keyTheme2 = new PacketRoomKey(GameMode.theme, "theme",
+		keyTheme2 = new PacketRoomKey(GameMode.THEME, "THEME",
 				ImmutableSet.of(ProblemGenre.Zatsugaku), ImmutableSet.of(ProblemType.MojiPanel,
 						ProblemType.Typing));
 	}
@@ -57,6 +57,6 @@ public class PacketRoomKeyTest {
 	public void testPacketRoomKeyGameModeStringSetOfProblemGenreSetOfProblemType() {
 		assertEquals(ImmutableSet.of(ProblemGenre.Sports), keyEvent1.getGenres());
 		assertEquals(ImmutableSet.of(ProblemType.YonTaku), keyEvent1.getTypes());
-		assertEquals("theme", keyTheme1.getName());
+		assertEquals("THEME", keyTheme1.getName());
 	}
 }

@@ -42,8 +42,8 @@ public class PacketRoomKey implements IsSerializable {
 
 	public PacketRoomKey(GameMode gameMode, String name, Set<ProblemGenre> genres,
 			Set<ProblemType> types) {
-		genres = gameMode == GameMode.event ? genres : ImmutableSet.of(ProblemGenre.Random);
-		types = gameMode == GameMode.event ? types : ImmutableSet.of(ProblemType.Random);
+		genres = gameMode == GameMode.EVENT ? genres : ImmutableSet.of(ProblemGenre.Random);
+		types = gameMode == GameMode.EVENT ? types : ImmutableSet.of(ProblemType.Random);
 
 		this.gameMode = gameMode;
 		this.name = name;

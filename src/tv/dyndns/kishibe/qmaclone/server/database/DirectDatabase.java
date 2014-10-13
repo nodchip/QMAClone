@@ -1146,7 +1146,7 @@ public class DirectDatabase implements Database {
   @Override
   public List<PacketThemeQuery> getThemeModeQueries() throws DatabaseException {
     try {
-      return runner.query("SELECT THEME AS theme, QUERY AS query FROM theme_mode",
+      return runner.query("SELECT THEME AS THEME, QUERY AS query FROM theme_mode",
           new BeanListHandler<PacketThemeQuery>(PacketThemeQuery.class));
     } catch (Exception e) {
       throw new DatabaseException(e);
@@ -1156,7 +1156,7 @@ public class DirectDatabase implements Database {
   @Override
   public List<PacketThemeQuery> getThemeModeQueries(String theme) throws DatabaseException {
     try {
-      return runner.query("SELECT THEME AS theme, QUERY AS query FROM theme_mode WHERE THEME = ?",
+      return runner.query("SELECT THEME AS THEME, QUERY AS query FROM theme_mode WHERE THEME = ?",
           new BeanListHandler<PacketThemeQuery>(PacketThemeQuery.class), theme);
     } catch (Exception e) {
       throw new DatabaseException(e);
@@ -1455,7 +1455,7 @@ public class DirectDatabase implements Database {
     try {
       runner
           .update(
-              "INSERT INTO theme_mode_edit_log (userCode, timeMs, type, theme, query) VALUES (?, ?, ?, ?, ?)",
+              "INSERT INTO theme_mode_edit_log (userCode, timeMs, type, THEME, query) VALUES (?, ?, ?, ?, ?)",
               log.getUserCode(), log.getTimeMs(), log.getType(), log.getTheme(), log.getQuery());
     } catch (SQLException e) {
       throw new DatabaseException(e);
@@ -1469,7 +1469,7 @@ public class DirectDatabase implements Database {
       return runner.query(
           "SELECT theme_mode_edit_log.userCode AS userCode, player.NAME AS userName, "
               + "theme_mode_edit_log.timeMs AS timeMs, theme_mode_edit_log.type AS type, "
-              + "theme_mode_edit_log.theme AS theme, theme_mode_edit_log.query AS query "
+              + "theme_mode_edit_log.theme AS THEME, theme_mode_edit_log.query AS query "
               + "FROM theme_mode_edit_log, player "
               + "WHERE theme_mode_edit_log.userCode = player.USER_CODE " + "LIMIT ? OFFSET ?",
           new BeanListHandler<>(PacketThemeModeEditLog.class), length, start);

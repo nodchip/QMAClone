@@ -18,7 +18,7 @@ import com.google.common.collect.ImmutableList;
 @RunWith(MockitoJUnitRunner.class)
 public class ThemeRankingPresenterTest {
 
-	private static final String FAKE_THEME = "fake theme";
+	private static final String FAKE_THEME = "fake THEME";
 	private static final int FAKE_YEAR = 2112;
 	private static final int FAKE_MONTH = 9;
 	private static final List<PacketRankingData> FAKE_RANKING = ImmutableList

@@ -92,6 +92,7 @@ import tv.dyndns.kishibe.qmaclone.server.util.diff_match_patch;
 import tv.dyndns.kishibe.qmaclone.server.util.diff_match_patch.Diff;
 import tv.dyndns.kishibe.qmaclone.server.websocket.WebSocketServer;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
@@ -294,10 +295,10 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
     synchronized (lockObjectRegister) {
       try {
         gameLogger
-            .write(Objects.toStringHelper(this).add("method", "register")
+            .write(MoreObjects.toStringHelper(this).add("method", "register")
                 .add("playerSummary", playerSummary).add("genres", genres).add("types", types)
                 .add("greeting", greeting).add("gameMode", gameMode).add("roomName", roomName)
-                .add("theme", theme).add("imageFileName", imageFileName)
+                .add("THEME", theme).add("imageFileName", imageFileName)
                 .add("classLevel", classLevel).add("difficultSelect", difficultSelect)
                 .add("rating", rating).add("userCode", userCode).add("volatility", volatility)
                 .add("playCount", playCount).add("newAndOldProblems", newAndOldProblems)
@@ -320,7 +321,7 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
       } catch (Exception e) {
         String parameters = Objects.toStringHelper(this).add("playerSummary", playerSummary)
             .add("genres", genres).add("types", types).add("greeting", greeting)
-            .add("gameMode", gameMode).add("roomName", roomName).add("theme", theme)
+            .add("gameMode", gameMode).add("roomName", roomName).add("THEME", theme)
             .add("imageFileName", imageFileName).add("classLevel", classLevel)
             .add("difficultSelect", difficultSelect).add("rating", rating)
             .add("userCode", userCode).add("volatility", volatility).add("playCount", playCount)

@@ -22,8 +22,8 @@ public class PanelSettingThemeQueryTest {
 
 	private static final int FAKE_USER_CODE = 111;
 	private static final int FAKE_NUMBER_OF_THEME_QUERIES = 222;
-	private static final String FAKE_THEME_1 = "fake theme 1";
-	private static final String FAKE_THEME_2 = "fake theme 2";
+	private static final String FAKE_THEME_1 = "fake THEME 1";
+	private static final String FAKE_THEME_2 = "fake THEME 2";
 	private static final String FAKE_QUERY_1 = "fake query 1";
 	private static final String FAKE_QUERY_2 = "fake query 2";
 	private static final String FAKE_NOTE = "fake note";

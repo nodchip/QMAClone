@@ -18,7 +18,7 @@ import com.google.common.collect.ImmutableList;
 @RunWith(MockitoJUnitRunner.class)
 public class ThemeSelectorPresenterTest {
 
-	private static final String FAKE_THEME = "fake theme";
+	private static final String FAKE_THEME = "fake THEME";
 	private static final List<List<String>> FAKE_THEMES = ImmutableList
 			.<List<String>> of(ImmutableList.of(FAKE_THEME));
 	@Mock

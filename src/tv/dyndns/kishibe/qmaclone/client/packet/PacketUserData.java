@@ -145,7 +145,7 @@ public class PacketUserData implements IsSerializable {
         .add("qwertyAlphabet", qwertyAlphabet)
         .add("registerCreatedProblem", registerCreatedProblem)
         .add("registerIndicatedProblem", registerIndicatedProblem)
-        .add("googlePlusId", googlePlusId).add("theme", theme).toString();
+        .add("googlePlusId", googlePlusId).add("THEME", theme).toString();
   }
 
   @Override

@@ -24,5 +24,5 @@ package tv.dyndns.kishibe.qmaclone.client.game;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public enum GameMode implements IsSerializable {
-	vsCom, whole, event, theme, limited
+  VS_COM, WHOLE, EVENT, THEME, LIMITED
 }

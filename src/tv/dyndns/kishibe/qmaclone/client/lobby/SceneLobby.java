@@ -121,7 +121,7 @@ public class SceneLobby extends SceneBase {
 		String theme;
 		switch (sessionType) {
 		case SESSION_TYPE_VS_COM: {
-			gameMode = GameMode.vsCom;
+			gameMode = GameMode.VS_COM;
 			roomName = null;
 			theme = null;
 			this.event = false;
@@ -130,7 +130,7 @@ public class SceneLobby extends SceneBase {
 			break;
 		}
 		case SESSION_TYPE_WHOLE: {
-			gameMode = GameMode.whole;
+			gameMode = GameMode.WHOLE;
 			roomName = null;
 			theme = null;
 			this.event = true;
@@ -139,7 +139,7 @@ public class SceneLobby extends SceneBase {
 			break;
 		}
 		case SESSION_TYPE_EVENT: {
-			gameMode = GameMode.event;
+			gameMode = GameMode.EVENT;
 			roomName = lobbyUi.getEventName();
 			theme = null;
 			this.event = true;
@@ -148,7 +148,7 @@ public class SceneLobby extends SceneBase {
 			break;
 		}
 		case SESSION_TYPE_THEME: {
-			gameMode = GameMode.theme;
+			gameMode = GameMode.THEME;
 			roomName = null;
 			theme = lobbyUi.getThemeModeTheme();
 			if (Strings.isNullOrEmpty(theme)) {

@@ -405,7 +405,7 @@ public interface ServiceAsync {
   /**
    * テーマのクエリを取得する
    * 
-   * @param theme
+   * @param THEME
    *          テーマ
    * @param callback
    *          コールバック

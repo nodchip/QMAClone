@@ -43,7 +43,7 @@ public class GameManagerTest {
 	public void getOrCreateMatchingSessionShouldReturnMatchingGameSession() {
 		when(mockGameFactory.create(1, 0, false, false, null, false)).thenReturn(mockGame1);
 
-		Game game = gameManager.getOrCreateMatchingSession(GameMode.whole, null, 0, null,
+		Game game = gameManager.getOrCreateMatchingSession(GameMode.WHOLE, null, 0, null,
 				EnumSet.of(ProblemGenre.Anige), EnumSet.of(ProblemType.Marubatsu), false,
 				mockServerStatusManager, 12345678, "192.168.0.1");
 
@@ -58,7 +58,7 @@ public class GameManagerTest {
 		List<Game> games = Lists.newArrayList();
 
 		for (int i = 0; i < 2; ++i) {
-			Game game = gameManager.getOrCreateMatchingSession(GameMode.whole, null, 0, null,
+			Game game = gameManager.getOrCreateMatchingSession(GameMode.WHOLE, null, 0, null,
 					EnumSet.of(ProblemGenre.Anige), EnumSet.of(ProblemType.Marubatsu), false,
 					mockServerStatusManager, 12345678, "192.168.0.1");
 			games.add(game);
@@ -78,7 +78,7 @@ public class GameManagerTest {
 		List<Game> games = Lists.newArrayList();
 
 		for (int i = 0; i < 9; ++i) {
-			Game game = gameManager.getOrCreateMatchingSession(GameMode.whole, null, 0, null,
+			Game game = gameManager.getOrCreateMatchingSession(GameMode.WHOLE, null, 0, null,
 					EnumSet.of(ProblemGenre.Anige), EnumSet.of(ProblemType.Marubatsu), false,
 					mockServerStatusManager, 12345678, "192.168.0.1");
 			games.add(game);
@@ -92,7 +92,7 @@ public class GameManagerTest {
 	public void getSessionShouldReturnCreatedGame() {
 		when(mockGameFactory.create(1, 0, false, false, null, false)).thenReturn(mockGame1);
 
-		gameManager.getOrCreateMatchingSession(GameMode.whole, null, 0, null,
+		gameManager.getOrCreateMatchingSession(GameMode.WHOLE, null, 0, null,
 				EnumSet.of(ProblemGenre.Anige), EnumSet.of(ProblemType.Marubatsu), false,
 				mockServerStatusManager, 12345678, "192.168.0.1");
 		Game game = gameManager.getSession(1);
@@ -122,21 +122,21 @@ public class GameManagerTest {
 		when(mockGame4.isPublicEvent()).thenReturn(false);
 		when(mockGame4.getTransition()).thenReturn(Transition.Problem);
 
-		gameManager.getOrCreateMatchingSession(GameMode.event, "public event name", 0, null,
+		gameManager.getOrCreateMatchingSession(GameMode.EVENT, "public EVENT name", 0, null,
 				EnumSet.of(ProblemGenre.Anige), EnumSet.of(ProblemType.Marubatsu), true,
 				mockServerStatusManager, 12345678, "192.168.0.1");
-		gameManager.getOrCreateMatchingSession(GameMode.event, "closed event name", 0, null,
+		gameManager.getOrCreateMatchingSession(GameMode.EVENT, "closed EVENT name", 0, null,
 				EnumSet.of(ProblemGenre.Anige), EnumSet.of(ProblemType.Marubatsu), false,
 				mockServerStatusManager, 12345678, "192.168.0.1");
-		gameManager.getOrCreateMatchingSession(GameMode.whole, null, 0, null,
+		gameManager.getOrCreateMatchingSession(GameMode.WHOLE, null, 0, null,
 				EnumSet.of(ProblemGenre.Anige), EnumSet.of(ProblemType.Marubatsu), false,
 				mockServerStatusManager, 12345678, "192.168.0.1");
-		gameManager.getOrCreateMatchingSession(GameMode.event, "playing event name", 0, null,
+		gameManager.getOrCreateMatchingSession(GameMode.EVENT, "playing EVENT name", 0, null,
 				EnumSet.of(ProblemGenre.Anige), EnumSet.of(ProblemType.Marubatsu), true,
 				mockServerStatusManager, 12345678, "192.168.0.1");
 		List<PacketRoomKey> rooms = gameManager.getPublicMatchingEventRooms();
 
-		assertEquals(ImmutableList.of(new PacketRoomKey(GameMode.event, "public event name",
+		assertEquals(ImmutableList.of(new PacketRoomKey(GameMode.EVENT, "public EVENT name",
 				EnumSet.of(ProblemGenre.Anige), EnumSet.of(ProblemType.Marubatsu))), rooms);
 	}
 
@@ -146,7 +146,7 @@ public class GameManagerTest {
 		when(mockGame1.getNumberOfHumanPlayer()).thenReturn(3);
 		when(mockGame1.getTransition()).thenReturn(Transition.Matching);
 
-		gameManager.getOrCreateMatchingSession(GameMode.whole, null, 0, null,
+		gameManager.getOrCreateMatchingSession(GameMode.WHOLE, null, 0, null,
 				EnumSet.of(ProblemGenre.Anige), EnumSet.of(ProblemType.Marubatsu), false,
 				mockServerStatusManager, 12345678, "192.168.0.1");
 
@@ -161,19 +161,19 @@ public class GameManagerTest {
 
 		assertEquals(0, gameManager.getNumberOfSessions());
 
-		gameManager.getOrCreateMatchingSession(GameMode.event, "public event name", 0, null,
+		gameManager.getOrCreateMatchingSession(GameMode.EVENT, "public EVENT name", 0, null,
 				EnumSet.of(ProblemGenre.Anige), EnumSet.of(ProblemType.Marubatsu), true,
 				mockServerStatusManager, 12345678, "192.168.0.1");
 
 		assertEquals(1, gameManager.getNumberOfSessions());
 
-		gameManager.getOrCreateMatchingSession(GameMode.event, "closed event name", 0, null,
+		gameManager.getOrCreateMatchingSession(GameMode.EVENT, "closed EVENT name", 0, null,
 				EnumSet.of(ProblemGenre.Anige), EnumSet.of(ProblemType.Marubatsu), false,
 				mockServerStatusManager, 12345678, "192.168.0.1");
 
 		assertEquals(2, gameManager.getNumberOfSessions());
 
-		gameManager.getOrCreateMatchingSession(GameMode.whole, null, 0, null,
+		gameManager.getOrCreateMatchingSession(GameMode.WHOLE, null, 0, null,
 				EnumSet.of(ProblemGenre.Anige), EnumSet.of(ProblemType.Marubatsu), false,
 				mockServerStatusManager, 12345678, "192.168.0.1");
 
@@ -188,10 +188,10 @@ public class GameManagerTest {
 		when(mockGameFactory.create(2, 0, true, false, null, false)).thenReturn(mockGame2);
 		when(mockGame2.getNumberOfHumanPlayer()).thenReturn(2);
 
-		gameManager.getOrCreateMatchingSession(GameMode.event, "public event name", 0, null,
+		gameManager.getOrCreateMatchingSession(GameMode.EVENT, "public EVENT name", 0, null,
 				EnumSet.of(ProblemGenre.Anige), EnumSet.of(ProblemType.Marubatsu), true,
 				mockServerStatusManager, 12345678, "192.168.0.1");
-		gameManager.getOrCreateMatchingSession(GameMode.event, "closed event name", 0, null,
+		gameManager.getOrCreateMatchingSession(GameMode.EVENT, "closed EVENT name", 0, null,
 				EnumSet.of(ProblemGenre.Anige), EnumSet.of(ProblemType.Marubatsu), false,
 				mockServerStatusManager, 12345678, "192.168.0.1");
 

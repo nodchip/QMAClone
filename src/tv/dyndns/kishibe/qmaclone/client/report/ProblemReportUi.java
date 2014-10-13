@@ -65,7 +65,7 @@ public class ProblemReportUi extends Composite {
 		pager.setDisplay(cellTableProblem);
 		// cellTableProblem.addRangeChangeHandler(new RangeChangeEvent.Handler() {
 		// @Override
-		// public void onRangeChange(RangeChangeEvent event) {
+		// public void onRangeChange(RangeChangeEvent EVENT) {
 		// Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
 		// @Override
 		// public void execute() {

@@ -14,7 +14,7 @@ public interface SnsClient {
 	/**
 	 * テーマモードの更新をSNSサイトに投稿する
 	 * 
-	 * @param theme
+	 * @param THEME
 	 */
 	void postThemeModeUpdate(String theme);
 

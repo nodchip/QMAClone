@@ -164,7 +164,7 @@ public class RichTextToolbar extends Composite {
 	}
 
 	/**
-	 * We use an inner EventHandler class to avoid exposing event methods on the RichTextToolbar
+	 * We use an inner EventHandler class to avoid exposing EVENT methods on the RichTextToolbar
 	 * itself.
 	 */
 	private class EventHandler implements ClickHandler, ChangeHandler, KeyUpHandler {
@@ -233,7 +233,7 @@ public class RichTextToolbar extends Composite {
 			} else if (sender == removeFormat) {
 				extended.removeFormat();
 			} else if (sender == richText) {
-				// We use the RichTextArea's onKeyUp event to update the toolbar status.
+				// We use the RichTextArea's onKeyUp EVENT to update the toolbar status.
 				// This will catch any cases where the user moves the cursur using the
 				// keyboard, or uses one of the browser's built-in keyboard shortcuts.
 				updateStatus();
@@ -243,7 +243,7 @@ public class RichTextToolbar extends Composite {
 		public void onKeyUp(KeyUpEvent event) {
 			Widget sender = (Widget) event.getSource();
 			if (sender == richText) {
-				// We use the RichTextArea's onKeyUp event to update the toolbar status.
+				// We use the RichTextArea's onKeyUp EVENT to update the toolbar status.
 				// This will catch any cases where the user moves the cursur using the
 				// keyboard, or uses one of the browser's built-in keyboard shortcuts.
 				updateStatus();
