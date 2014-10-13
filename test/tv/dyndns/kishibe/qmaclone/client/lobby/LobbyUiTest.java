@@ -10,76 +10,101 @@ import tv.dyndns.kishibe.qmaclone.client.game.ProblemType;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketPlayerSummary;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketRankingData;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
 public class LobbyUiTest extends QMACloneGWTTestCaseBase {
-	private LobbyUi ui;
+  private LobbyUi ui;
 
-	@Override
-	protected void gwtSetUp() throws Exception {
-		super.gwtSetUp();
-		UserData.get().setGenres(Collections.<ProblemGenre> emptySet());
-		UserData.get().setTypes(Collections.<ProblemType> emptySet());
-		ui = new LobbyUi(null);
-	}
+  @Override
+  protected void gwtSetUp() throws Exception {
+    super.gwtSetUp();
+    UserData.get().setGenres(Collections.<ProblemGenre> emptySet());
+    UserData.get().setTypes(Collections.<ProblemType> emptySet());
+    ui = new LobbyUi(null);
+  }
 
-	public void testGetPlayerNameShouldReturnNormalPlayer() {
-		ui.listBoxLevelName.setSelectedIndex(1);
-		ui.listBoxLevelNumber.setSelectedIndex(2);
-		ui.textBoxPlayerName.setText("プレイヤー");
-		ui.listBoxPrefecture.setSelectedIndex(3);
-		UserData.get().setRating(1234);
+  public void testGetPlayerNameShouldReturnNormalPlayer() {
+    ui.listBoxLevelName.setSelectedIndex(1);
+    ui.listBoxLevelNumber.setSelectedIndex(2);
+    ui.textBoxPlayerName.setText("プレイヤー");
+    ui.listBoxPrefecture.setSelectedIndex(3);
+    UserData.get().setRating(1234);
 
-		final PacketPlayerSummary player = ui.getPlayerSummary();
-		assertEquals("見習3", player.level);
-		assertEquals("プレイヤー", player.name);
-		assertEquals("岩手", player.prefecture);
-		assertEquals(1234, player.rating);
-	}
+    final PacketPlayerSummary player = ui.getPlayerSummary();
+    assertEquals("見習3", player.level);
+    assertEquals("プレイヤー", player.name);
+    assertEquals("岩手", player.prefecture);
+    assertEquals(1234, player.rating);
+  }
 
-	public void testUpdateSpecialLevelName() {
-		ui.textBoxPlayerName.setText("プレイヤー");
-		ui.listBoxPrefecture.setSelectedIndex(3);
-		UserData.get().setRating(1234);
+  public void testUpdateSpecialLevelName() {
+    ui.textBoxPlayerName.setText("プレイヤー");
+    ui.listBoxPrefecture.setSelectedIndex(3);
+    UserData.get().setRating(1234);
 
-		PacketRankingData data = new PacketRankingData();
-		final List<PacketRankingData> ranking = Lists.newArrayList();
-		for (int i = 0; i < 100; ++i) {
-			ranking.add(data);
-		}
-		final List<List<PacketRankingData>> rankingData = Lists.newArrayList();
-		for (int i = 0; i < 7; ++i) {
-			rankingData.add(ranking);
-		}
+    PacketRankingData data = new PacketRankingData();
+    final List<PacketRankingData> ranking = Lists.newArrayList();
+    for (int i = 0; i < 100; ++i) {
+      ranking.add(data);
+    }
+    final List<List<PacketRankingData>> rankingData = Lists.newArrayList();
+    for (int i = 0; i < 7; ++i) {
+      rankingData.add(ranking);
+    }
 
-		data = new PacketRankingData();
-		data.userCode = 123456789;
-		UserData.get().setUserCode(123456789);
-		rankingData.get(3).set(40, data);
+    data = new PacketRankingData();
+    data.userCode = 123456789;
+    UserData.get().setUserCode(123456789);
+    rankingData.get(3).set(40, data);
 
-		ui.updateSpecialLevelName(rankingData);
+    ui.updateSpecialLevelName(rankingData);
 
-		assertEquals(LobbyUi.LEVEL_NAMES.size() + 1, ui.listBoxLevelName.getItemCount());
-		assertEquals("賢将", ui.listBoxLevelName.getItemText(LobbyUi.LEVEL_NAMES.size()));
-		assertEquals(LobbyUi.LEVEL_NAMES.size(), ui.listBoxLevelName.getSelectedIndex());
-		assertFalse(ui.listBoxLevelNumber.isEnabled());
-		assertTrue(ui.specialLevelName);
+    assertEquals(LobbyUi.LEVEL_NAMES.size() + 1, ui.listBoxLevelName.getItemCount());
+    assertEquals("賢将", ui.listBoxLevelName.getItemText(LobbyUi.LEVEL_NAMES.size()));
+    assertEquals(LobbyUi.LEVEL_NAMES.size(), ui.listBoxLevelName.getSelectedIndex());
+    assertFalse(ui.listBoxLevelNumber.isEnabled());
+    assertTrue(ui.specialLevelName);
 
-		PacketPlayerSummary player = ui.getPlayerSummary();
-		assertEquals("賢将", player.level);
-		assertEquals("プレイヤー", player.name);
-		assertEquals("岩手", player.prefecture);
-		assertEquals(1234, player.rating);
+    PacketPlayerSummary player = ui.getPlayerSummary();
+    assertEquals("賢将", player.level);
+    assertEquals("プレイヤー", player.name);
+    assertEquals("岩手", player.prefecture);
+    assertEquals(1234, player.rating);
 
-		// 別の階級を選んだ際に級数が選択できるようになるか？
-		ui.listBoxLevelName.setSelectedIndex(0);
-		ui.levelNameChangeHandler.onChange(null);
-		assertTrue(ui.listBoxLevelNumber.isEnabled());
+    // 別の階級を選んだ際に級数が選択できるようになるか？
+    ui.listBoxLevelName.setSelectedIndex(0);
+    ui.levelNameChangeHandler.onChange(null);
+    assertTrue(ui.listBoxLevelNumber.isEnabled());
 
-		player = ui.getPlayerSummary();
-		assertEquals("修練1", player.level);
-		assertEquals("プレイヤー", player.name);
-		assertEquals("岩手", player.prefecture);
-		assertEquals(1234, player.rating);
-	}
+    player = ui.getPlayerSummary();
+    assertEquals("修練1", player.level);
+    assertEquals("プレイヤー", player.name);
+    assertEquals("岩手", player.prefecture);
+    assertEquals(1234, player.rating);
+  }
+
+  public void testUpdateThemeModeShouldSelectLastTheme() {
+    List<List<String>> themeLists = ImmutableList.<List<String>> of(
+        ImmutableList.of("テーマ1", "テーマ2", "テーマ3"), ImmutableList.<String> of(),
+        ImmutableList.<String> of(), ImmutableList.<String> of(), ImmutableList.<String> of(),
+        ImmutableList.<String> of());
+
+    UserData.get().setTheme("テーマ2");
+    ui.updateThemeMode(themeLists);
+
+    assertEquals("テーマ2", ui.getThemeModeTheme());
+  }
+
+  public void testSaveUserDataShouldSaveTheme() {
+    List<List<String>> themeLists = ImmutableList.<List<String>> of(
+        ImmutableList.of("テーマ1", "テーマ2", "テーマ3"), ImmutableList.<String> of(),
+        ImmutableList.<String> of(), ImmutableList.<String> of(), ImmutableList.<String> of(),
+        ImmutableList.<String> of());
+
+    UserData.get().setTheme("テーマ2");
+    ui.updateThemeMode(themeLists);
+
+    assertEquals("テーマ2", UserData.get().getTheme());
+  }
 }

@@ -275,6 +275,7 @@ public class DirectDatabase implements Database {
       data.registerCreatedProblem = rs.getBoolean("REGISTER_CREATED_PROBLEM");
       data.registerIndicatedProblem = rs.getBoolean("REGISTER_INDICATED_PROBLEM");
       data.googlePlusId = rs.getString("GOOGLE_PLUS_ID");
+      data.theme = rs.getString("THEME");
 
       String correctCountCsv = rs.getString("CORRECT_COUNT");
       if (correctCountCsv != null) {
@@ -349,7 +350,7 @@ public class DirectDatabase implements Database {
     try {
       runner
           .update(
-              "REPLACE INTO player (USER_CODE, NAME, GREETING, HIGH_SCORE, AVERAGE_SCORE, PLAY_COUNT, VICTORY_POINT, LEVEL_NAME, LEVEL_NUMBER, AVERAGE_RANK, GENRE, TYPE, CLASS_LEVEL, IMAGE_FILE_NAME, PLAY_SOUND, MULTI_GENRE, MULTI_TYPE, DIFFICULT_SELECT, RANKING_MOVE, LAST_LOGIN, BBS_DISP_INFO, BBS_AGE, TIMER_MODE, PREFECTURE, CHAT, NEW_AND_OLD, PUBLIC_EVENT, HIDE_ANSWER, SHOW_INFO, REFLECT_EVENT_RESULT, WEB_SOCKET_USAGE, CORRECT_COUNT, VOLATILITY, QWERTY_HIRAGANA, QWERTY_KATAKANA, QWERTY_ALPHABET, REGISTER_CREATED_PROBLEM, REGISTER_INDICATED_PROBLEM, GOOGLE_PLUS_ID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+              "REPLACE INTO player (USER_CODE, NAME, GREETING, HIGH_SCORE, AVERAGE_SCORE, PLAY_COUNT, VICTORY_POINT, LEVEL_NAME, LEVEL_NUMBER, AVERAGE_RANK, GENRE, TYPE, CLASS_LEVEL, IMAGE_FILE_NAME, PLAY_SOUND, MULTI_GENRE, MULTI_TYPE, DIFFICULT_SELECT, RANKING_MOVE, LAST_LOGIN, BBS_DISP_INFO, BBS_AGE, TIMER_MODE, PREFECTURE, CHAT, NEW_AND_OLD, PUBLIC_EVENT, HIDE_ANSWER, SHOW_INFO, REFLECT_EVENT_RESULT, WEB_SOCKET_USAGE, CORRECT_COUNT, VOLATILITY, QWERTY_HIRAGANA, QWERTY_KATAKANA, QWERTY_ALPHABET, REGISTER_CREATED_PROBLEM, REGISTER_INDICATED_PROBLEM, GOOGLE_PLUS_ID, THEME) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
               data.userCode, Strings.nullToEmpty(data.playerName), Strings
                   .nullToEmpty(data.greeting), data.highScore, data.averageScore, data.playCount,
               data.rating, data.levelName, data.levelNumber, data.averageRank, ProblemGenre
@@ -361,7 +362,8 @@ public class DirectDatabase implements Database {
               data.newAndOldProblems.ordinal(), data.publicEvent, data.hideAnswer, data.showInfo,
               data.reflectEventResult, data.webSocketUsage.getIndex(), sb.toString(),
               data.volatility, data.qwertyHiragana, data.qwertyKatakana, data.qwertyAlphabet,
-              data.registerCreatedProblem, data.registerIndicatedProblem, data.googlePlusId);
+              data.registerCreatedProblem, data.registerIndicatedProblem, data.googlePlusId,
+              data.theme);
     } catch (SQLException e) {
       throw new DatabaseException(e);
     }

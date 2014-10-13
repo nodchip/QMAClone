@@ -1106,6 +1106,7 @@ public class DatabaseTest {
         expected.registerCreatedProblem);
     when(mockResultSet.getBoolean("REGISTER_INDICATED_PROBLEM")).thenReturn(
         expected.registerIndicatedProblem);
+    when(mockResultSet.getString("THEME")).thenReturn(expected.theme);
   }
 
   @Test
