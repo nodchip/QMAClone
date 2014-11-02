@@ -78,6 +78,7 @@ import tv.dyndns.kishibe.qmaclone.server.util.IntArray;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
@@ -275,7 +276,7 @@ public class DirectDatabase implements Database {
       data.registerCreatedProblem = rs.getBoolean("REGISTER_CREATED_PROBLEM");
       data.registerIndicatedProblem = rs.getBoolean("REGISTER_INDICATED_PROBLEM");
       data.googlePlusId = rs.getString("GOOGLE_PLUS_ID");
-      data.theme = rs.getString("THEME");
+      data.theme = MoreObjects.firstNonNull(rs.getString("THEME"), "");
 
       String correctCountCsv = rs.getString("CORRECT_COUNT");
       if (correctCountCsv != null) {

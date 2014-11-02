@@ -155,17 +155,17 @@
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/lucene-4.10.1/core/lucene-core-4.10.1.jar" sourcepath="/JAVA_DIRECTORY/lucene-4.6.0/src/lucene/analysis/common/src/java/org/apache">
+	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/lucene-4.10.2/core/lucene-core-4.10.2.jar" sourcepath="/JAVA_DIRECTORY/lucene-4.6.0/src/lucene/analysis/common/src/java/org/apache">
 		<attributes>
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/lucene-4.10.1/analysis/common/lucene-analyzers-common-4.10.1.jar">
+	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/lucene-4.10.2/analysis/common/lucene-analyzers-common-4.10.2.jar">
 		<attributes>
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/lucene-4.10.1/queries/lucene-queries-4.10.1.jar">
+	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/lucene-4.10.2/queries/lucene-queries-4.10.2.jar">
 		<attributes>
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
@@ -181,71 +181,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/joda-time-2.4/joda-time-2.4.jar">
-		<attributes>
-			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/guice-4.0-beta/guice-4.0-beta.jar">
-		<attributes>
-			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/guice-4.0-beta/guice-assistedinject-4.0-beta.jar">
-		<attributes>
-			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/guice-4.0-beta/guice-grapher-4.0-beta.jar">
-		<attributes>
-			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/guice-4.0-beta/guice-jmx-4.0-beta.jar">
-		<attributes>
-			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/guice-4.0-beta/guice-jndi-4.0-beta.jar">
-		<attributes>
-			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/guice-4.0-beta/guice-multibindings-4.0-beta.jar">
-		<attributes>
-			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/guice-4.0-beta/guice-persist-4.0-beta.jar">
-		<attributes>
-			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/guice-4.0-beta/guice-servlet-4.0-beta.jar">
-		<attributes>
-			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/guice-4.0-beta/guice-spring-4.0-beta.jar">
-		<attributes>
-			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/guice-4.0-beta/guice-struts2-plugin-4.0-beta.jar">
-		<attributes>
-			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/guice-4.0-beta/guice-throwingproviders-4.0-beta.jar">
-		<attributes>
-			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/guice-4.0-beta/javax.inject.jar">
-		<attributes>
-			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/guice-4.0-beta/aopalliance.jar">
 		<attributes>
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
@@ -460,6 +395,75 @@
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/truth-0.23.jar"/>
+	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/truth-0.23.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/guice-4.0-beta/aopalliance.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/guice-4.0-beta/guice-4.0-beta.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/guice-4.0-beta/guice-assistedinject-4.0-beta.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/guice-4.0-beta/guice-grapher-4.0-beta.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/guice-4.0-beta/guice-jmx-4.0-beta.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/guice-4.0-beta/guice-jndi-4.0-beta.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/guice-4.0-beta/guice-multibindings-4.0-beta.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/guice-4.0-beta/guice-persist-4.0-beta.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/guice-4.0-beta/guice-servlet-4.0-beta.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/guice-4.0-beta/guice-spring-4.0-beta.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/guice-4.0-beta/guice-struts2-plugin-4.0-beta.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/guice-4.0-beta/guice-throwingproviders-4.0-beta.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/guice-4.0-beta/javax.inject.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>
