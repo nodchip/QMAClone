@@ -347,6 +347,8 @@ public class ImageManager {
             // ダウンロードに失敗した場合はステータスコードまたはダミーステータスコードを表示する
             statusCode = e.hasStatusCode() ? e.getStatusCode() : STATUS_CODE_DOWNLOAD_FAILURE;
           }
+
+          urlToStatusCode.put(url, statusCode);
         }
 
         // 正常取得かつ正常画像の場合はエラー出力をしない
