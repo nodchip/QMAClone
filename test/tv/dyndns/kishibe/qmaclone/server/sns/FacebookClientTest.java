@@ -15,14 +15,15 @@ import com.google.inject.Inject;
 @RunWith(JUnit4.class)
 public class FacebookClientTest {
 
-	@Rule
-	public final GuiceBerryRule rule = new GuiceBerryRule(QMACloneTestEnv.class);
-	@Inject
-	private FacebookClient client;
+  @Rule
+  public final GuiceBerryRule rule = new GuiceBerryRule(QMACloneTestEnv.class);
+  @Inject
+  private FacebookClient client;
 
-	@Test
-	public void getPageAccessTokenShouldReturnAccessToken() {
-		assertFalse(client.getPageAccessToken().isEmpty());
-	}
-
+  @Test
+  public void getPageAccessTokenShouldReturnAccessToken() {
+    String pageAccessToken = client.getPageAccessToken();
+    System.out.println(pageAccessToken);
+    assertFalse(pageAccessToken.isEmpty());
+  }
 }

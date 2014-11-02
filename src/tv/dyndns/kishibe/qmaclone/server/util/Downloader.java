@@ -22,66 +22,58 @@
 package tv.dyndns.kishibe.qmaclone.server.util;
 
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.protocol.BasicHttpContext;
-import org.apache.http.util.EntityUtils;
-
-import com.google.common.io.ByteStreams;
-import com.google.common.io.Closeables;
+import com.google.api.client.http.GenericUrl;
+import com.google.api.client.http.HttpRequest;
+import com.google.api.client.http.HttpRequestFactory;
+import com.google.api.client.http.HttpResponse;
+import com.google.api.client.http.HttpTransport;
+import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 
 public class Downloader {
   private static Logger logger = Logger.getLogger(Downloader.class.getName());
-  private final HttpClient httpClient;
+  private final HttpTransport httpTransport;
 
   @Inject
-  public Downloader(HttpClient httpClient) {
-    this.httpClient = httpClient;
+  public Downloader(HttpTransport httpTransport) {
+    this.httpTransport = Preconditions.checkNotNull(httpTransport);
   }
 
-  public byte[] downloadAsByteArray(URL url) {
-    logger.log(Level.INFO, String.format("Downloading: %s", url.toString()));
+  public byte[] downloadAsByteArray(URL url) throws DownloaderException {
+    logger.info(String.format("Downloading: %s", url.toString()));
 
-    HttpGet httpGet = new HttpGet(url.toString());
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    HttpRequestFactory requestFactory = httpTransport.createRequestFactory();
     try {
-      HttpResponse response = httpClient.execute(httpGet, new BasicHttpContext());
-      HttpEntity entity = response.getEntity();
-      if (entity != null) {
-        return EntityUtils.toByteArray(entity);
-      }
-    } catch (Exception e) {
-      httpGet.abort();
-    }
-    return null;
-  }
-
-  public String downloadAsString(URL url, String encoding) {
-    logger.log(Level.INFO, String.format("Downloading: %s", url.toString()));
-
-    HttpGet httpGet = new HttpGet(url.toString());
-    try {
-      HttpResponse response = httpClient.execute(httpGet, new BasicHttpContext());
-      HttpEntity entity = response.getEntity();
-      if (entity != null) {
-        return EntityUtils.toString(entity, encoding);
-      }
+      HttpRequest getRequest = requestFactory.buildGetRequest(new GenericUrl(url));
+      HttpResponse getResponse = getRequest.execute();
+      getResponse.download(outputStream);
     } catch (IOException e) {
-      httpGet.abort();
+      throw new DownloaderException("ファイルのダウンロードに失敗しました: url=" + url, e);
     }
-    return null;
+    return outputStream.toByteArray();
+  }
+
+  public String downloadAsString(URL url) throws DownloaderException {
+    logger.info(String.format("Downloading: %s", url.toString()));
+
+    HttpRequestFactory requestFactory = httpTransport.createRequestFactory();
+    try {
+      HttpRequest getRequest = requestFactory.buildGetRequest(new GenericUrl(url));
+      HttpResponse getResponse = getRequest.execute();
+      return getResponse.parseAsString();
+    } catch (IOException e) {
+      throw new DownloaderException("ファイルのダウンロードに失敗しました: url=" + url, e);
+    }
   }
 
   /**
@@ -94,45 +86,27 @@ public class Downloader {
    * @return HTTPステータスコード
    * @throws IOException
    */
-  public int downloadToFile(URL url, File file) throws DownloaderException {
+  public void downloadToFile(URL url, File file) throws DownloaderException {
     logger.log(Level.INFO, String.format("Downloading: %s to %s", url.toString(), file.toString()));
 
     file.getParentFile().mkdirs();
 
-    HttpEntity httpEntity = null;
-    InputStream is = null;
-    OutputStream os = null;
-
+    HttpRequestFactory requestFactory = httpTransport.createRequestFactory();
     try {
-      HttpResponse httpResponse = httpClient.execute(new HttpGet(url.toURI()));
-      httpEntity = httpResponse.getEntity();
-      // httpEntityに代入してからreturnしないとconsumeContent()が呼ばれない
-      int statusCode = httpResponse.getStatusLine().getStatusCode();
-      if (statusCode / 100 != 2) {
-        return statusCode;
-      }
+      HttpRequest getRequest = requestFactory.buildGetRequest(new GenericUrl(url));
 
-      is = httpEntity.getContent();
-      os = new BufferedOutputStream(new FileOutputStream(file));
-      ByteStreams.copy(is, os);
-      return statusCode;
-
-    } catch (URISyntaxException e) {
-      throw new DownloaderException("URLのパースに失敗しました: url=" + url, e);
-
-    } catch (IOException e) {
-      throw new DownloaderException("ダウンロードに失敗しました: url=" + url, e);
-
-    } finally {
+      HttpResponse getResponse;
       try {
-        Closeables.close(is, true);
-        Closeables.close(os, true);
-        if (httpEntity != null) {
-          EntityUtils.consume(httpEntity);
-        }
-      } catch (IOException e) {
-        throw new DownloaderException("ストリームを閉じることができませんでした: url=" + url, e);
+        getResponse = getRequest.execute();
+      } catch (IllegalArgumentException e) {
+        throw new DownloaderException(e);
       }
+
+      try (OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(file))) {
+        getResponse.download(outputStream);
+      }
+    } catch (IOException e) {
+      throw new DownloaderException("ファイルのダウンロードに失敗しました: url=" + url, e);
     }
   }
 }

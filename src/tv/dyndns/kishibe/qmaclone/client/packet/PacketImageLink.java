@@ -1,5 +1,6 @@
 package tv.dyndns.kishibe.qmaclone.client.packet;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
@@ -10,8 +11,8 @@ public class PacketImageLink implements IsSerializable, Comparable<PacketImageLi
 
   @Override
   public String toString() {
-    return Objects.toStringHelper(this).add("problemId", problemId).add("url", url)
-        .add("statusCode", statusCode).toString();
+    return MoreObjects.toStringHelper(this).add("problemId", problemId)
+        .add("statusCode", statusCode).add("url", url).toString();
   }
 
   @Override

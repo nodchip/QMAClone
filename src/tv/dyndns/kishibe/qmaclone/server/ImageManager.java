@@ -239,11 +239,16 @@ public class ImageManager {
 
   @VisibleForTesting
   byte[] getImage(Parameter parameter) throws IOException {
-    String url = parameter.url;
+    URL url;
+    try {
+      url = new URL(parameter.url);
+    } catch (MalformedURLException e) {
+      throw new IOException("不正なURLです: url=" + parameter.url, e);
+    }
     int width = parameter.width;
     int height = parameter.height;
     boolean keepAspectRatio = parameter.keepAspectRatio;
-    File inputCacheFile = getInputCacheFile(url);
+    File inputCacheFile = getInputCacheFile(parameter.url);
     Files.createParentDirs(inputCacheFile);
     File outputCacheFile = getOutputCacheFile(parameter);
     Files.createParentDirs(outputCacheFile);
@@ -255,17 +260,12 @@ public class ImageManager {
       // BugTrack-QMAClone/434 - QMAClone wiki
       // http://kishibe.dyndns.tv/qmaclone/wiki/wiki.cgi?page=BugTrack%2DQMAClone%2F434#1330156832
       File tempFile = File.createTempFile("ImageManager-download", null);
-      int statusCode;
       try {
-        statusCode = downloader.downloadToFile(new URL(url), tempFile);
+        downloader.downloadToFile(url, tempFile);
       } catch (DownloaderException e) {
         throw new IOException("ダウンロードに失敗しました: url=" + url, e);
       }
 
-      if (statusCode / 100 != 2) {
-        String message = String.format("ダウンロードに失敗しました: url=%s statusCode=%s", url, statusCode);
-        throw new IOException(message);
-      }
       tempFile.renameTo(inputCacheFile);
     }
 
@@ -321,7 +321,10 @@ public class ImageManager {
       for (String url : problem.getImageUrls()) {
         File inputCacheFile = imageManager.getInputCacheFile(url);
 
-        if (!urlToStatusCode.containsKey(url)) {
+        int statusCode;
+        if (urlToStatusCode.containsKey(url)) {
+          statusCode = urlToStatusCode.get(url);
+        } else {
           try {
             Files.createParentDirs(inputCacheFile);
           } catch (IOException e) {
@@ -331,22 +334,20 @@ public class ImageManager {
           }
 
           try {
-            int statusCode = downloader.downloadToFile(new URL(url), inputCacheFile);
-            urlToStatusCode.put(url, statusCode);
+            downloader.downloadToFile(new URL(url), inputCacheFile);
+            statusCode = 200;
 
           } catch (MalformedURLException e) {
             logger.log(Level.WARNING, "不正なURLです: url=" + url, e);
             // URLが不正な場合はダミーステータスコードを表示する
-            urlToStatusCode.put(url, STATUS_CODE_MALFORMED_URL_EXCEPTION);
+            statusCode = STATUS_CODE_MALFORMED_URL_EXCEPTION;
 
           } catch (DownloaderException e) {
             logger.log(Level.WARNING, "ダウンロードに失敗しました: url=" + url, e);
-            // ダウンロードに失敗した場合はダミーステータスコードを表示する
-            urlToStatusCode.put(url, STATUS_CODE_DOWNLOAD_FAILURE);
+            // ダウンロードに失敗した場合はステータスコードまたはダミーステータスコードを表示する
+            statusCode = e.hasStatusCode() ? e.getStatusCode() : STATUS_CODE_DOWNLOAD_FAILURE;
           }
         }
-
-        int statusCode = urlToStatusCode.get(url);
 
         // 正常取得かつ正常画像の場合はエラー出力をしない
         if (statusCode / 100 == 2 && imageManager.isImage(inputCacheFile)) {
@@ -358,6 +359,7 @@ public class ImageManager {
         imageLink.url = url;
         imageLink.statusCode = statusCode;
         imageLinks.add(imageLink);
+        logger.info("リンク切れ画像を検出しました: " + imageLink);
       }
     }
   }
@@ -373,6 +375,10 @@ public class ImageManager {
     Collections.sort(imageLinks);
 
     this.errorImageLinks = imageLinks;
+
+    for (PacketImageLink imageLink : imageLinks) {
+      logger.info("リンク切れ画像を検出しました: " + imageLink);
+    }
   }
 
   public List<PacketImageLink> getErrorImageLinks() {

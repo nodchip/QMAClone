@@ -6,7 +6,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.net.URL;
 
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,22 +35,21 @@ public class DownloaderTest {
     assertEquals(5785, file.length());
   }
 
-  @Test
-  @Ignore
+  @Test(expected = DownloaderException.class)
   public void testDownloadToFile403() throws Exception {
     File file = File.createTempFile("QMAClone", null);
     file.deleteOnExit();
     URL url = new URL(
         "http://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Image_from_Gutza_Wikipedia.jpg");
-    assertEquals(403, downloader.downloadToFile(url, file));
+    downloader.downloadToFile(url, file);
   }
 
-  @Test
+  @Test(expected = DownloaderException.class)
   public void testDownloadToFile404() throws Exception {
     File file = File.createTempFile("QMAClone", null);
     file.deleteOnExit();
     URL url = new URL("http://www.google.co.jp/images/srpr/nav_logo14.gif");
-    assertEquals(404, downloader.downloadToFile(url, file));
+    downloader.downloadToFile(url, file);
   }
 
   @Test
@@ -60,6 +58,6 @@ public class DownloaderTest {
     file.deleteOnExit();
     URL url = new URL(
         "https://lh3.googleusercontent.com/-V9qGHNTN81o/AAAAAAAAAAI/AAAAAAAAAAA/lhhQJ08VnYE/s96-c/photo.jpg");
-    assertEquals(200, downloader.downloadToFile(url, file));
+    downloader.downloadToFile(url, file);
   }
 }
