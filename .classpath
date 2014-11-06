@@ -175,11 +175,6 @@
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/gwt-2.6.1/gwt-dev-modified.jar">
-		<attributes>
-			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/joda-time-2.4/joda-time-2.4.jar">
 		<attributes>
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
@@ -206,11 +201,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/guava-gwt-18.0.jar">
-		<attributes>
-			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/gwt-2.6.1/gwt-codeserver.jar">
 		<attributes>
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
@@ -410,17 +400,75 @@
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/google-http-client-assembly-1.18.0-rc-1.18.0-rc/google-http-java-client/libs/commons-logging-1.1.1.jar"/>
-	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/google-http-client-assembly-1.18.0-rc-1.18.0-rc/google-http-java-client/libs/google-http-client-1.18.0-rc.jar"/>
-	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/google-http-client-assembly-1.18.0-rc-1.18.0-rc/google-http-java-client/libs/gson-2.1.jar"/>
-	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/google-http-client-assembly-1.18.0-rc-1.18.0-rc/google-http-java-client/libs/httpclient-4.0.1.jar"/>
-	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/google-http-client-assembly-1.18.0-rc-1.18.0-rc/google-http-java-client/libs/httpcore-4.0.1.jar"/>
-	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/google-http-client-assembly-1.18.0-rc-1.18.0-rc/google-http-java-client/libs/jackson-core-2.1.3.jar"/>
-	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/google-http-client-assembly-1.18.0-rc-1.18.0-rc/google-http-java-client/libs/jackson-core-asl-1.9.11.jar"/>
-	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/google-http-client-assembly-1.18.0-rc-1.18.0-rc/google-http-java-client/libs/jdo2-api-2.3-eb.jar"/>
-	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/google-http-client-assembly-1.18.0-rc-1.18.0-rc/google-http-java-client/libs/jsr305-1.3.9.jar"/>
-	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/google-http-client-assembly-1.18.0-rc-1.18.0-rc/google-http-java-client/libs/protobuf-java-2.4.1.jar"/>
-	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/google-http-client-assembly-1.18.0-rc-1.18.0-rc/google-http-java-client/libs/transaction-api-1.1.jar"/>
-	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/google-http-client-assembly-1.18.0-rc-1.18.0-rc/google-http-java-client/libs/xpp3-1.1.4c.jar"/>
+	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/google-http-client-assembly-1.18.0-rc-1.18.0-rc/google-http-java-client/libs/commons-logging-1.1.1.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/google-http-client-assembly-1.18.0-rc-1.18.0-rc/google-http-java-client/libs/google-http-client-1.18.0-rc.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/google-http-client-assembly-1.18.0-rc-1.18.0-rc/google-http-java-client/libs/gson-2.1.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/google-http-client-assembly-1.18.0-rc-1.18.0-rc/google-http-java-client/libs/httpclient-4.0.1.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/google-http-client-assembly-1.18.0-rc-1.18.0-rc/google-http-java-client/libs/httpcore-4.0.1.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/google-http-client-assembly-1.18.0-rc-1.18.0-rc/google-http-java-client/libs/jackson-core-2.1.3.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/google-http-client-assembly-1.18.0-rc-1.18.0-rc/google-http-java-client/libs/jackson-core-asl-1.9.11.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/google-http-client-assembly-1.18.0-rc-1.18.0-rc/google-http-java-client/libs/jdo2-api-2.3-eb.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/google-http-client-assembly-1.18.0-rc-1.18.0-rc/google-http-java-client/libs/jsr305-1.3.9.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/google-http-client-assembly-1.18.0-rc-1.18.0-rc/google-http-java-client/libs/protobuf-java-2.4.1.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/google-http-client-assembly-1.18.0-rc-1.18.0-rc/google-http-java-client/libs/transaction-api-1.1.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/google-http-client-assembly-1.18.0-rc-1.18.0-rc/google-http-java-client/libs/xpp3-1.1.4c.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/gwt-2.7.0-rc1/gwt-codeserver.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/gwt-2.7.0-rc1/gwt-dev-modified.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

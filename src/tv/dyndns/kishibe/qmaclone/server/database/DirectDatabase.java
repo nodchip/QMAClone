@@ -364,7 +364,7 @@ public class DirectDatabase implements Database {
               data.reflectEventResult, data.webSocketUsage.getIndex(), sb.toString(),
               data.volatility, data.qwertyHiragana, data.qwertyKatakana, data.qwertyAlphabet,
               data.registerCreatedProblem, data.registerIndicatedProblem, data.googlePlusId,
-              data.theme);
+              Strings.nullToEmpty(data.theme));
     } catch (SQLException e) {
       throw new DatabaseException(e);
     }
