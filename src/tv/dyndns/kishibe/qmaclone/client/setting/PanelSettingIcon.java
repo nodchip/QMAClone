@@ -21,6 +21,8 @@
 //THE SOFTWARE.
 package tv.dyndns.kishibe.qmaclone.client.setting;
 
+import java.util.logging.Logger;
+
 import tv.dyndns.kishibe.qmaclone.client.UserData;
 import tv.dyndns.kishibe.qmaclone.client.constant.Constant;
 
@@ -40,117 +42,120 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class PanelSettingIcon extends VerticalPanel implements SubmitCompleteHandler, ClickHandler {
-	private static final int UPDATE_DURATION = 1000;
-	private final Image image = new Image(Constant.ICON_URL_PREFIX
-			+ UserData.get().getImageFileName());
-	private final FileUpload fileUpload = new FileUpload();
-	private final FormPanel form = new FormPanel();
-	private final Button buttonSubmit = new Button("送信", this);
-	private final HTML htmlMessage = new HTML();
-	private boolean sending = false;
-	private final RepeatingCommand commandUpdate = new RepeatingCommand() {
-		@Override
-		public boolean execute() {
-			if (!sending) {
-				checkForm();
-			}
-			return isAttached();
-		}
-	};
 
-	public PanelSettingIcon() {
-		setHorizontalAlignment(ALIGN_CENTER);
-		add(new HTML(
-				"オリジナルアイコンをアップロードできます</br>ファイルサイズは64KBまで</br>画像形式はブラウザで表示可能なもの</br>画像サイズは自動的に正方形に圧縮されて表示されます</br>公序良俗に反する画像の使用はお止めください"));
+  private static final Logger logger = Logger.getLogger(PanelSettingIcon.class.toString());
+  private static final int UPDATE_DURATION = 1000;
+  private final Image image = new Image(Constant.ICON_URL_PREFIX
+      + UserData.get().getImageFileName());
+  private final FileUpload fileUpload = new FileUpload();
+  private final FormPanel form = new FormPanel();
+  private final Button buttonSubmit = new Button("送信", this);
+  private final HTML htmlMessage = new HTML();
+  private boolean sending = false;
+  private final RepeatingCommand commandUpdate = new RepeatingCommand() {
+    @Override
+    public boolean execute() {
+      if (!sending) {
+        checkForm();
+      }
+      return isAttached();
+    }
+  };
 
-		image.setPixelSize(96, 96);
-		add(image);
+  public PanelSettingIcon() {
+    setHorizontalAlignment(ALIGN_CENTER);
+    add(new HTML("オリジナルアイコンをアップロードできます</br>" + "ファイルサイズは64KBまで</br>" + "画像形式はブラウザで表示可能なもの</br>"
+        + "画像サイズは自動的に正方形に圧縮されて表示されます</br>" + "公序良俗に反する画像の使用はお止めください"));
 
-		VerticalPanel panelForm = new VerticalPanel();
+    image.setPixelSize(96, 96);
+    add(image);
 
-		Hidden hiddenUserCode = new Hidden();
-		hiddenUserCode.setName(Constant.FORM_NAME_USER_CODE);
-		hiddenUserCode.setValue(UserData.get().getUserCode() + "");
-		panelForm.add(hiddenUserCode);
+    VerticalPanel panelForm = new VerticalPanel();
 
-		fileUpload.setName(Constant.FORM_NAME_ICON);
-		panelForm.add(fileUpload);
+    Hidden hiddenUserCode = new Hidden();
+    hiddenUserCode.setName(Constant.FORM_NAME_USER_CODE);
+    hiddenUserCode.setValue(UserData.get().getUserCode() + "");
+    panelForm.add(hiddenUserCode);
 
-		form.setAction("icon");
-		form.setEncoding(FormPanel.ENCODING_MULTIPART);
-		form.setMethod(FormPanel.METHOD_POST);
-		form.addSubmitCompleteHandler(this);
-		form.setWidget(panelForm);
-		add(form);
+    fileUpload.setName(Constant.FORM_NAME_ICON);
+    panelForm.add(fileUpload);
 
-		add(buttonSubmit);
+    form.setAction("icon");
+    form.setEncoding(FormPanel.ENCODING_MULTIPART);
+    form.setMethod(FormPanel.METHOD_POST);
+    form.addSubmitCompleteHandler(this);
+    form.setWidget(panelForm);
+    add(form);
 
-		htmlMessage.addStyleDependentName("settingMessage");
-		add(htmlMessage);
+    add(buttonSubmit);
 
-		checkForm();
-	}
+    htmlMessage.addStyleDependentName("settingMessage");
+    add(htmlMessage);
 
-	private void submit() {
-		buttonSubmit.setEnabled(false);
+    checkForm();
+  }
 
-		if (!checkForm()) {
-			return;
-		}
+  private void submit() {
+    buttonSubmit.setEnabled(false);
 
-		sending = true;
-		form.submit();
-	}
+    if (!checkForm()) {
+      return;
+    }
 
-	private boolean checkForm() {
-		htmlMessage.setHTML("");
+    sending = true;
+    form.submit();
+  }
 
-		if (fileUpload.getFilename().length() == 0) {
-			buttonSubmit.setEnabled(false);
-			htmlMessage.setHTML("ファイル名が指定されていません");
-			return false;
-		}
+  private boolean checkForm() {
+    htmlMessage.setHTML("");
 
-		buttonSubmit.setEnabled(true);
-		return true;
-	}
+    if (fileUpload.getFilename().length() == 0) {
+      buttonSubmit.setEnabled(false);
+      htmlMessage.setHTML("ファイル名が指定されていません");
+      return false;
+    }
 
-	protected void onLoad() {
-		super.onLoad();
-		Scheduler.get().scheduleFixedDelay(commandUpdate, UPDATE_DURATION);
-	}
+    buttonSubmit.setEnabled(true);
+    return true;
+  }
 
-	@Override
-	public void onSubmitComplete(SubmitCompleteEvent event) {
-		sending = false;
-		String result = event.getResults();
-		htmlMessage.setHTML("");
+  protected void onLoad() {
+    super.onLoad();
+    Scheduler.get().scheduleFixedDelay(commandUpdate, UPDATE_DURATION);
+  }
 
-		if (Strings.isNullOrEmpty(result)) {
-			htmlMessage.setHTML("アップロード中にエラーが発生しました。頻繁に発生する場合は管理人にお知らせ下さい。");
-		} else if (result.contains(Constant.ICON_UPLOAD_RESPONSE_OK)) {
-			htmlMessage.setHTML("アイコンのアップロードに成功しました。反映まで若干時間がかかります。");
-			UserData.get().load();
-		} else if (result.contains(Constant.ICON_UPLOAD_RESPONSE_FAILED_TO_DETECT_IMAGE_FILE_TYPE)) {
-			htmlMessage.setHTML("画像ファイルを認識できませんでした。正しい画像ファイルであることを確認して再度アップロードしてください。");
-		} else if (result.contains(Constant.ICON_UPLOAD_RESPONSE_FAILED_TO_PARSE_REQUEST)) {
-			htmlMessage.setHTML("送信されたデータが不正です。ファイルサイズ等を確認して再度アップロードしてください。");
-		} else if (result.contains(Constant.ICON_UPLOAD_RESPONSE_IMAGE_FILE_NAME_FORMAT_ERROR)) {
-			htmlMessage.setHTML("画像ファイルのファイル名に'.'が含まれていません。正しいファイルを再度アップロードしてください。");
-		} else if (result.contains(Constant.ICON_UPLOAD_RESPONSE_REQUEST_FORMAT_ERROR)) {
-			htmlMessage.setHTML("不正なパラメータが送信されました。正規のインタフェースから再度操作をしてください");
-		} else {
-			htmlMessage.setHTML("原因不明のエラーが発生しました。管理者にご連絡ください。");
-		}
+  @Override
+  public void onSubmitComplete(SubmitCompleteEvent event) {
+    sending = false;
+    String result = event.getResults();
+    htmlMessage.setHTML("");
 
-		buttonSubmit.setEnabled(true);
-	}
+    if (Strings.isNullOrEmpty(result)) {
+      htmlMessage.setHTML("アップロード中にエラーが発生しました。頻繁に発生する場合は管理人にお知らせ下さい。");
+    } else if (result.contains(Constant.ICON_UPLOAD_RESPONSE_OK)) {
+      htmlMessage.setHTML("アイコンのアップロードに成功しました。反映まで若干時間がかかります。");
+      UserData.get().load();
+    } else if (result.contains(Constant.ICON_UPLOAD_RESPONSE_FAILED_TO_DETECT_IMAGE_FILE_TYPE)) {
+      htmlMessage.setHTML("画像ファイルを認識できませんでした。正しい画像ファイルであることを確認して再度アップロードしてください。");
+    } else if (result.contains(Constant.ICON_UPLOAD_RESPONSE_FAILED_TO_PARSE_REQUEST)) {
+      htmlMessage.setHTML("送信されたデータが不正です。ファイルサイズ等を確認して再度アップロードしてください。");
+    } else if (result.contains(Constant.ICON_UPLOAD_RESPONSE_IMAGE_FILE_NAME_FORMAT_ERROR)) {
+      htmlMessage.setHTML("画像ファイルのファイル名に'.'が含まれていません。正しいファイルを再度アップロードしてください。");
+    } else if (result.contains(Constant.ICON_UPLOAD_RESPONSE_REQUEST_FORMAT_ERROR)) {
+      htmlMessage.setHTML("不正なパラメータが送信されました。正規のインタフェースから再度操作をしてください");
+    } else {
+      htmlMessage.setHTML("原因不明のエラーが発生しました。管理者にご連絡ください。");
+      logger.warning("アイコンのアップロードに失敗しました。\n" + result);
+    }
 
-	@Override
-	public void onClick(ClickEvent event) {
-		Object sender = event.getSource();
-		if (sender == buttonSubmit) {
-			submit();
-		}
-	}
+    buttonSubmit.setEnabled(true);
+  }
+
+  @Override
+  public void onClick(ClickEvent event) {
+    Object sender = event.getSource();
+    if (sender == buttonSubmit) {
+      submit();
+    }
+  }
 }
