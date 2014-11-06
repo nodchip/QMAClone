@@ -24,13 +24,20 @@
 	<!-- <inherits name="com.google.gwt.user.theme.chrome.Chrome"/> -->
 	<!-- <inherits name="com.google.gwt.user.theme.dark.Dark"/> -->
 
-	<servlet class="tv.dyndns.kishibe.qmaclone.server.ServiceServlet" path="/service" />
-	<servlet class="tv.dyndns.kishibe.qmaclone.server.IconUploadServlet" path="/icon" />
-	<servlet class="tv.dyndns.kishibe.qmaclone.server.RssServlet" path="/rss.xml" />
-	<servlet class="tv.dyndns.kishibe.qmaclone.server.ImageProxyServlet" path="/image" />
-	<servlet class="tv.dyndns.kishibe.qmaclone.server.service.LinkServlet" path="/link" />
-	<servlet class="tv.dyndns.kishibe.qmaclone.server.StatsServlet" path="/stats" />
-	<servlet class="tv.dyndns.kishibe.qmaclone.server.RemoteLoggingServlet" path="/remote_logging" />
+	<servlet class="tv.dyndns.kishibe.qmaclone.server.ServiceServlet"
+		path="/service" />
+	<servlet class="tv.dyndns.kishibe.qmaclone.server.IconUploadServlet"
+		path="/icon" />
+	<servlet class="tv.dyndns.kishibe.qmaclone.server.RssServlet"
+		path="/rss.xml" />
+	<servlet class="tv.dyndns.kishibe.qmaclone.server.ImageProxyServlet"
+		path="/image" />
+	<servlet class="tv.dyndns.kishibe.qmaclone.server.service.LinkServlet"
+		path="/link" />
+	<servlet class="tv.dyndns.kishibe.qmaclone.server.StatsServlet"
+		path="/stats" />
+	<servlet class="tv.dyndns.kishibe.qmaclone.server.RemoteLoggingServlet"
+		path="/remote_logging" />
 
 	<set-property name="compiler.emulatedStack" value="true" />
 	<set-configuration-property name="compiler.emulatedStack.recordLineNumbers"
@@ -38,12 +45,14 @@
 	<set-configuration-property name="compiler.emulatedStack.recordFileNames"
 		value="true" />
 	<!-- Enabled by Controller.java -->
-	<!-- <set-property name="gwt.logging.simpleRemoteHandler" value="ENABLED"
+	<!-- <set-property name="gwt.logging.simpleRemoteHandler" value="ENABLED" 
 		/> -->
-	<set-property name="gwt.logging.popupHandler" value="DISABLED" />
+	<!-- <set-property name="gwt.logging.popupHandler" value="DISABLED" /> -->
 
-	<add-linker name="xsiframe"/>
-	<set-configuration-property name="devModeRedirectEnabled" value="true"/>
+	<add-linker name="xsiframe" />
+	<set-configuration-property name="devModeRedirectEnabled"
+		value="true" />
 	<set-property name="compiler.useSourceMaps" value="true" />
-	<set-configuration-property name='xsiframe.failIfScriptTag' value='FALSE'/>
+	<set-configuration-property name='xsiframe.failIfScriptTag'
+		value='FALSE' />
 </module>
