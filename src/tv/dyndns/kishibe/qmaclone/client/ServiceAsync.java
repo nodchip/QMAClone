@@ -24,6 +24,8 @@ package tv.dyndns.kishibe.qmaclone.client;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.Nullable;
+
 import tv.dyndns.kishibe.qmaclone.client.game.GameMode;
 import tv.dyndns.kishibe.qmaclone.client.game.ProblemGenre;
 import tv.dyndns.kishibe.qmaclone.client.game.ProblemType;
@@ -227,7 +229,7 @@ public interface ServiceAsync {
 
   void getWrongImageLinks(AsyncCallback<List<PacketImageLink>> callback);
 
-  void canUploadProblem(int userCode, AsyncCallback<Boolean> callback);
+  void canUploadProblem(int userCode, @Nullable Integer problemId, AsyncCallback<Boolean> callback);
 
   void keepAliveGame(int sessionId, int playerListId, AsyncCallback<Void> callback);
 

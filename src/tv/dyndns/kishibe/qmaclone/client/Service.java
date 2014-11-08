@@ -25,6 +25,8 @@ import java.rmi.ServerException;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.Nullable;
+
 import tv.dyndns.kishibe.qmaclone.client.game.GameMode;
 import tv.dyndns.kishibe.qmaclone.client.game.ProblemGenre;
 import tv.dyndns.kishibe.qmaclone.client.game.ProblemType;
@@ -265,10 +267,12 @@ public interface Service extends RemoteService {
    * 
    * @param userCode
    *          ユーザーコード
+   * @param problemId
+   *          問題ID 新規問題なら{@code null}
    * @return 可能ならtrue
    * @throws Exception
    */
-  boolean canUploadProblem(int userCode) throws ServiceException;
+  boolean canUploadProblem(int userCode, @Nullable Integer problemId) throws ServiceException;
 
   /**
    * 指摘された問題を取得する

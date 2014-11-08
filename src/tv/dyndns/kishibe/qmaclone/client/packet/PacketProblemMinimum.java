@@ -32,83 +32,85 @@ import com.google.common.base.Objects;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class PacketProblemMinimum implements IsSerializable {
-	/**
-	 * 問題番号
-	 */
-	public int id;
-	/**
-	 * ジャンル
-	 */
-	public ProblemGenre genre;
-	/**
-	 * 出題形式
-	 */
-	public ProblemType type;
-	/**
-	 * 正答数
-	 */
-	public int good;
-	/**
-	 * 誤答数
-	 */
-	public int bad;
-	/**
-	 * ランダムフラグ
-	 */
-	public RandomFlag randomFlag;
-	/**
-	 * 作問者文字列ハッシュ
-	 */
-	public int creatorHash;
-	/**
-	 * 作問者ユーザーコード
-	 */
-	public int userCode;
-	/**
-	 * 指摘日時。指摘されていない場合はnull。
-	 */
-	public Date indication;
+  /**
+   * 問題番号
+   * 
+   * 新規問題の場合は-1
+   */
+  public int id;
+  /**
+   * ジャンル
+   */
+  public ProblemGenre genre;
+  /**
+   * 出題形式
+   */
+  public ProblemType type;
+  /**
+   * 正答数
+   */
+  public int good;
+  /**
+   * 誤答数
+   */
+  public int bad;
+  /**
+   * ランダムフラグ
+   */
+  public RandomFlag randomFlag;
+  /**
+   * 作問者文字列ハッシュ
+   */
+  public int creatorHash;
+  /**
+   * 作問者ユーザーコード
+   */
+  public int userCode;
+  /**
+   * 指摘日時。指摘されていない場合はnull。
+   */
+  public Date indication;
 
-	public int getAccuracyRate() {
-		if (good == 0 && bad == 0) {
-			return -1;
-		}
-		return (100 * good) / (good + bad);
-	}
+  public int getAccuracyRate() {
+    if (good == 0 && bad == 0) {
+      return -1;
+    }
+    return (100 * good) / (good + bad);
+  }
 
-	public double getNormalizedAccuracyRate() {
-		return type.getNormalizedAccuracyRate(this);
-	}
+  public double getNormalizedAccuracyRate() {
+    return type.getNormalizedAccuracyRate(this);
+  }
 
-	public boolean isNew() {
-		return good + bad < Constant.MAX_RATIO_CALCULATING;
-	}
+  public boolean isNew() {
+    return good + bad < Constant.MAX_RATIO_CALCULATING;
+  }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (!(obj instanceof PacketProblemMinimum)) {
-			return false;
-		}
-		PacketProblemMinimum rh = (PacketProblemMinimum) obj;
-		return Objects.equal(id, rh.id) && Objects.equal(genre, rh.genre)
-				&& Objects.equal(type, rh.type) && Objects.equal(good, rh.good)
-				&& Objects.equal(bad, rh.bad) && Objects.equal(randomFlag, rh.randomFlag)
-				&& Objects.equal(creatorHash, rh.creatorHash)
-				&& Objects.equal(userCode, rh.userCode) && Objects.equal(indication, rh.indication);
-	}
+  @Override
+  public boolean equals(Object obj) {
+    if (!(obj instanceof PacketProblemMinimum)) {
+      return false;
+    }
+    PacketProblemMinimum rh = (PacketProblemMinimum) obj;
+    return Objects.equal(id, rh.id) && Objects.equal(genre, rh.genre)
+        && Objects.equal(type, rh.type) && Objects.equal(good, rh.good)
+        && Objects.equal(bad, rh.bad) && Objects.equal(randomFlag, rh.randomFlag)
+        && Objects.equal(creatorHash, rh.creatorHash) && Objects.equal(userCode, rh.userCode)
+        && Objects.equal(indication, rh.indication);
+  }
 
-	@Override
-	public int hashCode() {
-		// [userCode, creatorHash, shuffledAnswers,
-		// shuffledChoices]はハッシュコードに含めない
-		return Objects.hashCode(id, genre, type, good, bad, randomFlag);
-	}
+  @Override
+  public int hashCode() {
+    // [userCode, creatorHash, shuffledAnswers,
+    // shuffledChoices]はハッシュコードに含めない
+    return Objects.hashCode(id, genre, type, good, bad, randomFlag);
+  }
 
-	@Override
-	public String toString() {
-		return Objects.toStringHelper(this).add("id", id).add("genre", genre).add("type", type)
-				.add("good", good).add("bad", bad).add("randomFlag", randomFlag)
-				.add("creatorHash", creatorHash).add("userCode", userCode)
-				.add("indication", indication).toString();
-	}
+  @Override
+  public String toString() {
+    return Objects.toStringHelper(this).add("id", id).add("genre", genre).add("type", type)
+        .add("good", good).add("bad", bad).add("randomFlag", randomFlag)
+        .add("creatorHash", creatorHash).add("userCode", userCode).add("indication", indication)
+        .toString();
+  }
 }

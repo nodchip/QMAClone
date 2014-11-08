@@ -45,6 +45,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.annotation.Nullable;
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -96,6 +97,7 @@ import tv.dyndns.kishibe.qmaclone.server.util.diff_match_patch;
 import tv.dyndns.kishibe.qmaclone.server.util.diff_match_patch.Diff;
 import tv.dyndns.kishibe.qmaclone.server.websocket.WebSocketServer;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
@@ -1161,7 +1163,8 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
     });
   }
 
-  private String getRemoteAddress() {
+  @VisibleForTesting
+  String getRemoteAddress() {
     // Proxyを通すとlocalhostが帰ってくる場合があるので、X-Forwarded-Forを優先する
     return MoreObjects.firstNonNull(getThreadLocalRequest().getHeader("X-Forwarded-For"),
         getThreadLocalRequest().getRemoteAddr());
@@ -1209,13 +1212,24 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
   }
 
   @Override
-  public boolean canUploadProblem(final int userCode) throws ServiceException {
+  public boolean canUploadProblem(final int userCode, @Nullable final Integer problemId)
+      throws ServiceException {
     return wrap("問題投稿制限のチェックに失敗しました", new DatabaseAccessible<Boolean>() {
       @Override
       public Boolean access() throws DatabaseException {
         long dateFrom = System.currentTimeMillis() - 60 * 60 * 1000;
-        return database.getNumberOfCreationLogWithMachineIp(getRemoteAddress(), dateFrom) <= Constant.MAX_NUMBER_OF_CREATION_PER_HOUR
-            && database.getNumberOfCreationLogWithUserCode(userCode, dateFrom) <= Constant.MAX_NUMBER_OF_CREATION_PER_HOUR;
+        boolean newProblem = (problemId == null);
+        boolean fromAnige = (problemId != null && database.getProblem(ImmutableList.of(problemId))
+            .get(0).genre == ProblemGenre.Anige);
+        int numberOfCreationLogWithMachineIp = database.getNumberOfCreationLogWithMachineIp(
+            getRemoteAddress(), dateFrom);
+        int numberOfCreationLogWithUserCode = database.getNumberOfCreationLogWithUserCode(userCode,
+            dateFrom);
+        if ((newProblem || !fromAnige)
+            && (numberOfCreationLogWithMachineIp > Constant.MAX_NUMBER_OF_CREATION_PER_HOUR || numberOfCreationLogWithUserCode > Constant.MAX_NUMBER_OF_CREATION_PER_HOUR)) {
+          return false;
+        }
+        return true;
       }
     });
   }
