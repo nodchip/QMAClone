@@ -9,6 +9,8 @@ import tv.dyndns.kishibe.qmaclone.server.handwriting.Recognizable;
 import tv.dyndns.kishibe.qmaclone.server.handwriting.RecognizerZinnia;
 import tv.dyndns.kishibe.qmaclone.server.handwriting.ZinniaLibrary;
 import tv.dyndns.kishibe.qmaclone.server.handwriting.ZinniaObjectFactory;
+import tv.dyndns.kishibe.qmaclone.server.image.ImageLinkChecker;
+import tv.dyndns.kishibe.qmaclone.server.image.ImageUtils;
 import tv.dyndns.kishibe.qmaclone.server.relevance.RelevanceModule;
 import tv.dyndns.kishibe.qmaclone.server.service.LinkServletStub;
 import tv.dyndns.kishibe.qmaclone.server.sns.SnsClient;
@@ -43,7 +45,7 @@ public class QMACloneModule extends AbstractModule {
     bind(ThemeModeEditorManager.class).in(SINGLETON);
     bind(int.class).annotatedWith(named("webSocketServerPort"))
         .toInstance(Constant.WEB_SOCKET_PORT);
-    bind(ImageManager.class).in(SINGLETON);
+    bind(ImageUtils.class).in(SINGLETON);
     bind(PrefectureRanking.class).in(SINGLETON);
     bind(RatingDistribution.class).in(SINGLETON);
     install(new FactoryModuleBuilder().build(Game.Factory.class));
@@ -55,7 +57,7 @@ public class QMACloneModule extends AbstractModule {
     bind(ZinniaObjectFactory.class).in(SINGLETON);
     bind(SnsClient.class).annotatedWith(named("SnsClients")).to(SnsClients.class);
     bind(ThreadPool.class).in(SINGLETON);
-    install(new FactoryModuleBuilder().build(ImageManager.ImageLinkProcessor.Factory.class));
+    install(new FactoryModuleBuilder().build(ImageLinkChecker.Factory.class));
 
     bind(ServiceServletStub.class).in(SINGLETON);
     bind(LinkServletStub.class).in(SINGLETON);
@@ -81,5 +83,4 @@ public class QMACloneModule extends AbstractModule {
       }
     };
   }
-
 }

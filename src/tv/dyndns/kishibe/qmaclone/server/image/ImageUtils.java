@@ -1,4 +1,4 @@
-package tv.dyndns.kishibe.qmaclone.server;
+package tv.dyndns.kishibe.qmaclone.server.image;
 
 import java.awt.Canvas;
 import java.awt.Color;
@@ -15,9 +15,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,11 +23,7 @@ import javax.imageio.ImageIO;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
-import tv.dyndns.kishibe.qmaclone.client.packet.PacketImageLink;
-import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblem;
-import tv.dyndns.kishibe.qmaclone.server.database.Database;
-import tv.dyndns.kishibe.qmaclone.server.database.DatabaseException;
-import tv.dyndns.kishibe.qmaclone.server.database.ProblemProcessable;
+import tv.dyndns.kishibe.qmaclone.server.ThreadPool;
 import tv.dyndns.kishibe.qmaclone.server.util.Downloader;
 import tv.dyndns.kishibe.qmaclone.server.util.DownloaderException;
 
@@ -41,13 +34,10 @@ import com.google.common.base.Preconditions;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
-import com.google.inject.assistedinject.Assisted;
 
-public class ImageManager {
+public class ImageUtils {
 
   /**
    * URLに含まれるパラメーターを保持する
@@ -85,30 +75,13 @@ public class ImageManager {
     }
   }
 
-  private static Logger logger = Logger.getLogger(ImageManager.class.toString());
+  private static Logger logger = Logger.getLogger(ImageUtils.class.toString());
   private static final String CACHE_ROOT_PATH = "/tmp/qmaclone/image";
   private static final String CACHE_INPUT_PATH = CACHE_ROOT_PATH + "/input";
   private static final String CACHE_OUTPUT_PATH = CACHE_ROOT_PATH + "/output";
-  @VisibleForTesting
-  static final int STATUS_CODE_MALFORMED_URL_EXCEPTION = -1;
-  @VisibleForTesting
-  static final int STATUS_CODE_DOWNLOAD_FAILURE = -2;
 
-  private final Database database;
   private final Downloader downloader;
-  private final ImageLinkProcessor.Factory imageLinkProcessorFactory;
 
-  private volatile List<PacketImageLink> errorImageLinks = Lists.newArrayList();
-  private final Runnable commandUpdate = new Runnable() {
-    @Override
-    public void run() {
-      try {
-        update();
-      } catch (Exception e) {
-        logger.log(Level.WARNING, "ImageLinkの更新に失敗しました", e);
-      }
-    }
-  };
   private final LoadingCache<Parameter, byte[]> cache = CacheBuilder.newBuilder().softValues()
       .build(new CacheLoader<Parameter, byte[]>() {
         @Override
@@ -118,19 +91,14 @@ public class ImageManager {
       });
 
   @Inject
-  public ImageManager(Database database, ThreadPool threadPool, Downloader downloader,
-      ImageLinkProcessor.Factory imageLinkProcessorFactory) {
-    this.database = Preconditions.checkNotNull(database);
+  public ImageUtils(ThreadPool threadPool, Downloader downloader) {
     this.downloader = Preconditions.checkNotNull(downloader);
-    this.imageLinkProcessorFactory = Preconditions.checkNotNull(imageLinkProcessorFactory);
 
     new File(CACHE_ROOT_PATH).mkdirs();
     new File(CACHE_INPUT_PATH).mkdirs();
     new File(CACHE_OUTPUT_PATH).mkdirs();
     ImageIO.setCacheDirectory(new File(CACHE_ROOT_PATH));
     ImageIO.setUseCache(true);
-
-    threadPool.addDailyTask(commandUpdate);
   }
 
   /**
@@ -221,7 +189,7 @@ public class ImageManager {
    */
   @VisibleForTesting
   static String toHashString(String data) {
-    return DigestUtils.shaHex(data);
+    return DigestUtils.sha1Hex(data);
   }
 
   public long getLastModified(Parameter parameter) {
@@ -259,7 +227,7 @@ public class ImageManager {
     if (!inputCacheFile.isFile()) {
       // BugTrack-QMAClone/434 - QMAClone wiki
       // http://kishibe.dyndns.tv/qmaclone/wiki/wiki.cgi?page=BugTrack%2DQMAClone%2F434#1330156832
-      File tempFile = File.createTempFile("ImageManager-download", null);
+      File tempFile = File.createTempFile("ImageUtils-download", null);
       try {
         downloader.downloadToFile(url, tempFile);
       } catch (DownloaderException e) {
@@ -273,7 +241,7 @@ public class ImageManager {
     if (!outputCacheFile.isFile()) {
       // BugTrack-QMAClone/434 - QMAClone wiki
       // http://kishibe.dyndns.tv/qmaclone/wiki/wiki.cgi?page=BugTrack%2DQMAClone%2F434#1330156832
-      File tempFile = File.createTempFile("ImageManager-resize", null);
+      File tempFile = File.createTempFile("ImageUtils-resize", null);
       resizeImage(inputCacheFile, width, height, keepAspectRatio, tempFile);
       tempFile.renameTo(outputCacheFile);
     }
@@ -281,7 +249,7 @@ public class ImageManager {
     return Files.toByteArray(outputCacheFile);
   }
 
-  private boolean isImage(File file) {
+  public boolean isImage(File file) {
     try {
       return ImageIO.read(file) != null;
 
@@ -293,110 +261,5 @@ public class ImageManager {
       logger.log(Level.INFO, "画像ファイルの読み込みに失敗しました", e);
       return false;
     }
-  }
-
-  @VisibleForTesting
-  static class ImageLinkProcessor implements ProblemProcessable {
-    interface Factory {
-      ImageLinkProcessor create(List<PacketImageLink> imageLinks,
-          Map<String, Integer> urlToStatusCode);
-    }
-
-    private final ImageManager imageManager;
-    private final Downloader downloader;
-    private final List<PacketImageLink> imageLinks;
-    private final Map<String, Integer> urlToStatusCode;
-
-    @Inject
-    public ImageLinkProcessor(ImageManager imageManager, Downloader downloader,
-        @Assisted List<PacketImageLink> imageLinks, @Assisted Map<String, Integer> urlToStatusCode) {
-      this.imageManager = Preconditions.checkNotNull(imageManager);
-      this.downloader = Preconditions.checkNotNull(downloader);
-      this.imageLinks = Preconditions.checkNotNull(imageLinks);
-      this.urlToStatusCode = Preconditions.checkNotNull(urlToStatusCode);
-    }
-
-    @Override
-    public void process(PacketProblem problem) {
-      for (String url : problem.getImageUrls()) {
-        File inputCacheFile = imageManager.getInputCacheFile(url);
-
-        int statusCode;
-        if (urlToStatusCode.containsKey(url)) {
-          statusCode = urlToStatusCode.get(url);
-        } else {
-          try {
-            Files.createParentDirs(inputCacheFile);
-          } catch (IOException e) {
-            logger.log(Level.WARNING, "入力画像キャッシュディレクトリの作成に失敗しました。処理を続行します: inputCacheFile="
-                + inputCacheFile, e);
-            continue;
-          }
-
-          try {
-            downloader.downloadToFile(new URL(url), inputCacheFile);
-            statusCode = 200;
-
-          } catch (MalformedURLException e) {
-            logger.log(Level.WARNING, "不正なURLです: url=" + url, e);
-            // URLが不正な場合はダミーステータスコードを表示する
-            statusCode = STATUS_CODE_MALFORMED_URL_EXCEPTION;
-
-          } catch (DownloaderException e) {
-            logger.log(Level.WARNING, "ダウンロードに失敗しました: url=" + url, e);
-            // ダウンロードに失敗した場合はステータスコードまたはダミーステータスコードを表示する
-            statusCode = e.hasStatusCode() ? e.getStatusCode() : STATUS_CODE_DOWNLOAD_FAILURE;
-          }
-
-          urlToStatusCode.put(url, statusCode);
-        }
-
-        // 正常取得かつ正常画像の場合はエラー出力をしない
-        if (statusCode / 100 == 2 && imageManager.isImage(inputCacheFile)) {
-          continue;
-        }
-
-        PacketImageLink imageLink = new PacketImageLink();
-        imageLink.problemId = problem.id;
-        imageLink.url = url;
-        imageLink.statusCode = statusCode;
-        imageLinks.add(imageLink);
-        logger.info("リンク切れ画像を検出しました: " + imageLink);
-      }
-    }
-  }
-
-  @VisibleForTesting
-  synchronized void update() throws DatabaseException {
-    List<PacketImageLink> imageLinks = Lists.newArrayList();
-    Map<String, Integer> urlToStatusCode = Maps.newHashMap();
-    ImageLinkProcessor imageLinkProcessor = imageLinkProcessorFactory.create(imageLinks,
-        urlToStatusCode);
-    database.processProblems(imageLinkProcessor);
-
-    Collections.sort(imageLinks);
-
-    this.errorImageLinks = imageLinks;
-
-    for (PacketImageLink imageLink : imageLinks) {
-      logger.info("リンク切れ画像を検出しました: " + imageLink);
-    }
-  }
-
-  public List<PacketImageLink> getErrorImageLinks() {
-    return errorImageLinks;
-  }
-
-  public static void main(String[] args) throws DatabaseException {
-    Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-      @Override
-      public void uncaughtException(Thread t, Throwable e) {
-        logger.log(Level.SEVERE, "Handled uncaught exception: " + t, e);
-        System.exit(-1);
-      }
-    });
-    ImageManager imageManager = Injectors.get().getInstance(ImageManager.class);
-    imageManager.update();
-    System.exit(0);
   }
 }

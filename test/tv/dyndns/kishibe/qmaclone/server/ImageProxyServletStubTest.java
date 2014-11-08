@@ -20,13 +20,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import tv.dyndns.kishibe.qmaclone.server.ImageManager.Parameter;
+import tv.dyndns.kishibe.qmaclone.server.image.ImageUtils;
+import tv.dyndns.kishibe.qmaclone.server.image.ImageUtils.Parameter;
 
 @RunWith(JUnit4.class)
 public class ImageProxyServletStubTest extends EasyMockSupport {
 	private ImageProxyServletStub service;
 	private HttpServletRequest mockRequest;
-	private ImageManager mockImageManager;
+	private ImageUtils mockImageManager;
 
 	@Before
 	public void setUp() {
@@ -34,7 +35,7 @@ public class ImageProxyServletStubTest extends EasyMockSupport {
 			FileUtils.deleteDirectory(new File("/tmp/qmaclone/image"));
 		} catch (IOException e) {
 		}
-		mockImageManager = createMock(ImageManager.class);
+		mockImageManager = createMock(ImageUtils.class);
 		service = new ImageProxyServletStub(mockImageManager);
 		mockRequest = createMock(HttpServletRequest.class);
 	}

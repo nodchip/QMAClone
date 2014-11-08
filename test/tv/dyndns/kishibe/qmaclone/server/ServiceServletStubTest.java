@@ -28,6 +28,8 @@ import tv.dyndns.kishibe.qmaclone.client.testing.TestDataProvider;
 import tv.dyndns.kishibe.qmaclone.server.database.Database;
 import tv.dyndns.kishibe.qmaclone.server.database.DatabaseException;
 import tv.dyndns.kishibe.qmaclone.server.handwriting.RecognizerZinnia;
+import tv.dyndns.kishibe.qmaclone.server.image.BrokenImageLinkDetector;
+import tv.dyndns.kishibe.qmaclone.server.image.ImageUtils;
 import tv.dyndns.kishibe.qmaclone.server.sns.SnsClient;
 import tv.dyndns.kishibe.qmaclone.server.websocket.WebSocketServer;
 
@@ -73,7 +75,7 @@ public class ServiceServletStubTest {
   @Mock
   private WebSocketServer mockWebSocketServer;
   @Mock
-  private ImageManager mockImageManager;
+  private ImageUtils mockImageManager;
   @Mock
   private Database mockDatabase;
   @Mock
@@ -94,6 +96,8 @@ public class ServiceServletStubTest {
   private ProblemCorrectCounterResetCounter mockProblemCorrectCounterResetCounter;
   @Mock
   private ProblemIndicationCounter mockProblemIndicationCounter;
+  @Mock
+  private BrokenImageLinkDetector mockBrokenImageLinkDetector;
   private PacketProblem problem1;
   private PacketProblem problem2;
   private PacketProblem problem3;
@@ -103,10 +107,10 @@ public class ServiceServletStubTest {
     service = new ServiceServletStub(mockChatManager, mockNormalModeProblemManager,
         mockThemeModeProblemManager, mockGameManager, mockServerStatusManager,
         mockPlayerHistoryManager, mockVoteManager, mockRecognizer, mockThemeModeEditorManager,
-        mockWebSocketServer, mockImageManager, mockDatabase, mockPrefectureRanking,
-        mockRatingDistribution, mockSnsClient, mockGameLogger, mockThreadPool, mockBadUserDetector,
+        mockWebSocketServer, mockDatabase, mockPrefectureRanking, mockRatingDistribution,
+        mockSnsClient, mockGameLogger, mockThreadPool, mockBadUserDetector,
         mockRestrictedUserUtils, mockProblemCorrectCounterResetCounter,
-        mockProblemIndicationCounter);
+        mockProblemIndicationCounter, mockBrokenImageLinkDetector);
     problem1 = TestDataProvider.getProblem();
     problem1.id = 1;
     problem2 = TestDataProvider.getProblem();

@@ -84,6 +84,7 @@ import tv.dyndns.kishibe.qmaclone.client.service.ServiceException;
 import tv.dyndns.kishibe.qmaclone.server.database.Database;
 import tv.dyndns.kishibe.qmaclone.server.database.DatabaseException;
 import tv.dyndns.kishibe.qmaclone.server.handwriting.Recognizable;
+import tv.dyndns.kishibe.qmaclone.server.image.BrokenImageLinkDetector;
 import tv.dyndns.kishibe.qmaclone.server.service.DatabaseAccessible;
 import tv.dyndns.kishibe.qmaclone.server.sns.SnsClient;
 import tv.dyndns.kishibe.qmaclone.server.sns.SnsClients;
@@ -93,7 +94,6 @@ import tv.dyndns.kishibe.qmaclone.server.util.diff_match_patch.Diff;
 import tv.dyndns.kishibe.qmaclone.server.websocket.WebSocketServer;
 
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
@@ -102,6 +102,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.io.Files;
+import com.google.gwt.thirdparty.guava.common.base.Strings;
 import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.server.rpc.RPC;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -127,7 +128,6 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
   private final Recognizable recognizer;
   private final ThemeModeEditorManager themeModeEditorManager;
   private final WebSocketServer webSocketServer;
-  private final ImageManager imageManager;
   private final Database database;
   private final PrefectureRanking prefectureRanking;
   private final RatingDistribution ratingDistribution;
@@ -137,6 +137,7 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
   private final RestrictedUserUtils restrictedUserUtils;
   private final ProblemCorrectCounterResetCounter problemCorrectCounterResetCounter;
   private final ProblemIndicationCounter problemIndicationCounter;
+  private final BrokenImageLinkDetector brokenImageLinkDetector;
 
   /**
    * Only for testing.
@@ -153,7 +154,6 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
     this.recognizer = injector.getInstance(Recognizable.class);
     this.themeModeEditorManager = injector.getInstance(ThemeModeEditorManager.class);
     this.webSocketServer = injector.getInstance(WebSocketServer.class);
-    this.imageManager = injector.getInstance(ImageManager.class);
     this.database = injector.getInstance(Database.class);
     this.prefectureRanking = injector.getInstance(PrefectureRanking.class);
     this.ratingDistribution = injector.getInstance(RatingDistribution.class);
@@ -164,6 +164,7 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
     this.problemCorrectCounterResetCounter = injector
         .getInstance(ProblemCorrectCounterResetCounter.class);
     this.problemIndicationCounter = injector.getInstance(ProblemIndicationCounter.class);
+    this.brokenImageLinkDetector = injector.getInstance(BrokenImageLinkDetector.class);
   }
 
   @Inject
@@ -173,12 +174,13 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
       ServerStatusManager serverStatusManager, PlayerHistoryManager playerHistoryManager,
       VoteManager voteManager, Recognizable recognizer,
       ThemeModeEditorManager themeModeEditorManager, WebSocketServer webSocketServer,
-      ImageManager imageManager, Database database, PrefectureRanking prefectureRanking,
+      Database database, PrefectureRanking prefectureRanking,
       RatingDistribution ratingDistribution, @Named("SnsClients") SnsClient snsClient,
       GameLogger gameLogger, ThreadPool threadPool, BadUserDetector badUserDetector,
       RestrictedUserUtils restrictedUserUtils,
       ProblemCorrectCounterResetCounter problemCorrectCounterResetCounter,
-      ProblemIndicationCounter problemIndicationCounter) {
+      ProblemIndicationCounter problemIndicationCounter,
+      BrokenImageLinkDetector brokenImageLinkDetector) {
     this.chatManager = chatManager;
     this.normalModeProblemManager = normalModeProblemManager;
     this.themeModeProblemManager = themeModeProblemManager;
@@ -189,7 +191,6 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
     this.recognizer = recognizer;
     this.themeModeEditorManager = themeModeEditorManager;
     this.webSocketServer = webSocketServer;
-    this.imageManager = imageManager;
     this.database = database;
     this.prefectureRanking = prefectureRanking;
     this.ratingDistribution = ratingDistribution;
@@ -200,6 +201,7 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
     this.problemCorrectCounterResetCounter = Preconditions
         .checkNotNull(problemCorrectCounterResetCounter);
     this.problemIndicationCounter = Preconditions.checkNotNull(problemIndicationCounter);
+    this.brokenImageLinkDetector = Preconditions.checkNotNull(brokenImageLinkDetector);
 
     // テーマモードのTwitter通知タイミング調整
     threadPool.scheduleWithFixedDelay(commandUpdateThemeModeNotificationCounter, 1, 1,
@@ -213,6 +215,8 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
     threadPool.addHourTask(badUserDetector);
     threadPool.addHourTask(problemCorrectCounterResetCounter);
     threadPool.addHourTask(problemIndicationCounter);
+    threadPool.addDailyTask(brokenImageLinkDetector);
+    threadPool.execute(brokenImageLinkDetector);
   }
 
   @Override
@@ -235,7 +239,7 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
       return super.processCall(payload);
     } catch (Throwable e) {
       String message = "processCall()中にエラーが発生しました: "
-          + Objects.toStringHelper(this).add("remoteAddress", getRemoteAddress())
+          + MoreObjects.toStringHelper(this).add("remoteAddress", getRemoteAddress())
               .add("rpcRequest", RPC.decodeRequest(payload, null, this)).add("payload", payload)
               .toString();
       logger.log(Level.WARNING, message, e);
@@ -319,7 +323,7 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
         return data;
 
       } catch (Exception e) {
-        String parameters = Objects.toStringHelper(this).add("playerSummary", playerSummary)
+        String parameters = MoreObjects.toStringHelper(this).add("playerSummary", playerSummary)
             .add("genres", genres).add("types", types).add("greeting", greeting)
             .add("gameMode", gameMode).add("roomName", roomName).add("THEME", theme)
             .add("imageFileName", imageFileName).add("classLevel", classLevel)
@@ -380,22 +384,20 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
     Game session = gameManager.getSession(sessionId);
     Preconditions.checkNotNull(session, "ゲームセッションが見つかりませんでした: sessionId=" + sessionId);
     session.receiveAnswer(playerListId, answer);
-    gameLogger
-        .write(Objects
-            .toStringHelper(this)
-            .add("method", "sendAnswer")
-            .add("sessionId", sessionId)
-            .add("playerListId", playerListId)
-            .add(
-                "answer",
-                Arrays.deepToString(Objects.firstNonNull(answer, "").split(
-                    Constant.DELIMITER_GENERAL))).add("userCode", userCode)
-            .add("responseTime", responseTime).add("remoteAddress", getRemoteAddress()).toString());
+    gameLogger.write(MoreObjects
+        .toStringHelper(this)
+        .add("method", "sendAnswer")
+        .add("sessionId", sessionId)
+        .add("playerListId", playerListId)
+        .add("answer",
+            Arrays.deepToString(Strings.nullToEmpty(answer).split(Constant.DELIMITER_GENERAL)))
+        .add("userCode", userCode).add("responseTime", responseTime)
+        .add("remoteAddress", getRemoteAddress()).toString());
   }
 
   @Override
   public void notifyTimeUp(int sessionId, int playerListId, int userCode) {
-    gameLogger.write(Objects.toStringHelper(this).add("method", "notifyTimeUp")
+    gameLogger.write(MoreObjects.toStringHelper(this).add("method", "notifyTimeUp")
         .add("sessionId", sessionId).add("playerListId", playerListId).add("userCode", userCode)
         .add("remoteAddress", getRemoteAddress()).toString());
   }
@@ -403,7 +405,7 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
   @Override
   public void notifyGameFinished(int userCode, int oldRating, int newRating, int sessionId)
       throws ServiceException {
-    gameLogger.write(Objects.toStringHelper(this).add("method", "notifyGameFinished")
+    gameLogger.write(MoreObjects.toStringHelper(this).add("method", "notifyGameFinished")
         .add("userCode", userCode).add("sessionId", sessionId).add("oldRating", oldRating)
         .add("newRating", newRating).add("remoteAddress", getRemoteAddress()).toString());
   }
@@ -1144,7 +1146,7 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
 
   private String getRemoteAddress() {
     // Proxyを通すとlocalhostが帰ってくる場合があるので、X-Forwarded-Forを優先する
-    return Objects.firstNonNull(getThreadLocalRequest().getHeader("X-Forwarded-For"),
+    return MoreObjects.firstNonNull(getThreadLocalRequest().getHeader("X-Forwarded-For"),
         getThreadLocalRequest().getRemoteAddr());
   }
 
@@ -1184,7 +1186,7 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
     return wrap("リンク切れ画像の取得に失敗しました", new DatabaseAccessible<List<PacketImageLink>>() {
       @Override
       public List<PacketImageLink> access() throws DatabaseException {
-        return imageManager.getErrorImageLinks();
+        return brokenImageLinkDetector.getBrokenImageLinks();
       }
     });
   }

@@ -16,7 +16,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.http.impl.cookie.DateUtils;
 
-import tv.dyndns.kishibe.qmaclone.server.ImageManager.Parameter;
+import tv.dyndns.kishibe.qmaclone.server.image.ImageUtils;
+import tv.dyndns.kishibe.qmaclone.server.image.ImageUtils.Parameter;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
@@ -31,11 +32,11 @@ public class ImageProxyServletStub extends HttpServlet {
   private static final int MAX_WIDTH = 512;
   private static final int MAX_HEIGHT = 384;
   private static String HEX = "0123456789abcdef";
-  private final ImageManager imageManager;
+  private final ImageUtils imageUtils;
 
   @Inject
-  public ImageProxyServletStub(ImageManager imageManager) {
-    this.imageManager = imageManager;
+  public ImageProxyServletStub(ImageUtils imageUtils) {
+    this.imageUtils = imageUtils;
   }
 
   @Override
@@ -61,7 +62,7 @@ public class ImageProxyServletStub extends HttpServlet {
     resp.setContentType("image/jpeg");
     resp.setHeader("Cache-Control", "max-age=31536000");
     resp.setHeader("Expires", getRFC1123NextYear());
-    imageManager.writeToStream(parameter, resp.getOutputStream());
+    imageUtils.writeToStream(parameter, resp.getOutputStream());
   }
 
   @VisibleForTesting
@@ -152,7 +153,7 @@ public class ImageProxyServletStub extends HttpServlet {
   protected long getLastModified(HttpServletRequest req) {
     long result = 0;
     try {
-      result = imageManager.getLastModified(parseParameter(req));
+      result = imageUtils.getLastModified(parseParameter(req));
     } catch (ServletException e) {
       logger.log(Level.WARNING, "LastModifiedの取得に失敗しました", e);
     }
