@@ -26,6 +26,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
@@ -180,7 +183,7 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
       RestrictedUserUtils restrictedUserUtils,
       ProblemCorrectCounterResetCounter problemCorrectCounterResetCounter,
       ProblemIndicationCounter problemIndicationCounter,
-      BrokenImageLinkDetector brokenImageLinkDetector) {
+      BrokenImageLinkDetector brokenImageLinkDetector) throws SocketException {
     this.chatManager = chatManager;
     this.normalModeProblemManager = normalModeProblemManager;
     this.themeModeProblemManager = themeModeProblemManager;
@@ -216,7 +219,21 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
     threadPool.addHourTask(problemCorrectCounterResetCounter);
     threadPool.addHourTask(problemIndicationCounter);
     threadPool.addDailyTask(brokenImageLinkDetector);
-    threadPool.execute(brokenImageLinkDetector);
+    if (!onDevelopmentMachine()) {
+      threadPool.execute(brokenImageLinkDetector);
+    }
+  }
+
+  private static boolean onDevelopmentMachine() throws SocketException {
+    for (NetworkInterface networkInterface : Collections.list(NetworkInterface
+        .getNetworkInterfaces())) {
+      for (InetAddress inetAddress : Collections.list(networkInterface.getInetAddresses())) {
+        if (inetAddress.getHostAddress().contains("192.168.100.5")) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   @Override
