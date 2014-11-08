@@ -76,6 +76,8 @@ public class IconUploadServletStub extends HttpServlet implements Servlet {
 
   private void processRequest(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
+    logger.log(Level.INFO, request.toString());
+
     FileItemFactory factory = new DiskFileItemFactory();
     ServletFileUpload upload = new ServletFileUpload(factory);
     upload.setSizeMax(64L * 1024L);
