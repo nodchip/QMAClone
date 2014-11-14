@@ -29,6 +29,14 @@ public class BrokenImageLinkDetector implements Runnable {
 
   @Override
   public void run() {
+    try {
+      runInternal();
+    } catch (Exception e) {
+      logger.log(Level.WARNING, "画像リンク切れ検出中に予期せぬエラーが発生しました", e);
+    }
+  }
+
+  private void runInternal() {
     logger.info("リンク切れ画像の検出を開始しました");
 
     ImageLinkChecker imageLinkChecker = imageLinkCheckerFactory.create();
