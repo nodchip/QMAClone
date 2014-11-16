@@ -92,7 +92,9 @@ public class ImageLinkChecker implements ProblemProcessable {
       imageLink.url = url;
       imageLink.statusCode = statusCode;
       imageLinks.add(imageLink);
-      logger.info("リンク切れ画像を検出しました: " + imageLink);
+
+      logger.info(String.format("リンク切れ画像を検出しました: |imageLinks|=%s imageLink=%s", imageLinks.size(),
+          imageLink));
     }
   }
 

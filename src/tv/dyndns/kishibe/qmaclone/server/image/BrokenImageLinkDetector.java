@@ -44,15 +44,22 @@ public class BrokenImageLinkDetector implements Runnable {
       database.processProblems(imageLinkChecker);
     } catch (DatabaseException e) {
       logger.log(Level.WARNING, "リンク切れ画像の検出に失敗しました", e);
+      return;
     }
+
+    logger.info("データベースの精査が終わりました");
 
     List<PacketImageLink> imageLinks = imageLinkChecker.getImageLinks();
+
+    logger.info("リンク切れ画像リストを取得しました");
+
     Collections.sort(imageLinks);
+
+    logger.info("リンク切れ画像リストをソートしました");
+
     this.brokenImageLinks = imageLinks;
 
-    for (PacketImageLink imageLink : imageLinks) {
-      logger.info("リンク切れ画像を検出しました: " + imageLink);
-    }
+    logger.info("リンク切れ画像の検出を終了しました: |imageLinks|=" + imageLinks.size());
   }
 
   public List<PacketImageLink> getBrokenImageLinks() {

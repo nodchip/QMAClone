@@ -2,6 +2,7 @@ package tv.dyndns.kishibe.qmaclone.client.packet;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
+import com.google.common.collect.ComparisonChain;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class PacketImageLink implements IsSerializable, Comparable<PacketImageLink> {
@@ -17,7 +18,7 @@ public class PacketImageLink implements IsSerializable, Comparable<PacketImageLi
 
   @Override
   public int compareTo(PacketImageLink o) {
-    return problemId != o.problemId ? problemId - o.problemId : url.compareTo(o.url);
+    return ComparisonChain.start().compare(problemId, o.problemId).compare(url, o.url).result();
   }
 
   @Override
