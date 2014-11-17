@@ -35,8 +35,8 @@ public class ImageLinkChecker implements ProblemProcessable {
 
   private final ImageUtils imageUtils;
   private final Downloader downloader;
-  private List<PacketImageLink> imageLinks;
-  private Map<String, Integer> urlToStatusCode;
+  private final List<PacketImageLink> imageLinks = new ArrayList<>();
+  private final Map<String, Integer> urlToStatusCode = new HashMap<>();
 
   @Inject
   public ImageLinkChecker(ImageUtils imageUtils, Downloader downloader) {
@@ -46,9 +46,6 @@ public class ImageLinkChecker implements ProblemProcessable {
 
   @Override
   public void process(PacketProblem problem) {
-    imageLinks = new ArrayList<>();
-    urlToStatusCode = new HashMap<>();
-
     for (String url : problem.getImageUrls()) {
       File inputCacheFile = imageUtils.getInputCacheFile(url);
 
