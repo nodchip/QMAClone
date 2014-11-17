@@ -75,6 +75,19 @@ public class ImageLinkCheckerTest {
     assertThat(imageLinkChecker.getImageLinks()).isEqualTo(Lists.newArrayList(expectedImageLink));
   }
 
+  @Test
+  public void processReturnsMultipleImageLinks() {
+    imageLinkChecker.process(createProblem(IMAGE_URL_NOT_FOUND));
+    imageLinkChecker.process(createProblem(IMAGE_URL_NOT_FOUND));
+
+    PacketImageLink expectedImageLink = new PacketImageLink();
+    expectedImageLink.problemId = PROBLEM_ID;
+    expectedImageLink.url = IMAGE_URL_NOT_FOUND;
+    expectedImageLink.statusCode = 404;
+    assertThat(imageLinkChecker.getImageLinks()).isEqualTo(
+        Lists.newArrayList(expectedImageLink, expectedImageLink));
+  }
+
   private static PacketProblem createProblem(String url) {
     PacketProblem problem = new PacketProblem();
     problem.id = PROBLEM_ID;
