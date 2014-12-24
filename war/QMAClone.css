@@ -1,13 +1,13 @@
-body,a,div,.p {
+body, a, div, .p {
 	font-family: arial, sans-serif;
 	font-size: 16px;
 }
 
-div,td {
+div, td {
 	color: #000000;
 }
 
-a:link,.w,.w a:link {
+a:link, .w, .w a:link {
 	color: #0000cc;
 }
 
@@ -496,6 +496,12 @@ a:active {
 	background: transparent;
 	text-align: center;
 	overflow: hidden;
+	user-select: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-khtml-user-select: none;
+	-webkit-user-drag: none;
+	-khtml-user-drag: none;
 }
 
 .gwt-Button-group-header {
@@ -503,6 +509,12 @@ a:active {
 	margin: auto;
 	background: transparent;
 	overflow: hidden;
+	user-select: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-khtml-user-select: none;
+	-webkit-user-drag: none;
+	-khtml-user-drag: none;
 }
 
 .gwt-Button-group-control {
@@ -512,6 +524,12 @@ a:active {
 	border: 1px #AAA solid;
 	cursor: pointer;
 	background: transparent;
+	user-select: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-khtml-user-select: none;
+	-webkit-user-drag: none;
+	-khtml-user-drag: none;
 }
 
 /* ‚»‚Ì‘¼ */
