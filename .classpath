@@ -155,17 +155,17 @@
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/lucene-4.10.2/core/lucene-core-4.10.2.jar" sourcepath="/JAVA_DIRECTORY/lucene-4.6.0/src/lucene/analysis/common/src/java/org/apache">
+	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/lucene-4.10.3/core/lucene-core-4.10.3.jar" sourcepath="/JAVA_DIRECTORY/lucene-4.6.0/src/lucene/analysis/common/src/java/org/apache">
 		<attributes>
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/lucene-4.10.2/analysis/common/lucene-analyzers-common-4.10.2.jar">
+	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/lucene-4.10.3/analysis/common/lucene-analyzers-common-4.10.3.jar">
 		<attributes>
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/lucene-4.10.2/queries/lucene-queries-4.10.2.jar">
+	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/lucene-4.10.3/queries/lucene-queries-4.10.3.jar">
 		<attributes>
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
@@ -190,7 +190,7 @@
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/mysql-connector-java-5.1.30-bin.jar">
+	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/mysql-connector-java-5.1.34-bin.jar">
 		<attributes>
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
@@ -455,12 +455,12 @@
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="var" path="JAVA_DIRECTORY/gwt-2.7.0/gwt-codeserver.jar">
+	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/gwt-2.7.0/gwt-codeserver.jar">
 		<attributes>
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="var" path="JAVA_DIRECTORY/gwt-2.7.0/gwt-dev-modified.jar">
+	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/gwt-2.7.0/gwt-dev-modified.jar">
 		<attributes>
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
