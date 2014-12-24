@@ -65,7 +65,6 @@ import tv.dyndns.kishibe.qmaclone.server.websocket.WebSockets;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
@@ -503,8 +502,9 @@ public class Game {
     // 故意の回線落ちチェックのためゲーム開始したプレイヤーのログを取る
     if (1 < getNumberOfHumanPlayer()) {
       for (PlayerStatus player : playerStatuses) {
-        String message = Objects.toStringHelper(this).add("method", "transitFromMachingToReady")
-            .add("sessionId", sessionId).add("userCode", player.getUserCode()).toString();
+        String message = MoreObjects.toStringHelper(this)
+            .add("method", "transitFromMachingToReady").add("sessionId", sessionId)
+            .add("userCode", player.getUserCode()).toString();
         logger.log(Level.INFO, message);
       }
     }
@@ -694,7 +694,7 @@ public class Game {
 
     for (PlayerStatus player : playerStatuses) {
       player.incSkipCount();
-      player.clear();
+      player.clearAnswer();
     }
 
     // 時間切れタイマーセット
@@ -810,10 +810,10 @@ public class Game {
 
     // 回線落ち
     for (PlayerStatus player : playerStatuses) {
-      if (player.isHuman() && player.isDrop()) {
+      if (player.isHuman() && player.shouldBeDropped()) {
         player.drop();
         String message = "プレイヤーをドロップしました: "
-            + Objects.toStringHelper(this).add("sessionId", sessionId)
+            + MoreObjects.toStringHelper(this).add("sessionId", sessionId)
                 .add("playerListId", player.getPlayerListId()).toString();
         logger.log(Level.INFO, message);
       }
@@ -1197,7 +1197,7 @@ public class Game {
     }
 
     for (PlayerStatus playerStatus : playerStatuses) {
-      if (playerStatus.isHuman() && !playerStatus.isDrop()) {
+      if (playerStatus.isHuman() && !playerStatus.shouldBeDropped()) {
         ++status.numberOfPlayingHumans;
       }
     }

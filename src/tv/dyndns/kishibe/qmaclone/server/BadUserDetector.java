@@ -20,6 +20,7 @@ import tv.dyndns.kishibe.qmaclone.server.database.DatabaseException;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Charsets;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultiset;
@@ -58,7 +59,7 @@ public class BadUserDetector implements Runnable {
 
     @Override
     public String toString() {
-      return Objects.toStringHelper(this).add("sessionId", sessionId).add("userCode", userCode)
+      return MoreObjects.toStringHelper(this).add("sessionId", sessionId).add("userCode", userCode)
           .toString();
     }
   }
@@ -194,10 +195,13 @@ public class BadUserDetector implements Runnable {
       int userCode = user.userCode;
       int startCount = startCounts.count(userCode);
       int finishCount = finishCounts.count(userCode);
+
+      // プレイ開始回数が一定回数以下なら何もしない。
       if (startCount < 10) {
         continue;
       }
 
+      // プレイ終了回数がプレイ開始回数に比べて十分に大きい場合は何もしない。
       if (startCount <= finishCount * 2) {
         continue;
       }
