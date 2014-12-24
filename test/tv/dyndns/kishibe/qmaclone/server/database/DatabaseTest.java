@@ -410,7 +410,7 @@ public class DatabaseTest {
     assertNotNull(problems);
     assertFalse(problems.isEmpty());
     for (PacketProblem problem : problems) {
-      String searchQuery = problem.getSearchQuery();
+      String searchQuery = problem.getSearchDocument();
       assertThat(searchQuery, containsString("クイズ"));
     }
 
@@ -457,7 +457,7 @@ public class DatabaseTest {
     assertNotNull(problems);
     assertFalse(problems.isEmpty());
     for (PacketProblem problem : problems) {
-      String searchQuery = problem.getSearchQuery();
+      String searchQuery = problem.getSearchDocument();
       assertThat(searchQuery, containsString("クイズ"));
       assertThat(searchQuery, containsString("マジック"));
       assertThat(searchQuery, containsString("アカデミー"));
@@ -484,7 +484,7 @@ public class DatabaseTest {
     assertNotNull(problems);
     assertFalse(problems.isEmpty());
     for (PacketProblem problem : problems) {
-      String searchQuery = problem.getSearchQuery();
+      String searchQuery = problem.getSearchDocument();
       assertThat(searchQuery, containsString("フルメタル・パニック"));
       assertFalse(contains(searchQuery, "ノベル"));
     }
@@ -550,7 +550,7 @@ public class DatabaseTest {
     assertNotNull(problems);
     assertFalse(problems.isEmpty());
     for (PacketProblem problem : problems) {
-      String searchQuery = problem.getSearchQuery();
+      String searchQuery = problem.getSearchDocument();
       assertThat(searchQuery, containsString("%n"));
       assertFalse(contains(searchQuery, "%w"));
       assertEquals(ProblemType.Rensou, problem.type);

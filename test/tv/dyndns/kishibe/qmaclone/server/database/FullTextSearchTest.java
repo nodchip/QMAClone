@@ -27,6 +27,7 @@ import tv.dyndns.kishibe.qmaclone.server.util.IntArray;
 import tv.dyndns.kishibe.qmaclone.server.util.Normalizer;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.guiceberry.junit4.GuiceBerryRule;
 import com.google.inject.Inject;
@@ -151,12 +152,12 @@ public class FullTextSearchTest {
 
       boolean contained = false;
       for (String queryString : queryStrings) {
-        if (contained == contains(problem.getSearchQuery(), queryString)) {
+        if (contained == contains(problem.getSearchDocument(), queryString)) {
           break;
         }
       }
       assertFalse(
-          "searchQuery=\"" + problem.getSearchQuery() + "\" queryString="
+          "searchQuery=\"" + problem.getSearchDocument() + "\" queryString="
               + Arrays.deepToString(queryStrings), contained);
     }
   }
@@ -248,7 +249,7 @@ public class FullTextSearchTest {
     assertNotNull(problemIds);
     assertFalse(problemIds.isEmpty());
     for (PacketProblem problem : database.getProblem(problemIds.asList())) {
-      final String searchQuery = problem.getSearchQuery();
+      final String searchQuery = problem.getSearchDocument();
       assertTrue(contains(searchQuery, "機動"));
       assertTrue(contains(searchQuery, "ナデシコ"));
     }
@@ -257,7 +258,7 @@ public class FullTextSearchTest {
     assertNotNull(problemIds);
     assertFalse(problemIds.isEmpty());
     for (PacketProblem problem : database.getProblem(problemIds.asList())) {
-      final String searchQuery = problem.getSearchQuery();
+      final String searchQuery = problem.getSearchDocument();
       assertTrue(contains(searchQuery, "KAITO"));
       assertTrue(contains(searchQuery, "MEIKO"));
     }
@@ -420,4 +421,24 @@ public class FullTextSearchTest {
     fullTextSearch.searchProblemsForThemeMode(queryStrings);
   }
 
+  @Test
+  public void searchProblemsForThemeModeShouldSupportOrQuery() throws Exception {
+    List<Integer> problemIds = fullTextSearch.searchProblem("巨人 OR 阪神", null, false,
+        ImmutableSet.<ProblemGenre> of(), ImmutableSet.<ProblemType> of(),
+        ImmutableSet.<RandomFlag> of());
+    assertFalse(problemIds.isEmpty());
+    boolean hasGiants = false;
+    boolean hasTigers = false;
+    for (PacketProblem problem : database.getProblem(problemIds)) {
+      String document = problem.getSearchDocument();
+      boolean giants = document.contains("巨人");
+      boolean tigers = document.contains("阪神");
+      assertTrue("巨人または阪神が見つかりませんでした: " + document, giants | tigers);
+      hasGiants |= giants;
+      hasTigers |= tigers;
+    }
+
+    assertTrue(hasGiants);
+    assertTrue(hasTigers);
+  }
 }

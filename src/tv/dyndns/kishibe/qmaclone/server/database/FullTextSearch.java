@@ -64,7 +64,7 @@ import tv.dyndns.kishibe.qmaclone.server.util.IntArray;
 import tv.dyndns.kishibe.qmaclone.server.util.Normalizer;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
 import com.google.common.base.Strings;
@@ -100,6 +100,7 @@ public class FullTextSearch {
   private static final String PREFIX_CREATOR = "問題作成者:";
   private static final String PREFIX_RANDOM = "ランダム:";
   private static final int MAX_CLAUSE_COUNT = 65536;
+  private static final String TERM_OR = "OR";
   private final Object lockIndexWriter = new Object();
   private final ThreadPool threadPool;
   private final DevelopmentUtil developmentUtil;
@@ -168,7 +169,7 @@ public class FullTextSearch {
     document.add(new TextField(FIELD_SENTENCE, sentence, Store.NO));
 
     // 問題文+選択肢+解答+問題ノート
-    document.add(new TextField(FIELD_SEARCH, problem.getSearchQuery(), Store.NO));
+    document.add(new TextField(FIELD_SEARCH, problem.getSearchDocument(), Store.NO));
 
     // 作問者
     document.add(new TextField(FIELD_CREATOR, problem.creator, Store.NO));
@@ -187,7 +188,7 @@ public class FullTextSearch {
 
     // 類似問題検索
     document.add(new TextField(FIELD_SIMILAR, viterbiTokenizerfactory.create(new StringReader(
-        problem.getSearchQuery()))));
+        problem.getSearchDocument()))));
 
     return document;
   }
@@ -228,20 +229,43 @@ public class FullTextSearch {
     }
   }
 
+  private Query concatenateWithOr(List<Query> queries) {
+    BooleanQuery or = new BooleanQuery();
+    for (Query query : queries) {
+      or.add(query, Occur.SHOULD);
+    }
+    return or;
+  }
+
   private Query stringToQuery(String field, String string) throws IOException {
+    List<Query> queries = new ArrayList<>();
+
     BooleanQuery query = new BooleanQuery();
 
     StringTokenizer st = new StringTokenizer(string);
     while (st.hasMoreTokens()) {
       String word = st.nextToken();
-      if (word.startsWith("-")) {
+      if (word.equals(TERM_OR)) {
+        // OR が現れた場合は後ほど結合する
+        queries.add(query);
+        query = new BooleanQuery();
+
+      } else if (word.startsWith("-")) {
         query.add(wordToQuery(field, word.substring(1)), Occur.MUST_NOT);
+
       } else {
         query.add(wordToQuery(field, word), Occur.MUST);
       }
     }
 
-    return query;
+    if (queries.isEmpty()) {
+      // OR が現れていない場合はクエリをそのまま返す
+      return query;
+    }
+
+    // OR が現れた場合はすべてのクエリを OR でつないで返す
+    queries.add(query);
+    return concatenateWithOr(queries);
   }
 
   public static String escapeQuery(String t) {
@@ -372,8 +396,8 @@ public class FullTextSearch {
       logger.log(
           Level.INFO,
           String.format("searchProblem(): time=%d result=%d query=%s",
-              stopwatch.elapsed(TimeUnit.MILLISECONDS), problemIds.size(),
-              Objects.toStringHelper(this).add("queryStrings", queryStrings).toString()));
+              stopwatch.elapsed(TimeUnit.MILLISECONDS), problemIds.size(), MoreObjects
+                  .toStringHelper(this).add("queryStrings", queryStrings).toString()));
 
       return problemIds;
     }
@@ -536,8 +560,8 @@ public class FullTextSearch {
               "searchProblem(): time=%d result=%d query=%s",
               stopwatch.elapsed(TimeUnit.MILLISECONDS),
               problemIds.size(),
-              Objects.toStringHelper(this).add("queryString", queryString).add("creator", creator)
-                  .add("creatorPerfectMatching", creatorPerfectMatching)
+              MoreObjects.toStringHelper(this).add("queryString", queryString)
+                  .add("creator", creator).add("creatorPerfectMatching", creatorPerfectMatching)
                   .add("genresFinal", genresFinal).add("typesFinal", typesFinal)
                   .add("randomFlagsFinal", randomFlagsFinal).toString()));
       return problemIds;
@@ -563,7 +587,7 @@ public class FullTextSearch {
       public List<Integer> call() throws Exception {
         try (IndexReader reader = DirectoryReader.open(FSDirectory.open(INDEX_FILE_DIRECTORY))) {
           String[] fields = new String[] { FIELD_SIMILAR };
-          String searchQuery = problem.getSearchQuery();
+          String searchQuery = problem.getSearchDocument();
           IndexSearcher searcher = new IndexSearcher(reader);
           MoreLikeThisQuery query = new MoreLikeThisQuery(searchQuery, fields,
               viterbiAnalyzerFactory.create(), "similar_problem_search_field");

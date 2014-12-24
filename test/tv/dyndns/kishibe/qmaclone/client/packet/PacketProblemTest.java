@@ -96,7 +96,7 @@ public class PacketProblemTest {
 		problem.choices = new String[] { "A", "B", "C", "D", null, null, null, null };
 		problem.note = "ノート";
 
-		assertEquals("問題文 a b c d A B C D ノート", problem.getSearchQuery());
+		assertEquals("問題文 a b c d A B C D ノート", problem.getSearchDocument());
 	}
 
 	@Test
