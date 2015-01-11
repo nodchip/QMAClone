@@ -381,7 +381,10 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
         return;
       }
 
-      widgetProblemForm.setProblem(problem, copyProblem);
+      if (copyProblem) {
+        problem = problem.cloneForCopyingProblem();
+      }
+      widgetProblemForm.setProblem(problem);
 
       if (copyProblem) {
         panelSimilar.clear();

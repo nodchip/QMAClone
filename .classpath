@@ -28,7 +28,7 @@
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/commons-pool2-2.2/commons-pool2-2.2.jar">
+	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/commons-pool2-2.3/commons-pool2-2.3.jar">
 		<attributes>
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>

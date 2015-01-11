@@ -104,7 +104,7 @@ public class WidgetProblemForm extends VerticalPanel implements ClickHandler, Ch
   private final CheckBox checkBoxImageChoice = new CheckBox("画像選択肢");
   private final CheckBox checkBoxImageAnswer = new CheckBox("画像回答");
   private final CheckBox checkBoxRemovePlayerAnswers = new CheckBox("回答履歴を削除する");
-  private int problemId = -1;
+  private int problemId = PacketProblem.CREATING_PROBLEM_ID;
   private final List<Button> buttonPolygonCreation = new ArrayList<Button>();
   private final VerticalPanel panelProblemFeedback = new VerticalPanel();
   private final Button buttonClearProblemFeedback = new Button("クリア", this);
@@ -296,10 +296,8 @@ public class WidgetProblemForm extends VerticalPanel implements ClickHandler, Ch
    * 
    * @param problem
    *          問題
-   * @param copy
-   *          問題をコピーして新しい問題を作成する場合は{@code true}、既存の問題を修正する場合は{@code false}
    */
-  public void setProblem(PacketProblem problem, boolean copy) {
+  public void setProblem(PacketProblem problem) {
     // TODO 範囲外の値をセットしようとしたときにJavaとブラウザで挙動が違うのを報告する
     listBoxGenre.setSelectedIndex(problem.genre.getIndex());
     listBoxType.setSelectedIndex(problem.type.getIndex());
@@ -332,7 +330,7 @@ public class WidgetProblemForm extends VerticalPanel implements ClickHandler, Ch
 
     labelAnswerCounter.setText(problem.good + "/" + problem.bad);
 
-    if (copy) {
+    if (problem.isCopiedProblem()) {
       htmlPlusOne.setHTML("");
     } else {
       htmlPlusOne.setHTML(PlusOne.getButton(problem.id, true));
@@ -347,12 +345,9 @@ public class WidgetProblemForm extends VerticalPanel implements ClickHandler, Ch
     checkBoxImageAnswer.setValue(problem.imageAnswer);
     checkBoxImageChoice.setValue(problem.imageChoice);
 
-    problemId = -1;
-    if (!copy) {
-      problemId = problem.id;
-    }
+    problemId = problem.id;
 
-    if (problemId == -1) {
+    if (problemId == PacketProblem.CREATING_PROBLEM_ID) {
       labelProblemNumber.setText("新規問題入力中");
       checkBoxRemovePlayerAnswers.setVisible(false);
     } else {
@@ -362,9 +357,9 @@ public class WidgetProblemForm extends VerticalPanel implements ClickHandler, Ch
     checkBoxResetAnswerCount.setValue(problem.needsResetAnswerCount);
     checkBoxResetVote.setValue(problem.needsResetVote);
     checkBoxRemovePlayerAnswers.setValue(problem.needsRemovePlayerAnswers);
-    checkBoxResetAnswerCount.setVisible(!copy);
-    checkBoxRemovePlayerAnswers.setVisible(!copy);
-    checkBoxResetVote.setVisible(!copy);
+    checkBoxResetAnswerCount.setVisible(!problem.isCopiedProblem());
+    checkBoxRemovePlayerAnswers.setVisible(!problem.isCopiedProblem());
+    checkBoxResetVote.setVisible(!problem.isCopiedProblem());
 
     if (problem.imageUrl != null) {
       textBoxExternalUrl.setText(problem.imageUrl);
@@ -384,7 +379,7 @@ public class WidgetProblemForm extends VerticalPanel implements ClickHandler, Ch
     // 指摘
     // BugTrack-QMAClone/595 - QMAClone wiki
     // http://kishibe.dyndns.tv/qmaclone/wiki/wiki.cgi?page=BugTrack%2DQMAClone%2F595
-    if (copy) {
+    if (problem.isCopiedProblem()) {
       // 問題をコピーした場合は問題指摘フラグは折る
       indication = null;
       indicationResolved = null;
@@ -406,7 +401,7 @@ public class WidgetProblemForm extends VerticalPanel implements ClickHandler, Ch
 
     // 問題評価文
     panelProblemFeedback.clear();
-    if (problemId != -1) {
+    if (problemId != PacketProblem.CREATING_PROBLEM_ID) {
       Service.Util.getInstance().getProblemFeedback(problemId, callbackGetProblemFeedback);
     }
 
@@ -593,7 +588,7 @@ public class WidgetProblemForm extends VerticalPanel implements ClickHandler, Ch
   }
 
   private void clearProblemFeedback() {
-    if (problemId == -1) {
+    if (problemId == PacketProblem.CREATING_PROBLEM_ID) {
       return;
     }
 
@@ -758,7 +753,7 @@ public class WidgetProblemForm extends VerticalPanel implements ClickHandler, Ch
     public void onSuccess(Void result) {
       indication = new Date();
       checkBoxUnindicate.setValue(false);
-      setProblem(getProblem(), false);
+      setProblem(getProblem());
 
       if (UserData.get().isRegisterIndicatedProblem()) {
         Service.Util.getInstance().addProblemIdsToReport(UserData.get().getUserCode(),

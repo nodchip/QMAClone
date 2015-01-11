@@ -28,14 +28,18 @@ import tv.dyndns.kishibe.qmaclone.client.game.ProblemGenre;
 import tv.dyndns.kishibe.qmaclone.client.game.ProblemType;
 import tv.dyndns.kishibe.qmaclone.client.game.RandomFlag;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class PacketProblemMinimum implements IsSerializable {
+
+  public static final int CREATING_PROBLEM_ID = -1;
+
   /**
    * 問題番号
    * 
-   * 新規問題の場合は-1
+   * 新規問題の場合は CREATING_PROBLEM_ID
    */
   public int id;
   /**
@@ -108,7 +112,7 @@ public class PacketProblemMinimum implements IsSerializable {
 
   @Override
   public String toString() {
-    return Objects.toStringHelper(this).add("id", id).add("genre", genre).add("type", type)
+    return MoreObjects.toStringHelper(this).add("id", id).add("genre", genre).add("type", type)
         .add("good", good).add("bad", bad).add("randomFlag", randomFlag)
         .add("creatorHash", creatorHash).add("userCode", userCode).add("indication", indication)
         .toString();

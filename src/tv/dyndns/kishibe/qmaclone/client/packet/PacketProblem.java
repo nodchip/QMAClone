@@ -29,6 +29,9 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
+import tv.dyndns.kishibe.qmaclone.client.UserData;
 import tv.dyndns.kishibe.qmaclone.client.constant.Constant;
 import tv.dyndns.kishibe.qmaclone.client.creation.validater.Evaluation;
 import tv.dyndns.kishibe.qmaclone.client.game.ProblemType;
@@ -43,7 +46,7 @@ import com.google.common.collect.ImmutableList.Builder;
 import com.google.common.collect.Lists;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class PacketProblem extends PacketProblemMinimum implements IsSerializable, Cloneable {
+public class PacketProblem extends PacketProblemMinimum implements IsSerializable {
 
   private static final String[] REMOVE = { "!<div>", "<\\/div>", "<object.*?object>" };
   // 改行・HTML的にヤバイ記号・SQLインジェクション関連は%～に置き換えられて保存される
@@ -490,4 +493,70 @@ public class PacketProblem extends PacketProblemMinimum implements IsSerializabl
     return sb.toString();
   }
 
+  public boolean isCopiedProblem() {
+    return id == CREATING_PROBLEM_ID;
+  }
+
+  public PacketProblem clone() {
+    PacketProblem problem = new PacketProblem();
+
+    problem.id = id;
+    problem.genre = genre;
+    problem.type = type;
+    problem.good = good;
+    problem.bad = bad;
+    problem.randomFlag = randomFlag;
+    problem.creatorHash = creatorHash;
+    problem.userCode = userCode;
+    problem.indication = indication;
+
+    problem.sentence = sentence;
+    problem.answers = copy(answers);
+    problem.choices = copy(choices);
+    problem.creator = creator;
+    problem.note = note;
+    problem.shuffledAnswers = copy(shuffledAnswers);
+    problem.shuffledChoices = copy(shuffledChoices);
+    problem.imageAnswer = imageAnswer;
+    problem.imageChoice = imageChoice;
+    problem.voteGood = voteGood;
+    problem.voteBad = voteBad;
+    problem.imageUrl = imageUrl;
+    problem.movieUrl = movieUrl;
+    problem.indicationMessage = indicationMessage;
+    problem.indicationResolved = indicationResolved;
+    problem.numberOfDisplayedChoices = numberOfDisplayedChoices;
+    problem.testing = testing;
+    problem.needsResetAnswerCount = needsResetAnswerCount;
+    problem.needsResetVote = needsResetVote;
+    problem.needsRemovePlayerAnswers = needsRemovePlayerAnswers;
+
+    return problem;
+  }
+
+  private static String[] copy(@Nullable String[] strings) {
+    if (strings == null) {
+      return null;
+    }
+    return Arrays.copyOf(strings, strings.length);
+  }
+
+  /**
+   * 問題コピー向けに clone を行う。
+   * 
+   * @return clone した問題オブジェクト
+   */
+  public PacketProblem cloneForCopyingProblem() {
+    PacketProblem problem = (PacketProblem) clone();
+    problem.id = CREATING_PROBLEM_ID;
+    problem.good = 0;
+    problem.bad = 0;
+    problem.indication = null;
+    problem.creator = UserData.get().getPlayerName();
+    problem.voteGood = 0;
+    problem.voteBad = 0;
+    problem.indicationMessage = null;
+    problem.indicationResolved = null;
+    return problem;
+  }
 }
