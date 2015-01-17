@@ -33,6 +33,7 @@ import tv.dyndns.kishibe.qmaclone.client.constant.Constant;
 import tv.dyndns.kishibe.qmaclone.client.game.LetterType;
 import tv.dyndns.kishibe.qmaclone.client.geom.Point;
 import tv.dyndns.kishibe.qmaclone.client.geom.Polygon;
+import tv.dyndns.kishibe.qmaclone.client.geom.PolygonException;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketPlayerSummary;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblem;
 import tv.dyndns.kishibe.qmaclone.client.util.Random;
@@ -405,9 +406,18 @@ public class ComputerPlayer {
       int minY = Integer.MAX_VALUE;
       int maxX = Integer.MIN_VALUE;
       int maxY = Integer.MIN_VALUE;
-      final int answerIndex = random.nextInt(problem.getNumberOfShuffledAnswers());
-      final Polygon polygon = Preconditions.checkNotNull(Polygon
-          .fromString(problem.shuffledAnswers[answerIndex]));
+      int answerIndex = random.nextInt(problem.getNumberOfShuffledAnswers());
+      Polygon polygon;
+
+      try {
+        polygon = Preconditions.checkNotNull(Polygon
+            .fromString(problem.shuffledAnswers[answerIndex]));
+      } catch (PolygonException e) {
+        logger.log(Level.WARNING, "ポリゴンデータが不正です", e);
+        return new Point(random.nextInt(Constant.CLICK_IMAGE_WIDTH),
+            random.nextInt(Constant.CLICK_IMAGE_HEIGHT)).toString();
+      }
+
       for (Point point : polygon) {
         minX = Math.min(minX, point.x);
         minY = Math.min(minY, point.y);

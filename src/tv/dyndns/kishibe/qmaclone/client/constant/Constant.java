@@ -152,6 +152,8 @@ public class Constant {
   public static final int GENERIC_BBS_ID = -1;
   public static final int MAX_PLAYER_NAME_LENGTH = 8;
 
+  public static final int MAX_NUMBER_OF_POLYGON_VERTICES = 8;
+
   static {
     int numberOfClasses = CLASS_NAMES.length;
     ACCURACY_RATE_LOWER_BOUND = new double[numberOfClasses + 5];

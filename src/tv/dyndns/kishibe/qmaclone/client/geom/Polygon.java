@@ -24,107 +24,105 @@ package tv.dyndns.kishibe.qmaclone.client.geom;
 import java.util.ArrayList;
 import java.util.List;
 
+import tv.dyndns.kishibe.qmaclone.client.constant.Constant;
+
 public class Polygon extends ArrayList<Point> implements Cloneable {
-	private static final long serialVersionUID = -6022314431237885983L;
 
-	public static Polygon fromString(String s) {
-		try {
-			List<Integer> values = new ArrayList<Integer>();
-			for (String value : s.split(" ")) {
-				values.add(Integer.valueOf(value));
-			}
+  private static final double EPS = 1e-5;
 
-			Polygon polygon = new Polygon();
-			for (int i = 0; i < values.size() / 2; ++i) {
-				polygon.add(new Point(values.get(i * 2), values.get(i * 2 + 1)));
-			}
+  public static Polygon fromString(String s) throws PolygonException {
+    List<Integer> values = new ArrayList<Integer>();
+    for (String value : s.split(" ")) {
+      values.add(Integer.valueOf(value));
+      if (values.size() * 2 > Constant.MAX_NUMBER_OF_POLYGON_VERTICES) {
+        throw new PolygonException("ポリゴンの頂点数が多すぎます");
+      }
+    }
 
-			if (polygon.size() < 3) {
-				throw new Exception("ポリゴンの頂点数が足りません");
-			}
+    Polygon polygon = new Polygon();
+    for (int i = 0; i < values.size() / 2; ++i) {
+      polygon.add(new Point(values.get(i * 2), values.get(i * 2 + 1)));
+    }
 
-			if (polygon.hasSelfIntersecting()) {
-				throw new Exception("ポリゴンが自己交差しています");
-			}
+    if (polygon.size() < 3) {
+      throw new PolygonException("ポリゴンの頂点数が足りません");
+    }
 
-			return polygon;
+    if (polygon.hasSelfIntersecting()) {
+      throw new PolygonException("ポリゴンが自己交差しています");
+    }
 
-		} catch (Exception e) {
-			// Log.info("ポリゴン情報のパースに失敗しました", e);
-			return null;
-		}
-	}
+    return polygon;
+  }
 
-	public String toString() {
-		final StringBuilder buffer = new StringBuilder();
-		for (Point point : this) {
-			if (buffer.length() != 0) {
-				buffer.append(" ");
-			}
-			buffer.append(point);
-		}
-		return buffer.toString();
-	}
+  public String toString() {
+    StringBuilder buffer = new StringBuilder();
+    for (Point point : this) {
+      if (buffer.length() != 0) {
+        buffer.append(" ");
+      }
+      buffer.append(point);
+    }
+    return buffer.toString();
+  }
 
-	private double amplitude(Point a, Point b, Point c) {
-		final double x0 = b.x - a.x;
-		final double y0 = b.y - a.y;
-		final double x1 = c.x - a.x;
-		final double y1 = c.y - a.y;
-		double result = Math.atan2(y1, x1) - Math.atan2(y0, x0);
-		while (result < -Math.PI) {
-			result += 2.0 * Math.PI;
-		}
-		while (result > Math.PI) {
-			result -= 2.0 * Math.PI;
-		}
+  private double amplitude(Point a, Point b, Point c) {
+    double x0 = b.x - a.x;
+    double y0 = b.y - a.y;
+    double x1 = c.x - a.x;
+    double y1 = c.y - a.y;
+    double result = Math.atan2(y1, x1) - Math.atan2(y0, x0);
+    while (result < -Math.PI) {
+      result += 2.0 * Math.PI;
+    }
+    while (result > Math.PI) {
+      result -= 2.0 * Math.PI;
+    }
 
-		return result;
-	}
+    return result;
+  }
 
-	private static final double EPS = 1e-5;
+  public boolean contains(Point point) {
+    double argSum = 0;
+    for (int i = 0; i < size(); ++i) {
+      Point current = get(i);
+      Point next = get((i + 1) % size());
+      if (new Segment(current, next).on(point)) {
+        return true;
+      }
+      argSum += amplitude(point, current, next);
+    }
 
-	public boolean contains(Point point) {
-		double argSum = 0;
-		for (int i = 0; i < size(); ++i) {
-			final Point current = get(i);
-			final Point next = get((i + 1) % size());
-			if (new Segment(current, next).on(point)) {
-				return true;
-			}
-			argSum += amplitude(point, current, next);
-		}
+    return Math.abs(argSum) > EPS;
+  }
 
-		return Math.abs(argSum) > EPS;
-	}
+  public boolean isCompleted() {
+    return 3 <= size() && !hasSelfIntersecting();
+  }
 
-	public boolean isCompleted() {
-		return 3 <= size() && !hasSelfIntersecting();
-	}
+  private boolean hasSelfIntersecting() {
+    int n = size();
+    for (int i = 0; i < n; ++i) {
+      Segment currentSegment = new Segment(get(i), get((i + 1) % n));
 
-	private boolean hasSelfIntersecting() {
-		int n = size();
-		for (int i = 0; i < n; ++i) {
-			Segment currentSegment = new Segment(get(i), get((i + 1) % n));
+      for (int j = 0; j < n; ++j) {
+        if (i == j || i == (j + 1) % n || (i + 1) % n == j) {
+          continue;
+        }
 
-			for (int j = 0; j < n; ++j) {
-				if (i == j || i == (j + 1) % n || (i + 1) % n == j) {
-					continue;
-				}
+        Segment segment = new Segment(get(j), get((j + 1) % n));
+        if (segment.cross(currentSegment)) {
+          return true;
+        }
+      }
+    }
 
-				Segment segment = new Segment(get(j), get((j + 1) % n));
-				if (segment.cross(currentSegment)) {
-					return true;
-				}
-			}
-		}
+    return false;
+  }
 
-		return false;
-	}
-
-	@Override
-	public Polygon clone() {
-		// PointはImmutableなので、Listのclone()を行うだけで良い
-		return (Polygon) super.clone();
-	}
+  @Override
+  public Polygon clone() {
+    // PointはImmutableなので、Listのclone()を行うだけで良い
+    return (Polygon) super.clone();
+  }
 }

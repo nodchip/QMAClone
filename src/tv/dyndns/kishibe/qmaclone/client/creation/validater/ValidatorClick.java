@@ -25,54 +25,49 @@ import java.util.List;
 
 import tv.dyndns.kishibe.qmaclone.client.game.ProblemType;
 import tv.dyndns.kishibe.qmaclone.client.geom.Polygon;
+import tv.dyndns.kishibe.qmaclone.client.geom.PolygonException;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblem;
 
 import com.google.common.base.Preconditions;
 
 public class ValidatorClick extends Validator {
-	public Evaluation check(PacketProblem problem) {
-		Preconditions.checkArgument(problem.type == ProblemType.Click);
+  public Evaluation check(PacketProblem problem) {
+    Preconditions.checkArgument(problem.type == ProblemType.Click);
 
-		Evaluation eval = super.check(problem);
-		List<String> warn = eval.warn;
+    Evaluation eval = super.check(problem);
+    List<String> warn = eval.warn;
 
-		String url = problem.choices[0];
-		if (!isUrl(url)) {
-			warn.add("選択肢に正しいURLが入力されていません");
-			return eval;
-		}
+    String url = problem.choices[0];
+    if (!isUrl(url)) {
+      warn.add("選択肢に正しいURLが入力されていません");
+      return eval;
+    }
 
-		String urlLower = url.toLowerCase();
-		if (!urlLower.endsWith(".bmp") && !urlLower.endsWith(".png") && !urlLower.endsWith(".gif")
-				&& !urlLower.endsWith(".jpg") && !urlLower.endsWith(".jpeg")) {
-			warn.add("使用可能な画像形式はBMP・PNG・GIF・JPGのみです");
-			return eval;
-		}
+    String urlLower = url.toLowerCase();
+    if (!urlLower.endsWith(".bmp") && !urlLower.endsWith(".png") && !urlLower.endsWith(".gif")
+        && !urlLower.endsWith(".jpg") && !urlLower.endsWith(".jpeg")) {
+      warn.add("使用可能な画像形式はBMP・PNG・GIF・JPGのみです");
+      return eval;
+    }
 
-		List<String> answerList = problem.getAnswerList();
-		if (answerList.isEmpty()) {
-			warn.add("解答が入力されていません");
-			return eval;
-		}
+    List<String> answerList = problem.getAnswerList();
+    if (answerList.isEmpty()) {
+      warn.add("解答が入力されていません");
+      return eval;
+    }
 
-		for (int i = 0; i < answerList.size(); ++i) {
-			if (isValid(answerList.get(i))) {
-				continue;
-			}
+    for (int i = 0; i < answerList.size(); ++i) {
+      try {
+        validate(answerList.get(i), warn);
+      } catch (PolygonException e) {
+        warn.add((i + 1) + "番目の解答が領域を表現した文字列になっていません: " + e.getMessage());
+      }
+    }
 
-			warn.add((i + 1) + "番目の解答が領域を表現した文字列になっていません");
-		}
+    return eval;
+  }
 
-		return eval;
-	}
-
-	private boolean isValid(String polygonDescription) {
-		Polygon polygon = Polygon.fromString(polygonDescription);
-
-		if (polygon == null) {
-			return false;
-		}
-
-		return polygon.isCompleted();
-	}
+  private void validate(String polygonDescription, List<String> warn) throws PolygonException {
+    Polygon.fromString(polygonDescription).isCompleted();
+  }
 }
