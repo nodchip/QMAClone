@@ -33,9 +33,17 @@ public class Polygon extends ArrayList<Point> implements Cloneable {
   public static Polygon fromString(String s) throws PolygonException {
     List<Integer> values = new ArrayList<Integer>();
     for (String value : s.split(" ")) {
-      values.add(Integer.valueOf(value));
-      if (values.size() * 2 > Constant.MAX_NUMBER_OF_POLYGON_VERTICES) {
-        throw new PolygonException("ポリゴンの頂点数が多すぎます");
+      int number;
+      try {
+        number = Integer.valueOf(value);
+      } catch (NumberFormatException e) {
+        throw new PolygonException("数字以外の文字が入力されました: " + s, e);
+      }
+
+      values.add(number);
+
+      if (values.size() > Constant.MAX_NUMBER_OF_POLYGON_VERTICES * 2) {
+        throw new PolygonException("ポリゴンの頂点数が多すぎます: " + s);
       }
     }
 
@@ -45,11 +53,11 @@ public class Polygon extends ArrayList<Point> implements Cloneable {
     }
 
     if (polygon.size() < 3) {
-      throw new PolygonException("ポリゴンの頂点数が足りません");
+      throw new PolygonException("ポリゴンの頂点数が足りません: " + s);
     }
 
     if (polygon.hasSelfIntersecting()) {
-      throw new PolygonException("ポリゴンが自己交差しています");
+      throw new PolygonException("ポリゴンが自己交差しています: " + s);
     }
 
     return polygon;

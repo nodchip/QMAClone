@@ -58,8 +58,8 @@ public class WidgetProblemFormTest extends QMACloneGWTTestCaseBase {
     assertEquals(-1, p.id);
     assertEquals(problem.genre, p.genre);
     assertEquals(problem.type, p.type);
-    assertEquals(problem.good, p.good);
-    assertEquals(problem.bad, p.bad);
+    assertEquals(0, p.good);
+    assertEquals(0, p.bad);
     assertEquals(problem.randomFlag, p.randomFlag);
     // assertEquals(problem.creatorHash, p.creatorHash);
     // assertEquals(problem.userCode, p.userCode);
@@ -72,12 +72,12 @@ public class WidgetProblemFormTest extends QMACloneGWTTestCaseBase {
     assertEquals(problem.choices[1], p.choices[1]);
     assertEquals(problem.choices[2], p.choices[2]);
     assertEquals(problem.choices[3], p.choices[3]);
-    assertEquals(problem.creator, p.creator);
+    assertEquals("未初期化です", p.creator);
     assertEquals(problem.note, p.note);
     assertEquals(problem.imageAnswer, p.imageAnswer);
     assertEquals(problem.imageChoice, p.imageChoice);
-    assertEquals(problem.voteGood, p.voteGood);
-    assertEquals(problem.voteBad, p.voteBad);
+    assertEquals(0, p.voteGood);
+    assertEquals(0, p.voteBad);
     // assertEquals(problem.imageUrl, p.imageUrl);
     // assertEquals(problem.movieUrl, p.movieUrl);
     // BugTrack-QMAClone/595 - QMAClone wiki
