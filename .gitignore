@@ -14,3 +14,4 @@ hs_err_pid*
 /gwt-unitCache/
 /www-test/
 /log.txt
+/target/
