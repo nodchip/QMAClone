@@ -189,7 +189,7 @@ public class ImageUtils {
    */
   @VisibleForTesting
   static String toHashString(String data) {
-    return DigestUtils.sha1Hex(data);
+    return DigestUtils.shaHex(data);
   }
 
   public long getLastModified(Parameter parameter) {

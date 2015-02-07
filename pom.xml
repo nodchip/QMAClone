@@ -83,7 +83,7 @@
   	<dependency>
   		<groupId>org.apache.commons</groupId>
   		<artifactId>commons-math3</artifactId>
-  		<version>[0,)</version>
+  		<version>[3.4.1,)</version>
   	</dependency>
   	<dependency>
   		<groupId>org.apache.commons</groupId>
@@ -103,7 +103,7 @@
   	<dependency>
   		<groupId>com.google.guiceberry</groupId>
   		<artifactId>guiceberry</artifactId>
-  		<version>[0,)</version>
+  		<version>[3.3.1,)</version>
   	</dependency>
   	<dependency>
   		<groupId>com.google.gwt.inject</groupId>
@@ -124,11 +124,6 @@
   		<groupId>com.google.gwt</groupId>
   		<artifactId>gwt-incubator</artifactId>
   		<version>[2.0.1,)</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.eclipse.jetty</groupId>
-  		<artifactId>jetty-websocket</artifactId>
-  		<version>[7.0,7.10)</version>
   	</dependency>
   	<dependency>
   		<groupId>org.hamcrest</groupId>
@@ -193,7 +188,7 @@
   	<dependency>
   		<groupId>com.restfb</groupId>
   		<artifactId>restfb</artifactId>
-  		<version>[1.7.1 ,)</version>
+  		<version>[1.7.1,)</version>
   	</dependency>
   	<dependency>
   		<groupId>net.java.dev.jna</groupId>
@@ -234,6 +229,11 @@
   		<groupId>name.pehl</groupId>
   		<artifactId>piriti-restlet</artifactId>
   		<version>0.7</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.eclipse.jetty.aggregate</groupId>
+  		<artifactId>jetty-all-server</artifactId>
+  		<version>[7.6,7.99)</version>
   	</dependency>
   </dependencies>
 </project>

@@ -23,6 +23,7 @@ package tv.dyndns.kishibe.qmaclone.server;
 
 import java.util.Arrays;
 import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -44,7 +45,6 @@ import tv.dyndns.kishibe.qmaclone.server.util.IntArray;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Sets;
-import com.google.gwt.dev.util.collect.HashSet;
 import com.google.inject.Inject;
 
 public class NormalModeProblemManager extends ProblemManager {
