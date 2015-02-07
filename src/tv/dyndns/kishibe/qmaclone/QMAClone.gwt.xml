@@ -16,6 +16,7 @@
 	<inherits name='com.allen_sauer.gwt.dnd.gwt-dnd' />
 	<inherits name='com.google.api.gwt.services.Plus' />
 	<inherits name='com.google.gwt.widgetideas.GWTCanvas' />
+	<inherits name='javax.annotation.Annotation'/>
 
 	<!-- Specify the app entry point class. -->
 	<entry-point class="tv.dyndns.kishibe.qmaclone.client.QMAClone" />
