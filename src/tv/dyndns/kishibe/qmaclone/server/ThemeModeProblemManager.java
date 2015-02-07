@@ -2,6 +2,7 @@ package tv.dyndns.kishibe.qmaclone.server;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -28,7 +29,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.primitives.Doubles;
-import com.google.gwt.dev.util.collect.HashSet;
 import com.google.inject.Inject;
 
 public class ThemeModeProblemManager extends ProblemManager {
