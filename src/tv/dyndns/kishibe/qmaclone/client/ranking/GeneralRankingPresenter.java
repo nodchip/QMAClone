@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import tv.dyndns.kishibe.qmaclone.client.Service;
 import tv.dyndns.kishibe.qmaclone.client.ServiceAsync;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketRankingData;
 
@@ -37,32 +36,32 @@ import com.google.inject.Inject;
 
 public class GeneralRankingPresenter {
 
-	interface View extends IsWidget {
-		void setRanking(List<List<PacketRankingData>> ranking);
-	}
+  interface View extends IsWidget {
+    void setRanking(List<List<PacketRankingData>> ranking);
+  }
 
-	private static final Logger logger = Logger.getLogger(GeneralRankingPresenter.class.getName());
+  private static final Logger logger = Logger.getLogger(GeneralRankingPresenter.class.getName());
 
-	private View view;
+  private View view;
 
-	@Inject
-	public GeneralRankingPresenter(ServiceAsync service) {
-		service.getGeneralRanking(callbackGetRankingData);
-	}
+  @Inject
+  public GeneralRankingPresenter(ServiceAsync service) {
+    service.getGeneralRanking(callbackGetRankingData);
+  }
 
-	public void setView(View view) {
-		this.view = Preconditions.checkNotNull(view);
-	}
+  public void setView(View view) {
+    this.view = Preconditions.checkNotNull(view);
+  }
 
-	@VisibleForTesting
-	final AsyncCallback<List<List<PacketRankingData>>> callbackGetRankingData = new AsyncCallback<List<List<PacketRankingData>>>() {
-		public void onSuccess(List<List<PacketRankingData>> result) {
-			view.setRanking(result);
-		}
+  @VisibleForTesting
+  final AsyncCallback<List<List<PacketRankingData>>> callbackGetRankingData = new AsyncCallback<List<List<PacketRankingData>>>() {
+    public void onSuccess(List<List<PacketRankingData>> result) {
+      view.setRanking(result);
+    }
 
-		public void onFailure(Throwable caught) {
-			logger.log(Level.WARNING, "ランキングデータの取得に失敗しました", caught);
-		}
-	};
+    public void onFailure(Throwable caught) {
+      logger.log(Level.WARNING, "ランキングデータの取得に失敗しました", caught);
+    }
+  };
 
 }

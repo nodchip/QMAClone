@@ -18,6 +18,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
 import com.restfb.DefaultFacebookClient;
 import com.restfb.Parameter;
+import com.restfb.Version;
 import com.restfb.types.FacebookType;
 
 public class FacebookClient implements SnsClient {
@@ -47,7 +48,8 @@ public class FacebookClient implements SnsClient {
 
   private void post(String message) {
     String accessToken = getPageAccessToken();
-    com.restfb.FacebookClient facebookClient = new DefaultFacebookClient(accessToken);
+    com.restfb.FacebookClient facebookClient = new DefaultFacebookClient(accessToken,
+        Version.UNVERSIONED);
     facebookClient.publish("me/feed", FacebookType.class, Parameter.with("message", message));
   }
 

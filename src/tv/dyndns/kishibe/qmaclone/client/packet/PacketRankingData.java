@@ -21,31 +21,30 @@
 //THE SOFTWARE.
 package tv.dyndns.kishibe.qmaclone.client.packet;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class PacketRankingData implements IsSerializable {
-	public int ranking;
-	public int userCode;
-	public String name;
-	public String imageFileName;
-	public String data;
+  public int ranking;
+  public int userCode;
+  public String name;
+  public String imageFileName;
+  public String data;
 
-	public PacketRankingData() {
-	}
+  public PacketRankingData() {
+  }
 
-	public PacketRankingData(int ranking, int userCode, String name, String imageFileName,
-			String data) {
-		this.ranking = ranking;
-		this.userCode = userCode;
-		this.name = name;
-		this.imageFileName = imageFileName;
-		this.data = data;
-	}
+  public PacketRankingData(int ranking, int userCode, String name, String imageFileName, String data) {
+    this.ranking = ranking;
+    this.userCode = userCode;
+    this.name = name;
+    this.imageFileName = imageFileName;
+    this.data = data;
+  }
 
-	@Override
-	public String toString() {
-		return Objects.toStringHelper(this).add("ranking", ranking).add("userCode", userCode)
-				.add("name", name).add("imageFileName", imageFileName).add("data", data).toString();
-	}
+  @Override
+  public String toString() {
+    return MoreObjects.toStringHelper(this).add("ranking", ranking).add("userCode", userCode)
+        .add("name", name).add("imageFileName", imageFileName).add("data", data).toString();
+  }
 }

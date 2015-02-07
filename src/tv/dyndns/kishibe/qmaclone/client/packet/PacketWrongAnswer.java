@@ -21,46 +21,47 @@
 //THE SOFTWARE.
 package tv.dyndns.kishibe.qmaclone.client.packet;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.collect.ComparisonChain;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class PacketWrongAnswer implements IsSerializable, Comparable<PacketWrongAnswer> {
 
-	public String answer;
-	public int count;
+  public String answer;
+  public int count;
 
-	public PacketWrongAnswer setAnswer(String answer) {
-		this.answer = answer;
-		return this;
-	}
+  public PacketWrongAnswer setAnswer(String answer) {
+    this.answer = answer;
+    return this;
+  }
 
-	public PacketWrongAnswer setCount(int count) {
-		this.count = count;
-		return this;
-	}
+  public PacketWrongAnswer setCount(int count) {
+    this.count = count;
+    return this;
+  }
 
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(answer, count);
-	}
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(answer, count);
+  }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (!(obj instanceof PacketWrongAnswer)) {
-			return false;
-		}
-		PacketWrongAnswer rh = (PacketWrongAnswer) obj;
-		return Objects.equal(answer, rh.answer) && count == rh.count;
-	}
+  @Override
+  public boolean equals(Object obj) {
+    if (!(obj instanceof PacketWrongAnswer)) {
+      return false;
+    }
+    PacketWrongAnswer rh = (PacketWrongAnswer) obj;
+    return Objects.equal(answer, rh.answer) && count == rh.count;
+  }
 
-	@Override
-	public int compareTo(PacketWrongAnswer o) {
-		return ComparisonChain.start().compare(answer, o.answer).compare(count, o.count).result();
-	}
+  @Override
+  public int compareTo(PacketWrongAnswer o) {
+    return ComparisonChain.start().compare(answer, o.answer).compare(count, o.count).result();
+  }
 
-	@Override
-	public String toString() {
-		return Objects.toStringHelper(this).add("answer", answer).add("count", count).toString();
-	}
+  @Override
+  public String toString() {
+    return MoreObjects.toStringHelper(this).add("answer", answer).add("count", count).toString();
+  }
 }

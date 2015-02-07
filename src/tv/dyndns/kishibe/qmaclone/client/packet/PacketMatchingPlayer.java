@@ -23,28 +23,28 @@ package tv.dyndns.kishibe.qmaclone.client.packet;
 
 import name.pehl.piriti.json.client.JsonReader;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class PacketMatchingPlayer implements IsSerializable {
-	public static class Json {
-		public interface PacketMatchingPlayerReader extends JsonReader<PacketMatchingPlayer> {
-		}
+  public static class Json {
+    public interface PacketMatchingPlayerReader extends JsonReader<PacketMatchingPlayer> {
+    }
 
-		public static final PacketMatchingPlayerReader READER = GWT
-				.create(PacketMatchingPlayerReader.class);
-	}
+    public static final PacketMatchingPlayerReader READER = GWT
+        .create(PacketMatchingPlayerReader.class);
+  }
 
-	public PacketPlayerSummary playerSummary;
-	public boolean isRequestSkip;
-	public String greeting;
-	public String imageFileName;
+  public PacketPlayerSummary playerSummary;
+  public boolean isRequestSkip;
+  public String greeting;
+  public String imageFileName;
 
-	@Override
-	public String toString() {
-		return Objects.toStringHelper(this).add("playerSummary", playerSummary)
-				.add("isRequestSkip", isRequestSkip).add("greeting", greeting)
-				.add("imageFileName", imageFileName).toString();
-	}
+  @Override
+  public String toString() {
+    return MoreObjects.toStringHelper(this).add("playerSummary", playerSummary)
+        .add("isRequestSkip", isRequestSkip).add("greeting", greeting)
+        .add("imageFileName", imageFileName).toString();
+  }
 }

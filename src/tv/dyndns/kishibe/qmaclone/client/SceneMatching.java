@@ -28,7 +28,7 @@ import tv.dyndns.kishibe.qmaclone.client.constant.Constant;
 import tv.dyndns.kishibe.qmaclone.client.game.SessionData;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketMatchingData;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
@@ -36,118 +36,118 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class SceneMatching extends SceneBase {
 
-	private static class MatchingStatusUpdater extends StatusUpdater<PacketMatchingData> {
+  private static class MatchingStatusUpdater extends StatusUpdater<PacketMatchingData> {
 
-		private final SceneMatching scene;
-		private final SessionData sessionData;
+    private final SceneMatching scene;
+    private final SessionData sessionData;
 
-		public MatchingStatusUpdater(SceneMatching scene, SessionData sessionData) {
-			super(PacketMatchingData.class.getName() + Constant.WEBSOCKET_PROTOCOL_SEPARATOR
-					+ sessionData.getSessionId(), TIMER_INTERVAL);
-			this.scene = Preconditions.checkNotNull(scene);
-			this.sessionData = Preconditions.checkNotNull(sessionData);
-		}
+    public MatchingStatusUpdater(SceneMatching scene, SessionData sessionData) {
+      super(PacketMatchingData.class.getName() + Constant.WEBSOCKET_PROTOCOL_SEPARATOR
+          + sessionData.getSessionId(), TIMER_INTERVAL);
+      this.scene = Preconditions.checkNotNull(scene);
+      this.sessionData = Preconditions.checkNotNull(sessionData);
+    }
 
-		@Override
-		protected void request(AsyncCallback<PacketMatchingData> callback) {
-			int sessionId = sessionData.getSessionId();
-			Service.Util.getInstance().getMatchingData(sessionId, callback);
-		}
+    @Override
+    protected void request(AsyncCallback<PacketMatchingData> callback) {
+      int sessionId = sessionData.getSessionId();
+      Service.Util.getInstance().getMatchingData(sessionId, callback);
+    }
 
-		@Override
-		protected void onReceived(PacketMatchingData status) {
-			scene.callbackGetMatchingData.onSuccess(status);
-		}
+    @Override
+    protected void onReceived(PacketMatchingData status) {
+      scene.callbackGetMatchingData.onSuccess(status);
+    }
 
-		@Override
-		protected PacketMatchingData parse(String json) {
-			return PacketMatchingData.Json.READER.read(json);
-		}
+    @Override
+    protected PacketMatchingData parse(String json) {
+      return PacketMatchingData.Json.READER.read(json);
+    }
 
-	}
+  }
 
-	private static final Logger logger = Logger.getLogger(SceneMatching.class.getName());
-	private static final int TIMER_INTERVAL = 1000;
-	private PanelMatching panel;
-	private boolean transited = false;
-	private final StatusUpdater<PacketMatchingData> updater;
-	private final SessionData sessionData;
+  private static final Logger logger = Logger.getLogger(SceneMatching.class.getName());
+  private static final int TIMER_INTERVAL = 1000;
+  private PanelMatching panel;
+  private boolean transited = false;
+  private final StatusUpdater<PacketMatchingData> updater;
+  private final SessionData sessionData;
 
-	public SceneMatching(SessionData sessionData) {
-		this.sessionData = Preconditions.checkNotNull(sessionData);
-		updater = new MatchingStatusUpdater(this, sessionData);
-		panel = new PanelMatching(this);
+  public SceneMatching(SessionData sessionData) {
+    this.sessionData = Preconditions.checkNotNull(sessionData);
+    updater = new MatchingStatusUpdater(this, sessionData);
+    panel = new PanelMatching(this);
 
-		Controller.getInstance().setGamePanel(panel);
-	}
+    Controller.getInstance().setGamePanel(panel);
+  }
 
-	final AsyncCallback<PacketMatchingData> callbackGetMatchingData = new AsyncCallback<PacketMatchingData>() {
-		@Override
-		public void onSuccess(PacketMatchingData result) {
-			if (transited) {
-				return;
-			}
+  final AsyncCallback<PacketMatchingData> callbackGetMatchingData = new AsyncCallback<PacketMatchingData>() {
+    @Override
+    public void onSuccess(PacketMatchingData result) {
+      if (transited) {
+        return;
+      }
 
-			if (result == null || result.players == null) {
-				String message = "無効なマッチング情報が返されました: "
-						+ Objects.toStringHelper(this).add("sessionId", sessionData.getSessionId())
-								.add("playerListIndex", sessionData.getPlayerListIndex())
-								.add("userCode", UserData.get().getUserCode())
-								.add("packetMatchingData", result).toString();
-				logger.log(Level.WARNING, message);
-				return;
-			}
+      if (result == null || result.players == null) {
+        String message = "無効なマッチング情報が返されました: "
+            + MoreObjects.toStringHelper(this).add("sessionId", sessionData.getSessionId())
+                .add("playerListIndex", sessionData.getPlayerListIndex())
+                .add("userCode", UserData.get().getUserCode()).add("packetMatchingData", result)
+                .toString();
+        logger.log(Level.WARNING, message);
+        return;
+      }
 
-			panel.setPlayerList(result.players);
+      panel.setPlayerList(result.players);
 
-			if (result.restSeconds <= 0) {
-				transited = true;
-				Controller.getInstance().setScene(new SceneReadyForGame(sessionData));
-				updater.stop();
-			} else {
-				panel.setRestSecond(result.restSeconds);
-			}
-		}
+      if (result.restSeconds <= 0) {
+        transited = true;
+        Controller.getInstance().setScene(new SceneReadyForGame(sessionData));
+        updater.stop();
+      } else {
+        panel.setRestSecond(result.restSeconds);
+      }
+    }
 
-		@Override
-		public void onFailure(Throwable caught) {
-			logger.log(Level.WARNING, "マッチング情報の取得中にエラーが発生しました", caught);
-		}
-	};
+    @Override
+    public void onFailure(Throwable caught) {
+      logger.log(Level.WARNING, "マッチング情報の取得中にエラーが発生しました", caught);
+    }
+  };
 
-	public void requestSkip() {
-		int sessionId = sessionData.getSessionId();
-		int playerListId = sessionData.getPlayerListIndex();
+  public void requestSkip() {
+    int sessionId = sessionData.getSessionId();
+    int playerListId = sessionData.getPlayerListIndex();
 
-		Service.Util.getInstance().requestSkip(sessionId, playerListId, callbackRequestSkip);
-	}
+    Service.Util.getInstance().requestSkip(sessionId, playerListId, callbackRequestSkip);
+  }
 
-	private final AsyncCallback<Integer> callbackRequestSkip = new AsyncCallback<Integer>() {
-		public void onSuccess(Integer result) {
-		}
+  private final AsyncCallback<Integer> callbackRequestSkip = new AsyncCallback<Integer>() {
+    public void onSuccess(Integer result) {
+    }
 
-		public void onFailure(Throwable caught) {
-			Scheduler.get().scheduleFixedDelay(new RepeatingCommand() {
-				@Override
-				public boolean execute() {
-					requestSkip();
-					return false;
-				}
-			}, 1000);
+    public void onFailure(Throwable caught) {
+      Scheduler.get().scheduleFixedDelay(new RepeatingCommand() {
+        @Override
+        public boolean execute() {
+          requestSkip();
+          return false;
+        }
+      }, 1000);
 
-			logger.log(Level.WARNING, "スキップリクエスト送信中にエラーが発生しました。パケットを再送します", caught);
-		}
-	};
+      logger.log(Level.WARNING, "スキップリクエスト送信中にエラーが発生しました。パケットを再送します", caught);
+    }
+  };
 
-	@Override
-	protected void onLoad() {
-		super.onLoad();
-		updater.start();
-	}
+  @Override
+  protected void onLoad() {
+    super.onLoad();
+    updater.start();
+  }
 
-	@Override
-	protected void onUnload() {
-		updater.stop();
-		super.onUnload();
-	}
+  @Override
+  protected void onUnload() {
+    updater.stop();
+    super.onUnload();
+  }
 }
