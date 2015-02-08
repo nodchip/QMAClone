@@ -1,21 +1,22 @@
 package tv.dyndns.kishibe.qmaclone.server;
 
-import static org.easymock.EasyMock.isA;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.fail;
+import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import org.easymock.EasyMock;
-import org.easymock.EasyMockSupport;
 import org.eclipse.jetty.websocket.WebSocket;
 import org.junit.Before;
 import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketPlayerSummary;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketServerStatus;
@@ -24,63 +25,55 @@ import tv.dyndns.kishibe.qmaclone.server.websocket.WebSockets;
 
 import com.google.common.collect.ImmutableList;
 
-public class ServerStatusManagerTest extends EasyMockSupport {
+@RunWith(JUnit4.class)
+public class ServerStatusManagerTest {
+
+  @Rule
+  public final MockitoRule mocks = MockitoJUnit.rule();
+
+  @Mock
   private Database mockDatabase;
+  @Mock
   private GameManager mockGameManager;
+  @Mock
   private NormalModeProblemManager mockNormalModeProblemManager;
+  @Mock
   private PlayerHistoryManager mockPlayerHistoryManager;
+  @Mock
   private WebSockets<PacketServerStatus> mockServerStatusWebSockets;
+  @Mock
   private ThreadPool mockThreadPool;
+  @Mock
   private WebSocket mockWebSocket;
+
   private ServerStatusManager manager;
 
-  @SuppressWarnings("unchecked")
   @Before
   public void setUp() throws Exception {
-    mockDatabase = createMock(Database.class);
-    mockGameManager = createMock(GameManager.class);
-    mockNormalModeProblemManager = createMock(NormalModeProblemManager.class);
-    mockPlayerHistoryManager = createMock(PlayerHistoryManager.class);
-    mockServerStatusWebSockets = createMock(WebSockets.class);
-    mockThreadPool = createNiceMock(ThreadPool.class);
-    mockWebSocket = createMock(WebSocket.class);
+    when(mockDatabase.loadPageView()).thenReturn(new PageView());
+    when(mockDatabase.getNumberOfActiveUsers()).thenReturn(12345);
+    when(mockGameManager.getNumberOfPlayersInWhole()).thenReturn(1);
+    when(mockNormalModeProblemManager.getNumberOfProblem()).thenReturn(210000);
+    when(mockPlayerHistoryManager.get()).thenReturn(ImmutableList.of(new PacketPlayerSummary()));
 
-    EasyMock.expect(mockDatabase.loadPageView()).andStubReturn(new PageView());
-    EasyMock.expect(mockDatabase.getNumberOfActiveUsers()).andStubReturn(12345);
-    EasyMock.expect(mockGameManager.getNumberOfPlayersInWhole()).andStubReturn(1);
-    EasyMock.expect(mockNormalModeProblemManager.getNumberOfProblem()).andStubReturn(210000);
-    EasyMock.expect(mockPlayerHistoryManager.get()).andStubReturn(
-        ImmutableList.of(new PacketPlayerSummary()));
+    manager = new ServerStatusManager(mockDatabase, mockGameManager, mockNormalModeProblemManager,
+        mockPlayerHistoryManager, mockServerStatusWebSockets, mockThreadPool);
   }
 
   @Test
   public void testLogin() throws Exception {
-    mockServerStatusWebSockets.send(isA(PacketServerStatus.class));
-    mockServerStatusWebSockets.send(isA(PacketServerStatus.class));
-
-    replayAll();
-
-    manager = new ServerStatusManager(mockDatabase, mockGameManager, mockNormalModeProblemManager,
-        mockPlayerHistoryManager, mockServerStatusWebSockets, mockThreadPool);
     int numberOfPageView = manager.getServerStatus().numberOfPageView;
     manager.login();
     manager.updateServerStatus();
-    assertEquals(numberOfPageView + 1, manager.getServerStatus().numberOfPageView);
 
-    verifyAll();
+    assertThat(manager.getServerStatus().numberOfPageView).isEqualTo(numberOfPageView + 1);
+
+    verify(mockServerStatusWebSockets, times(2)).send(isA(PacketServerStatus.class));
   }
 
   @Test
   public void testGetServerStatus() throws Exception {
-    mockServerStatusWebSockets.send(isA(PacketServerStatus.class));
-
-    replayAll();
-
-    manager = new ServerStatusManager(mockDatabase, mockGameManager, mockNormalModeProblemManager,
-        mockPlayerHistoryManager, mockServerStatusWebSockets, mockThreadPool);
-    assertNotNull(manager.getServerStatus());
-
-    verifyAll();
+    assertThat(manager.getServerStatus()).isNotNull();
   }
 
   @Test
@@ -91,17 +84,11 @@ public class ServerStatusManagerTest extends EasyMockSupport {
 
   @Test
   public void testKeepAlive() {
-    mockServerStatusWebSockets.send(isA(PacketServerStatus.class));
-
-    replayAll();
-
-    manager = new ServerStatusManager(mockDatabase, mockGameManager, mockNormalModeProblemManager,
-        mockPlayerHistoryManager, mockServerStatusWebSockets, mockThreadPool);
     manager.keepAlive(123456789);
 
-    verifyAll();
+    assertThat((Iterable<Integer>) manager.loginUserCodes).contains(123456789);
 
-    assertThat(manager.loginUserCodes, hasItem(123456789));
+    verify(mockServerStatusWebSockets).send(isA(PacketServerStatus.class));
   }
 
   @Test
@@ -118,47 +105,32 @@ public class ServerStatusManagerTest extends EasyMockSupport {
 
   @Test
   public void updateServerStatusShouldNotUpdateFieldIfNoChange() throws Exception {
-    mockServerStatusWebSockets.send(isA(PacketServerStatus.class));
-
-    replayAll();
-
-    manager = new ServerStatusManager(mockDatabase, mockGameManager, mockNormalModeProblemManager,
-        mockPlayerHistoryManager, mockServerStatusWebSockets, mockThreadPool);
     PacketServerStatus status = manager.getServerStatus();
     manager.updateServerStatus();
-    assertSame(status, manager.getServerStatus());
 
-    verifyAll();
+    assertThat(manager.getServerStatus()).isSameAs(status);
+
+    verify(mockServerStatusWebSockets).send(isA(PacketServerStatus.class));
   }
 
   @Test
   public void updateServerStatusShouldUpdateFieldIfChangeExists() throws Exception {
-    mockServerStatusWebSockets.send(isA(PacketServerStatus.class));
-    mockServerStatusWebSockets.send(isA(PacketServerStatus.class));
-
-    replayAll();
-
-    manager = new ServerStatusManager(mockDatabase, mockGameManager, mockNormalModeProblemManager,
-        mockPlayerHistoryManager, mockServerStatusWebSockets, mockThreadPool);
     PacketServerStatus status = manager.getServerStatus();
     manager.login();
     manager.updateServerStatus();
-    assertThat(status, not(equalTo(manager.getServerStatus())));
 
-    verifyAll();
+    assertThat(manager.getServerStatus()).isNotEqualTo(status);
+
+    verify(mockServerStatusWebSockets, times(2)).send(isA(PacketServerStatus.class));
   }
 
   @Test
   public void getServerStatusWebSocketShouldReturnSocket() {
-    mockServerStatusWebSockets.send(isA(PacketServerStatus.class));
-    EasyMock.expect(mockServerStatusWebSockets.newWebSocket()).andReturn(mockWebSocket);
+    when(mockServerStatusWebSockets.newWebSocket()).thenReturn(mockWebSocket);
 
-    replayAll();
+    assertThat(manager.getServerStatusWebSocket()).isNotNull();
 
-    manager = new ServerStatusManager(mockDatabase, mockGameManager, mockNormalModeProblemManager,
-        mockPlayerHistoryManager, mockServerStatusWebSockets, mockThreadPool);
-    assertNotNull(manager.getServerStatusWebSocket());
-
-    verifyAll();
+    verify(mockServerStatusWebSockets).send(isA(PacketServerStatus.class));
+    verify(mockServerStatusWebSockets).newWebSocket();
   }
 }

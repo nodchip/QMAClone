@@ -1,40 +1,46 @@
 package tv.dyndns.kishibe.qmaclone.client.util;
 
+import static org.mockito.Mockito.verify;
+
 import java.util.Arrays;
 
-import org.easymock.EasyMock;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 
 @RunWith(JUnit4.class)
 public class CommandRunnerTest {
-	private Runnable mockRunnable1;
-	private Runnable mockRunnable2;
-	private Runnable mockRunnable3;
-	private CommandRunner runner;
 
-	@Before
-	public void setUp() throws Exception {
-		mockRunnable1 = EasyMock.createMock(Runnable.class);
-		mockRunnable2 = EasyMock.createMock(Runnable.class);
-		mockRunnable3 = EasyMock.createMock(Runnable.class);
-		runner = new CommandRunner(Arrays.asList(mockRunnable1, mockRunnable2, mockRunnable3));
-	}
+  @Rule
+  public final MockitoRule mocks = MockitoJUnit.rule();
 
-	@Test
-	public void testRun() {
-		mockRunnable1.run();
-		mockRunnable2.run();
-		mockRunnable3.run();
+  @Mock
+  private Runnable mockRunnable1;
+  @Mock
+  private Runnable mockRunnable2;
+  @Mock
+  private Runnable mockRunnable3;
 
-		EasyMock.replay(mockRunnable1, mockRunnable2, mockRunnable3);
+  private CommandRunner runner;
 
-		runner.run();
-		runner.run();
-		runner.run();
+  @Before
+  public void setUp() throws Exception {
+    runner = new CommandRunner(Arrays.asList(mockRunnable1, mockRunnable2, mockRunnable3));
+  }
 
-		EasyMock.verify(mockRunnable1, mockRunnable2, mockRunnable3);
-	}
+  @Test
+  public void testRun() {
+    runner.run();
+    runner.run();
+    runner.run();
+
+    verify(mockRunnable1).run();
+    verify(mockRunnable2).run();
+    verify(mockRunnable3).run();
+  }
 }

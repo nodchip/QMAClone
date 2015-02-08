@@ -12,7 +12,6 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
-import org.easymock.EasyMockSupport;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -33,7 +32,7 @@ import com.google.guiceberry.junit4.GuiceBerryRule;
 import com.google.inject.Inject;
 
 @RunWith(JUnit4.class)
-public class GameTest extends EasyMockSupport {
+public class GameTest {
 
   private static final String FAKE_REMOTE_ADDRESS = "1.2.3.4";
   @Rule

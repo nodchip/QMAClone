@@ -1,7 +1,7 @@
 package tv.dyndns.kishibe.qmaclone.server;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static com.google.common.truth.Truth.assertThat;
+import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,68 +13,66 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.io.FileUtils;
 import org.apache.http.impl.cookie.DateParseException;
 import org.apache.http.impl.cookie.DateUtils;
-import org.easymock.EasyMock;
-import org.easymock.EasyMockSupport;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 
 import tv.dyndns.kishibe.qmaclone.server.image.ImageUtils;
 import tv.dyndns.kishibe.qmaclone.server.image.ImageUtils.Parameter;
 
 @RunWith(JUnit4.class)
-public class ImageProxyServletStubTest extends EasyMockSupport {
-	private ImageProxyServletStub service;
-	private HttpServletRequest mockRequest;
-	private ImageUtils mockImageManager;
+public class ImageProxyServletStubTest {
 
-	@Before
-	public void setUp() {
-		try {
-			FileUtils.deleteDirectory(new File("/tmp/qmaclone/image"));
-		} catch (IOException e) {
-		}
-		mockImageManager = createMock(ImageUtils.class);
-		service = new ImageProxyServletStub(mockImageManager);
-		mockRequest = createMock(HttpServletRequest.class);
-	}
+  @Rule
+  public final MockitoRule mocks = MockitoJUnit.rule();
 
-	@Test
-	public void parseParameterShouldWork() throws ServletException {
-		EasyMock.expect(mockRequest.getRequestURI()).andStubReturn(
-				"/image/url/006100620063/width/512/height/384");
+  @Mock
+  private ImageProxyServletStub service;
+  @Mock
+  private HttpServletRequest mockRequest;
+  @Mock
+  private ImageUtils mockImageManager;
 
-		replayAll();
+  @Before
+  public void setUp() {
+    try {
+      FileUtils.deleteDirectory(new File("/tmp/qmaclone/image"));
+    } catch (IOException e) {
+    }
+    service = new ImageProxyServletStub(mockImageManager);
+  }
 
-		Parameter parameter = service.parseParameter(mockRequest);
+  @Test
+  public void parseParameterShouldWork() throws ServletException {
+    when(mockRequest.getRequestURI()).thenReturn("/image/url/006100620063/width/512/height/384");
 
-		verifyAll();
+    Parameter parameter = service.parseParameter(mockRequest);
 
-		assertEquals("abc", parameter.url);
-		assertEquals(512, parameter.width);
-		assertEquals(384, parameter.height);
-	}
+    assertThat(parameter.url).isEqualTo("abc");
+    assertThat(parameter.width).isEqualTo(512);
+    assertThat(parameter.height).isEqualTo(384);
+  }
 
-	@Test
-	public void parseParameterShouldWorkWithRoot() throws ServletException {
-		EasyMock.expect(mockRequest.getRequestURI()).andStubReturn(
-				"/QMAClone/image/url/006100620063/width/512/height/384");
+  @Test
+  public void parseParameterShouldWorkWithRoot() throws ServletException {
+    when(mockRequest.getRequestURI()).thenReturn(
+        "/QMAClone/image/url/006100620063/width/512/height/384");
 
-		replayAll();
+    Parameter parameter = service.parseParameter(mockRequest);
 
-		Parameter parameter = service.parseParameter(mockRequest);
+    assertThat(parameter.url).isEqualTo("abc");
+    assertThat(parameter.width).isEqualTo(512);
+    assertThat(parameter.height).isEqualTo(384);
+  }
 
-		verifyAll();
-
-		assertEquals("abc", parameter.url);
-		assertEquals(512, parameter.width);
-		assertEquals(384, parameter.height);
-	}
-
-	@Test
-	public void testGetRFC1123NextYear() throws DateParseException {
-		Date date = DateUtils.parseDate(service.getRFC1123NextYear());
-		assertTrue(date.getTime() < System.currentTimeMillis() + 366L * 24 * 60 * 60 * 1000);
-	}
+  @Test
+  public void testGetRFC1123NextYear() throws DateParseException {
+    Date date = DateUtils.parseDate(service.getRFC1123NextYear());
+    assertThat(date.getTime()).isLessThan(System.currentTimeMillis() + 366L * 24 * 60 * 60 * 1000);
+  }
 }
