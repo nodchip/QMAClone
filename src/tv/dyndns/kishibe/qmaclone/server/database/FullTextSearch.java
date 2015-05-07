@@ -1,8 +1,9 @@
 package tv.dyndns.kishibe.qmaclone.server.database;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
@@ -55,7 +56,6 @@ import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblem;
 import tv.dyndns.kishibe.qmaclone.client.util.HasIndex;
 import tv.dyndns.kishibe.qmaclone.server.QMACloneModule;
 import tv.dyndns.kishibe.qmaclone.server.ThreadPool;
-import tv.dyndns.kishibe.qmaclone.server.relevance.LuceneVersion;
 import tv.dyndns.kishibe.qmaclone.server.relevance.NGramAnalyzer;
 import tv.dyndns.kishibe.qmaclone.server.relevance.ViterbiAnalyzer;
 import tv.dyndns.kishibe.qmaclone.server.relevance.ViterbiTokenizer;
@@ -80,7 +80,8 @@ import com.google.inject.Injector;
 
 public class FullTextSearch {
   private static final Logger logger = Logger.getLogger(FullTextSearch.class.toString());
-  private static final File INDEX_FILE_DIRECTORY = new File("/tmp/qmaclone/lucene");
+  private static final Path INDEX_FILE_DIRECTORY = FileSystems.getDefault().getPath(
+      "/tmp/qmaclone/lucene");
   private static final int TIME_OUT_SEC = 10;
   private static final int MAX_NUMBER_OF_SEARCH_REUSLTS = 10000;
   private static final String FIELD_PROBLEM_ID = "problemId";
@@ -138,13 +139,13 @@ public class FullTextSearch {
   }
 
   private void generateIndex() throws IOException, DatabaseException {
-    FileUtils.deleteDirectory(INDEX_FILE_DIRECTORY);
-    INDEX_FILE_DIRECTORY.mkdirs();
+    FileUtils.deleteDirectory(INDEX_FILE_DIRECTORY.toFile());
+    INDEX_FILE_DIRECTORY.toFile().mkdirs();
 
     synchronized (lockIndexWriter) {
       FSDirectory d = FSDirectory.open(INDEX_FILE_DIRECTORY);
-      try (IndexWriter writer = new IndexWriter(d, new IndexWriterConfig(LuceneVersion.get(),
-          new NGramAnalyzer()).setOpenMode(OpenMode.CREATE))) {
+      try (IndexWriter writer = new IndexWriter(d,
+          new IndexWriterConfig(new NGramAnalyzer()).setOpenMode(OpenMode.CREATE))) {
         // 循環参照のため直接インスタンス化する
         new DirectDatabase(queryRunner, null, null, null).processProblems(new ProblemIndexWriter(
             writer));
@@ -155,7 +156,7 @@ public class FullTextSearch {
   private IndexWriter newIndexWriter() throws CorruptIndexException, LockObtainFailedException,
       IOException {
     return new IndexWriter(FSDirectory.open(INDEX_FILE_DIRECTORY), new IndexWriterConfig(
-        LuceneVersion.get(), new NGramAnalyzer()).setOpenMode(OpenMode.APPEND));
+        new NGramAnalyzer()).setOpenMode(OpenMode.APPEND));
   }
 
   private Document convertProblemToDocument(PacketProblem problem) {

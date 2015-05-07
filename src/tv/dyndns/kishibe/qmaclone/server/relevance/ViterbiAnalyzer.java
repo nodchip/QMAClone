@@ -8,26 +8,27 @@ import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 
 public class ViterbiAnalyzer extends Analyzer {
-	
-	public interface Factory{
-		ViterbiAnalyzer create();
-	}
 
-	private final ViterbiTokenizer.Factory viterbiTokenizerFactory;
+  public interface Factory {
+    ViterbiAnalyzer create();
+  }
 
-	@Inject
-	public ViterbiAnalyzer(ViterbiTokenizer.Factory viterbiTokenizerFactory) {
-		this.viterbiTokenizerFactory = Preconditions.checkNotNull(viterbiTokenizerFactory);
-	}
+  private final ViterbiTokenizer.Factory viterbiTokenizerFactory;
+  private Reader reader;
 
-	@Override
-	protected Reader initReader(String fieldName, Reader reader) {
-		return ReaderUtil.wrapWithNormalizer(reader);
-	}
+  @Inject
+  public ViterbiAnalyzer(ViterbiTokenizer.Factory viterbiTokenizerFactory) {
+    this.viterbiTokenizerFactory = Preconditions.checkNotNull(viterbiTokenizerFactory);
+  }
 
-	@Override
-	protected TokenStreamComponents createComponents(String fieldName, Reader reader) {
-		return new TokenStreamComponents(viterbiTokenizerFactory.create(reader));
-	}
+  @Override
+  protected Reader initReader(String fieldName, Reader reader) {
+    return this.reader = ReaderUtil.wrapWithNormalizer(reader);
+  }
+
+  @Override
+  protected TokenStreamComponents createComponents(String fieldName) {
+    return new TokenStreamComponents(viterbiTokenizerFactory.create(reader));
+  }
 
 }

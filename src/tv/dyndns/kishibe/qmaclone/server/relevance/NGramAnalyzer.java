@@ -16,7 +16,7 @@ public class NGramAnalyzer extends Analyzer {
   }
 
   @Override
-  protected TokenStreamComponents createComponents(String fieldName, Reader reader) {
-    return new TokenStreamComponents(new NGramTokenizer(reader, MIN_NGRAM_WEIGHT, MAX_NGRAM_WEIGHT));
+  protected TokenStreamComponents createComponents(String fieldName) {
+    return new TokenStreamComponents(new NGramTokenizer(MIN_NGRAM_WEIGHT, MAX_NGRAM_WEIGHT));
   }
 }

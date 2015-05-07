@@ -70,6 +70,7 @@ import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Range;
 import com.google.guiceberry.junit4.GuiceBerryRule;
 import com.google.inject.Inject;
 
@@ -694,7 +695,7 @@ public class DatabaseTest {
     database.addCreationLog(problem, 111, "222");
 
     List<PacketProblemCreationLog> log1 = database.getProblemCreationHistory(0);
-    assertThat(log1.size()).isInclusivelyInRange(log0.size(), log0.size() + 1);
+    assertThat(log1.size()).isIn(Range.closed(log0.size(), log0.size() + 1));
 
     assertEquals(countUserCode + 1, database.getNumberOfCreationLogWithUserCode(111, 0));
     assertEquals(countMachineIp + 1, database.getNumberOfCreationLogWithUserCode(111, 0));
