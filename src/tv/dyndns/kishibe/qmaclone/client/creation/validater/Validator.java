@@ -39,168 +39,167 @@ import com.google.common.collect.Maps;
 import com.google.common.primitives.Chars;
 
 public abstract class Validator {
-	private static final List<Set<Character>> LETTER_SETS = ImmutableList
-			.of(toSet("あかさたなはまやらわいきしちにひみりをうくすつぬふむゆるんえけせてねへめれおこそとのほもよろーがぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽぁぃぅぇぉゃゅょっ"),
-					toSet("アカサタナハマヤラワイキシチニヒミリヲウクスツヌフムユルンエケセテネヘメレオコソトノホモヨローガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポァィゥェォャュョッヴ"),
-					toSet("１２３４５６７８９０ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ"));
-	private static final String HALF_FULL_LETTER[] = { "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
-			"ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ０１２３４５６７８９" };
-	private static final Map<Character, Character> HALF_TO_FULL = createHalfToFull();
-	private static final String regex = "\\b(?:https?|shttp)://(?:(?:[-_.!~*'()a-zA-Z0-9;:&=+$,]|%[0-9A-Fa-f][0-9A-Fa-f])*@)?(?:(?:[a-zA-Z0-9](?:[-a-zA-Z0-9]*[a-zA-Z0-9])?\\.)*[a-zA-Z](?:[-a-zA-Z0-9]*[a-zA-Z0-9])?\\.?|[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+)(?::[0-9]*)?(?:/(?:[-_.!~*'()a-zA-Z0-9:@&=+$,]|%[0-9A-Fa-f][0-9A-Fa-f])*(?:;(?:[-_.!~*'()a-zA-Z0-9:@&=+$,]|%[0-9A-Fa-f][0-9A-Fa-f])*)*(?:/(?:[-_.!~*'()a-zA-Z0-9:@&=+$,]|%[0-9A-Fa-f][0-9A-Fa-f])*(?:;(?:[-_.!~*'()a-zA-Z0-9:@&=+$,]|%[0-9A-Fa-f][0-9A-Fa-f])*)*)*)?(?:\\?(?:[-_.!~*'()a-zA-Z0-9;/?:@&=+$,]|%[0-9A-Fa-f][0-9A-Fa-f])*)?(?:#(?:[-_.!~*'()a-zA-Z0-9;/?:@&=+$,]|%[0-9A-Fa-f][0-9A-Fa-f])*)?";
+  private static final List<Set<Character>> LETTER_SETS = ImmutableList.of(
+      toSet("あかさたなはまやらわいきしちにひみりをうくすつぬふむゆるんえけせてねへめれおこそとのほもよろーがぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽぁぃぅぇぉゃゅょっ"),
+      toSet("アカサタナハマヤラワイキシチニヒミリヲウクスツヌフムユルンエケセテネヘメレオコソトノホモヨローガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポァィゥェォャュョッヴ"),
+      toSet("１２３４５６７８９０ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ"));
+  private static final String HALF_FULL_LETTER[] = { "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
+      "ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ０１２３４５６７８９" };
+  private static final Map<Character, Character> HALF_TO_FULL = createHalfToFull();
+  private static final String regex = "\\b(?:https?|shttp)://(?:(?:[-_.!~*'()a-zA-Z0-9;:&=+$,]|%[0-9A-Fa-f][0-9A-Fa-f])*@)?(?:(?:[a-zA-Z0-9](?:[-a-zA-Z0-9]*[a-zA-Z0-9])?\\.)*[a-zA-Z](?:[-a-zA-Z0-9]*[a-zA-Z0-9])?\\.?|[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+)(?::[0-9]*)?(?:/(?:[-_.!~*'()a-zA-Z0-9:@&=+$,]|%[0-9A-Fa-f][0-9A-Fa-f])*(?:;(?:[-_.!~*'()a-zA-Z0-9:@&=+$,]|%[0-9A-Fa-f][0-9A-Fa-f])*)*(?:/(?:[-_.!~*'()a-zA-Z0-9:@&=+$,]|%[0-9A-Fa-f][0-9A-Fa-f])*(?:;(?:[-_.!~*'()a-zA-Z0-9:@&=+$,]|%[0-9A-Fa-f][0-9A-Fa-f])*)*)*)?(?:\\?(?:[-_.!~*'()a-zA-Z0-9;/?:@&=+$,]|%[0-9A-Fa-f][0-9A-Fa-f])*)?(?:#(?:[-_.!~*'()a-zA-Z0-9;/?:@&=+$,]|%[0-9A-Fa-f][0-9A-Fa-f])*)?";
 
-	private static Set<Character> toSet(String s) {
-		return ImmutableSet.copyOf(Chars.asList(s.toCharArray()));
-	}
+  private static Set<Character> toSet(String s) {
+    return ImmutableSet.copyOf(Chars.asList(s.toCharArray()));
+  }
 
-	private static Map<Character, Character> createHalfToFull() {
-		char[] halfs = HALF_FULL_LETTER[0].toCharArray();
-		char[] fulls = HALF_FULL_LETTER[1].toCharArray();
-		Map<Character, Character> halfToFull = Maps.newHashMap();
-		for (int i = 0; i < halfs.length; ++i) {
-			halfToFull.put(halfs[i], fulls[i]);
-		}
-		return ImmutableMap.copyOf(halfToFull);
-	}
+  private static Map<Character, Character> createHalfToFull() {
+    char[] halfs = HALF_FULL_LETTER[0].toCharArray();
+    char[] fulls = HALF_FULL_LETTER[1].toCharArray();
+    Map<Character, Character> halfToFull = Maps.newHashMap();
+    for (int i = 0; i < halfs.length; ++i) {
+      halfToFull.put(halfs[i], fulls[i]);
+    }
+    return ImmutableMap.copyOf(halfToFull);
+  }
 
-	protected Validator() {
-	}
+  protected Validator() {
+  }
 
-	protected boolean checkTypingAnswer(String answer) {
-		if (Strings.isNullOrEmpty(answer)) {
-			return false;
-		}
+  protected boolean checkTypingAnswer(String answer) {
+    if (Strings.isNullOrEmpty(answer)) {
+      return false;
+    }
 
-		Set<Character> answerLetters = toSet(answer);
-		for (Set<Character> set : LETTER_SETS) {
-			if (set.containsAll(answerLetters)) {
-				return true;
-			}
-		}
+    Set<Character> answerLetters = toSet(answer);
+    for (Set<Character> set : LETTER_SETS) {
+      if (set.containsAll(answerLetters)) {
+        return true;
+      }
+    }
 
-		return false;
-	}
+    return false;
+  }
 
-	protected String toFull(String answer) {
-		StringBuilder bs = new StringBuilder();
-		for (char ch : answer.toCharArray()) {
-			if (HALF_TO_FULL.containsKey(ch)) {
-				bs.append(HALF_TO_FULL.get(ch));
-			} else {
-				bs.append(ch);
-			}
-		}
+  protected String toFull(String answer) {
+    StringBuilder bs = new StringBuilder();
+    for (char ch : answer.toCharArray()) {
+      if (HALF_TO_FULL.containsKey(ch)) {
+        bs.append(HALF_TO_FULL.get(ch));
+      } else {
+        bs.append(ch);
+      }
+    }
 
-		return bs.toString();
-	}
+    return bs.toString();
+  }
 
-	/**
-	 * 問題を検証する
-	 * 
-	 * @param problem
-	 *            問題
-	 * @return 問題がなければ空のリスト
-	 */
-	public Evaluation check(PacketProblem problem) {
-		return check(problem, true);
-	}
+  /**
+   * 問題を検証する
+   * 
+   * @param problem
+   *          問題
+   * @return 問題がなければ空のリスト
+   */
+  public Evaluation check(PacketProblem problem) {
+    return check(problem, true);
+  }
 
-	/**
-	 * 問題を検証する
-	 * 
-	 * @param problem
-	 *            問題
-	 * @param checkDuplicatedAnswers
-	 *            解答欄の重複を検証する場合は{@code true}
-	 * @return 問題がなければ空のリスト
-	 */
-	public Evaluation check(PacketProblem problem, boolean checkDuplicatedAnswers) {
-		Evaluation eval = new Evaluation();
-		List<String> warn = eval.warn;
-		List<String> info = eval.info;
+  /**
+   * 問題を検証する
+   * 
+   * @param problem
+   *          問題
+   * @param checkDuplicatedAnswers
+   *          解答欄の重複を検証する場合は{@code true}
+   * @return 問題がなければ空のリスト
+   */
+  public Evaluation check(PacketProblem problem, boolean checkDuplicatedAnswers) {
+    Evaluation eval = new Evaluation();
+    List<String> warn = eval.warn;
+    List<String> info = eval.info;
 
-		if (problem.genre == ProblemGenre.Random) {
-			warn.add("ジャンルを選択してください");
-		}
+    if (problem.genre == ProblemGenre.Random) {
+      warn.add("ジャンルを選択してください");
+    }
 
-		if (problem.type == ProblemType.Random) {
-			warn.add("出題形式を選択してください");
-		}
+    if (problem.type == ProblemType.Random) {
+      warn.add("出題形式を選択してください");
+    }
 
-		if (problem.sentence == null || problem.sentence.trim().isEmpty()) {
-			warn.add("問題文を入力してください");
-		} else if (problem.creator == null || problem.creator.trim().isEmpty()) {
-			warn.add("作成者名を入力してください");
-		}
+    if (problem.sentence == null || problem.sentence.trim().isEmpty()) {
+      warn.add("問題文を入力してください");
+    } else if (problem.creator == null || problem.creator.trim().isEmpty()) {
+      warn.add("作成者名を入力してください");
+    }
 
-		if (problem.creator.equals("未初期化です")) {
-			warn.add("「未初期化です」名義での問題作成はできません。作者名を入力してください。");
-		}
+    if (problem.creator.equals("未初期化です")) {
+      warn.add("「未初期化です」名義での問題作成はできません。作者名を入力してください。");
+    }
 
-		if (problem.imageAnswer) {
-			final int numberOfAnswers = problem.getNumberOfAnswers();
-			for (int i = 0; i < numberOfAnswers; ++i) {
-				final String answer = problem.answers[i];
-				if (!isUrl(answer)) {
-					warn.add((i + 1) + "個目の解答が画像URL形式になっていません");
-				}
-			}
-		}
+    if (problem.imageAnswer) {
+      final int numberOfAnswers = problem.getNumberOfAnswers();
+      for (int i = 0; i < numberOfAnswers; ++i) {
+        final String answer = problem.answers[i];
+        if (!isUrl(answer)) {
+          warn.add((i + 1) + "個目の解答が画像URL形式になっていません");
+        }
+      }
+    }
 
-		if (problem.imageChoice) {
-			final int numberOfChoice = problem.getNumberOfChoices();
-			for (int i = 0; i < numberOfChoice; ++i) {
-				final String choice = problem.choices[i];
-				if (!isUrl(choice)) {
-					warn.add((i + 1) + "個目の選択肢が画像URL形式になっていません");
-				}
-			}
-		}
+    if (problem.imageChoice) {
+      final int numberOfChoice = problem.getNumberOfChoices();
+      for (int i = 0; i < numberOfChoice; ++i) {
+        final String choice = problem.choices[i];
+        if (!isUrl(choice)) {
+          warn.add((i + 1) + "個目の選択肢が画像URL形式になっていません");
+        }
+      }
+    }
 
-		if (problem.randomFlag == RandomFlag.Random5) {
-			warn.add("下記を参考にランダムフラグを1～4の中から選んでください");
-		}
+    if (problem.randomFlag == RandomFlag.Random5) {
+      warn.add("下記を参考にランダムフラグを1～4の中から選んでください");
+    }
 
-		if (problem.imageUrl != null) {
-			final String imageUrl = problem.imageUrl;
-			if (!isUrl(imageUrl)) {
-				warn.add("外部コンテンツの画像URLがURL形式になっていません");
-			}
-		}
+    if (problem.imageUrl != null) {
+      final String imageUrl = problem.imageUrl;
+      if (!isUrl(imageUrl)) {
+        warn.add("外部コンテンツの画像URLがURL形式になっていません");
+      }
+    }
 
-		if (problem.movieUrl != null) {
-			final String movieUrl = problem.movieUrl;
-			if (!isUrl(movieUrl) || !movieUrl.startsWith("http://www.youtube.com/watch?v=")) {
-				warn.add("外部コンテンツのYouTubeのURLが正しくありません");
-			}
-		}
+    if (problem.movieUrl != null) {
+      final String movieUrl = problem.movieUrl;
+      if (!isUrl(movieUrl) || !movieUrl.startsWith("http://www.youtube.com/watch?v=")) {
+        warn.add("外部コンテンツのYouTubeのURLが正しくありません");
+      }
+    }
 
-		if (checkDuplicatedAnswers
-				&& ImmutableSet.copyOf(problem.getAnswerList()).size() != problem
-						.getNumberOfAnswers()) {
-			warn.add("解答が重複しています");
-		}
+    if (checkDuplicatedAnswers
+        && ImmutableSet.copyOf(problem.getAnswerList()).size() != problem.getNumberOfAnswers()) {
+      warn.add("解答が重複しています");
+    }
 
-		if (ImmutableSet.copyOf(problem.getChoiceList()).size() != problem.getNumberOfChoices()) {
-			warn.add("選択肢が重複しています");
-		}
+    if (ImmutableSet.copyOf(problem.getChoiceList()).size() != problem.getNumberOfChoices()) {
+      warn.add("選択肢が重複しています");
+    }
 
-		String sentence = Strings.nullToEmpty(problem.sentence).trim();
-		if (sentence.contains("現在") || sentence.contains("今")) {
-			info.add("問題文中に現在時刻を表す単語が検出されました。最新情報に関する問題を作成する際は『何年何月現在』等、日付日時を指定して下さい");
-		}
+    String sentence = Strings.nullToEmpty(problem.sentence).trim();
+    if (sentence.contains("現在") || sentence.contains("今まで") || sentence.contains("今では")) {
+      info.add("問題文中に現在時刻を表す単語が検出されました。最新情報に関する問題を作成する際は『何年何月現在』等、日付日時を指定して下さい");
+    }
 
-		return eval;
-	}
+    return eval;
+  }
 
-	protected boolean isUrl(String url) {
-		return !Strings.isNullOrEmpty(url) && url.matches(regex);
-	}
+  protected boolean isUrl(String url) {
+    return !Strings.isNullOrEmpty(url) && url.matches(regex);
+  }
 
-	protected boolean consistsOfTheSameLetters(String a, String b) {
-		char[] aa = a.toCharArray();
-		Arrays.sort(aa);
-		char[] bb = b.toCharArray();
-		Arrays.sort(bb);
-		return Arrays.equals(aa, bb);
-	}
+  protected boolean consistsOfTheSameLetters(String a, String b) {
+    char[] aa = a.toCharArray();
+    Arrays.sort(aa);
+    char[] bb = b.toCharArray();
+    Arrays.sort(bb);
+    return Arrays.equals(aa, bb);
+  }
 }
