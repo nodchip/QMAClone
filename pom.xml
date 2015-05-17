@@ -49,7 +49,7 @@
   	<dependency>
   		<groupId>com.google.http-client</groupId>
   		<artifactId>google-http-client</artifactId>
-  		<version>1.19.0</version>
+  		<version>[1.19.0,)</version>
   	</dependency>
   	<dependency>
   		<groupId>com.google.inject</groupId>
@@ -159,7 +159,7 @@
   	<dependency>
   		<groupId>org.twitter4j</groupId>
   		<artifactId>twitter4j-core</artifactId>
-  		<version>[4.0.2 ,)</version>
+  		<version>[4.0.2,)</version>
   	</dependency>
   	<dependency>
   		<groupId>org.apache.lucene</groupId>
