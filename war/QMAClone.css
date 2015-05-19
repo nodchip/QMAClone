@@ -121,7 +121,7 @@ a:active {
 	margin: 0px;
 	padding: 0px;
 	width: 170px;
-	height: 24px;
+	height: 32px;
 }
 
 .gwt-Label-answerPopupNormal {
@@ -146,10 +146,11 @@ a:active {
 
 /* –â‘è */
 .gwt-HTML-problemStatement {
-	font-size: 28px;
+	font-size: 24px;
 	-moz-user-select: none;
 	-khtml-user-select: none;
 	user-select: none;
+	overflow: visible;
 }
 
 /*
@@ -172,7 +173,7 @@ a:active {
 
 .gwt-Label-answer {
 	font-size: 36px;
-	height: 40px;
+	height: 48px;
 	text-align: center;
 	vertical-align: middle;
 }
@@ -495,7 +496,7 @@ a:active {
 	cursor: move;
 	background: transparent;
 	text-align: center;
-	overflow: hidden;
+	overflow: visible;
 	user-select: none;
 	-webkit-user-select: none;
 	-moz-user-select: none;
