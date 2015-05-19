@@ -1,5 +1,7 @@
 package tv.dyndns.kishibe.qmaclone.server.image;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
@@ -29,6 +31,18 @@ public class BrokenImageLinkDetector implements Runnable {
 
   @Override
   public void run() {
+    String hostName = null;
+    try {
+      hostName = InetAddress.getLocalHost().getHostName();
+    } catch (UnknownHostException e) {
+      logger.log(Level.WARNING, "ホスト名の取得に失敗しました");
+    }
+
+    if ("gilgamesh".equals(hostName)) {
+      logger.log(Level.INFO, "デバッグ実行のためリンク切れ画像の検出を行いませんでした");
+      return;
+    }
+
     try {
       runInternal();
     } catch (Exception e) {
