@@ -194,6 +194,8 @@ a:active {
 	border: 1px #CCC solid;
 	cursor: pointer;
 	background: transparent;
+	vertical-align: middle;
+	text-align: center;
 }
 
 .gwt-Button-yesNoImage {
@@ -212,6 +214,7 @@ a:active {
 	border: 1px #CCC solid;
 	cursor: pointer;
 	background: transparent;
+	vertical-align: middle;
 }
 
 .gwt-Button-4takuImage {
@@ -230,6 +233,8 @@ a:active {
 	border: 2px #CCC solid;
 	cursor: pointer;
 	background: transparent;
+	vertical-align: middle;
+	text-align: center;
 }
 
 .gwt-Button-narabekaeSelected {
@@ -240,6 +245,8 @@ a:active {
 	border: 2px #CCC solid;
 	cursor: pointer;
 	background: yellow;
+	vertical-align: middle;
+	text-align: center;
 }
 
 .gwt-Button-narabekaeControl {
@@ -249,6 +256,8 @@ a:active {
 	border: 2px #CCC solid;
 	cursor: pointer;
 	background: transparent;
+	vertical-align: middle;
+	text-align: center;
 }
 
 .gwt-Button-typing {
@@ -259,6 +268,8 @@ a:active {
 	border: 1px #AAA solid;
 	cursor: pointer;
 	background: transparent;
+	vertical-align: middle;
+	text-align: center;
 }
 
 .gwt-Button-typingControl {
@@ -268,6 +279,8 @@ a:active {
 	border: 1px #AAA solid;
 	cursor: pointer;
 	background: transparent;
+	vertical-align: middle;
+	text-align: center;
 }
 
 .gwt-Button-mojipanel {
@@ -279,6 +292,8 @@ a:active {
 	border: 2px #CCC solid;
 	cursor: pointer;
 	background: transparent;
+	vertical-align: middle;
+	text-align: center;
 }
 
 .gwt-Button-tato {
@@ -289,6 +304,8 @@ a:active {
 	border: 2px #CCC solid;
 	cursor: pointer;
 	background: transparent;
+	vertical-align: middle;
+	text-align: center;
 }
 
 .gwt-Button-tatoSelected {
@@ -299,6 +316,8 @@ a:active {
 	border: 2px #CCC solid;
 	cursor: pointer;
 	background-color: yellow;
+	vertical-align: middle;
+	text-align: center;
 }
 
 .gwt-Button-tatoImage {
@@ -327,6 +346,8 @@ a:active {
 	border: 2px #CCC solid;
 	cursor: pointer;
 	background: transparent;
+	vertical-align: middle;
+	text-align: center;
 }
 
 .gwt-Button-junban {
@@ -338,6 +359,8 @@ a:active {
 	border: 2px #CCC solid;
 	cursor: pointer;
 	background: transparent;
+	vertical-align: middle;
+	text-align: center;
 }
 
 .gwt-Button-junbanImage {
@@ -356,6 +379,8 @@ a:active {
 	border: 2px #CCC solid;
 	cursor: pointer;
 	background-color: yellow;
+	vertical-align: middle;
+	text-align: center;
 }
 
 .gwt-Button-junbanImageSelected {
@@ -373,6 +398,8 @@ a:active {
 	border: 2px #CCC solid;
 	cursor: pointer;
 	background: transparent;
+	vertical-align: middle;
+	text-align: center;
 }
 
 .gwt-Button-senmusubiSelected {
@@ -382,6 +409,8 @@ a:active {
 	border: 2px #CCC solid;
 	cursor: pointer;
 	background-color: yellow;
+	vertical-align: middle;
+	text-align: center;
 }
 
 .gwt-Button-senmusubiImage {
@@ -406,6 +435,8 @@ a:active {
 	border: 2px #CCC solid;
 	cursor: pointer;
 	background: transparent;
+	vertical-align: middle;
+	text-align: center;
 }
 
 .gwt-Grid-Row-slotCenter {
@@ -420,6 +451,8 @@ a:active {
 	border: 2px #CCC solid;
 	cursor: pointer;
 	background: transparent;
+	vertical-align: middle;
+	text-align: center;
 }
 
 .gwt-Label-slot {
@@ -427,6 +460,8 @@ a:active {
 	font-size: 40px;
 	width: 48px;
 	height: 48px;
+	vertical-align: middle;
+	text-align: center;
 }
 
 .gwt-Button-slotControl {
@@ -435,6 +470,8 @@ a:active {
 	border: 2px #CCC solid;
 	cursor: pointer;
 	background: transparent;
+	vertical-align: middle;
+	text-align: center;
 }
 
 .gwt-HTML-clickCanvas {
@@ -454,6 +491,8 @@ a:active {
 	border: 2px #CCC solid;
 	cursor: pointer;
 	background: transparent;
+	vertical-align: middle;
+	text-align: center;
 }
 
 .gwt-Canvas-stroke {
@@ -470,6 +509,8 @@ a:active {
 	border: 2px #CCC solid;
 	cursor: pointer;
 	background: transparent;
+	vertical-align: middle;
+	text-align: center;
 }
 
 .gwt-Button-tegakiControl {
@@ -478,6 +519,8 @@ a:active {
 	border: 2px #CCC solid;
 	cursor: pointer;
 	background: transparent;
+	vertical-align: middle;
+	text-align: center;
 }
 
 .gwt-Button-hayaimono {
@@ -487,6 +530,8 @@ a:active {
 	border: 2px #CCC solid;
 	cursor: pointer;
 	background: transparent;
+	vertical-align: middle;
+	text-align: center;
 }
 
 .gwt-Button-group {
@@ -503,6 +548,8 @@ a:active {
 	-khtml-user-select: none;
 	-webkit-user-drag: none;
 	-khtml-user-drag: none;
+	vertical-align: middle;
+	text-align: center;
 }
 
 .gwt-Button-group-header {
@@ -516,6 +563,8 @@ a:active {
 	-khtml-user-select: none;
 	-webkit-user-drag: none;
 	-khtml-user-drag: none;
+	vertical-align: middle;
+	text-align: center;
 }
 
 .gwt-Button-group-control {
@@ -531,6 +580,8 @@ a:active {
 	-khtml-user-select: none;
 	-webkit-user-drag: none;
 	-khtml-user-drag: none;
+	vertical-align: middle;
+	text-align: center;
 }
 
 /* ‚»‚Ì‘¼ */
