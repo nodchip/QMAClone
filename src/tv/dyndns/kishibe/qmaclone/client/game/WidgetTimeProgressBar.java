@@ -80,12 +80,12 @@ public class WidgetTimeProgressBar extends VerticalPanel {
 		String color = Utility.createBackgroundColorString((double) width / (double) WIDTH);
 		SafeStyles styles = new SafeStylesBuilder()
 				.position(Position.ABSOLUTE)
-				.top(20, Unit.PX)
+				.top(0, Unit.PX)
 				.left(left, Unit.PX)
 				.width(width, Unit.PX)
-				.height(20, Unit.PX)
+				.height(32, Unit.PX)
 				.trustedBackgroundColor(color)
-				.zIndex(10)
+				.zIndex(-5)
 				.toSafeStyles();
 		SafeHtml safeHtml = TEMPLATE.bar(message, styles);
 		html.setHTML(safeHtml);
