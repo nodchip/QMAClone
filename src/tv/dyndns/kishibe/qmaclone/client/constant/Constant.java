@@ -142,7 +142,7 @@ public class Constant {
     } else if (GWT.isClient() && Location.getHost().contains(":8080")) {
       return "ws://localhost:" + WEB_SOCKET_PORT + "/";
     } else {
-      return "ws://kishibe.dyndns.tv:" + WEB_SOCKET_PORT + "/";
+      return "ws://kishibe.dyndns.tv/QMAClone/websocket/";
     }
   }
 
