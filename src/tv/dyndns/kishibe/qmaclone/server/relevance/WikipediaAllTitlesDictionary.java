@@ -11,22 +11,23 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 
-import tv.dyndns.kishibe.qmaclone.server.util.Downloader;
-import tv.dyndns.kishibe.qmaclone.server.util.DownloaderException;
-import tv.dyndns.kishibe.qmaclone.server.util.Normalizer;
-
 import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
+import tv.dyndns.kishibe.qmaclone.client.constant.Constant;
+import tv.dyndns.kishibe.qmaclone.server.util.Downloader;
+import tv.dyndns.kishibe.qmaclone.server.util.DownloaderException;
+import tv.dyndns.kishibe.qmaclone.server.util.Normalizer;
+
 public class WikipediaAllTitlesDictionary implements Dictionary {
 
-  private static final Logger logger = Logger.getLogger(WikipediaAllTitlesDictionary.class
-      .getName());
+  private static final Logger logger = Logger
+      .getLogger(WikipediaAllTitlesDictionary.class.getName());
   private static final String WIKIPEDIA_ALL_TITLE_URL = "http://dumps.wikimedia.org/jawiki/latest/jawiki-latest-all-titles-in-ns0.gz";
   private static final File WIKIPEDIA_ALL_TITLE_FILE = new File(
-      "/var/www/qmaclone/jawiki-latest-all-titles-in-ns0.gz");
+      Constant.FILE_PATH_BASE + "qmaclone/jawiki-latest-all-titles-in-ns0.gz");
   private final Downloader downloader;
 
   @Inject
@@ -46,9 +47,8 @@ public class WikipediaAllTitlesDictionary implements Dictionary {
   }
 
   private void ensureFile() throws IOException {
-    if (WIKIPEDIA_ALL_TITLE_FILE.isFile()
-        && System.currentTimeMillis() < WIKIPEDIA_ALL_TITLE_FILE.lastModified() + 7L * 24 * 60 * 60
-            * 1000) {
+    if (WIKIPEDIA_ALL_TITLE_FILE.isFile() && System
+        .currentTimeMillis() < WIKIPEDIA_ALL_TITLE_FILE.lastModified() + 7L * 24 * 60 * 60 * 1000) {
       return;
     }
 
@@ -63,8 +63,11 @@ public class WikipediaAllTitlesDictionary implements Dictionary {
   private List<String> readFile() throws IOException {
     List<String> words = Lists.newArrayList();
 
-    try (Scanner scanner = new Scanner(new BufferedInputStream(new GZIPInputStream(
-        new BufferedInputStream(new FileInputStream(WIKIPEDIA_ALL_TITLE_FILE)))), "utf-8")) {
+    try (
+        Scanner scanner = new Scanner(
+            new BufferedInputStream(new GZIPInputStream(
+                new BufferedInputStream(new FileInputStream(WIKIPEDIA_ALL_TITLE_FILE)))),
+        "utf-8")) {
       while (scanner.hasNextLine()) {
         String line = scanner.nextLine().trim();
         if (line.isEmpty()) {

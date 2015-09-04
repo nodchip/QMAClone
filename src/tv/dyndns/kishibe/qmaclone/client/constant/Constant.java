@@ -85,7 +85,7 @@ public class Constant {
   public static final String ICON_UPLOAD_RESPONSE_REQUEST_FORMAT_ERROR = "--REQUEST_FORMAT_ERROR--";
   public static final String ICON_UPLOAD_RESPONSE_IMAGE_FILE_NAME_FORMAT_ERROR = "--IMAGE_FILE_NAME_FORMAT_ERROR--";
   public static final String ICON_URL_PREFIX = "http://kishibe.dyndns.tv/qmaclone_icon/";
-  public static final String FILE_PATH_BASE = "/var/www/";
+  public static final String FILE_PATH_BASE = "/var/www/html/";
   public static final String ICON_FOLDER_PATH = FILE_PATH_BASE + "qmaclone_icon/";
   public static final int ICON_SIZE = 48;
   public static final int ICON_SIZE_BIG = 64;

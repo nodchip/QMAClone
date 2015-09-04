@@ -7,8 +7,11 @@ import org.apache.commons.pool2.impl.DefaultPooledObject;
 import com.google.inject.Inject;
 import com.sun.jna.Pointer;
 
+import tv.dyndns.kishibe.qmaclone.client.constant.Constant;
+
 public class ZinniaObjectFactory extends BasePooledObjectFactory<Pointer> {
-  private static final String MODEL_FILE_PATH = "/var/www/qmaclone/handwriting-ja.model";
+  private static final String MODEL_FILE_PATH = Constant.FILE_PATH_BASE
+      + "qmaclone/handwriting-ja.model";
   private final ZinniaLibrary zinnia;
 
   @Inject

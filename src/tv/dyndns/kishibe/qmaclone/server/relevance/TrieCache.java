@@ -11,44 +11,45 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.inject.Inject;
 
+import tv.dyndns.kishibe.qmaclone.client.constant.Constant;
+
 public class TrieCache {
 
-	private static final File DICTIONARY_FILE = new File("/var/www/qmaclone/trie.bin");
-	private static final Object STATIC_KEY = new Object();
-	private final Dictionaries.Factory dictionariesFactory;
-	private final Trie.Factory trieFactory;
-	private final LoadingCache<Object, Trie> cache = CacheBuilder.newBuilder().concurrencyLevel(1)
-			.expireAfterWrite(1, TimeUnit.DAYS).maximumSize(1)
-			.build(new CacheLoader<Object, Trie>() {
-				@Override
-				public Trie load(Object key) throws Exception {
-					if (DICTIONARY_FILE.isFile()
-							&& System.currentTimeMillis() < DICTIONARY_FILE.lastModified() + 7L
-									* 24 * 60 * 60 * 1000) {
-						Trie trie = trieFactory.create();
-						trie.load(DICTIONARY_FILE);
-						return trie;
-					}
+  private static final File DICTIONARY_FILE = new File(
+      Constant.FILE_PATH_BASE + "qmaclone/trie.bin");
+  private static final Object STATIC_KEY = new Object();
+  private final Dictionaries.Factory dictionariesFactory;
+  private final Trie.Factory trieFactory;
+  private final LoadingCache<Object, Trie> cache = CacheBuilder.newBuilder().concurrencyLevel(1)
+      .expireAfterWrite(1, TimeUnit.DAYS).maximumSize(1).build(new CacheLoader<Object, Trie>() {
+        @Override
+        public Trie load(Object key) throws Exception {
+          if (DICTIONARY_FILE.isFile() && System
+              .currentTimeMillis() < DICTIONARY_FILE.lastModified() + 7L * 24 * 60 * 60 * 1000) {
+            Trie trie = trieFactory.create();
+            trie.load(DICTIONARY_FILE);
+            return trie;
+          }
 
-					Trie trie = trieFactory.create();
-					trie.build(dictionariesFactory.create().getWords());
-					trie.save(DICTIONARY_FILE);
-					return trie;
-				}
-			});
+          Trie trie = trieFactory.create();
+          trie.build(dictionariesFactory.create().getWords());
+          trie.save(DICTIONARY_FILE);
+          return trie;
+        }
+      });
 
-	@Inject
-	public TrieCache(Dictionaries.Factory dictionariesFactory, Trie.Factory trieFactory) {
-		this.dictionariesFactory = Preconditions.checkNotNull(dictionariesFactory);
-		this.trieFactory = Preconditions.checkNotNull(trieFactory);
-	}
+  @Inject
+  public TrieCache(Dictionaries.Factory dictionariesFactory, Trie.Factory trieFactory) {
+    this.dictionariesFactory = Preconditions.checkNotNull(dictionariesFactory);
+    this.trieFactory = Preconditions.checkNotNull(trieFactory);
+  }
 
-	public Trie get() {
-		try {
-			return cache.get(STATIC_KEY);
-		} catch (ExecutionException e) {
-			throw Throwables.propagate(e);
-		}
-	}
+  public Trie get() {
+    try {
+      return cache.get(STATIC_KEY);
+    } catch (ExecutionException e) {
+      throw Throwables.propagate(e);
+    }
+  }
 
 }

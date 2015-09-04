@@ -9,19 +9,21 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipFile;
 
-import tv.dyndns.kishibe.qmaclone.server.util.Downloader;
-import tv.dyndns.kishibe.qmaclone.server.util.DownloaderException;
-
 import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
+import tv.dyndns.kishibe.qmaclone.client.constant.Constant;
+import tv.dyndns.kishibe.qmaclone.server.util.Downloader;
+import tv.dyndns.kishibe.qmaclone.server.util.DownloaderException;
+
 public class NicoVideoDicImeDictionary implements Dictionary {
 
   private static final Logger logger = Logger.getLogger(NicoVideoDicImeDictionary.class.getName());
   private static final String NICO_VIDEO_DIC_IME_URL = "http://tkido.com/data/nicoime.zip";
-  private static final File NICO_VIDEO_DIC_IME_FILE = new File("/var/www/qmaclone/nicoime.zip");
+  private static final File NICO_VIDEO_DIC_IME_FILE = new File(
+      Constant.FILE_PATH_BASE + "qmaclone/nicoime.zip");
   private final Downloader downloader;
 
   @Inject
@@ -41,9 +43,8 @@ public class NicoVideoDicImeDictionary implements Dictionary {
   }
 
   private void ensureFile() throws IOException {
-    if (NICO_VIDEO_DIC_IME_FILE.isFile()
-        && System.currentTimeMillis() < NICO_VIDEO_DIC_IME_FILE.lastModified() + 7L * 24 * 60 * 60
-            * 1000) {
+    if (NICO_VIDEO_DIC_IME_FILE.isFile() && System
+        .currentTimeMillis() < NICO_VIDEO_DIC_IME_FILE.lastModified() + 7L * 24 * 60 * 60 * 1000) {
       return;
     }
 
@@ -59,8 +60,8 @@ public class NicoVideoDicImeDictionary implements Dictionary {
     List<String> words = Lists.newArrayList();
 
     try (ZipFile zipFile = new ZipFile(NICO_VIDEO_DIC_IME_FILE);
-        Scanner scanner = new Scanner(
-            zipFile.getInputStream(zipFile.getEntry("nicoime_msime.txt")), "utf-8")) {
+        Scanner scanner = new Scanner(zipFile.getInputStream(zipFile.getEntry("nicoime_msime.txt")),
+            "utf-8")) {
       while (scanner.hasNextLine()) {
         String line = scanner.nextLine();
         String[] split = line.split("\t");
