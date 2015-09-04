@@ -50,6 +50,25 @@ import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Throwables;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import com.google.common.io.Files;
+import com.google.gwt.thirdparty.guava.common.base.Strings;
+import com.google.gwt.user.client.rpc.SerializationException;
+import com.google.gwt.user.server.rpc.RPC;
+import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.google.inject.Guice;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
+import com.google.inject.name.Named;
+
 import tv.dyndns.kishibe.qmaclone.client.Service;
 import tv.dyndns.kishibe.qmaclone.client.constant.Constant;
 import tv.dyndns.kishibe.qmaclone.client.game.GameMode;
@@ -95,26 +114,6 @@ import tv.dyndns.kishibe.qmaclone.server.sns.SnsClients;
 import tv.dyndns.kishibe.qmaclone.server.util.IntArray;
 import tv.dyndns.kishibe.qmaclone.server.util.diff_match_patch;
 import tv.dyndns.kishibe.qmaclone.server.util.diff_match_patch.Diff;
-import tv.dyndns.kishibe.qmaclone.server.websocket.WebSocketServer;
-
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Preconditions;
-import com.google.common.base.Throwables;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-import com.google.common.io.Files;
-import com.google.gwt.thirdparty.guava.common.base.Strings;
-import com.google.gwt.user.client.rpc.SerializationException;
-import com.google.gwt.user.server.rpc.RPC;
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
-import com.google.inject.Guice;
-import com.google.inject.Inject;
-import com.google.inject.Injector;
-import com.google.inject.name.Named;
 
 @SuppressWarnings("serial")
 public class ServiceServletStub extends RemoteServiceServlet implements Service {
@@ -132,7 +131,6 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
   private final VoteManager voteManager;
   private final Recognizable recognizer;
   private final ThemeModeEditorManager themeModeEditorManager;
-  private final WebSocketServer webSocketServer;
   private final Database database;
   private final PrefectureRanking prefectureRanking;
   private final RatingDistribution ratingDistribution;
@@ -158,7 +156,6 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
     this.voteManager = injector.getInstance(VoteManager.class);
     this.recognizer = injector.getInstance(Recognizable.class);
     this.themeModeEditorManager = injector.getInstance(ThemeModeEditorManager.class);
-    this.webSocketServer = injector.getInstance(WebSocketServer.class);
     this.database = injector.getInstance(Database.class);
     this.prefectureRanking = injector.getInstance(PrefectureRanking.class);
     this.ratingDistribution = injector.getInstance(RatingDistribution.class);
@@ -178,11 +175,10 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
       ThemeModeProblemManager themeModeProblemManager, GameManager gameManager,
       ServerStatusManager serverStatusManager, PlayerHistoryManager playerHistoryManager,
       VoteManager voteManager, Recognizable recognizer,
-      ThemeModeEditorManager themeModeEditorManager, WebSocketServer webSocketServer,
-      Database database, PrefectureRanking prefectureRanking,
-      RatingDistribution ratingDistribution, @Named("SnsClients") SnsClient snsClient,
-      GameLogger gameLogger, ThreadPool threadPool, BadUserDetector badUserDetector,
-      RestrictedUserUtils restrictedUserUtils,
+      ThemeModeEditorManager themeModeEditorManager, Database database,
+      PrefectureRanking prefectureRanking, RatingDistribution ratingDistribution,
+      @Named("SnsClients") SnsClient snsClient, GameLogger gameLogger, ThreadPool threadPool,
+      BadUserDetector badUserDetector, RestrictedUserUtils restrictedUserUtils,
       ProblemCorrectCounterResetCounter problemCorrectCounterResetCounter,
       ProblemIndicationCounter problemIndicationCounter,
       BrokenImageLinkDetector brokenImageLinkDetector) throws SocketException {
@@ -195,7 +191,6 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
     this.voteManager = voteManager;
     this.recognizer = recognizer;
     this.themeModeEditorManager = themeModeEditorManager;
-    this.webSocketServer = webSocketServer;
     this.database = database;
     this.prefectureRanking = prefectureRanking;
     this.ratingDistribution = ratingDistribution;
@@ -211,12 +206,6 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
     // テーマモードのTwitter通知タイミング調整
     threadPool.scheduleWithFixedDelay(commandUpdateThemeModeNotificationCounter, 1, 1,
         TimeUnit.SECONDS);
-    try {
-      webSocketServer.start();
-    } catch (Exception e) {
-      logger.log(Level.WARNING, "WebSocketの開始に失敗しました", e);
-    }
-
     threadPool.addHourTask(badUserDetector);
     threadPool.addHourTask(problemCorrectCounterResetCounter);
     threadPool.addHourTask(problemIndicationCounter);
@@ -227,8 +216,8 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
   }
 
   private static boolean onDevelopmentMachine() throws SocketException {
-    for (NetworkInterface networkInterface : Collections.list(NetworkInterface
-        .getNetworkInterfaces())) {
+    for (NetworkInterface networkInterface : Collections
+        .list(NetworkInterface.getNetworkInterfaces())) {
       for (InetAddress inetAddress : Collections.list(networkInterface.getInetAddresses())) {
         if (inetAddress.getHostAddress().contains("192.168.100.5")) {
           return true;
@@ -239,8 +228,8 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
   }
 
   @Override
-  protected boolean shouldCompressResponse(HttpServletRequest request,
-      HttpServletResponse response, String responsePayload) {
+  protected boolean shouldCompressResponse(HttpServletRequest request, HttpServletResponse response,
+      String responsePayload) {
     // nginx側で圧縮するためtomcat側で圧縮しないようにする
     return false;
   }
@@ -277,12 +266,6 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
 
   @Override
   public void destroy() {
-    try {
-      webSocketServer.stop();
-    } catch (Exception e) {
-      logger.log(Level.WARNING, "WebSocketの停止に失敗しました", e);
-    }
-
     threadPool.shutdown();
     super.destroy();
   }
@@ -317,24 +300,23 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
       boolean publicEvent) throws ServiceException {
     synchronized (lockObjectRegister) {
       try {
-        gameLogger
-            .write(MoreObjects.toStringHelper(this).add("method", "register")
-                .add("playerSummary", playerSummary).add("genres", genres).add("types", types)
-                .add("greeting", greeting).add("gameMode", gameMode).add("roomName", roomName)
-                .add("THEME", theme).add("imageFileName", imageFileName)
-                .add("classLevel", classLevel).add("difficultSelect", difficultSelect)
-                .add("rating", rating).add("userCode", userCode).add("volatility", volatility)
-                .add("playCount", playCount).add("newAndOldProblems", newAndOldProblems)
-                .add("publicEvent", publicEvent).toString());
+        gameLogger.write(MoreObjects.toStringHelper(this).add("method", "register")
+            .add("playerSummary", playerSummary).add("genres", genres).add("types", types)
+            .add("greeting", greeting).add("gameMode", gameMode).add("roomName", roomName)
+            .add("THEME", theme).add("imageFileName", imageFileName).add("classLevel", classLevel)
+            .add("difficultSelect", difficultSelect).add("rating", rating).add("userCode", userCode)
+            .add("volatility", volatility).add("playCount", playCount)
+            .add("newAndOldProblems", newAndOldProblems).add("publicEvent", publicEvent)
+            .toString());
 
         playerHistoryManager.push(playerSummary);
 
         PlayerStatus status;
-        Game session = gameManager.getOrCreateMatchingSession(gameMode, roomName, classLevel,
-            theme, genres, types, publicEvent, serverStatusManager, userCode, getRemoteAddress());
-        status = session
-            .addPlayer(playerSummary, genres, types, greeting, imageFileName, classLevel,
-                difficultSelect, rating, userCode, volatility, playCount, newAndOldProblems);
+        Game session = gameManager.getOrCreateMatchingSession(gameMode, roomName, classLevel, theme,
+            genres, types, publicEvent, serverStatusManager, userCode, getRemoteAddress());
+        status = session.addPlayer(playerSummary, genres, types, greeting, imageFileName,
+            classLevel, difficultSelect, rating, userCode, volatility, playCount,
+            newAndOldProblems);
 
         PacketRegistrationData data = new PacketRegistrationData();
         data.playerListIndex = status.getPlayerListId();
@@ -346,8 +328,8 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
             .add("genres", genres).add("types", types).add("greeting", greeting)
             .add("gameMode", gameMode).add("roomName", roomName).add("THEME", theme)
             .add("imageFileName", imageFileName).add("classLevel", classLevel)
-            .add("difficultSelect", difficultSelect).add("rating", rating)
-            .add("userCode", userCode).add("volatility", volatility).add("playCount", playCount)
+            .add("difficultSelect", difficultSelect).add("rating", rating).add("userCode", userCode)
+            .add("volatility", volatility).add("playCount", playCount)
             .add("newAndOldProblems", newAndOldProblems).add("publicEvent", publicEvent).toString();
         logger.log(Level.SEVERE, "プレイヤー登録に失敗しました。" + parameters, e);
         throw new ServiceException(e);
@@ -403,13 +385,13 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
     Game session = gameManager.getSession(sessionId);
     Preconditions.checkNotNull(session, "ゲームセッションが見つかりませんでした: sessionId=" + sessionId);
     session.receiveAnswer(playerListId, answer);
-    gameLogger.write(MoreObjects
-        .toStringHelper(this)
-        .add("method", "sendAnswer")
-        .add("sessionId", sessionId)
-        .add("playerListId", playerListId)
-        .add("answer",
-            Arrays.deepToString(Strings.nullToEmpty(answer).split(Constant.DELIMITER_GENERAL)))
+    gameLogger
+        .write(
+            MoreObjects.toStringHelper(this).add("method", "sendAnswer").add("sessionId", sessionId)
+                .add("playerListId", playerListId)
+                .add("answer",
+                    Arrays.deepToString(
+                        Strings.nullToEmpty(answer).split(Constant.DELIMITER_GENERAL)))
         .add("userCode", userCode).add("responseTime", responseTime)
         .add("remoteAddress", getRemoteAddress()).toString());
   }
@@ -479,8 +461,8 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
   private final Object fileLock = new Object();
 
   @Override
-  public int uploadProblem(final PacketProblem problem, final int userCode, boolean resetAnswerCount)
-      throws ServiceException {
+  public int uploadProblem(final PacketProblem problem, final int userCode,
+      boolean resetAnswerCount) throws ServiceException {
     final String remoteAddress = getRemoteAddress();
 
     threadPool.execute(new Runnable() {
@@ -492,11 +474,12 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
           } catch (IOException e) {
             logger.log(Level.WARNING, "問題作成ログディレクトリの作成に失敗しました", e);
           }
-          try (PrintStream stream = new PrintStream(new BufferedOutputStream(new FileOutputStream(
-              PROBLEM_CREATION_LOG_FILE, true)), false, "MS932")) {
+          try (PrintStream stream = new PrintStream(
+              new BufferedOutputStream(new FileOutputStream(PROBLEM_CREATION_LOG_FILE, true)),
+              false, "MS932")) {
             stream.println(problem.toString());
-            stream.println(userCode + "\t" + remoteAddress + "\t"
-                + Calendar.getInstance().getTime());
+            stream
+                .println(userCode + "\t" + remoteAddress + "\t" + Calendar.getInstance().getTime());
           } catch (Exception e) {
             logger.log(Level.WARNING, "問題作成ログの書き込みに失敗しました", e);
           }
@@ -573,7 +556,8 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
 
   // 問題を取得する
   @Override
-  public List<PacketProblem> getProblemList(final List<Integer> problemIds) throws ServiceException {
+  public List<PacketProblem> getProblemList(final List<Integer> problemIds)
+      throws ServiceException {
     return wrap("問題リストの取得に失敗しました", new DatabaseAccessible<List<PacketProblem>>() {
       @Override
       public List<PacketProblem> access() throws DatabaseException {
@@ -601,7 +585,8 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
       public List<PacketProblem> access() throws DatabaseException {
         List<PacketProblem> problems = database.searchProblem(query, creator,
             creatorPerfectMatching, genres, types, randomFlags);
-        ImmutableSet<Integer> usedProblems = ImmutableSet.copyOf(gameManager.getTestingProblemIds());
+        ImmutableSet<Integer> usedProblems = ImmutableSet
+            .copyOf(gameManager.getTestingProblemIds());
         for (PacketProblem problem : problems) {
           problem.testing = usedProblems.contains(problem.id);
         }
@@ -1219,14 +1204,15 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
       public Boolean access() throws DatabaseException {
         long dateFrom = System.currentTimeMillis() - 60 * 60 * 1000;
         boolean newProblem = (problemId == null);
-        boolean fromAnige = (problemId != null && database.getProblem(ImmutableList.of(problemId))
-            .get(0).genre == ProblemGenre.Anige);
-        int numberOfCreationLogWithMachineIp = database.getNumberOfCreationLogWithMachineIp(
-            getRemoteAddress(), dateFrom);
+        boolean fromAnige = (problemId != null
+            && database.getProblem(ImmutableList.of(problemId)).get(0).genre == ProblemGenre.Anige);
+        int numberOfCreationLogWithMachineIp = database
+            .getNumberOfCreationLogWithMachineIp(getRemoteAddress(), dateFrom);
         int numberOfCreationLogWithUserCode = database.getNumberOfCreationLogWithUserCode(userCode,
             dateFrom);
         if ((newProblem || !fromAnige)
-            && (numberOfCreationLogWithMachineIp > Constant.MAX_NUMBER_OF_CREATION_PER_HOUR || numberOfCreationLogWithUserCode > Constant.MAX_NUMBER_OF_CREATION_PER_HOUR)) {
+            && (numberOfCreationLogWithMachineIp > Constant.MAX_NUMBER_OF_CREATION_PER_HOUR
+                || numberOfCreationLogWithUserCode > Constant.MAX_NUMBER_OF_CREATION_PER_HOUR)) {
           return false;
         }
         return true;
@@ -1447,8 +1433,8 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
   }
 
   @Override
-  public List<PacketRankingData> getThemeRanking(final String theme, final int year, final int month)
-      throws ServiceException {
+  public List<PacketRankingData> getThemeRanking(final String theme, final int year,
+      final int month) throws ServiceException {
     return wrap("月別テーマモードランキングの取得に失敗しました", new DatabaseAccessible<List<PacketRankingData>>() {
       @Override
       public List<PacketRankingData> access() throws DatabaseException {

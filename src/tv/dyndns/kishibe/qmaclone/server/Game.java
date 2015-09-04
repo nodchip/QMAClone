@@ -21,7 +21,6 @@
 //THE SOFTWARE.
 package tv.dyndns.kishibe.qmaclone.server;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -42,7 +41,17 @@ import javax.annotation.Nullable;
 
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.special.Erf;
-import org.eclipse.jetty.websocket.WebSocket;
+
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
+import com.google.common.base.Throwables;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
 
 import tv.dyndns.kishibe.qmaclone.client.constant.Constant;
 import tv.dyndns.kishibe.qmaclone.client.game.GameMode;
@@ -61,20 +70,6 @@ import tv.dyndns.kishibe.qmaclone.client.packet.PacketResult;
 import tv.dyndns.kishibe.qmaclone.client.packet.RestrictionType;
 import tv.dyndns.kishibe.qmaclone.server.database.Database;
 import tv.dyndns.kishibe.qmaclone.server.database.DatabaseException;
-import tv.dyndns.kishibe.qmaclone.server.websocket.WebSockets;
-
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
-import com.google.common.base.Throwables;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-import com.google.common.io.Closeables;
-import com.google.gson.Gson;
-import com.google.inject.Inject;
-import com.google.inject.assistedinject.Assisted;
 
 public class Game {
   private static final Logger logger = Logger.getLogger(Game.class.getName());
@@ -131,9 +126,6 @@ public class Game {
   private final Database database;
   private final ComputerPlayer.Factory computerPlayerFactory;
   private final ThreadPool threadPool;
-  private final WebSockets<PacketMatchingData> matchingDataWebSockets;
-  private final WebSockets<PacketReadyForGame> readyForGameWebSockets;
-  private final WebSockets<PacketGameStatus> gameStatusWebSockets;
   private final RestrictedUserUtils restrictedUserUtils;
   private final GameMode gameMode;
 
@@ -168,24 +160,6 @@ public class Game {
     this.publicEvent = publicEvent;
     this.gameMode = Preconditions.checkNotNull(gameMode);
     this.restrictedUserUtils = Preconditions.checkNotNull(restrictedUserUtils);
-    this.matchingDataWebSockets = new WebSockets<PacketMatchingData>(threadPool) {
-      @Override
-      protected String encode(PacketMatchingData data) {
-        return new Gson().toJson(data);
-      }
-    };
-    this.readyForGameWebSockets = new WebSockets<PacketReadyForGame>(threadPool) {
-      @Override
-      protected String encode(PacketReadyForGame data) {
-        return new Gson().toJson(data);
-      }
-    };
-    this.gameStatusWebSockets = new WebSockets<PacketGameStatus>(threadPool) {
-      @Override
-      protected String encode(PacketGameStatus data) {
-        return new Gson().toJson(data);
-      }
-    };
 
     if (sessionId == 0) {
       String object = MoreObjects.toStringHelper(this).add("gameManager", gameManager)
@@ -306,7 +280,7 @@ public class Game {
    *          ユーザーコード
    * @param newAndOldProblem
    *          旧問/新問
-   * @return　プレイヤーステータス
+   * @return プレイヤーステータス
    */
   public synchronized PlayerStatus addPlayer(PacketPlayerSummary playerSummary,
       Set<ProblemGenre> genres, Set<ProblemType> types, String greeting, String imageFileName,
@@ -444,7 +418,6 @@ public class Game {
     }
 
     this.matchnigData = matchingData;
-    matchingDataWebSockets.send(matchingData);
   }
 
   /**
@@ -455,10 +428,6 @@ public class Game {
   public synchronized PacketMatchingData getMatchingData() {
     Preconditions.checkNotNull(matchnigData, "マッチング情報がnullです: sessionId=" + sessionId);
     return matchnigData;
-  }
-
-  public WebSocket getMatchingDataWebSocket() {
-    return matchingDataWebSockets.newWebSocket();
   }
 
   private volatile PacketReadyForGame readyForGame;
@@ -472,12 +441,6 @@ public class Game {
     }
 
     this.readyForGame = readyForGame;
-
-    readyForGameWebSockets.send(readyForGame);
-  }
-
-  public WebSocket getReadyForGameWebSocket() {
-    return readyForGameWebSockets.newWebSocket();
   }
 
   /**
@@ -502,9 +465,8 @@ public class Game {
     // 故意の回線落ちチェックのためゲーム開始したプレイヤーのログを取る
     if (1 < getNumberOfHumanPlayer()) {
       for (PlayerStatus player : playerStatuses) {
-        String message = MoreObjects.toStringHelper(this)
-            .add("method", "transitFromMachingToReady").add("sessionId", sessionId)
-            .add("userCode", player.getUserCode()).toString();
+        String message = MoreObjects.toStringHelper(this).add("method", "transitFromMachingToReady")
+            .add("sessionId", sessionId).add("userCode", player.getUserCode()).toString();
         logger.log(Level.INFO, message);
       }
     }
@@ -518,8 +480,8 @@ public class Game {
 
     int difficultSelect = (setDifficult.size() == 1) ? setDifficult.iterator().next()
         : Constant.DIFFICULT_SELECT_NORMAL;
-    NewAndOldProblems newAndOldProblems = (setNewAndOldProblems.size() == 1) ? setNewAndOldProblems
-        .iterator().next() : NewAndOldProblems.Both;
+    NewAndOldProblems newAndOldProblems = (setNewAndOldProblems.size() == 1)
+        ? setNewAndOldProblems.iterator().next() : NewAndOldProblems.Both;
 
     problems = prepareProblems(difficultSelect, newAndOldProblems, problemIds, selectedGenres,
         selectedTypes, classLevel, theme);
@@ -584,8 +546,8 @@ public class Game {
     Collections.shuffle(types);
 
     for (int i = 0; i < numberOfProblemsToAdd; ++i) {
-      int problemID = selectProblem(EnumSet.of(genres.get(i)), EnumSet.of(types.get(i)),
-          classLevel, difficultSelect, theme, newAndOldProblems);
+      int problemID = selectProblem(EnumSet.of(genres.get(i)), EnumSet.of(types.get(i)), classLevel,
+          difficultSelect, theme, newAndOldProblems);
       problemIds.add(problemID);
     }
 
@@ -656,7 +618,7 @@ public class Game {
    * プレイヤーの解答を受け取る
    * 
    * @param playerListId
-   *          　プレイヤーリストID
+   *          プレイヤーリストID
    * @param answer
    *          プレイヤーの解答
    */
@@ -812,9 +774,8 @@ public class Game {
     for (PlayerStatus player : playerStatuses) {
       if (player.isHuman() && player.shouldBeDropped()) {
         player.drop();
-        String message = "プレイヤーをドロップしました: "
-            + MoreObjects.toStringHelper(this).add("sessionId", sessionId)
-                .add("playerListId", player.getPlayerListId()).toString();
+        String message = "プレイヤーをドロップしました: " + MoreObjects.toStringHelper(this)
+            .add("sessionId", sessionId).add("playerListId", player.getPlayerListId()).toString();
         logger.log(Level.INFO, message);
       }
     }
@@ -874,8 +835,9 @@ public class Game {
     }
 
     double r = (double) restTime / (double) (maxQuestionTime - perfectBoderTime);
-    int compressPoint = (int) (basePoint * ((Constant.MAX_POINT_COMPRESS - Constant.MIN_POINT_COMPRESS)
-        * rc + Constant.MIN_POINT_COMPRESS));
+    int compressPoint = (int) (basePoint
+        * ((Constant.MAX_POINT_COMPRESS - Constant.MIN_POINT_COMPRESS) * rc
+            + Constant.MIN_POINT_COMPRESS));
     int point = (int) (basePoint * r + compressPoint * (1.0 - r));
     return point;
   }
@@ -893,8 +855,9 @@ public class Game {
     }
 
     double r = (double) restTime / (double) (maxQuestionTime - perfectBoderTime);
-    int compressPoint = (int) (perfectPoint * ((Constant.MAX_POINT_COMPRESS - Constant.MIN_POINT_COMPRESS)
-        * rc + Constant.MIN_POINT_COMPRESS));
+    int compressPoint = (int) (perfectPoint
+        * ((Constant.MAX_POINT_COMPRESS - Constant.MIN_POINT_COMPRESS) * rc
+            + Constant.MIN_POINT_COMPRESS));
     int point = (int) (perfectPoint * r + compressPoint * (1.0 - r));
     return point;
   }
@@ -929,7 +892,7 @@ public class Game {
   /**
    * Answer状態からResult状態へ移行する
    * 
-   * @return　状態
+   * @return 状態
    */
   private synchronized Transition transitFromAnswerToResult() {
     secondsToNextState.set(SECONDS_FROM_RESULT_TO_FINISHED);
@@ -1069,8 +1032,10 @@ public class Game {
       for (PlayerStatus player : players) {
         double hisVolatility = player.getVolatility();
         double wp = 0.5;
-        wp = 0.5 * (Erf.erf((player.getRating() - myRating)
-            / Math.sqrt(2 * (hisVolatility * hisVolatility + myVolatility * myVolatility))) + 1.0);
+        wp = 0.5 * (Erf
+            .erf((player.getRating() - myRating)
+                / Math.sqrt(2 * (hisVolatility * hisVolatility + myVolatility * myVolatility)))
+            + 1.0);
 
         // BugTrack-QMAClone/603 - QMAClone wiki
         // http://kishibe.dyndns.tv/qmaclone/wiki/wiki.cgi?page=BugTrack%2DQMAClone%2F603
@@ -1084,8 +1049,8 @@ public class Game {
       double ePerf = -normalDistribution.inverseCumulativeProbability((eRank - 0.5) / numCoders);
 
       // The actual performance of each coder is calculated:
-      double aPerf = -normalDistribution.inverseCumulativeProbability((my.getHumanRank() - 0.5)
-          / numCoders);
+      double aPerf = -normalDistribution
+          .inverseCumulativeProbability((my.getHumanRank() - 0.5) / numCoders);
 
       // The performed as rating of the coder is calculated:
       double perfAs = myRating + cf * (aPerf - ePerf);
@@ -1103,8 +1068,8 @@ public class Game {
 
       // The new volatility of the coder is calculated:
       double diffRating = newRating - myRating;
-      double newVolatility = Math.sqrt(diffRating * diffRating / weight + myVolatility
-          * myVolatility / (weight + 1));
+      double newVolatility = Math
+          .sqrt(diffRating * diffRating / weight + myVolatility * myVolatility / (weight + 1));
 
       my.setNewRating((int) Math.rint(newRating));
       my.setNewVolatility((int) Math.rint(newVolatility));
@@ -1148,14 +1113,6 @@ public class Game {
   private synchronized Transition transitFromResultToFinished() {
     // タイマーを終了させる
     timer.cancel(false);
-
-    try {
-      Closeables.close(matchingDataWebSockets, true);
-      Closeables.close(readyForGameWebSockets, true);
-      Closeables.close(gameStatusWebSockets, true);
-    } catch (IOException e) {
-      Preconditions.checkState(false, "Unreachable");
-    }
     return Transition.Finished;
   }
 
@@ -1171,10 +1128,6 @@ public class Game {
   }
 
   private volatile PacketGameStatus gameStatus;
-
-  public WebSocket getGameStatusWebSocket() {
-    return gameStatusWebSockets.newWebSocket();
-  }
 
   public synchronized PacketGameStatus getGameStatus() {
     Preconditions.checkNotNull(gameStatus, "ゲーム状態がnullです: sessionId=" + sessionId);
@@ -1203,7 +1156,6 @@ public class Game {
     }
 
     this.gameStatus = status;
-    gameStatusWebSockets.send(status);
   }
 
   public synchronized List<PacketPlayerSummary> getPlayerSummaries() {

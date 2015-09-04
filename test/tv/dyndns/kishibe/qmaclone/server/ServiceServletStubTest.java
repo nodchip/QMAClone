@@ -19,6 +19,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+
 import tv.dyndns.kishibe.qmaclone.client.game.ProblemGenre;
 import tv.dyndns.kishibe.qmaclone.client.game.ProblemType;
 import tv.dyndns.kishibe.qmaclone.client.game.RandomFlag;
@@ -34,10 +37,6 @@ import tv.dyndns.kishibe.qmaclone.server.handwriting.RecognizerZinnia;
 import tv.dyndns.kishibe.qmaclone.server.image.BrokenImageLinkDetector;
 import tv.dyndns.kishibe.qmaclone.server.image.ImageUtils;
 import tv.dyndns.kishibe.qmaclone.server.sns.SnsClient;
-import tv.dyndns.kishibe.qmaclone.server.websocket.WebSocketServer;
-
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ServiceServletStubTest {
@@ -76,8 +75,6 @@ public class ServiceServletStubTest {
   @Mock
   private ThemeModeEditorManager mockThemeModeEditorManager;
   @Mock
-  private WebSocketServer mockWebSocketServer;
-  @Mock
   private ImageUtils mockImageManager;
   @Mock
   private Database mockDatabase;
@@ -110,10 +107,10 @@ public class ServiceServletStubTest {
     service = spy(new ServiceServletStub(mockChatManager, mockNormalModeProblemManager,
         mockThemeModeProblemManager, mockGameManager, mockServerStatusManager,
         mockPlayerHistoryManager, mockVoteManager, mockRecognizer, mockThemeModeEditorManager,
-        mockWebSocketServer, mockDatabase, mockPrefectureRanking, mockRatingDistribution,
-        mockSnsClient, mockGameLogger, mockThreadPool, mockBadUserDetector,
-        mockRestrictedUserUtils, mockProblemCorrectCounterResetCounter,
-        mockProblemIndicationCounter, mockBrokenImageLinkDetector));
+        mockDatabase, mockPrefectureRanking, mockRatingDistribution, mockSnsClient, mockGameLogger,
+        mockThreadPool, mockBadUserDetector, mockRestrictedUserUtils,
+        mockProblemCorrectCounterResetCounter, mockProblemIndicationCounter,
+        mockBrokenImageLinkDetector));
     problem1 = TestDataProvider.getProblem();
     problem1.id = 1;
     problem2 = TestDataProvider.getProblem();
@@ -136,9 +133,8 @@ public class ServiceServletStubTest {
     expected3.id = 3;
 
     when(mockGameManager.getTestingProblemIds()).thenReturn(ImmutableSet.of(1, 2));
-    when(
-        mockDatabase.searchProblem(QUERY, CREATOR, CREATOR_PERFECT_MATCHING, GENRES, TYPES,
-            RANDOM_FLAGS)).thenReturn(ImmutableList.of(problem1, problem2, problem3));
+    when(mockDatabase.searchProblem(QUERY, CREATOR, CREATOR_PERFECT_MATCHING, GENRES, TYPES,
+        RANDOM_FLAGS)).thenReturn(ImmutableList.of(problem1, problem2, problem3));
 
     List<PacketProblem> problems = service.searchProblem(QUERY, CREATOR, CREATOR_PERFECT_MATCHING,
         GENRES, TYPES, RANDOM_FLAGS);
@@ -152,8 +148,8 @@ public class ServiceServletStubTest {
     PacketProblem fakeProblem = new PacketProblem();
 
     when(mockProblemCorrectCounterResetCounter.isAbleToReset(USER_CODE)).thenReturn(true);
-    when(mockDatabase.getProblem(ImmutableList.of(PROBLEM_ID))).thenReturn(
-        ImmutableList.of(fakeProblem));
+    when(mockDatabase.getProblem(ImmutableList.of(PROBLEM_ID)))
+        .thenReturn(ImmutableList.of(fakeProblem));
 
     assertTrue(service.resetProblemCorrectCounter(USER_CODE, PROBLEM_ID));
 
@@ -161,15 +157,16 @@ public class ServiceServletStubTest {
   }
 
   @Test
-  public void getProblemIndicationEligibilityShouldReturnOkForAvailableEligibile() throws Exception {
+  public void getProblemIndicationEligibilityShouldReturnOkForAvailableEligibile()
+      throws Exception {
     PacketUserData userData = new PacketUserData();
     userData.playerName = "プレイヤー名";
 
     when(mockProblemIndicationCounter.isAbleToIndicate(USER_CODE)).thenReturn(true);
     when(mockDatabase.getUserData(USER_CODE)).thenReturn(userData);
 
-    assertThat(service.getProblemIndicationEligibility(USER_CODE)).isEqualTo(
-        ProblemIndicationEligibility.OK);
+    assertThat(service.getProblemIndicationEligibility(USER_CODE))
+        .isEqualTo(ProblemIndicationEligibility.OK);
   }
 
   @Test
@@ -180,8 +177,8 @@ public class ServiceServletStubTest {
     when(mockProblemIndicationCounter.isAbleToIndicate(USER_CODE)).thenReturn(false);
     when(mockDatabase.getUserData(USER_CODE)).thenReturn(userData);
 
-    assertThat(service.getProblemIndicationEligibility(USER_CODE)).isEqualTo(
-        ProblemIndicationEligibility.REACHED_MAX_NUMBER_OF_REQUESTS_PER_UNIT_TIME);
+    assertThat(service.getProblemIndicationEligibility(USER_CODE))
+        .isEqualTo(ProblemIndicationEligibility.REACHED_MAX_NUMBER_OF_REQUESTS_PER_UNIT_TIME);
   }
 
   @Test
@@ -192,8 +189,8 @@ public class ServiceServletStubTest {
     when(mockProblemIndicationCounter.isAbleToIndicate(USER_CODE)).thenReturn(true);
     when(mockDatabase.getUserData(USER_CODE)).thenReturn(userData);
 
-    assertThat(service.getProblemIndicationEligibility(USER_CODE)).isEqualTo(
-        ProblemIndicationEligibility.PLAYER_NAME_UNCHANGED);
+    assertThat(service.getProblemIndicationEligibility(USER_CODE))
+        .isEqualTo(ProblemIndicationEligibility.PLAYER_NAME_UNCHANGED);
   }
 
   @Test
@@ -228,8 +225,8 @@ public class ServiceServletStubTest {
 
   @Test
   public void getRestrictedUserCodesShouldDelegateToDatabase() throws Exception {
-    when(mockDatabase.getRestrictedUserCodes(RESTRICTION_TYPE)).thenReturn(
-        ImmutableSet.of(USER_CODE));
+    when(mockDatabase.getRestrictedUserCodes(RESTRICTION_TYPE))
+        .thenReturn(ImmutableSet.of(USER_CODE));
 
     assertEquals(ImmutableSet.of(USER_CODE), service.getRestrictedUserCodes(RESTRICTION_TYPE));
   }
@@ -279,16 +276,16 @@ public class ServiceServletStubTest {
 
   @Test(expected = ServiceException.class)
   public void removeRestrictedRemoteAddressShouldThrowExceptionOnError() throws Exception {
-    doThrow(new DatabaseException()).when(mockDatabase).removeRestrictedRemoteAddress(
-        REMOTE_ADDRESS, RESTRICTION_TYPE);
+    doThrow(new DatabaseException()).when(mockDatabase)
+        .removeRestrictedRemoteAddress(REMOTE_ADDRESS, RESTRICTION_TYPE);
 
     service.removeRestrictedRemoteAddress(REMOTE_ADDRESS, RESTRICTION_TYPE);
   }
 
   @Test
   public void getRestrictedRemoteAddressesShouldDelegateToDatabase() throws Exception {
-    when(mockDatabase.getRestrictedRemoteAddresses(RESTRICTION_TYPE)).thenReturn(
-        ImmutableSet.of(REMOTE_ADDRESS));
+    when(mockDatabase.getRestrictedRemoteAddresses(RESTRICTION_TYPE))
+        .thenReturn(ImmutableSet.of(REMOTE_ADDRESS));
 
     assertEquals(ImmutableSet.of(REMOTE_ADDRESS),
         service.getRestrictedRemoteAddresses(RESTRICTION_TYPE));
@@ -296,8 +293,8 @@ public class ServiceServletStubTest {
 
   @Test(expected = ServiceException.class)
   public void getRestrictedRemoteAddressesShouldThrowExceptionOnError() throws Exception {
-    when(mockDatabase.getRestrictedRemoteAddresses(RESTRICTION_TYPE)).thenThrow(
-        new DatabaseException());
+    when(mockDatabase.getRestrictedRemoteAddresses(RESTRICTION_TYPE))
+        .thenThrow(new DatabaseException());
 
     service.getRestrictedRemoteAddresses(RESTRICTION_TYPE);
   }
@@ -311,16 +308,16 @@ public class ServiceServletStubTest {
 
   @Test(expected = ServiceException.class)
   public void clearRestrictedRemoteAddressesShouldThrowExceptionOnError() throws Exception {
-    doThrow(new DatabaseException()).when(mockDatabase).clearRestrictedRemoteAddresses(
-        RESTRICTION_TYPE);
+    doThrow(new DatabaseException()).when(mockDatabase)
+        .clearRestrictedRemoteAddresses(RESTRICTION_TYPE);
 
     service.clearRestrictedRemoteAddresses(RESTRICTION_TYPE);
   }
 
   @Test
   public void lookupUserCodeByGooglePlusIdShouldDelegateToDatabase() throws Exception {
-    when(mockDatabase.lookupUserCodeByGooglePlusId(GOOGLE_PLUS_ID)).thenReturn(
-        ImmutableList.of(TestDataProvider.getUserData()));
+    when(mockDatabase.lookupUserCodeByGooglePlusId(GOOGLE_PLUS_ID))
+        .thenReturn(ImmutableList.of(TestDataProvider.getUserData()));
 
     assertEquals(ImmutableList.of(TestDataProvider.getUserData()),
         service.lookupUserDataByGooglePlusId(GOOGLE_PLUS_ID));
@@ -328,8 +325,8 @@ public class ServiceServletStubTest {
 
   @Test(expected = ServiceException.class)
   public void lookupUserCodeByGooglePlusIdShouldThrowExceptionOnError() throws Exception {
-    when(mockDatabase.lookupUserCodeByGooglePlusId(GOOGLE_PLUS_ID)).thenThrow(
-        new DatabaseException());
+    when(mockDatabase.lookupUserCodeByGooglePlusId(GOOGLE_PLUS_ID))
+        .thenThrow(new DatabaseException());
 
     assertEquals(USER_CODE, service.lookupUserDataByGooglePlusId(GOOGLE_PLUS_ID));
   }
@@ -350,8 +347,8 @@ public class ServiceServletStubTest {
 
   @Test
   public void canUploadProblemReturnsFalseIfNewProblemWithManyCreations() throws Exception {
-    when(mockDatabase.getProblem(ImmutableList.of(PROBLEM_ID))).thenReturn(
-        ImmutableList.of(createProblem(ProblemGenre.Anige)));
+    when(mockDatabase.getProblem(ImmutableList.of(PROBLEM_ID)))
+        .thenReturn(ImmutableList.of(createProblem(ProblemGenre.Anige)));
     when(mockDatabase.getNumberOfCreationLogWithMachineIp(isA(String.class), isA(Long.class)))
         .thenReturn(100);
     when(mockDatabase.getNumberOfCreationLogWithUserCode(isA(Integer.class), isA(Long.class)))
@@ -363,8 +360,8 @@ public class ServiceServletStubTest {
 
   @Test
   public void canUploadProblemReturnsTrueIfFromAnigeWithManyCreations() throws Exception {
-    when(mockDatabase.getProblem(ImmutableList.of(PROBLEM_ID))).thenReturn(
-        ImmutableList.of(createProblem(ProblemGenre.Anige)));
+    when(mockDatabase.getProblem(ImmutableList.of(PROBLEM_ID)))
+        .thenReturn(ImmutableList.of(createProblem(ProblemGenre.Anige)));
     when(mockDatabase.getNumberOfCreationLogWithMachineIp(isA(String.class), isA(Long.class)))
         .thenReturn(100);
     when(mockDatabase.getNumberOfCreationLogWithUserCode(isA(Integer.class), isA(Long.class)))
@@ -376,8 +373,8 @@ public class ServiceServletStubTest {
 
   @Test
   public void canUploadProblemReturnsFalseIfFromNonAnigeWithManyCreations() throws Exception {
-    when(mockDatabase.getProblem(ImmutableList.of(PROBLEM_ID))).thenReturn(
-        ImmutableList.of(createProblem(ProblemGenre.Gakumon)));
+    when(mockDatabase.getProblem(ImmutableList.of(PROBLEM_ID)))
+        .thenReturn(ImmutableList.of(createProblem(ProblemGenre.Gakumon)));
     when(mockDatabase.getNumberOfCreationLogWithMachineIp(isA(String.class), isA(Long.class)))
         .thenReturn(100);
     when(mockDatabase.getNumberOfCreationLogWithUserCode(isA(Integer.class), isA(Long.class)))
@@ -389,8 +386,8 @@ public class ServiceServletStubTest {
 
   @Test
   public void canUploadProblemReturnsTrueIfFromAnigeWithSmallCreations() throws Exception {
-    when(mockDatabase.getProblem(ImmutableList.of(PROBLEM_ID))).thenReturn(
-        ImmutableList.of(createProblem(ProblemGenre.Anige)));
+    when(mockDatabase.getProblem(ImmutableList.of(PROBLEM_ID)))
+        .thenReturn(ImmutableList.of(createProblem(ProblemGenre.Anige)));
     when(mockDatabase.getNumberOfCreationLogWithMachineIp(isA(String.class), isA(Long.class)))
         .thenReturn(0);
     when(mockDatabase.getNumberOfCreationLogWithUserCode(isA(Integer.class), isA(Long.class)))

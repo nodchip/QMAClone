@@ -2,9 +2,6 @@ package tv.dyndns.kishibe.qmaclone.server;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.isA;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.eclipse.jetty.websocket.WebSocket;
@@ -18,12 +15,11 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
+import com.google.common.collect.ImmutableList;
+
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketPlayerSummary;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketServerStatus;
 import tv.dyndns.kishibe.qmaclone.server.database.Database;
-import tv.dyndns.kishibe.qmaclone.server.websocket.WebSockets;
-
-import com.google.common.collect.ImmutableList;
 
 @RunWith(JUnit4.class)
 public class ServerStatusManagerTest {
@@ -40,8 +36,6 @@ public class ServerStatusManagerTest {
   @Mock
   private PlayerHistoryManager mockPlayerHistoryManager;
   @Mock
-  private WebSockets<PacketServerStatus> mockServerStatusWebSockets;
-  @Mock
   private ThreadPool mockThreadPool;
   @Mock
   private WebSocket mockWebSocket;
@@ -57,7 +51,7 @@ public class ServerStatusManagerTest {
     when(mockPlayerHistoryManager.get()).thenReturn(ImmutableList.of(new PacketPlayerSummary()));
 
     manager = new ServerStatusManager(mockDatabase, mockGameManager, mockNormalModeProblemManager,
-        mockPlayerHistoryManager, mockServerStatusWebSockets, mockThreadPool);
+        mockPlayerHistoryManager, mockThreadPool);
   }
 
   @Test
@@ -67,8 +61,6 @@ public class ServerStatusManagerTest {
     manager.updateServerStatus();
 
     assertThat(manager.getServerStatus().numberOfPageView).isEqualTo(numberOfPageView + 1);
-
-    verify(mockServerStatusWebSockets, times(2)).send(isA(PacketServerStatus.class));
   }
 
   @Test
@@ -87,8 +79,6 @@ public class ServerStatusManagerTest {
     manager.keepAlive(123456789);
 
     assertThat((Iterable<Integer>) manager.loginUserCodes).contains(123456789);
-
-    verify(mockServerStatusWebSockets).send(isA(PacketServerStatus.class));
   }
 
   @Test
@@ -109,8 +99,6 @@ public class ServerStatusManagerTest {
     manager.updateServerStatus();
 
     assertThat(manager.getServerStatus()).isSameAs(status);
-
-    verify(mockServerStatusWebSockets).send(isA(PacketServerStatus.class));
   }
 
   @Test
@@ -120,17 +108,6 @@ public class ServerStatusManagerTest {
     manager.updateServerStatus();
 
     assertThat(manager.getServerStatus()).isNotEqualTo(status);
-
-    verify(mockServerStatusWebSockets, times(2)).send(isA(PacketServerStatus.class));
   }
 
-  @Test
-  public void getServerStatusWebSocketShouldReturnSocket() {
-    when(mockServerStatusWebSockets.newWebSocket()).thenReturn(mockWebSocket);
-
-    assertThat(manager.getServerStatusWebSocket()).isNotNull();
-
-    verify(mockServerStatusWebSockets).send(isA(PacketServerStatus.class));
-    verify(mockServerStatusWebSockets).newWebSocket();
-  }
 }
