@@ -28,29 +28,15 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import tv.dyndns.kishibe.qmaclone.client.constant.Constant;
-import tv.dyndns.kishibe.qmaclone.client.game.ProblemGenre;
-import tv.dyndns.kishibe.qmaclone.client.game.ProblemType;
-import tv.dyndns.kishibe.qmaclone.client.util.HasIndex;
-
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
+import tv.dyndns.kishibe.qmaclone.client.constant.Constant;
+import tv.dyndns.kishibe.qmaclone.client.game.ProblemGenre;
+import tv.dyndns.kishibe.qmaclone.client.game.ProblemType;
+
 public class PacketUserData implements IsSerializable {
-  public static enum WebSocketUsage implements IsSerializable, HasIndex {
-    Default(0), On(1), Off(2);
-    private final int index;
-
-    private WebSocketUsage(int index) {
-      this.index = index;
-    }
-
-    @Override
-    public int getIndex() {
-      return index;
-    }
-  }
 
   public String playerName;
   public String greeting;
@@ -83,7 +69,6 @@ public class PacketUserData implements IsSerializable {
   public boolean hideAnswer;
   public boolean showInfo;
   public boolean reflectEventResult;
-  public WebSocketUsage webSocketUsage;
   public int volatility;
   public boolean qwertyHiragana;
   public boolean qwertyKatakana;
@@ -113,7 +98,6 @@ public class PacketUserData implements IsSerializable {
     showInfo = true;
     newAndOldProblems = NewAndOldProblems.Both;
     reflectEventResult = false;
-    webSocketUsage = WebSocketUsage.Default;
     difficultSelect = Constant.DIFFICULT_SELECT_EASY;
     theme = "";
   }
@@ -140,12 +124,11 @@ public class PacketUserData implements IsSerializable {
         .add("newAndOldProblems", newAndOldProblems).add("ignoreUserCodes", ignoreUserCodes)
         .add("timerMode", timerMode).add("publicEvent", publicEvent).add("hideAnswer", hideAnswer)
         .add("showInfo", showInfo).add("reflectEventResult", reflectEventResult)
-        .add("webSocketUsage", webSocketUsage).add("volatility", volatility)
-        .add("qwertyHiragana", qwertyHiragana).add("qwertyKatakana", qwertyKatakana)
-        .add("qwertyAlphabet", qwertyAlphabet)
+        .add("volatility", volatility).add("qwertyHiragana", qwertyHiragana)
+        .add("qwertyKatakana", qwertyKatakana).add("qwertyAlphabet", qwertyAlphabet)
         .add("registerCreatedProblem", registerCreatedProblem)
-        .add("registerIndicatedProblem", registerIndicatedProblem)
-        .add("googlePlusId", googlePlusId).add("THEME", theme).toString();
+        .add("registerIndicatedProblem", registerIndicatedProblem).add("googlePlusId", googlePlusId)
+        .add("THEME", theme).toString();
   }
 
   @Override
@@ -155,20 +138,18 @@ public class PacketUserData implements IsSerializable {
     }
     PacketUserData rh = (PacketUserData) obj;
     return equal(playerName, rh.playerName) && equal(greeting, rh.greeting)
-        && highScore == rh.highScore && averageScore == rh.averageScore
-        && playCount == rh.playCount && rating == rh.rating && levelName == rh.levelName
-        && levelNumber == rh.levelNumber && prefecture == rh.prefecture
-        && averageRank == rh.averageRank && equal(genres, rh.genres) && equal(types, rh.types)
-        && classLevel == rh.classLevel && userCode == rh.userCode
+        && highScore == rh.highScore && averageScore == rh.averageScore && playCount == rh.playCount
+        && rating == rh.rating && levelName == rh.levelName && levelNumber == rh.levelNumber
+        && prefecture == rh.prefecture && averageRank == rh.averageRank && equal(genres, rh.genres)
+        && equal(types, rh.types) && classLevel == rh.classLevel && userCode == rh.userCode
         && equal(imageFileName, rh.imageFileName)
         && Arrays.deepEquals(correctCount, rh.correctCount) && playSound == rh.playSound
         && multiGenre == rh.multiGenre && multiType == rh.multiType
         && difficultSelect == rh.difficultSelect && rankingMove == rh.rankingMove
         && bbsDispInfo == rh.bbsDispInfo && bbsAge == rh.bbsAge && chat == rh.chat
         && newAndOldProblems == rh.newAndOldProblems && equal(ignoreUserCodes, rh.ignoreUserCodes)
-        && timerMode == rh.timerMode && publicEvent == rh.publicEvent
-        && hideAnswer == rh.hideAnswer && showInfo == rh.showInfo
-        && reflectEventResult == rh.reflectEventResult && webSocketUsage == rh.webSocketUsage
+        && timerMode == rh.timerMode && publicEvent == rh.publicEvent && hideAnswer == rh.hideAnswer
+        && showInfo == rh.showInfo && reflectEventResult == rh.reflectEventResult
         && volatility == rh.volatility && qwertyHiragana == rh.qwertyHiragana
         && qwertyKatakana == rh.qwertyKatakana && qwertyAlphabet == rh.qwertyAlphabet
         && registerCreatedProblem == rh.registerCreatedProblem
@@ -180,10 +161,9 @@ public class PacketUserData implements IsSerializable {
   public int hashCode() {
     return Objects.hashCode(playerName, greeting, highScore, averageScore, playCount, rating,
         levelName, levelNumber, prefecture, averageRank, genres, types, classLevel, userCode,
-        imageFileName, correctCount, playSound, multiGenre, multiType, difficultSelect,
-        rankingMove, bbsDispInfo, bbsAge, chat, newAndOldProblems, ignoreUserCodes, timerMode,
-        publicEvent, hideAnswer, showInfo, reflectEventResult, webSocketUsage, volatility,
-        qwertyHiragana, qwertyKatakana, qwertyAlphabet, registerCreatedProblem,
-        registerIndicatedProblem, googlePlusId, theme);
+        imageFileName, correctCount, playSound, multiGenre, multiType, difficultSelect, rankingMove,
+        bbsDispInfo, bbsAge, chat, newAndOldProblems, ignoreUserCodes, timerMode, publicEvent,
+        hideAnswer, showInfo, reflectEventResult, volatility, qwertyHiragana, qwertyKatakana,
+        qwertyAlphabet, registerCreatedProblem, registerIndicatedProblem, googlePlusId, theme);
   }
 }

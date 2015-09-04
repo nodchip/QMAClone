@@ -12,7 +12,6 @@ import tv.dyndns.kishibe.qmaclone.client.packet.NewAndOldProblems;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketLinkData;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblem;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketUserData;
-import tv.dyndns.kishibe.qmaclone.client.packet.PacketUserData.WebSocketUsage;
 
 public class TestDataProvider {
   private TestDataProvider() {
@@ -80,7 +79,6 @@ public class TestDataProvider {
     data.hideAnswer = false;
     data.showInfo = true;
     data.reflectEventResult = true;
-    data.webSocketUsage = WebSocketUsage.Default;
     data.volatility = 345;
     data.qwertyHiragana = true;
     data.qwertyKatakana = true;

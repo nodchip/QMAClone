@@ -12,7 +12,6 @@
 	<inherits name="com.google.gwt.visualization.Visualization" />
 	<inherits name="javax.annotation.Annotation" />
 	<inherits name="name.pehl.piriti.json.JSON" />
-	<inherits name="net.zschech.gwt.websockets.WebSockets" />
 	<inherits name='com.allen_sauer.gwt.dnd.gwt-dnd' />
 	<inherits name='com.google.api.gwt.services.Plus' />
 	<inherits name='com.google.gwt.widgetideas.GWTCanvas' />
