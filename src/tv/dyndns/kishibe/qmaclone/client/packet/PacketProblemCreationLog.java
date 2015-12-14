@@ -23,27 +23,26 @@ package tv.dyndns.kishibe.qmaclone.client.packet;
 
 import java.util.Date;
 
-import tv.dyndns.kishibe.qmaclone.client.Utility;
-
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
+import tv.dyndns.kishibe.qmaclone.client.Utility;
+
 public class PacketProblemCreationLog implements IsSerializable {
 
-	public String name;
-	public int userCode;
-	public Date date;
-	public String ip;
-	public String summary;
+  public String name;
+  public int userCode;
+  public Date date;
+  public String ip;
+  public String summary;
 
-	public SafeHtml getDate() {
-		return SafeHtmlUtils.fromString(Utility.toDateFormat(date));
-	}
+  public SafeHtml getDate() {
+    return SafeHtmlUtils.fromString(Utility.toDateFormat(date));
+  }
 
-	public SafeHtml getPlayer() {
-		return SafeHtmlUtils.fromString(name + '◆' + Utility.makeTrip(userCode) + '@'
-				+ Utility.makeTrip(ip.hashCode()));
-	}
+  public SafeHtml getPlayer() {
+    return SafeHtmlUtils.fromString(name + Utility.makeTrip(userCode, ip));
+  }
 
 }
