@@ -893,7 +893,7 @@ public class DirectDatabase implements Database {
       response.threadId = rs.getLong("threadId");
       response.name = rs.getString("name");
       response.userCode = rs.getInt("userCode");
-      response.remoteAddress = rs.getString("userCode");
+      response.remoteAddress = rs.getString("machineIp");
       response.dispInfo = rs.getInt("dispInfo");
       response.postTime = rs.getLong("postTime");
       response.body = rs.getString("body");

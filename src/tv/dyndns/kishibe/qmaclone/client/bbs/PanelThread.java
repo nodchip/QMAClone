@@ -26,12 +26,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import tv.dyndns.kishibe.qmaclone.client.Service;
-import tv.dyndns.kishibe.qmaclone.client.UserData;
-import tv.dyndns.kishibe.qmaclone.client.Utility;
-import tv.dyndns.kishibe.qmaclone.client.constant.Constant;
-import tv.dyndns.kishibe.qmaclone.client.packet.PacketBbsResponse;
-
 import com.google.common.base.Optional;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -41,6 +35,13 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
+
+import tv.dyndns.kishibe.qmaclone.client.Service;
+import tv.dyndns.kishibe.qmaclone.client.SharedData;
+import tv.dyndns.kishibe.qmaclone.client.UserData;
+import tv.dyndns.kishibe.qmaclone.client.Utility;
+import tv.dyndns.kishibe.qmaclone.client.constant.Constant;
+import tv.dyndns.kishibe.qmaclone.client.packet.PacketBbsResponse;
 
 public class PanelThread extends VerticalPanel implements ClickHandler {
   private static final Logger logger = Logger.getLogger(PanelThread.class.getName());
@@ -100,19 +101,25 @@ public class PanelThread extends VerticalPanel implements ClickHandler {
 
       {
         String upper = "";
-        switch (response.dispInfo) {
-        case Constant.BBS_DISPLAY_INFO_ANONYMOUS:
-          upper = response.id + ": " + Utility.toDateFormat(new Date(response.postTime));
-          break;
-        case Constant.BBS_DISPLAY_INFO_NAME_ONLY:
-          upper = response.id + ": " + response.name + " "
-              + Utility.toDateFormat(new Date(response.postTime));
-          break;
-        case Constant.BBS_DISPLAY_INFO_ALL_DATA:
+        if (SharedData.get().isAdministoratorMode()) {
           upper = response.id + ": " + response.name
               + Utility.makeTrip(response.userCode, response.remoteAddress) + " "
               + Utility.toDateFormat(new Date(response.postTime));
-          break;
+        } else {
+          switch (response.dispInfo) {
+          case Constant.BBS_DISPLAY_INFO_ANONYMOUS:
+            upper = response.id + ": " + Utility.toDateFormat(new Date(response.postTime));
+            break;
+          case Constant.BBS_DISPLAY_INFO_NAME_ONLY:
+            upper = response.id + ": " + response.name + " "
+                + Utility.toDateFormat(new Date(response.postTime));
+            break;
+          case Constant.BBS_DISPLAY_INFO_ALL_DATA:
+            upper = response.id + ": " + response.name
+                + Utility.makeTrip(response.userCode, response.remoteAddress) + " "
+                + Utility.toDateFormat(new Date(response.postTime));
+            break;
+          }
         }
 
         HTML upperHtml = new HTML(SafeHtmlUtils.fromString(upper));
@@ -131,8 +138,8 @@ public class PanelThread extends VerticalPanel implements ClickHandler {
 
   private void showAll() {
     setEnabled(false);
-    Service.Util.getInstance()
-        .getBbsResponses(threadId, Integer.MAX_VALUE, callbackGetBbsResponses);
+    Service.Util.getInstance().getBbsResponses(threadId, Integer.MAX_VALUE,
+        callbackGetBbsResponses);
   }
 
   private void write() {
@@ -156,8 +163,8 @@ public class PanelThread extends VerticalPanel implements ClickHandler {
   private final AsyncCallback<Void> callbackWriteToBbs = new AsyncCallback<Void>() {
     public void onSuccess(Void result) {
       responseForm.clearForm();
-      Service.Util.getInstance().getBbsResponses(threadId,
-          Constant.BBS_INITIAL_RESPONSE_PER_THREAD, callbackGetBbsResponses);
+      Service.Util.getInstance().getBbsResponses(threadId, Constant.BBS_INITIAL_RESPONSE_PER_THREAD,
+          callbackGetBbsResponses);
     }
 
     public void onFailure(Throwable caught) {
