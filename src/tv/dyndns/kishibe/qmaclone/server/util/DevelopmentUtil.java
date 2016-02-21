@@ -11,7 +11,7 @@ public class DevelopmentUtil {
 
 	public boolean isDev() {
 		try {
-			return InetAddress.getLocalHost().toString().startsWith("gilgamesh/");
+			return InetAddress.getLocalHost().toString().startsWith("doutanuki/");
 		} catch (UnknownHostException e) {
 			logger.log(Level.WARNING, "自IPの取得に失敗しました", e);
 		}
