@@ -28,6 +28,13 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import tv.dyndns.kishibe.qmaclone.client.game.ProblemGenre;
+import tv.dyndns.kishibe.qmaclone.client.game.ProblemType;
+import tv.dyndns.kishibe.qmaclone.client.packet.NewAndOldProblems;
+import tv.dyndns.kishibe.qmaclone.client.packet.PacketUserData;
+import tv.dyndns.kishibe.qmaclone.client.packet.PacketUserData.WebSocketUsage;
+import tv.dyndns.kishibe.qmaclone.client.setting.PanelSettingChat;
+
 import com.google.common.base.Strings;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
@@ -37,12 +44,6 @@ import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-
-import tv.dyndns.kishibe.qmaclone.client.game.ProblemGenre;
-import tv.dyndns.kishibe.qmaclone.client.game.ProblemType;
-import tv.dyndns.kishibe.qmaclone.client.packet.NewAndOldProblems;
-import tv.dyndns.kishibe.qmaclone.client.packet.PacketUserData;
-import tv.dyndns.kishibe.qmaclone.client.setting.PanelSettingChat;
 
 public class UserData implements CloseHandler<Window> {
   private static final Logger logger = Logger.getLogger(UserData.class.getName());
@@ -389,6 +390,14 @@ public class UserData implements CloseHandler<Window> {
 
   public boolean isReflectEventResult() {
     return data.reflectEventResult;
+  }
+
+  public void setWebSocketUsage(WebSocketUsage webSocketUsage) {
+    data.webSocketUsage = webSocketUsage;
+  }
+
+  public WebSocketUsage getWebSocketUsage() {
+    return data.webSocketUsage;
   }
 
   public void setVolatility(int volatility) {

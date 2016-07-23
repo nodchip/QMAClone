@@ -41,14 +41,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.google.common.base.MoreObjects;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Range;
-import com.google.guiceberry.junit4.GuiceBerryRule;
-import com.google.inject.Inject;
-
 import tv.dyndns.kishibe.qmaclone.client.game.ProblemGenre;
 import tv.dyndns.kishibe.qmaclone.client.game.ProblemType;
 import tv.dyndns.kishibe.qmaclone.client.game.RandomFlag;
@@ -73,6 +65,14 @@ import tv.dyndns.kishibe.qmaclone.server.PageView;
 import tv.dyndns.kishibe.qmaclone.server.database.DirectDatabase.WrongAnswerHandler;
 import tv.dyndns.kishibe.qmaclone.server.testing.QMACloneTestEnv;
 import tv.dyndns.kishibe.qmaclone.server.util.Normalizer;
+
+import com.google.common.base.MoreObjects;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Range;
+import com.google.guiceberry.junit4.GuiceBerryRule;
+import com.google.inject.Inject;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DatabaseTest {
@@ -515,8 +515,9 @@ public class DatabaseTest {
 
     // not演算子で除外される問題数
     // http://kishibe.dyndns.tv/qmaclone/wiki/wiki.cgi?page=BugTrack-QMAClone/325
-    problems = database.searchProblem("フルメタル・パニック", null, false, EnumSet.noneOf(ProblemGenre.class),
-        EnumSet.noneOf(ProblemType.class), EnumSet.noneOf(RandomFlag.class));
+    problems = database.searchProblem("フルメタル・パニック", null, false,
+        EnumSet.noneOf(ProblemGenre.class), EnumSet.noneOf(ProblemType.class),
+        EnumSet.noneOf(RandomFlag.class));
 
     assertNotNull(problems);
     assertFalse(problems.isEmpty());
@@ -646,31 +647,27 @@ public class DatabaseTest {
   public void testAddRemoveIgnoreUserCode() throws Exception {
     runner.update("DELETE FROM ignore_id WHERE USER_CODE = 111");
     database.addIgnoreUserCode(111, 222);
-    assertEquals(1L,
-        (long) runner.query(
-            "SELECT COUNT(*) FROM ignore_id WHERE USER_CODE = 111 AND TARGET_USER_CODE = 222",
-            new ScalarHandler<Long>()));
+    assertEquals(1L, (long) runner.query(
+        "SELECT COUNT(*) FROM ignore_id WHERE USER_CODE = 111 AND TARGET_USER_CODE = 222",
+        new ScalarHandler<Long>()));
     database.removeIgnoreUserCode(111, 222);
-    assertEquals(0L,
-        (long) runner.query(
-            "SELECT COUNT(*) FROM ignore_id WHERE USER_CODE = 111 AND TARGET_USER_CODE = 222",
-            new ScalarHandler<Long>()));
+    assertEquals(0L, (long) runner.query(
+        "SELECT COUNT(*) FROM ignore_id WHERE USER_CODE = 111 AND TARGET_USER_CODE = 222",
+        new ScalarHandler<Long>()));
   }
 
   @Test
   public void testAddGetServerIgnoreUserCode() throws Exception {
     runner.update("DELETE FROM ignore_id WHERE USER_CODE = 0");
-    assertEquals(0L,
-        (long) runner.query(
-            "SELECT COUNT(*) FROM ignore_id WHERE USER_CODE = 0 AND TARGET_USER_CODE = 111",
-            new ScalarHandler<Long>()));
+    assertEquals(0L, (long) runner.query(
+        "SELECT COUNT(*) FROM ignore_id WHERE USER_CODE = 0 AND TARGET_USER_CODE = 111",
+        new ScalarHandler<Long>()));
     assertTrue(database.getServerIgnoreUserCode().isEmpty());
 
     database.addServerIgnoreUserCode(111);
-    assertEquals(1L,
-        (long) runner.query(
-            "SELECT COUNT(*) FROM ignore_id WHERE USER_CODE = 0 AND TARGET_USER_CODE = 111",
-            new ScalarHandler<Long>()));
+    assertEquals(1L, (long) runner.query(
+        "SELECT COUNT(*) FROM ignore_id WHERE USER_CODE = 0 AND TARGET_USER_CODE = 111",
+        new ScalarHandler<Long>()));
     assertThat(database.getServerIgnoreUserCode(), hasItem(111));
   }
 
@@ -872,9 +869,8 @@ public class DatabaseTest {
   public void testUpdateThemeModeScore() throws Exception {
     runner.update("DELETE FROM theme_mode_score WHERE USER_CODE = 111");
     database.updateThemeModeScore(111, "test", 0);
-    assertEquals(1L,
-        (long) runner.query("SELECT COUNT(*) FROM theme_mode_score WHERE USER_CODE = 111",
-            new ScalarHandler<Long>()));
+    assertEquals(1L, (long) runner.query(
+        "SELECT COUNT(*) FROM theme_mode_score WHERE USER_CODE = 111", new ScalarHandler<Long>()));
   }
 
   @Test
@@ -885,24 +881,16 @@ public class DatabaseTest {
         runner.query("SELECT VOTE_BAD FROM problem WHERE ID = 1", new ScalarHandler<Long>()), 0L);
 
     database.voteToProblem(1, true, "");
-    assertEquals(voteGood + 1,
-        (long) MoreObjects.firstNonNull(
-            runner.query("SELECT VOTE_GOOD FROM problem WHERE ID = 1", new ScalarHandler<Long>()),
-            0L));
-    assertEquals(voteBad,
-        (long) MoreObjects.firstNonNull(
-            runner.query("SELECT VOTE_BAD FROM problem WHERE ID = 1", new ScalarHandler<Long>()),
-            0L));
+    assertEquals(voteGood + 1, (long) MoreObjects.firstNonNull(
+        runner.query("SELECT VOTE_GOOD FROM problem WHERE ID = 1", new ScalarHandler<Long>()), 0L));
+    assertEquals(voteBad, (long) MoreObjects.firstNonNull(
+        runner.query("SELECT VOTE_BAD FROM problem WHERE ID = 1", new ScalarHandler<Long>()), 0L));
 
     database.voteToProblem(1, false, "");
-    assertEquals(voteGood + 1,
-        (long) MoreObjects.firstNonNull(
-            runner.query("SELECT VOTE_GOOD FROM problem WHERE ID = 1", new ScalarHandler<Long>()),
-            0L));
-    assertEquals(voteBad + 1,
-        (long) MoreObjects.firstNonNull(
-            runner.query("SELECT VOTE_BAD FROM problem WHERE ID = 1", new ScalarHandler<Long>()),
-            0L));
+    assertEquals(voteGood + 1, (long) MoreObjects.firstNonNull(
+        runner.query("SELECT VOTE_GOOD FROM problem WHERE ID = 1", new ScalarHandler<Long>()), 0L));
+    assertEquals(voteBad + 1, (long) MoreObjects.firstNonNull(
+        runner.query("SELECT VOTE_BAD FROM problem WHERE ID = 1", new ScalarHandler<Long>()), 0L));
   }
 
   @Test
@@ -910,14 +898,10 @@ public class DatabaseTest {
     runner.update("UPDATE problem SET VOTE_GOOD = 123, VOTE_BAD = 456 WHERE ID = 1");
 
     database.resetVote(1);
-    assertEquals(0,
-        (long) MoreObjects.firstNonNull(
-            runner.query("SELECT VOTE_GOOD FROM problem WHERE ID = 1", new ScalarHandler<Long>()),
-            0L));
-    assertEquals(0,
-        (long) MoreObjects.firstNonNull(
-            runner.query("SELECT VOTE_BAD FROM problem WHERE ID = 1", new ScalarHandler<Long>()),
-            0L));
+    assertEquals(0, (long) MoreObjects.firstNonNull(
+        runner.query("SELECT VOTE_GOOD FROM problem WHERE ID = 1", new ScalarHandler<Long>()), 0L));
+    assertEquals(0, (long) MoreObjects.firstNonNull(
+        runner.query("SELECT VOTE_BAD FROM problem WHERE ID = 1", new ScalarHandler<Long>()), 0L));
   }
 
   @Test
@@ -982,9 +966,10 @@ public class DatabaseTest {
   public void testGetNumberOfCreationLogWithUserCode() throws Exception {
     QueryRunner runner = getQueryRunner();
     long date = System.currentTimeMillis();
-    runner.update(
-        "INSERT creation_log (PROBLEM_ID, USER_CODE, DATE, MACHINE_IP) VALUES (123456, 123456789, ?, '1.2.3.4')",
-        new Timestamp(date));
+    runner
+        .update(
+            "INSERT creation_log (PROBLEM_ID, USER_CODE, DATE, MACHINE_IP) VALUES (123456, 123456789, ?, '1.2.3.4')",
+            new Timestamp(date));
 
     assertThat(database.getNumberOfCreationLogWithUserCode(123456789, date - 1000),
         greaterThanOrEqualTo(1));
@@ -994,9 +979,10 @@ public class DatabaseTest {
   public void testGetNumberOfCreationLogWithMachineIp() throws Exception {
     QueryRunner runner = getQueryRunner();
     long date = System.currentTimeMillis();
-    runner.update(
-        "INSERT creation_log (PROBLEM_ID, USER_CODE, DATE, MACHINE_IP) VALUES (123456, 123456789, ?, '1.2.3.4')",
-        new Timestamp(date));
+    runner
+        .update(
+            "INSERT creation_log (PROBLEM_ID, USER_CODE, DATE, MACHINE_IP) VALUES (123456, 123456789, ?, '1.2.3.4')",
+            new Timestamp(date));
 
     assertThat(database.getNumberOfCreationLogWithUserCode(123456789, date - 1000),
         greaterThanOrEqualTo(1));
@@ -1006,13 +992,14 @@ public class DatabaseTest {
   public void testUserDataHandlerShouldReturnUserData() throws Exception {
     expectResultSetReturnsUserData();
 
-    when(mockResultSet.getString("CORRECT_COUNT")).thenReturn(
-        "0,0,1,0,2,0,3,0,4,0,5,0,6,0,7,0,8,0,9,0,10,0,11,0,12,0,13,0,14,0,15,0,16,0,17,0,18,0,19,0,20,0,21,0\n"
-            + "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\n"
-            + "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\n"
-            + "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\n"
-            + "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\n"
-            + "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\n");
+    when(mockResultSet.getString("CORRECT_COUNT"))
+        .thenReturn(
+            "0,0,1,0,2,0,3,0,4,0,5,0,6,0,7,0,8,0,9,0,10,0,11,0,12,0,13,0,14,0,15,0,16,0,17,0,18,0,19,0,20,0,21,0\n"
+                + "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\n"
+                + "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\n"
+                + "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\n"
+                + "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\n"
+                + "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\n");
 
     PacketUserData data = DirectDatabase.userDataHandler.handle(mockResultSet).get(0);
 
@@ -1110,14 +1097,15 @@ public class DatabaseTest {
     when(mockResultSet.getBoolean("HIDE_ANSWER")).thenReturn(expected.hideAnswer);
     when(mockResultSet.getBoolean("SHOW_INFO")).thenReturn(expected.showInfo);
     when(mockResultSet.getBoolean("REFLECT_EVENT_RESULT")).thenReturn(expected.reflectEventResult);
+    when(mockResultSet.getInt("WEB_SOCKET_USAGE")).thenReturn(expected.webSocketUsage.getIndex());
     when(mockResultSet.getInt("VOLATILITY")).thenReturn(expected.volatility);
     when(mockResultSet.getBoolean("QWERTY_HIRAGANA")).thenReturn(expected.qwertyHiragana);
     when(mockResultSet.getBoolean("QWERTY_KATAKANA")).thenReturn(expected.qwertyKatakana);
     when(mockResultSet.getBoolean("QWERTY_ALPHABET")).thenReturn(expected.qwertyAlphabet);
-    when(mockResultSet.getBoolean("REGISTER_CREATED_PROBLEM"))
-        .thenReturn(expected.registerCreatedProblem);
-    when(mockResultSet.getBoolean("REGISTER_INDICATED_PROBLEM"))
-        .thenReturn(expected.registerIndicatedProblem);
+    when(mockResultSet.getBoolean("REGISTER_CREATED_PROBLEM")).thenReturn(
+        expected.registerCreatedProblem);
+    when(mockResultSet.getBoolean("REGISTER_INDICATED_PROBLEM")).thenReturn(
+        expected.registerIndicatedProblem);
     when(mockResultSet.getString("THEME")).thenReturn(expected.theme);
   }
 
@@ -1127,8 +1115,9 @@ public class DatabaseTest {
     assertThat(indicatedProblems, not(empty()));
     for (PacketProblem problem : indicatedProblems) {
       assertTrue(problem.indication != null
-          || problem.indicationResolved != null && problem.indicationResolved
-              .compareTo(new Date(System.currentTimeMillis() - 7L * 24 * 60 * 60 * 1000)) == 1);
+          || problem.indicationResolved != null
+          && problem.indicationResolved.compareTo(new Date(System.currentTimeMillis() - 7L * 24
+              * 60 * 60 * 1000)) == 1);
     }
   }
 
@@ -1209,17 +1198,17 @@ public class DatabaseTest {
   @Test
   public void restrictedRemoteAddressIntegrationTest() throws Exception {
     database.addRestrictedRemoteAddress(FAKE_REMOTE_ADDRESS, RestrictionType.CHAT);
-    assertTrue(
-        database.getRestrictedRemoteAddresses(RestrictionType.CHAT).contains(FAKE_REMOTE_ADDRESS));
+    assertTrue(database.getRestrictedRemoteAddresses(RestrictionType.CHAT).contains(
+        FAKE_REMOTE_ADDRESS));
     database.removeRestrictedRemoteAddress(FAKE_REMOTE_ADDRESS, RestrictionType.CHAT);
-    assertFalse(
-        database.getRestrictedRemoteAddresses(RestrictionType.CHAT).contains(FAKE_REMOTE_ADDRESS));
+    assertFalse(database.getRestrictedRemoteAddresses(RestrictionType.CHAT).contains(
+        FAKE_REMOTE_ADDRESS));
     database.addRestrictedRemoteAddress(FAKE_REMOTE_ADDRESS, RestrictionType.CHAT);
-    assertTrue(
-        database.getRestrictedRemoteAddresses(RestrictionType.CHAT).contains(FAKE_REMOTE_ADDRESS));
+    assertTrue(database.getRestrictedRemoteAddresses(RestrictionType.CHAT).contains(
+        FAKE_REMOTE_ADDRESS));
     database.removeRestrictedRemoteAddress(FAKE_REMOTE_ADDRESS, RestrictionType.CHAT);
-    assertFalse(
-        database.getRestrictedRemoteAddresses(RestrictionType.CHAT).contains(FAKE_REMOTE_ADDRESS));
+    assertFalse(database.getRestrictedRemoteAddresses(RestrictionType.CHAT).contains(
+        FAKE_REMOTE_ADDRESS));
   }
 
   @Test
@@ -1227,8 +1216,9 @@ public class DatabaseTest {
     runner.update("DELETE FROM theme_mode_score WHERE USER_CODE = ?", FAKE_USER_CODE);
 
     database.updateThemeModeScore(FAKE_USER_CODE, FAKE_THEME, FAKE_SCORE);
-    assertEquals(1, (long) runner.query("SELECT COUNT(*) FROM theme_mode_score WHERE USER_CODE = ?",
-        new ScalarHandler<Long>(), FAKE_USER_CODE));
+    assertEquals(1, (long) runner.query(
+        "SELECT COUNT(*) FROM theme_mode_score WHERE USER_CODE = ?", new ScalarHandler<Long>(),
+        FAKE_USER_CODE));
 
     assertEquals(0, database.getThemeRankingOld(FAKE_THEME).size());
   }
@@ -1238,8 +1228,9 @@ public class DatabaseTest {
     runner.update("DELETE FROM theme_mode_score WHERE USER_CODE = ?", FAKE_USER_CODE);
 
     database.updateThemeModeScore(FAKE_USER_CODE, FAKE_THEME, FAKE_SCORE);
-    assertEquals(1, (long) runner.query("SELECT COUNT(*) FROM theme_mode_score WHERE USER_CODE = ?",
-        new ScalarHandler<Long>(), FAKE_USER_CODE));
+    assertEquals(1, (long) runner.query(
+        "SELECT COUNT(*) FROM theme_mode_score WHERE USER_CODE = ?", new ScalarHandler<Long>(),
+        FAKE_USER_CODE));
 
     assertEquals(1, database.getThemeRankingAll(FAKE_THEME).size());
   }
@@ -1249,8 +1240,9 @@ public class DatabaseTest {
     runner.update("DELETE FROM theme_mode_score WHERE USER_CODE = ?", FAKE_USER_CODE);
 
     database.updateThemeModeScore(FAKE_USER_CODE, FAKE_THEME, FAKE_SCORE);
-    assertEquals(1, (long) runner.query("SELECT COUNT(*) FROM theme_mode_score WHERE USER_CODE = ?",
-        new ScalarHandler<Long>(), FAKE_USER_CODE));
+    assertEquals(1, (long) runner.query(
+        "SELECT COUNT(*) FROM theme_mode_score WHERE USER_CODE = ?", new ScalarHandler<Long>(),
+        FAKE_USER_CODE));
 
     DateTime dateTime = new DateTime();
     assertEquals(1, database.getThemeRanking(FAKE_THEME, dateTime.getYear()).size());
@@ -1262,16 +1254,19 @@ public class DatabaseTest {
     runner.update("DELETE FROM theme_mode_score WHERE USER_CODE = ?", FAKE_USER_CODE);
 
     database.updateThemeModeScore(FAKE_USER_CODE, FAKE_THEME, FAKE_SCORE);
-    assertEquals(1, (long) runner.query("SELECT COUNT(*) FROM theme_mode_score WHERE USER_CODE = ?",
-        new ScalarHandler<Long>(), FAKE_USER_CODE));
+    assertEquals(1, (long) runner.query(
+        "SELECT COUNT(*) FROM theme_mode_score WHERE USER_CODE = ?", new ScalarHandler<Long>(),
+        FAKE_USER_CODE));
 
     DateTime dateTime = new DateTime();
     assertEquals(1,
         database.getThemeRanking(FAKE_THEME, dateTime.getYear(), dateTime.getMonthOfYear()).size());
-    assertEquals(0, database
-        .getThemeRanking(FAKE_THEME, dateTime.getYear() + 1, dateTime.getMonthOfYear()).size());
-    assertEquals(0, database
-        .getThemeRanking(FAKE_THEME, dateTime.getYear(), dateTime.getMonthOfYear() + 1).size());
+    assertEquals(0,
+        database.getThemeRanking(FAKE_THEME, dateTime.getYear() + 1, dateTime.getMonthOfYear())
+            .size());
+    assertEquals(0,
+        database.getThemeRanking(FAKE_THEME, dateTime.getYear(), dateTime.getMonthOfYear() + 1)
+            .size());
   }
 
   @Test

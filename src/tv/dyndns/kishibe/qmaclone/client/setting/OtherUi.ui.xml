@@ -45,6 +45,16 @@
 		</g:DecoratorPanel>
 		<g:DecoratorPanel>
 			<g:HTMLPanel>
+				<g:HTML>▼サーバーとの通信にWebSocketを使用する</g:HTML>
+				<g:RadioButton ui:field="radioButtonWebSocketDefault"
+					name="GROUP_WEB_SOCKET">初期値</g:RadioButton>
+				<g:RadioButton ui:field="radioButtonWebSocketOn" name="GROUP_WEB_SOCKET">オン</g:RadioButton>
+				<g:RadioButton ui:field="radioButtonWebSocketOff"
+					name="GROUP_WEB_SOCKET">オフ</g:RadioButton>
+			</g:HTMLPanel>
+		</g:DecoratorPanel>
+		<g:DecoratorPanel>
+			<g:HTMLPanel>
 				<g:HTML>▼問題作成時に自動的に正解率統計に登録する</g:HTML>
 				<g:RadioButton ui:field="radioButtonRegisterCreatedProblemOn"
 					name="GROUP_REGISTER_CREATED_PROBLEM">オン</g:RadioButton>

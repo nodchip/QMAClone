@@ -50,23 +50,6 @@ import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.apache.commons.dbutils.handlers.ScalarHandler;
 import org.joda.time.DateTime;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Function;
-import com.google.common.base.Joiner;
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Preconditions;
-import com.google.common.base.Splitter;
-import com.google.common.base.Strings;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.HashMultiset;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Multiset;
-import com.google.common.collect.Sets;
-import com.google.inject.Inject;
-
 import tv.dyndns.kishibe.qmaclone.client.constant.Constant;
 import tv.dyndns.kishibe.qmaclone.client.game.ProblemGenre;
 import tv.dyndns.kishibe.qmaclone.client.game.ProblemType;
@@ -86,10 +69,28 @@ import tv.dyndns.kishibe.qmaclone.client.packet.PacketThemeModeEditor;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketThemeModeEditor.ThemeModeEditorStatus;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketThemeQuery;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketUserData;
+import tv.dyndns.kishibe.qmaclone.client.packet.PacketUserData.WebSocketUsage;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketWrongAnswer;
 import tv.dyndns.kishibe.qmaclone.client.packet.RestrictionType;
 import tv.dyndns.kishibe.qmaclone.server.PageView;
 import tv.dyndns.kishibe.qmaclone.server.util.IntArray;
+
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Function;
+import com.google.common.base.Joiner;
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.HashMultiset;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Multiset;
+import com.google.common.collect.Sets;
+import com.google.inject.Inject;
 
 public class DirectDatabase implements Database {
 
@@ -148,9 +149,10 @@ public class DirectDatabase implements Database {
   @Override
   public List<PacketProblem> getUserProblemReport(int userCode) throws DatabaseException {
     try {
-      return runner.query(
-          "SELECT * FROM problem, report_problem WHERE report_problem.USER_CODE = ? AND problem.ID = report_problem.PROBLEM_ID",
-          problemHandler, userCode);
+      return runner
+          .query(
+              "SELECT * FROM problem, report_problem WHERE report_problem.USER_CODE = ? AND problem.ID = report_problem.PROBLEM_ID",
+              problemHandler, userCode);
     } catch (SQLException e) {
       throw new DatabaseException(e);
     }
@@ -266,6 +268,7 @@ public class DirectDatabase implements Database {
       data.hideAnswer = rs.getBoolean("HIDE_ANSWER");
       data.showInfo = rs.getBoolean("SHOW_INFO");
       data.reflectEventResult = rs.getBoolean("REFLECT_EVENT_RESULT");
+      data.webSocketUsage = WebSocketUsage.values()[rs.getInt("WEB_SOCKET_USAGE")];
       data.volatility = rs.getInt("VOLATILITY");
       data.qwertyHiragana = rs.getBoolean("QWERTY_HIRAGANA");
       data.qwertyKatakana = rs.getBoolean("QWERTY_KATAKANA");
@@ -292,8 +295,8 @@ public class DirectDatabase implements Database {
 
           // ランダム
           for (int elementIndex = randomElementIndex; elementIndex < elements.length; ++elementIndex) {
-            int columnIndex = ProblemType.values().length
-                - (elements.length - elementIndex + 1) / 2;
+            int columnIndex = ProblemType.values().length - (elements.length - elementIndex + 1)
+                / 2;
             int goodBad = elementIndex % 2;
             cc[rowIndex][columnIndex][goodBad] = Integer.parseInt(elements[elementIndex]);
           }
@@ -316,9 +319,9 @@ public class DirectDatabase implements Database {
       }
 
       PacketUserData userData = userDataList.get(0);
-      userData.ignoreUserCodes = Sets
-          .newHashSet(runner.query("SELECT TARGET_USER_CODE FROM ignore_id WHERE USER_CODE = ?",
-              new ColumnListHandler<Integer>(Integer.class), userCode));
+      userData.ignoreUserCodes = Sets.newHashSet(runner.query(
+          "SELECT TARGET_USER_CODE FROM ignore_id WHERE USER_CODE = ?",
+          new ColumnListHandler<Integer>(Integer.class), userCode));
       userData.ignoreUserCodes.addAll(cachedDatabase.getServerIgnoreUserCode());
       return userData;
     } catch (SQLException e) {
@@ -346,20 +349,22 @@ public class DirectDatabase implements Database {
     }
 
     try {
-      runner.update(
-          "REPLACE INTO player (USER_CODE, NAME, GREETING, HIGH_SCORE, AVERAGE_SCORE, PLAY_COUNT, VICTORY_POINT, LEVEL_NAME, LEVEL_NUMBER, AVERAGE_RANK, GENRE, TYPE, CLASS_LEVEL, IMAGE_FILE_NAME, PLAY_SOUND, MULTI_GENRE, MULTI_TYPE, DIFFICULT_SELECT, RANKING_MOVE, LAST_LOGIN, BBS_DISP_INFO, BBS_AGE, TIMER_MODE, PREFECTURE, CHAT, NEW_AND_OLD, PUBLIC_EVENT, HIDE_ANSWER, SHOW_INFO, REFLECT_EVENT_RESULT, CORRECT_COUNT, VOLATILITY, QWERTY_HIRAGANA, QWERTY_KATAKANA, QWERTY_ALPHABET, REGISTER_CREATED_PROBLEM, REGISTER_INDICATED_PROBLEM, GOOGLE_PLUS_ID, THEME) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-          data.userCode, Strings.nullToEmpty(data.playerName), Strings.nullToEmpty(data.greeting),
-          data.highScore, data.averageScore, data.playCount, data.rating, data.levelName,
-          data.levelNumber, data.averageRank, ProblemGenre.toBitFlag(data.genres),
-          ProblemType.toBitFlag(data.types), data.classLevel,
-          Strings.isNullOrEmpty(data.imageFileName) ? Constant.ICON_NO_IMAGE : data.imageFileName,
-          data.playSound, data.multiGenre, data.multiType, data.difficultSelect, data.rankingMove,
-          new Timestamp(System.currentTimeMillis()), data.bbsDispInfo, data.bbsAge, data.timerMode,
-          data.prefecture, data.chat, data.newAndOldProblems.ordinal(), data.publicEvent,
-          data.hideAnswer, data.showInfo, data.reflectEventResult, sb.toString(), data.volatility,
-          data.qwertyHiragana, data.qwertyKatakana, data.qwertyAlphabet,
-          data.registerCreatedProblem, data.registerIndicatedProblem, data.googlePlusId,
-          Strings.nullToEmpty(data.theme));
+      runner
+          .update(
+              "REPLACE INTO player (USER_CODE, NAME, GREETING, HIGH_SCORE, AVERAGE_SCORE, PLAY_COUNT, VICTORY_POINT, LEVEL_NAME, LEVEL_NUMBER, AVERAGE_RANK, GENRE, TYPE, CLASS_LEVEL, IMAGE_FILE_NAME, PLAY_SOUND, MULTI_GENRE, MULTI_TYPE, DIFFICULT_SELECT, RANKING_MOVE, LAST_LOGIN, BBS_DISP_INFO, BBS_AGE, TIMER_MODE, PREFECTURE, CHAT, NEW_AND_OLD, PUBLIC_EVENT, HIDE_ANSWER, SHOW_INFO, REFLECT_EVENT_RESULT, WEB_SOCKET_USAGE, CORRECT_COUNT, VOLATILITY, QWERTY_HIRAGANA, QWERTY_KATAKANA, QWERTY_ALPHABET, REGISTER_CREATED_PROBLEM, REGISTER_INDICATED_PROBLEM, GOOGLE_PLUS_ID, THEME) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+              data.userCode, Strings.nullToEmpty(data.playerName), Strings
+                  .nullToEmpty(data.greeting), data.highScore, data.averageScore, data.playCount,
+              data.rating, data.levelName, data.levelNumber, data.averageRank, ProblemGenre
+                  .toBitFlag(data.genres), ProblemType.toBitFlag(data.types), data.classLevel,
+              Strings.isNullOrEmpty(data.imageFileName) ? Constant.ICON_NO_IMAGE
+                  : data.imageFileName, data.playSound, data.multiGenre, data.multiType,
+              data.difficultSelect, data.rankingMove, new Timestamp(System.currentTimeMillis()),
+              data.bbsDispInfo, data.bbsAge, data.timerMode, data.prefecture, data.chat,
+              data.newAndOldProblems.ordinal(), data.publicEvent, data.hideAnswer, data.showInfo,
+              data.reflectEventResult, data.webSocketUsage.getIndex(), sb.toString(),
+              data.volatility, data.qwertyHiragana, data.qwertyKatakana, data.qwertyAlphabet,
+              data.registerCreatedProblem, data.registerIndicatedProblem, data.googlePlusId,
+              Strings.nullToEmpty(data.theme));
     } catch (SQLException e) {
       throw new DatabaseException(e);
     }
@@ -457,15 +462,16 @@ public class DirectDatabase implements Database {
         long indication = problem.indication == null ? 0 : problem.indication.getTime();
         long indicationResolved = problem.indicationResolved == null ? 0
             : problem.indicationResolved.getTime();
-        runner.update(
-            "INSERT INTO problem (ID, GENRE, TYPE, SENTENCE, ANSWER0, ANSWER1, ANSWER2, ANSWER3, ANSWER4, ANSWER5, ANSWER6, ANSWER7, CHOICE0, CHOICE1, CHOICE2, CHOICE3, CHOICE4, CHOICE5, CHOICE6, CHOICE7, GOOD, BAD, CREATER, NOTE, IMAGE_ANSWER, IMAGE_CHOICE, RANDOM_FLAG, IMAGE_URL, MOVIE_URL, INDICATION, INDICATION_MESSAGE, INDICATION_RESOLVED, NUMBER_OF_DISPLAYED_CHOICES) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-            problem.id, problem.genre.getIndex(), problem.type.getIndex(), problem.sentence,
-            answers[0], answers[1], answers[2], answers[3], answers[4], answers[5], answers[6],
-            answers[7], choices[0], choices[1], choices[2], choices[3], choices[4], choices[5],
-            choices[6], choices[7], problem.good, problem.bad, problem.creator, problem.note,
-            problem.imageAnswer, problem.imageChoice, problem.randomFlag.getIndex(),
-            problem.imageUrl, problem.movieUrl, indication, problem.indicationMessage,
-            indicationResolved, problem.numberOfDisplayedChoices);
+        runner
+            .update(
+                "INSERT INTO problem (ID, GENRE, TYPE, SENTENCE, ANSWER0, ANSWER1, ANSWER2, ANSWER3, ANSWER4, ANSWER5, ANSWER6, ANSWER7, CHOICE0, CHOICE1, CHOICE2, CHOICE3, CHOICE4, CHOICE5, CHOICE6, CHOICE7, GOOD, BAD, CREATER, NOTE, IMAGE_ANSWER, IMAGE_CHOICE, RANDOM_FLAG, IMAGE_URL, MOVIE_URL, INDICATION, INDICATION_MESSAGE, INDICATION_RESOLVED, NUMBER_OF_DISPLAYED_CHOICES) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                problem.id, problem.genre.getIndex(), problem.type.getIndex(), problem.sentence,
+                answers[0], answers[1], answers[2], answers[3], answers[4], answers[5], answers[6],
+                answers[7], choices[0], choices[1], choices[2], choices[3], choices[4], choices[5],
+                choices[6], choices[7], problem.good, problem.bad, problem.creator, problem.note,
+                problem.imageAnswer, problem.imageChoice, problem.randomFlag.getIndex(),
+                problem.imageUrl, problem.movieUrl, indication, problem.indicationMessage,
+                indicationResolved, problem.numberOfDisplayedChoices);
 
         fullTextSearch.addProblem(problem);
         return problem.id;
@@ -485,18 +491,20 @@ public class DirectDatabase implements Database {
     }
 
     long indication = problem.indication == null ? 0L : problem.indication.getTime();
-    long indicationResolved = problem.indicationResolved == null ? 0L
-        : problem.indicationResolved.getTime();
+    long indicationResolved = problem.indicationResolved == null ? 0L : problem.indicationResolved
+        .getTime();
     try {
-      runner.update(
-          "UPDATE problem SET GENRE = ?, TYPE = ?, SENTENCE = ?, ANSWER0 = ?, ANSWER1 = ?, ANSWER2 = ?, ANSWER3 = ?, ANSWER4 = ?, ANSWER5 = ?, ANSWER6 = ?, ANSWER7 = ?, CHOICE0 = ?, CHOICE1 = ?, CHOICE2 = ?, CHOICE3 = ?, CHOICE4 = ?, CHOICE5 = ?, CHOICE6 = ?, CHOICE7 = ?, GOOD = ?, BAD = ?, CREATER = ?, NOTE = ?, IMAGE_ANSWER = ?, IMAGE_CHOICE = ?, RANDOM_FLAG = ?, VOTE_GOOD = ?, VOTE_BAD = ?, IMAGE_URL = ?, MOVIE_URL = ?, INDICATION = ?, INDICATION_MESSAGE = ?, INDICATION_RESOLVED = ?, NUMBER_OF_DISPLAYED_CHOICES = ? WHERE ID = ?",
-          problem.genre.getIndex(), problem.type.getIndex(), problem.sentence, answers[0],
-          answers[1], answers[2], answers[3], answers[4], answers[5], answers[6], answers[7],
-          choices[0], choices[1], choices[2], choices[3], choices[4], choices[5], choices[6],
-          choices[7], problem.good, problem.bad, problem.creator, problem.note, problem.imageAnswer,
-          problem.imageChoice, problem.randomFlag.getIndex(), problem.voteGood, problem.voteBad,
-          problem.imageUrl, problem.movieUrl, indication, problem.indicationMessage,
-          indicationResolved, problem.numberOfDisplayedChoices, problem.id);
+      runner
+          .update(
+              "UPDATE problem SET GENRE = ?, TYPE = ?, SENTENCE = ?, ANSWER0 = ?, ANSWER1 = ?, ANSWER2 = ?, ANSWER3 = ?, ANSWER4 = ?, ANSWER5 = ?, ANSWER6 = ?, ANSWER7 = ?, CHOICE0 = ?, CHOICE1 = ?, CHOICE2 = ?, CHOICE3 = ?, CHOICE4 = ?, CHOICE5 = ?, CHOICE6 = ?, CHOICE7 = ?, GOOD = ?, BAD = ?, CREATER = ?, NOTE = ?, IMAGE_ANSWER = ?, IMAGE_CHOICE = ?, RANDOM_FLAG = ?, VOTE_GOOD = ?, VOTE_BAD = ?, IMAGE_URL = ?, MOVIE_URL = ?, INDICATION = ?, INDICATION_MESSAGE = ?, INDICATION_RESOLVED = ?, NUMBER_OF_DISPLAYED_CHOICES = ? WHERE ID = ?",
+              problem.genre.getIndex(), problem.type.getIndex(), problem.sentence, answers[0],
+              answers[1], answers[2], answers[3], answers[4], answers[5], answers[6], answers[7],
+              choices[0], choices[1], choices[2], choices[3], choices[4], choices[5], choices[6],
+              choices[7], problem.good, problem.bad, problem.creator, problem.note,
+              problem.imageAnswer, problem.imageChoice, problem.randomFlag.getIndex(),
+              problem.voteGood, problem.voteBad, problem.imageUrl, problem.movieUrl, indication,
+              problem.indicationMessage, indicationResolved, problem.numberOfDisplayedChoices,
+              problem.id);
 
       fullTextSearch.updateProblem(problem);
     } catch (SQLException | IOException e) {
@@ -507,10 +515,11 @@ public class DirectDatabase implements Database {
   @Override
   public void updateMinimumProblem(PacketProblemMinimum data) throws DatabaseException {
     try {
-      runner.update(
-          "UPDATE problem SET GENRE = ?, TYPE = ?, GOOD = ?, BAD = ?, RANDOM_FLAG = ? WHERE ID = ?",
-          data.genre.getIndex(), data.type.getIndex(), data.good, data.bad,
-          data.randomFlag.getIndex(), data.id);
+      runner
+          .update(
+              "UPDATE problem SET GENRE = ?, TYPE = ?, GOOD = ?, BAD = ?, RANDOM_FLAG = ? WHERE ID = ?",
+              data.genre.getIndex(), data.type.getIndex(), data.good, data.bad,
+              data.randomFlag.getIndex(), data.id);
     } catch (SQLException e) {
       throw new DatabaseException(e);
     }
@@ -604,8 +613,8 @@ public class DirectDatabase implements Database {
       // 線結びの回答整理
       if (type == ProblemType.Senmusubi || type == ProblemType.Tato) {
         // 解答をソート後再度結合する
-        List<String> split = Lists
-            .newArrayList(Splitter.on(Constant.DELIMITER_GENERAL).omitEmptyStrings().split(answer));
+        List<String> split = Lists.newArrayList(Splitter.on(Constant.DELIMITER_GENERAL)
+            .omitEmptyStrings().split(answer));
         Collections.sort(split);
         answer = Joiner.on(Constant.DELIMITER_GENERAL).join(split);
       }
@@ -617,9 +626,10 @@ public class DirectDatabase implements Database {
       params.add(new Object[] { problemId, answer });
     }
     try {
-      runner.batch(
-          "INSERT DELAYED player_answer (PROBLEM_ID, ANSWER, COUNT) VALUES (?, ?, 1) ON DUPLICATE KEY UPDATE COUNT = COUNT + 1",
-          params.toArray(new Object[0][]));
+      runner
+          .batch(
+              "INSERT DELAYED player_answer (PROBLEM_ID, ANSWER, COUNT) VALUES (?, ?, 1) ON DUPLICATE KEY UPDATE COUNT = COUNT + 1",
+              params.toArray(new Object[0][]));
     } catch (SQLException e) {
       throw new DatabaseException(e);
     }
@@ -663,8 +673,8 @@ public class DirectDatabase implements Database {
       }
 
       // 解答をソート後再度結合する
-      List<String> split = Lists.newArrayList(
-          Splitter.on(Constant.DELIMITER_GENERAL).omitEmptyStrings().split(wrongAnswer.answer));
+      List<String> split = Lists.newArrayList(Splitter.on(Constant.DELIMITER_GENERAL)
+          .omitEmptyStrings().split(wrongAnswer.answer));
       // 組み合わせクイズの古い回答を補正する
       split = Lists.newArrayList(Collections2.transform(split, new Function<String, String>() {
         @Override
@@ -700,8 +710,8 @@ public class DirectDatabase implements Database {
 
   @Override
   public List<List<PacketRankingData>> getGeneralRankingData() throws DatabaseException {
-    Timestamp timestamp = new Timestamp(
-        System.currentTimeMillis() - (long) Constant.RANKING_DISPLAY_DAY * 24 * 60 * 60 * 1000);
+    Timestamp timestamp = new Timestamp(System.currentTimeMillis()
+        - (long) Constant.RANKING_DISPLAY_DAY * 24 * 60 * 60 * 1000);
     List<List<PacketRankingData>> result = Lists.newArrayList();
     try {
       for (String rankingQuery : RANKING_QUERIES) {
@@ -734,10 +744,11 @@ public class DirectDatabase implements Database {
   public void addCreationLog(PacketProblem problem, int userCode, String machineIp)
       throws DatabaseException {
     try {
-      runner.update(
-          "INSERT INTO creation_log (PROBLEM_ID, USER_CODE, DATE, MACHINE_IP, SUMMARY) VALUES (?, ?, ?, ?, ?)",
-          problem.id, userCode, new Timestamp(System.currentTimeMillis()), machineIp,
-          problem.toChangeSummary());
+      runner
+          .update(
+              "INSERT INTO creation_log (PROBLEM_ID, USER_CODE, DATE, MACHINE_IP, SUMMARY) VALUES (?, ?, ?, ?, ?)",
+              problem.id, userCode, new Timestamp(System.currentTimeMillis()), machineIp,
+              problem.toChangeSummary());
     } catch (SQLException e) {
       throw new DatabaseException(e);
     }
@@ -776,9 +787,9 @@ public class DirectDatabase implements Database {
   @Override
   public Set<Integer> getServerIgnoreUserCode() throws DatabaseException {
     try {
-      return ImmutableSet
-          .copyOf(runner.query("SELECT TARGET_USER_CODE FROM ignore_id WHERE USER_CODE = ?",
-              serverIgnoreUserCodeHandler, 0));
+      return ImmutableSet.copyOf(runner.query(
+          "SELECT TARGET_USER_CODE FROM ignore_id WHERE USER_CODE = ?",
+          serverIgnoreUserCodeHandler, 0));
     } catch (SQLException e) {
       throw new DatabaseException(e);
     }
@@ -794,10 +805,11 @@ public class DirectDatabase implements Database {
   @Override
   public void addChatLog(PacketChatMessage data) throws DatabaseException {
     try {
-      runner.update(
-          "INSERT IGNORE INTO chat_log (DATE, NAME, BODY, CLASS_LEVEL, USER_CODE, MACHINE_IP) VALUES (?, ?, ?, ?, ?, ?)",
-          new Timestamp(System.currentTimeMillis()), data.name, data.body, data.classLevel,
-          data.userCode, data.remoteAddress);
+      runner
+          .update(
+              "INSERT IGNORE INTO chat_log (DATE, NAME, BODY, CLASS_LEVEL, USER_CODE, MACHINE_IP) VALUES (?, ?, ?, ?, ?, ?)",
+              new Timestamp(System.currentTimeMillis()), data.name, data.body, data.classLevel,
+              data.userCode, data.remoteAddress);
     } catch (SQLException e) {
       throw new DatabaseException(e);
     }
@@ -842,9 +854,10 @@ public class DirectDatabase implements Database {
   public List<PacketProblemCreationLog> getProblemCreationHistory(int problemId)
       throws DatabaseException {
     try {
-      return runner.query(
-          "SELECT player.NAME, creation_log.USER_CODE, creation_log.DATE, creation_log.MACHINE_IP, creation_log.SUMMARY FROM player, creation_log WHERE creation_log.PROBLEM_ID = ? AND creation_log.USER_CODE = player.USER_CODE",
-          problemCreationLogHandler, problemId);
+      return runner
+          .query(
+              "SELECT player.NAME, creation_log.USER_CODE, creation_log.DATE, creation_log.MACHINE_IP, creation_log.SUMMARY FROM player, creation_log WHERE creation_log.PROBLEM_ID = ? AND creation_log.USER_CODE = player.USER_CODE",
+              problemCreationLogHandler, problemId);
     } catch (SQLException e) {
       throw new DatabaseException(e);
     }
@@ -905,12 +918,12 @@ public class DirectDatabase implements Database {
   public List<PacketBbsResponse> getBbsResponses(int threadId, int count) throws DatabaseException {
     try {
       List<PacketBbsResponse> list = Lists.newArrayList();
-      list.addAll(
-          runner.query("SELECT * FROM bbs_response WHERE threadId = ? ORDER BY id DESC LIMIT 0, ?",
-              handlerBbsResponse, threadId, count));
-      list.addAll(
-          runner.query("SELECT * FROM bbs_response WHERE threadId = ? ORDER BY id ASC LIMIT 0, 1",
-              handlerBbsResponse, threadId));
+      list.addAll(runner.query(
+          "SELECT * FROM bbs_response WHERE threadId = ? ORDER BY id DESC LIMIT 0, ?",
+          handlerBbsResponse, threadId, count));
+      list.addAll(runner.query(
+          "SELECT * FROM bbs_response WHERE threadId = ? ORDER BY id ASC LIMIT 0, 1",
+          handlerBbsResponse, threadId));
       if (list.size() >= 2 && list.get(list.size() - 1).id == list.get(list.size() - 2).id) {
         list.remove(list.size() - 1);
       }
@@ -933,10 +946,11 @@ public class DirectDatabase implements Database {
         thread.id = runner.query("SELECT MAX(id) FROM bbs_thread", new ScalarHandler<BigInteger>())
             .longValue();
         response.threadId = thread.id;
-        runner.update(
-            "INSERT INTO bbs_response (threadId, name, userCode, machineIp, dispInfo, postTime, body) VALUES (?, ?, ?, ?, ?, ?, ?)",
-            response.threadId, response.name, response.userCode, response.remoteAddress,
-            response.dispInfo, System.currentTimeMillis(), response.body);
+        runner
+            .update(
+                "INSERT INTO bbs_response (threadId, name, userCode, machineIp, dispInfo, postTime, body) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                response.threadId, response.name, response.userCode, response.remoteAddress,
+                response.dispInfo, System.currentTimeMillis(), response.body);
       } catch (SQLException e) {
         throw new DatabaseException(e);
       }
@@ -946,10 +960,11 @@ public class DirectDatabase implements Database {
   @Override
   public void writeToBbs(PacketBbsResponse response, boolean age) throws DatabaseException {
     try {
-      runner.update(
-          "INSERT INTO bbs_response (threadId, name, userCode, machineIp, dispInfo, postTime, body) VALUES (?, ?, ?, ?, ?, ?, ?)",
-          response.threadId, response.name, response.userCode, response.remoteAddress,
-          response.dispInfo, System.currentTimeMillis(), response.body);
+      runner
+          .update(
+              "INSERT INTO bbs_response (threadId, name, userCode, machineIp, dispInfo, postTime, body) VALUES (?, ?, ?, ?, ?, ?, ?)",
+              response.threadId, response.name, response.userCode, response.remoteAddress,
+              response.dispInfo, System.currentTimeMillis(), response.body);
       if (age) {
         runner.update("UPDATE bbs_thread SET lastUpdate = ? WHERE id = ?",
             System.currentTimeMillis(), response.threadId);
@@ -982,10 +997,11 @@ public class DirectDatabase implements Database {
   @Override
   public void addLinkData(PacketLinkData linkData) throws DatabaseException {
     try {
-      runner.update(
-          "INSERT INTO link (lastUpdate, homePageName, authorName, url, bannerUrl, description, userCode) VALUES (?, ?, ?, ?, ?, ?, ?)",
-          System.currentTimeMillis(), linkData.homePageName, linkData.authorName, linkData.url,
-          linkData.bannerUrl, linkData.description, linkData.userCode);
+      runner
+          .update(
+              "INSERT INTO link (lastUpdate, homePageName, authorName, url, bannerUrl, description, userCode) VALUES (?, ?, ?, ?, ?, ?, ?)",
+              System.currentTimeMillis(), linkData.homePageName, linkData.authorName, linkData.url,
+              linkData.bannerUrl, linkData.description, linkData.userCode);
     } catch (SQLException e) {
       throw new DatabaseException(e);
     }
@@ -994,10 +1010,11 @@ public class DirectDatabase implements Database {
   @Override
   public void updateLinkData(PacketLinkData linkData) throws DatabaseException {
     try {
-      runner.update(
-          "UPDATE link SET lastUpdate = ?, homePageName = ?, authorName = ?, url = ?, bannerUrl = ?, description = ?, userCode = ? WHERE id = ?",
-          System.currentTimeMillis(), linkData.homePageName, linkData.authorName, linkData.url,
-          linkData.bannerUrl, linkData.description, linkData.userCode, linkData.id);
+      runner
+          .update(
+              "UPDATE link SET lastUpdate = ?, homePageName = ?, authorName = ?, url = ?, bannerUrl = ?, description = ?, userCode = ? WHERE id = ?",
+              System.currentTimeMillis(), linkData.homePageName, linkData.authorName, linkData.url,
+              linkData.bannerUrl, linkData.description, linkData.userCode, linkData.id);
     } catch (SQLException e) {
       throw new DatabaseException(e);
     }
@@ -1051,8 +1068,8 @@ public class DirectDatabase implements Database {
 
   @Override
   public int getNumberOfActiveUsers() throws DatabaseException {
-    long time = System.currentTimeMillis()
-        - (long) Constant.RANKING_DISPLAY_DAY * 24 * 60 * 60 * 1000;
+    long time = System.currentTimeMillis() - (long) Constant.RANKING_DISPLAY_DAY * 24 * 60 * 60
+        * 1000;
     try {
       return (int) (long) runner.query(
           "SELECT COUNT(*) FROM player WHERE PLAY_COUNT >= 10 AND LAST_LOGIN >= ?",
@@ -1064,12 +1081,13 @@ public class DirectDatabase implements Database {
 
   @Override
   public Map<Integer, List<Integer>> getRatingGroupedByPrefecture() throws DatabaseException {
-    long time = System.currentTimeMillis()
-        - (long) Constant.RANKING_DISPLAY_DAY * 24 * 60 * 60 * 1000;
+    long time = System.currentTimeMillis() - (long) Constant.RANKING_DISPLAY_DAY * 24 * 60 * 60
+        * 1000;
     try {
-      return runner.query(
-          "SELECT VICTORY_POINT, PREFECTURE FROM player WHERE PLAY_COUNT >= 10 AND LAST_LOGIN >= ? AND PREFECTURE != 0",
-          ratingGroupedByPrefectureHandler, time);
+      return runner
+          .query(
+              "SELECT VICTORY_POINT, PREFECTURE FROM player WHERE PLAY_COUNT >= 10 AND LAST_LOGIN >= ? AND PREFECTURE != 0",
+              ratingGroupedByPrefectureHandler, time);
     } catch (SQLException e) {
       throw new DatabaseException(e);
     }
@@ -1115,8 +1133,8 @@ public class DirectDatabase implements Database {
 
   @Override
   public List<Integer> getWholeRating() throws DatabaseException {
-    long time = System.currentTimeMillis()
-        - (long) Constant.RANKING_DISPLAY_DAY * 24 * 60 * 60 * 1000;
+    long time = System.currentTimeMillis() - (long) Constant.RANKING_DISPLAY_DAY * 24 * 60 * 60
+        * 1000;
     try {
       return runner.query(
           "SELECT VICTORY_POINT FROM player WHERE PLAY_COUNT >= 10 AND LAST_LOGIN >= ?",
@@ -1149,8 +1167,8 @@ public class DirectDatabase implements Database {
   @Override
   public int getNumberOfThemeQueries() throws DatabaseException {
     try {
-      return (int) (long) runner.query("SELECT COUNT(*) FROM theme_mode",
-          new ScalarHandler<Long>());
+      return (int) (long) runner
+          .query("SELECT COUNT(*) FROM theme_mode", new ScalarHandler<Long>());
     } catch (SQLException e) {
       throw new DatabaseException(e);
     }
@@ -1293,11 +1311,10 @@ public class DirectDatabase implements Database {
   @Override
   public List<PacketThemeModeEditor> getThemeModeEditors() throws DatabaseException {
     try {
-      return runner.query(
-          "SELECT player.USER_CODE, player.NAME, theme_mode_editor.status "
-              + "FROM theme_mode_editor, player "
-              + "WHERE theme_mode_editor.userCode = player.USER_CODE "
-              + "ORDER BY theme_mode_editor.userCode ASC, theme_mode_editor.status DESC",
+      return runner.query("SELECT player.USER_CODE, player.NAME, theme_mode_editor.status "
+          + "FROM theme_mode_editor, player "
+          + "WHERE theme_mode_editor.userCode = player.USER_CODE "
+          + "ORDER BY theme_mode_editor.userCode ASC, theme_mode_editor.status DESC",
           themeModeEditorsHandler);
     } catch (SQLException e) {
       throw new DatabaseException(e);
@@ -1383,9 +1400,10 @@ public class DirectDatabase implements Database {
   public List<PacketChatMessage> getChatLog(int start) throws DatabaseException {
     // ORDER BYを使うと精査が入って遅くなる
     try {
-      return runner.query(
-          "SELECT * FROM chat_log c, player p WHERE c.RES_ID >= ? AND c.USER_CODE = p.USER_CODE LIMIT ?",
-          chatLogHandler, start, Constant.CHAT_MAX_RESPONSES);
+      return runner
+          .query(
+              "SELECT * FROM chat_log c, player p WHERE c.RES_ID >= ? AND c.USER_CODE = p.USER_CODE LIMIT ?",
+              chatLogHandler, start, Constant.CHAT_MAX_RESPONSES);
     } catch (SQLException e) {
       throw new DatabaseException(e);
     }
@@ -1436,9 +1454,10 @@ public class DirectDatabase implements Database {
   @Override
   public void addThemeModeEditLog(PacketThemeModeEditLog log) throws DatabaseException {
     try {
-      runner.update(
-          "INSERT INTO theme_mode_edit_log (userCode, timeMs, type, THEME, query) VALUES (?, ?, ?, ?, ?)",
-          log.getUserCode(), log.getTimeMs(), log.getType(), log.getTheme(), log.getQuery());
+      runner
+          .update(
+              "INSERT INTO theme_mode_edit_log (userCode, timeMs, type, THEME, query) VALUES (?, ?, ?, ?, ?)",
+              log.getUserCode(), log.getTimeMs(), log.getType(), log.getTheme(), log.getQuery());
     } catch (SQLException e) {
       throw new DatabaseException(e);
     }
@@ -1506,9 +1525,9 @@ public class DirectDatabase implements Database {
   public Set<Integer> getRestrictedUserCodes(RestrictionType restrictionType)
       throws DatabaseException {
     try {
-      return ImmutableSet.copyOf(
-          runner.query("SELECT USER_CODE FROM restricted_user_code WHERE TYPE = ? AND VALID = TRUE",
-              new ColumnListHandler<Integer>(Integer.class), restrictionType.getValue()));
+      return ImmutableSet.copyOf(runner.query(
+          "SELECT USER_CODE FROM restricted_user_code WHERE TYPE = ? AND VALID = TRUE",
+          new ColumnListHandler<Integer>(Integer.class), restrictionType.getValue()));
     } catch (SQLException e) {
       throw new DatabaseException(e);
     }
@@ -1539,9 +1558,10 @@ public class DirectDatabase implements Database {
   public void removeRestrictedRemoteAddress(String remoteAddress, RestrictionType restrictionType)
       throws DatabaseException {
     try {
-      runner.update(
-          "UPDATE restricted_remote_address SET VALID = FALSE WHERE REMOTE_ADDRESS = ? AND TYPE = ?",
-          remoteAddress, restrictionType.getValue());
+      runner
+          .update(
+              "UPDATE restricted_remote_address SET VALID = FALSE WHERE REMOTE_ADDRESS = ? AND TYPE = ?",
+              remoteAddress, restrictionType.getValue());
     } catch (SQLException e) {
       throw new DatabaseException(e);
     }
@@ -1611,8 +1631,8 @@ public class DirectDatabase implements Database {
               + "AND player.USER_CODE = theme_mode_score.USER_CODE "
               + "AND player.PLAY_COUNT >= 10 " + "AND player.LAST_LOGIN >= ? " + "AND "
               + additionalWhereCondition + " GROUP BY USER_CODE " + "ORDER BY DATA DESC "
-              + "LIMIT 0, ? ",
-          rankingDataHandler, theme, dateTime.getMillis(), Constant.NUMBER_OF_RANKING_DATA);
+              + "LIMIT 0, ? ", rankingDataHandler, theme, dateTime.getMillis(),
+          Constant.NUMBER_OF_RANKING_DATA);
       for (int i = 0; i < ranking.size(); ++i) {
         ranking.get(i).ranking = i + 1;
       }
@@ -1626,12 +1646,10 @@ public class DirectDatabase implements Database {
   public void updateThemeModeScore(int userCode, String theme, int score) throws DatabaseException {
     DateTime dateTime = new DateTime();
     try {
-      runner.update(
-          "INSERT LOW_PRIORITY theme_mode_score (THEME, USER_CODE, SCORE, YEAR, MONTH) "
-              + "VALUES (?, ?, ?, ?, ?) "
-              + "ON DUPLICATE KEY UPDATE SCORE = ((SCORE < ?) * ? + (SCORE > ?) * SCORE)",
-          theme, userCode, score, dateTime.getYear(), dateTime.getMonthOfYear(), score, score,
-          score);
+      runner.update("INSERT LOW_PRIORITY theme_mode_score (THEME, USER_CODE, SCORE, YEAR, MONTH) "
+          + "VALUES (?, ?, ?, ?, ?) "
+          + "ON DUPLICATE KEY UPDATE SCORE = ((SCORE < ?) * ? + (SCORE > ?) * SCORE)", theme,
+          userCode, score, dateTime.getYear(), dateTime.getMonthOfYear(), score, score, score);
     } catch (SQLException e) {
       throw new DatabaseException(e);
     }
@@ -1657,8 +1675,8 @@ public class DirectDatabase implements Database {
   @Override
   public List<PacketRankingData> getThemeRanking(String theme, int year, int month)
       throws DatabaseException {
-    return getThemeRanking(theme,
-        "theme_mode_score.YEAR = " + year + " " + "AND theme_mode_score.MONTH = " + month);
+    return getThemeRanking(theme, "theme_mode_score.YEAR = " + year + " "
+        + "AND theme_mode_score.MONTH = " + month);
   }
 
   @Override
