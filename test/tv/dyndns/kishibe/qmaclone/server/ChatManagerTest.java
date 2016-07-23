@@ -1,18 +1,19 @@
 package tv.dyndns.kishibe.qmaclone.server;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import com.google.guiceberry.junit4.GuiceBerryRule;
-import com.google.inject.Inject;
-
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketChatMessage;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketChatMessages;
 import tv.dyndns.kishibe.qmaclone.server.testing.QMACloneTestEnv;
+
+import com.google.guiceberry.junit4.GuiceBerryRule;
+import com.google.inject.Inject;
 
 @RunWith(JUnit4.class)
 public class ChatManagerTest {
@@ -47,6 +48,11 @@ public class ChatManagerTest {
     assertEquals(expected.remoteAddress, actual.remoteAddress);
     assertEquals(expected.resId, actual.resId);
     assertEquals(expected.userCode, actual.userCode);
+  }
+
+  @Test
+  public void testGetChatMessagesWebSocketSessions() {
+    assertNotNull(manager.getChatMessagesWebSocket());
   }
 
   // TODO(nodchip): Write tests for write().

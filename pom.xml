@@ -221,5 +221,10 @@
   		<artifactId>piriti-restlet</artifactId>
   		<version>0.7</version>
   	</dependency>
+  	<dependency>
+  		<groupId>org.eclipse.jetty.aggregate</groupId>
+  		<artifactId>jetty-all-server</artifactId>
+  		<version>[7.6,7.99)</version>
+  	</dependency>
   </dependencies>
 </project>

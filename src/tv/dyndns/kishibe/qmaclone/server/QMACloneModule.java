@@ -2,12 +2,8 @@ package tv.dyndns.kishibe.qmaclone.server;
 
 import static com.google.inject.Scopes.SINGLETON;
 import static com.google.inject.name.Names.named;
-
-import com.google.gwt.logging.server.RemoteLoggingServiceImpl;
-import com.google.inject.AbstractModule;
-import com.google.inject.assistedinject.FactoryModuleBuilder;
-import com.sun.jna.Native;
-
+import tv.dyndns.kishibe.qmaclone.client.constant.Constant;
+import tv.dyndns.kishibe.qmaclone.client.packet.PacketServerStatus;
 import tv.dyndns.kishibe.qmaclone.server.database.DatabaseModule;
 import tv.dyndns.kishibe.qmaclone.server.handwriting.Recognizable;
 import tv.dyndns.kishibe.qmaclone.server.handwriting.RecognizerZinnia;
@@ -20,6 +16,15 @@ import tv.dyndns.kishibe.qmaclone.server.service.LinkServletStub;
 import tv.dyndns.kishibe.qmaclone.server.sns.SnsClient;
 import tv.dyndns.kishibe.qmaclone.server.sns.SnsClients;
 import tv.dyndns.kishibe.qmaclone.server.util.DownloaderModule;
+import tv.dyndns.kishibe.qmaclone.server.websocket.WebSockets;
+
+import com.google.gson.Gson;
+import com.google.gwt.logging.server.RemoteLoggingServiceImpl;
+import com.google.inject.AbstractModule;
+import com.google.inject.Provides;
+import com.google.inject.Singleton;
+import com.google.inject.assistedinject.FactoryModuleBuilder;
+import com.sun.jna.Native;
 
 public class QMACloneModule extends AbstractModule {
   @Override
@@ -38,6 +43,8 @@ public class QMACloneModule extends AbstractModule {
     bind(VoteManager.class).in(SINGLETON);
     bind(Recognizable.class).to(RecognizerZinnia.class).in(SINGLETON);
     bind(ThemeModeEditorManager.class).in(SINGLETON);
+    bind(int.class).annotatedWith(named("webSocketServerPort"))
+        .toInstance(Constant.WEB_SOCKET_PORT);
     bind(ImageUtils.class).in(SINGLETON);
     bind(PrefectureRanking.class).in(SINGLETON);
     bind(RatingDistribution.class).in(SINGLETON);
@@ -45,8 +52,8 @@ public class QMACloneModule extends AbstractModule {
     install(new FactoryModuleBuilder().build(ComputerPlayer.Factory.class));
     install(new FactoryModuleBuilder().build(PlayerAnswer.Factory.class));
     bind(RemoteLoggingServiceImpl.class).in(SINGLETON);
-    bind(ZinniaLibrary.class)
-        .toInstance((ZinniaLibrary) Native.loadLibrary("zinnia", ZinniaLibrary.class));
+    bind(ZinniaLibrary.class).toInstance(
+        (ZinniaLibrary) Native.loadLibrary("zinnia", ZinniaLibrary.class));
     bind(ZinniaObjectFactory.class).in(SINGLETON);
     bind(SnsClient.class).annotatedWith(named("SnsClients")).to(SnsClients.class);
     bind(ThreadPool.class).in(SINGLETON);
@@ -64,5 +71,16 @@ public class QMACloneModule extends AbstractModule {
     install(new DatabaseModule());
     install(new RelevanceModule());
     install(new DownloaderModule());
+  }
+
+  @Provides
+  @Singleton
+  private WebSockets<PacketServerStatus> provideSerVerStatusWebSockets(ThreadPool threadPool) {
+    return new WebSockets<PacketServerStatus>(threadPool) {
+      @Override
+      protected String encode(PacketServerStatus status) {
+        return new Gson().toJson(status);
+      }
+    };
   }
 }

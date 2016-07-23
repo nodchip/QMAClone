@@ -21,6 +21,9 @@
 //THE SOFTWARE.
 package tv.dyndns.kishibe.qmaclone.client.constant;
 
+import com.google.gwt.core.shared.GWT;
+import com.google.gwt.user.client.Window.Location;
+
 public class Constant {
   private Constant() {
   }
@@ -42,13 +45,14 @@ public class Constant {
       "マンドレイク", "ヒドラ", "ドッペルゲンガー", "サラマンダー", "ゴーレム", "グリフォン", "ロック", "フェンリル", "ワルキューレ", "ケルベロス",
       "ワーウルフ", "サイクロプス", "キマイラ", "イフリート", "バジリスク", "マンティコア", "マーメイド", "オーク", "バンシー", "バルログ",
       "ジャバウォック", "フェニックス", "ケットシー", "ケツァルコアトル", "メドゥーサ", "リバイアサン", "ワイバーン", "鵺", "ケルピー", "マミー",
-      "スキュラ", "ペガサス", "カロン", "ヒポグリフ", "ベヒモス", "サンダーバード", "シーサーペント", "麒麟", "イエティ", "インキュバス", "サキュバス",
-      "スライム", "エント", "コカトリス", "ブラウニー", "バンダースナッチ", "ペリュトン", "パビルサグ", "ミミック", "ジャック・オ・ランタン",
-      "ポルターガイスト", "ノーム", "クネヒト・ルプレヒト", "ドラゴン", "エルフ", "ドワーフ", "天狗", "龍", "ウンディーネ", "ウィル・オ・ザ・ウィスプ",
-      "ゴブリン", "リャナンシー", "オーガ", "ホビット", "スレイプニル", "スマウグ", "ネメアンライオン", "アルゴス", "エキドナ", "ムスッペル",
-      "ミルメコレオ", "パズズ", "タロス", "カクス", "アモン", "ヘカトンケイル", "エコー", "メフィストフェレス", "ギガース", "シルフ", "エンジェル",
-      "キューピッド", "チョンチョン", "開明獣", "九尾の狐", "コロポックル", "河童", "ガルーダ", "ナーガ", "バロン", "ギリメカラ", "クサントス",
-      "バリオス", "八岐大蛇", "酒呑童子", "蚩尤", "八咫烏", "セルキー", "ハンプティ・ダンプティ", "フンババ", "リー・バン", "リッチ" };
+      "スキュラ", "ペガサス", "カロン", "ヒポグリフ", "ベヒモス", "サンダーバード", "シーサーペント", "麒麟", "イエティ", "インキュバス",
+      "サキュバス", "スライム", "エント", "コカトリス", "ブラウニー", "バンダースナッチ", "ペリュトン", "パビルサグ", "ミミック",
+      "ジャック・オ・ランタン", "ポルターガイスト", "ノーム", "クネヒト・ルプレヒト", "ドラゴン", "エルフ", "ドワーフ", "天狗", "龍", "ウンディーネ",
+      "ウィル・オ・ザ・ウィスプ", "ゴブリン", "リャナンシー", "オーガ", "ホビット", "スレイプニル", "スマウグ", "ネメアンライオン", "アルゴス",
+      "エキドナ", "ムスッペル", "ミルメコレオ", "パズズ", "タロス", "カクス", "アモン", "ヘカトンケイル", "エコー", "メフィストフェレス", "ギガース",
+      "シルフ", "エンジェル", "キューピッド", "チョンチョン", "開明獣", "九尾の狐", "コロポックル", "河童", "ガルーダ", "ナーガ", "バロン",
+      "ギリメカラ", "クサントス", "バリオス", "八岐大蛇", "酒呑童子", "蚩尤", "八咫烏", "セルキー", "ハンプティ・ダンプティ", "フンババ",
+      "リー・バン", "リッチ" };
   public static final int NUMBER_OF_CLASSES = CLASS_NAMES.length;
   private static final double ACCURACY_RATE_UPPER_START = 1.0;
   private static final double ACCURACY_RATE_LOWER_START = 0.8;
@@ -129,6 +133,18 @@ public class Constant {
   public static final int NEW_PROBLEM_ID = -1;
   public static final int MIN_NUMBER_OF_THEME_MODE_PROBLEMS = 100;
   public static final int MAX_NUMBER_OF_CREATION_PER_HOUR = 3;
+  public static final int WEB_SOCKET_PORT = 60080;
+  public static final String WEB_SOCKET_URL = getWebSocketUrl();
+
+  private static String getWebSocketUrl() {
+    if (GWT.isClient() && Location.getHost().contains(":8888")) {
+      return "ws://localhost:" + WEB_SOCKET_PORT + "/";
+    } else if (GWT.isClient() && Location.getHost().contains(":8080")) {
+      return "ws://localhost:" + WEB_SOCKET_PORT + "/";
+    } else {
+      return "ws://kishibe.dyndns.tv/QMAClone/websocket/";
+    }
+  }
 
   public static final int MAX_NUMBER_OF_ANSWERS = 8;
   public static final int MAX_NUMBER_OF_CHOICES = 8;

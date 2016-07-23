@@ -9,16 +9,19 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Objects;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
-import com.google.inject.Inject;
+import org.eclipse.jetty.websocket.WebSocket;
 
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketServerStatus;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketUserData;
 import tv.dyndns.kishibe.qmaclone.server.database.Database;
 import tv.dyndns.kishibe.qmaclone.server.database.DatabaseException;
+import tv.dyndns.kishibe.qmaclone.server.websocket.WebSockets;
+
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
+import com.google.inject.Inject;
 
 public class ServerStatusManager {
   private static final Logger logger = Logger.getLogger(ServerStatusManager.class.getName());
@@ -36,6 +39,7 @@ public class ServerStatusManager {
   private final GameManager gameManager;
   private final NormalModeProblemManager normalModeProblemManager;
   private final PlayerHistoryManager playerHistoryManager;
+  private final WebSockets<PacketServerStatus> serverStatusWebSockets;
   private volatile PacketServerStatus serverStatus;
   private final Runnable saveServerStatusRunner = new Runnable() {
     public void run() {
@@ -61,11 +65,12 @@ public class ServerStatusManager {
   @Inject
   public ServerStatusManager(Database database, GameManager gameManager,
       NormalModeProblemManager normalModeProblemManager, PlayerHistoryManager playerHistoryManager,
-      ThreadPool threadPool) {
+      WebSockets<PacketServerStatus> serverStatusSessions, ThreadPool threadPool) {
     this.database = Preconditions.checkNotNull(database);
     this.gameManager = Preconditions.checkNotNull(gameManager);
     this.normalModeProblemManager = Preconditions.checkNotNull(normalModeProblemManager);
     this.playerHistoryManager = Preconditions.checkNotNull(playerHistoryManager);
+    this.serverStatusWebSockets = Preconditions.checkNotNull(serverStatusSessions);
 
     threadPool.addMinuteTasks(saveServerStatusRunner);
     threadPool.addMinuteTasks(updateLoginUsersRunner);
@@ -116,6 +121,7 @@ public class ServerStatusManager {
       return;
     }
     serverStatus = status;
+    serverStatusWebSockets.send(status);
   }
 
   public PacketServerStatus getServerStatus() {
@@ -171,6 +177,10 @@ public class ServerStatusManager {
     numberOfCurrentPlayers.set(gameManager.getNumberOfPlayers());
     numberOfTotalSessions.addAndGet(sessionDelta);
     numberOfTotalPlayers.addAndGet(playDelta);
+  }
+
+  public WebSocket getServerStatusWebSocket() {
+    return serverStatusWebSockets.newWebSocket();
   }
 
 }

@@ -28,11 +28,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.google.common.base.Preconditions;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
-import com.google.inject.Inject;
+import org.eclipse.jetty.websocket.WebSocket;
 
 import tv.dyndns.kishibe.qmaclone.client.constant.Constant;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketChatMessage;
@@ -40,6 +36,14 @@ import tv.dyndns.kishibe.qmaclone.client.packet.PacketChatMessages;
 import tv.dyndns.kishibe.qmaclone.client.packet.RestrictionType;
 import tv.dyndns.kishibe.qmaclone.server.database.Database;
 import tv.dyndns.kishibe.qmaclone.server.database.DatabaseException;
+import tv.dyndns.kishibe.qmaclone.server.websocket.WebSockets;
+
+import com.google.common.base.Preconditions;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+import com.google.gson.Gson;
+import com.google.inject.Inject;
 
 public class ChatManager {
   private static final Logger logger = Logger.getLogger(ChatManager.class.getName());
@@ -53,6 +57,7 @@ public class ChatManager {
         }
       });
   private final Object writeLock = new Object();
+  private final WebSockets<PacketChatMessages> chatMessagesWebSockets;
   private final Database database;
   private final ThreadPool threadPool;
   private final RestrictedUserUtils restrictedUserUtils;
@@ -65,6 +70,12 @@ public class ChatManager {
     this.database = Preconditions.checkNotNull(database);
     this.threadPool = Preconditions.checkNotNull(threadPool);
     this.restrictedUserUtils = Preconditions.checkNotNull(restrictedUserUtils);
+    this.chatMessagesWebSockets = new WebSockets<PacketChatMessages>(threadPool) {
+      @Override
+      protected String encode(PacketChatMessages message) {
+        return new Gson().toJson(message);
+      }
+    };
     this.chatPostCounter = Preconditions.checkNotNull(chatPostCounter);
     threadPool.addMinuteTasks(chatPostCounter);
   }
@@ -118,6 +129,7 @@ public class ChatManager {
     synchronized (writeLock) {
       message.resId = data.isEmpty() ? 1 : (data.lastEntry().getValue().resId + 1);
       data.put(message.resId, message);
+      chatMessagesWebSockets.send(PacketChatMessages.fromMessage(message));
     }
 
     data.remove(message.resId - Constant.CHAT_MAX_RESPONSES - 1);
@@ -138,7 +150,7 @@ public class ChatManager {
    * 
    * @param nextResponseId
    *          次に読み込むレスポンス番号
-   * @return 発言リスト
+   * @return　発言リスト
    */
   public PacketChatMessages read(int nextResponseId) {
     NavigableMap<Integer, PacketChatMessage> data = getData();
@@ -154,6 +166,13 @@ public class ChatManager {
       }
     }
     return PacketChatMessages.fromMessages(data.tailMap(nextResponseId).values());
+  }
+
+  /**
+   * チャット受信用WebSocketセッションを登録する
+   */
+  public WebSocket getChatMessagesWebSocket() {
+    return chatMessagesWebSockets.newWebSocket();
   }
 
 }
