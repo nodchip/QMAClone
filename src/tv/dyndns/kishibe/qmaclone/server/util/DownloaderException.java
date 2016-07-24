@@ -32,6 +32,6 @@ public class DownloaderException extends Exception {
   public int getStatusCode() {
     Preconditions.checkState(hasStatusCode());
     HttpResponseException responseException = (HttpResponseException) getCause();
-    return responseException.getStatusCode();
+    return responseException.getResponse().getStatusCode();
   }
 }

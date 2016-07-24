@@ -13,10 +13,10 @@ import com.google.inject.Singleton;
 
 public class DatabaseModule extends AbstractModule {
 
-  private static final String DRIVER_CLASS_NAME = "com.mysql.jdbc.Driver";
+  private static final String DRIVER_CLASS_NAME = "com.mysql.cj.jdbc.Driver";
   private static final String USERNAME = "qmaclone";
   private static final String PASSWORD = "qmaclone";
-  private static final String URL = "jdbc:mysql://localhost/qmaclone?user=qmaclone&password=qmaclone&autoReconnects=true&userUnicode=true&characterEncoding=UTF-8";
+  private static final String URL = "jdbc:mysql://localhost/qmaclone?user=qmaclone&password=qmaclone&autoReconnects=true&userUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Tokyo";
   private static final String VALIDATION_QUERY = "SELECT 1";
 
   @Override

@@ -21,12 +21,8 @@
 //THE SOFTWARE.
 package tv.dyndns.kishibe.qmaclone.server.util;
 
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -37,6 +33,8 @@ import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.HttpResponse;
 import com.google.api.client.http.HttpTransport;
 import com.google.common.base.Preconditions;
+import com.google.common.io.ByteStreams;
+import com.google.common.io.Files;
 import com.google.inject.Inject;
 
 public class Downloader {
@@ -51,16 +49,14 @@ public class Downloader {
   public byte[] downloadAsByteArray(URL url) throws DownloaderException {
     logger.info(String.format("Downloading: %s", url.toString()));
 
-    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     HttpRequestFactory requestFactory = httpTransport.createRequestFactory();
     try {
-      HttpRequest getRequest = requestFactory.buildGetRequest(new GenericUrl(url));
+      HttpRequest getRequest = requestFactory.buildGetRequest(new GenericUrl(url.toString()));
       HttpResponse getResponse = getRequest.execute();
-      getResponse.download(outputStream);
+      return ByteStreams.toByteArray(getResponse.getContent());
     } catch (IOException e) {
       throw new DownloaderException("ファイルのダウンロードに失敗しました: url=" + url, e);
     }
-    return outputStream.toByteArray();
   }
 
   public String downloadAsString(URL url) throws DownloaderException {
@@ -68,7 +64,7 @@ public class Downloader {
 
     HttpRequestFactory requestFactory = httpTransport.createRequestFactory();
     try {
-      HttpRequest getRequest = requestFactory.buildGetRequest(new GenericUrl(url));
+      HttpRequest getRequest = requestFactory.buildGetRequest(new GenericUrl(url.toString()));
       HttpResponse getResponse = getRequest.execute();
       return getResponse.parseAsString();
     } catch (IOException e) {
@@ -93,7 +89,7 @@ public class Downloader {
 
     HttpRequestFactory requestFactory = httpTransport.createRequestFactory();
     try {
-      HttpRequest getRequest = requestFactory.buildGetRequest(new GenericUrl(url));
+      HttpRequest getRequest = requestFactory.buildGetRequest(new GenericUrl(url.toString()));
 
       HttpResponse getResponse;
       try {
@@ -102,9 +98,7 @@ public class Downloader {
         throw new DownloaderException(e);
       }
 
-      try (OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(file))) {
-        getResponse.download(outputStream);
-      }
+      Files.asByteSink(file).writeFrom(getResponse.getContent());
     } catch (IOException e) {
       throw new DownloaderException("ファイルのダウンロードに失敗しました: url=" + url, e);
     }
