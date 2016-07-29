@@ -25,7 +25,7 @@ public class WikipediaAllTitlesDictionary implements Dictionary {
 
   private static final Logger logger = Logger
       .getLogger(WikipediaAllTitlesDictionary.class.getName());
-  private static final String WIKIPEDIA_ALL_TITLE_URL = "http://dumps.wikimedia.org/jawiki/latest/jawiki-latest-all-titles-in-ns0.gz";
+  private static final String WIKIPEDIA_ALL_TITLE_URL = "https://dumps.wikimedia.org/jawiki/latest/jawiki-latest-all-titles-in-ns0.gz";
   private static final File WIKIPEDIA_ALL_TITLE_FILE = new File(
       Constant.FILE_PATH_BASE + "qmaclone/jawiki-latest-all-titles-in-ns0.gz");
   private final Downloader downloader;
