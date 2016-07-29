@@ -2,43 +2,43 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:k="urn:import:tv.dyndns.kishibe.qmaclone.client.ui">
 	<ui:style>
-		.qmaclone-lobby-start-Button {
-			margin: 0;
-			padding: 3px 5px;
-			text-decoration: none;
-			font-size: small;
-			cursor: pointer;
-			cursor: hand;
-			background:
-				url("tv.dyndns.kishibe.qmaclone.QMAClone/gwt/standard/images/hborder.png")
-				repeat-x 0px -27px;
-			border: 1px outset #ccc;
-			font-size: 40px;
-			width: 256px;
-			height: 48px;
-		}
-
-		.qmaclone-lobby-start-Button:active {
-			border: 1px inset #ccc;
-		}
-
-		.qmaclone-lobby-start-Button:hover {
-			border-color: #9cf #69e #69e #7af;
-		}
-
-		.qmaclone-lobby-start-Button[disabled] {
-			cursor: default;
-			color: #888;
-		}
-
-		.qmaclone-lobby-start-Button[disabled]:hover {
-			border: 1px outset #ccc;
-		}
-
-		.qmaclone-Grid td {
-			border-right: 1px solid #bbb;
-			border-bottom: 1px solid #bbb;
-		}
+	.qmaclone-lobby-start-Button {
+		margin: 0;
+		padding: 3px 5px;
+		text-decoration: none;
+		font-size: small;
+		cursor: pointer;
+		cursor: hand;
+		background:
+			url("tv.dyndns.kishibe.qmaclone.QMAClone/gwt/standard/images/hborder.png")
+			repeat-x 0px -27px;
+		border: 1px outset #ccc;
+		font-size: 40px;
+		width: 256px;
+		height: 48px;
+	}
+	
+	.qmaclone-lobby-start-Button:active {
+		border: 1px inset #ccc;
+	}
+	
+	.qmaclone-lobby-start-Button:hover {
+		border-color: #9cf #69e #69e #7af;
+	}
+	
+	.qmaclone-lobby-start-Button[disabled] {
+		cursor: default;
+		color: #888;
+	}
+	
+	.qmaclone-lobby-start-Button[disabled]:hover {
+		border: 1px outset #ccc;
+	}
+	
+	.qmaclone-Grid td {
+		border-right: 1px solid #bbb;
+		border-bottom: 1px solid #bbb;
+	}
 	</ui:style>
 	<g:HTMLPanel width="800px">
 		<center>
@@ -57,6 +57,9 @@
 			</p>
 			<p>2013年9月1日から複数のアカウントを用いた問題作成が禁止されます（されました）。
 				問題作成者は自身のユーザーコードを必ず保存してください。</p>
+			<p>サーバー高速化のためWebSocketを復活させました。
+				ゲームを開始しても画面が表示されない、チャットが更新されない等不具合がある場合は、
+				「設定」→「その他」→「サーバーとの通信にWebSocketを使用する」を「オフ」にしてください。</p>
 			<table>
 				<tr>
 					<td>
