@@ -2,6 +2,7 @@ package tv.dyndns.kishibe.qmaclone.server.websocket;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.websocket.WebSocket;
 import org.eclipse.jetty.websocket.WebSocketHandler;
 
@@ -17,7 +18,7 @@ import tv.dyndns.kishibe.qmaclone.server.ServerStatusManager;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 
-public class PathHandler extends WebSocketHandler {
+public class PathHandler extends WebSocketHandler implements Handler {
 
   private final GameManager gameManager;
   private final ChatManager chatManager;

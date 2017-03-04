@@ -197,16 +197,6 @@
   		<version>[1.0.0,)</version>
   	</dependency>
   	<dependency>
-  		<groupId>com.google.gwt</groupId>
-  		<artifactId>gwt-servlet</artifactId>
-  		<version>[2.7.0,)</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>com.google.gwt</groupId>
-  		<artifactId>gwt-user</artifactId>
-  		<version>[2.7.0,)</version>
-  	</dependency>
-  	<dependency>
   		<groupId>name.pehl</groupId>
   		<artifactId>totoe</artifactId>
   		<version>[0.7,)</version>
@@ -221,10 +211,10 @@
   		<artifactId>piriti-restlet</artifactId>
   		<version>0.7</version>
   	</dependency>
-  	<dependency>
-  		<groupId>org.eclipse.jetty.aggregate</groupId>
-  		<artifactId>jetty-all-server</artifactId>
-  		<version>[,7.99)</version>
-  	</dependency>
+<dependency>
+    <groupId>org.eclipse.jetty</groupId>
+    <artifactId>jetty-websocket</artifactId>
+    <version>[7.6,7.99)</version>
+</dependency>
   </dependencies>
 </project>

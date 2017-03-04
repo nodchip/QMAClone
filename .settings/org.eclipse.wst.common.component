@@ -4,6 +4,6 @@
         <wb-resource deploy-path="/" source-path="/war" tag="defaultRootSource"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
         <property name="context-root" value="QMAClone"/>
-        <property name="java-output-path" value="/QMAClone/war/WEB-INF/classes"/>
+        <property name="java-output-path" value="war/WEB-INF/classes"/>
     </wb-module>
 </project-modules>

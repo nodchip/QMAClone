@@ -17,7 +17,7 @@ import com.google.common.io.CharStreams;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 
-public class ViterbiTokenizer extends Tokenizer {
+public final class ViterbiTokenizer extends Tokenizer {
 
   public interface Factory {
     ViterbiTokenizer create(Reader input);
