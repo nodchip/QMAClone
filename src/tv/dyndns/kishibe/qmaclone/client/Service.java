@@ -39,7 +39,7 @@ import tv.dyndns.kishibe.qmaclone.client.packet.PacketChatMessages;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketGameStatus;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketImageLink;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketLogin;
-import tv.dyndns.kishibe.qmaclone.client.packet.PacketMatchingData;
+import tv.dyndns.kishibe.qmaclone.client.packet.PacketMatchingStatus;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketMonth;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketPlayerSummary;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblem;
@@ -218,7 +218,7 @@ public interface Service extends RemoteService {
   // ゲーム開始待機
   PacketReadyForGame waitForGame(int sessionId) throws ServiceException;
 
-  PacketMatchingData getMatchingData(int sessionId) throws ServiceException;
+  PacketMatchingStatus getMatchingStatus(int sessionId) throws ServiceException;
 
   /***************************************************************************
    * 問題

@@ -73,4 +73,6 @@
 		<welcome-file>QMAClone.html</welcome-file>
 	</welcome-file-list>
 
+	<!-- https://issues.apache.org/jira/browse/AMQ-6154 -->
+	<absolute-ordering/>
 </web-app>

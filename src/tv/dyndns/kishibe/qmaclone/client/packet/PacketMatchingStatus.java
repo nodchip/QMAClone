@@ -9,13 +9,13 @@ import com.google.common.base.MoreObjects;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class PacketMatchingData implements IsSerializable {
+public class PacketMatchingStatus implements IsSerializable {
   public static class Json {
-    public interface PacketMatchingDataReader extends JsonReader<PacketMatchingData> {
+    public interface PacketMatchingStatusReader extends JsonReader<PacketMatchingStatus> {
     }
 
-    public static final PacketMatchingDataReader READER = GWT
-        .create(PacketMatchingDataReader.class);
+    public static final PacketMatchingStatusReader READER = GWT
+        .create(PacketMatchingStatusReader.class);
   }
 
   public int restSeconds;

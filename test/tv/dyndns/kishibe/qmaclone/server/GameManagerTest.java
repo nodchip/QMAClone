@@ -13,14 +13,14 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
+
 import tv.dyndns.kishibe.qmaclone.client.game.GameMode;
 import tv.dyndns.kishibe.qmaclone.client.game.ProblemGenre;
 import tv.dyndns.kishibe.qmaclone.client.game.ProblemType;
 import tv.dyndns.kishibe.qmaclone.client.game.Transition;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketRoomKey;
-
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 
 @RunWith(MockitoJUnitRunner.class)
 public class GameManagerTest {
@@ -41,8 +41,8 @@ public class GameManagerTest {
 
   @Test
   public void getOrCreateMatchingSessionShouldReturnMatchingGameSession() {
-    when(mockGameFactory.create(1, 0, false, false, null, false, GameMode.WHOLE)).thenReturn(
-        mockGame1);
+    when(mockGameFactory.create(1, 0, false, false, null, false, GameMode.WHOLE))
+        .thenReturn(mockGame1);
 
     Game game = gameManager.getOrCreateMatchingSession(GameMode.WHOLE, null, 0, null,
         EnumSet.of(ProblemGenre.Anige), EnumSet.of(ProblemType.Marubatsu), false,
@@ -53,8 +53,8 @@ public class GameManagerTest {
 
   @Test
   public void getOrCreateMatchingSessionShouldReturnSameMatchingGameSessionForSecondTime() {
-    when(mockGameFactory.create(1, 0, false, false, null, false, GameMode.WHOLE)).thenReturn(
-        mockGame1);
+    when(mockGameFactory.create(1, 0, false, false, null, false, GameMode.WHOLE))
+        .thenReturn(mockGame1);
     when(mockGame1.getTransition()).thenReturn(Transition.Matching);
 
     List<Game> games = Lists.newArrayList();
@@ -71,10 +71,10 @@ public class GameManagerTest {
 
   @Test
   public void getOrCreateMatchingSessionShouldReturnNewMatchingGameSessionIfFull() {
-    when(mockGameFactory.create(1, 0, false, false, null, false, GameMode.WHOLE)).thenReturn(
-        mockGame1);
-    when(mockGameFactory.create(2, 0, false, false, null, false, GameMode.WHOLE)).thenReturn(
-        mockGame2);
+    when(mockGameFactory.create(1, 0, false, false, null, false, GameMode.WHOLE))
+        .thenReturn(mockGame1);
+    when(mockGameFactory.create(2, 0, false, false, null, false, GameMode.WHOLE))
+        .thenReturn(mockGame2);
     when(mockGame1.getTransition()).thenReturn(Transition.Matching, Transition.Matching,
         Transition.Matching, Transition.Matching, Transition.Matching, Transition.Matching,
         Transition.Matching, Transition.Ready);
@@ -93,9 +93,9 @@ public class GameManagerTest {
   }
 
   @Test
-  public void getSessionShouldReturnCreatedGame() {
-    when(mockGameFactory.create(1, 0, false, false, null, false, GameMode.WHOLE)).thenReturn(
-        mockGame1);
+  public void getSessionShouldReturnCreatedGame() throws Exception {
+    when(mockGameFactory.create(1, 0, false, false, null, false, GameMode.WHOLE))
+        .thenReturn(mockGame1);
 
     gameManager.getOrCreateMatchingSession(GameMode.WHOLE, null, 0, null,
         EnumSet.of(ProblemGenre.Anige), EnumSet.of(ProblemType.Marubatsu), false,
@@ -107,26 +107,26 @@ public class GameManagerTest {
 
   @Test
   public void getPublicMatchingEventRooms() {
-    when(mockGameFactory.create(1, 0, true, false, null, true, GameMode.EVENT)).thenReturn(
-        mockGame1);
+    when(mockGameFactory.create(1, 0, true, false, null, true, GameMode.EVENT))
+        .thenReturn(mockGame1);
     when(mockGame1.isEvent()).thenReturn(true);
     when(mockGame1.isPublicEvent()).thenReturn(true);
     when(mockGame1.getTransition()).thenReturn(Transition.Matching);
 
-    when(mockGameFactory.create(2, 0, true, false, null, false, GameMode.EVENT)).thenReturn(
-        mockGame2);
+    when(mockGameFactory.create(2, 0, true, false, null, false, GameMode.EVENT))
+        .thenReturn(mockGame2);
     when(mockGame2.isEvent()).thenReturn(true);
     when(mockGame2.isPublicEvent()).thenReturn(false);
     when(mockGame2.getTransition()).thenReturn(Transition.Matching);
 
-    when(mockGameFactory.create(3, 0, false, false, null, false, GameMode.WHOLE)).thenReturn(
-        mockGame3);
+    when(mockGameFactory.create(3, 0, false, false, null, false, GameMode.WHOLE))
+        .thenReturn(mockGame3);
     when(mockGame3.isEvent()).thenReturn(false);
     when(mockGame3.isPublicEvent()).thenReturn(false);
     when(mockGame3.getTransition()).thenReturn(Transition.Matching);
 
-    when(mockGameFactory.create(4, 0, true, false, null, true, GameMode.EVENT)).thenReturn(
-        mockGame3);
+    when(mockGameFactory.create(4, 0, true, false, null, true, GameMode.EVENT))
+        .thenReturn(mockGame3);
     when(mockGame4.isEvent()).thenReturn(false);
     when(mockGame4.isPublicEvent()).thenReturn(false);
     when(mockGame4.getTransition()).thenReturn(Transition.Problem);
@@ -145,14 +145,14 @@ public class GameManagerTest {
         mockServerStatusManager, 12345678, "192.168.0.1");
     List<PacketRoomKey> rooms = gameManager.getPublicMatchingEventRooms();
 
-    assertEquals(ImmutableList.of(new PacketRoomKey(GameMode.EVENT, "public EVENT name", EnumSet
-        .of(ProblemGenre.Anige), EnumSet.of(ProblemType.Marubatsu))), rooms);
+    assertEquals(ImmutableList.of(new PacketRoomKey(GameMode.EVENT, "public EVENT name",
+        EnumSet.of(ProblemGenre.Anige), EnumSet.of(ProblemType.Marubatsu))), rooms);
   }
 
   @Test
   public void getNumberOfPlayersInWholeShouldReturnNumberOfHumanPlayers() {
-    when(mockGameFactory.create(1, 0, false, false, null, false, GameMode.WHOLE)).thenReturn(
-        mockGame1);
+    when(mockGameFactory.create(1, 0, false, false, null, false, GameMode.WHOLE))
+        .thenReturn(mockGame1);
     when(mockGame1.getNumberOfHumanPlayer()).thenReturn(3);
     when(mockGame1.getTransition()).thenReturn(Transition.Matching);
 
@@ -165,12 +165,12 @@ public class GameManagerTest {
 
   @Test
   public void getNumberOfSessionsShouldReturnSizeOfSessions() {
-    when(mockGameFactory.create(1, 0, true, false, null, true, GameMode.EVENT)).thenReturn(
-        mockGame1);
-    when(mockGameFactory.create(2, 0, true, false, null, false, GameMode.EVENT)).thenReturn(
-        mockGame2);
-    when(mockGameFactory.create(3, 0, false, false, null, false, GameMode.WHOLE)).thenReturn(
-        mockGame3);
+    when(mockGameFactory.create(1, 0, true, false, null, true, GameMode.EVENT))
+        .thenReturn(mockGame1);
+    when(mockGameFactory.create(2, 0, true, false, null, false, GameMode.EVENT))
+        .thenReturn(mockGame2);
+    when(mockGameFactory.create(3, 0, false, false, null, false, GameMode.WHOLE))
+        .thenReturn(mockGame3);
 
     assertEquals(0, gameManager.getNumberOfSessions());
 
@@ -195,12 +195,12 @@ public class GameManagerTest {
 
   @Test
   public void getNumberOfPlayersShouldReturnTotalNumberOfHumanPlayers() {
-    when(mockGameFactory.create(1, 0, true, false, null, true, GameMode.EVENT)).thenReturn(
-        mockGame1);
+    when(mockGameFactory.create(1, 0, true, false, null, true, GameMode.EVENT))
+        .thenReturn(mockGame1);
     when(mockGame1.getNumberOfHumanPlayer()).thenReturn(1);
 
-    when(mockGameFactory.create(2, 0, true, false, null, false, GameMode.EVENT)).thenReturn(
-        mockGame2);
+    when(mockGameFactory.create(2, 0, true, false, null, false, GameMode.EVENT))
+        .thenReturn(mockGame2);
     when(mockGame2.getNumberOfHumanPlayer()).thenReturn(2);
 
     gameManager.getOrCreateMatchingSession(GameMode.EVENT, "public EVENT name", 0, null,

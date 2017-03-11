@@ -24,44 +24,45 @@ package tv.dyndns.kishibe.qmaclone.client;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import tv.dyndns.kishibe.qmaclone.client.constant.Constant;
-import tv.dyndns.kishibe.qmaclone.client.game.SessionData;
-import tv.dyndns.kishibe.qmaclone.client.packet.PacketMatchingData;
-
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
+import tv.dyndns.kishibe.qmaclone.client.constant.Constant;
+import tv.dyndns.kishibe.qmaclone.client.game.SessionData;
+import tv.dyndns.kishibe.qmaclone.client.packet.PacketMatchingStatus;
+
 public class SceneMatching extends SceneBase {
 
-  private static class MatchingStatusUpdater extends StatusUpdater<PacketMatchingData> {
+  private static class MatchingStatusUpdater extends StatusUpdater<PacketMatchingStatus> {
 
     private final SceneMatching scene;
     private final SessionData sessionData;
 
     public MatchingStatusUpdater(SceneMatching scene, SessionData sessionData) {
-      super(PacketMatchingData.class.getName() + Constant.WEBSOCKET_PROTOCOL_SEPARATOR
+      super(PacketMatchingStatus.class.getName() + "?" + Constant.KEY_GAME_SESSION_ID + "="
           + sessionData.getSessionId(), TIMER_INTERVAL);
       this.scene = Preconditions.checkNotNull(scene);
       this.sessionData = Preconditions.checkNotNull(sessionData);
     }
 
     @Override
-    protected void request(AsyncCallback<PacketMatchingData> callback) {
+    protected void request(AsyncCallback<PacketMatchingStatus> callback) {
       int sessionId = sessionData.getSessionId();
-      Service.Util.getInstance().getMatchingData(sessionId, callback);
+      Service.Util.getInstance().getMatchingStatus(sessionId, callback);
     }
 
     @Override
-    protected void onReceived(PacketMatchingData status) {
-      scene.callbackGetMatchingData.onSuccess(status);
+    protected void onReceived(PacketMatchingStatus status) {
+      scene.callbackGetMatchingStatus.onSuccess(status);
     }
 
     @Override
-    protected PacketMatchingData parse(String json) {
-      return PacketMatchingData.Json.READER.read(json);
+    protected PacketMatchingStatus parse(String json) {
+      logger.log(Level.INFO, "json=" + json);
+      return PacketMatchingStatus.Json.READER.read(json);
     }
 
   }
@@ -70,7 +71,7 @@ public class SceneMatching extends SceneBase {
   private static final int TIMER_INTERVAL = 1000;
   private PanelMatching panel;
   private boolean transited = false;
-  private final StatusUpdater<PacketMatchingData> updater;
+  private final StatusUpdater<PacketMatchingStatus> updater;
   private final SessionData sessionData;
 
   public SceneMatching(SessionData sessionData) {
@@ -81,9 +82,9 @@ public class SceneMatching extends SceneBase {
     Controller.getInstance().setGamePanel(panel);
   }
 
-  final AsyncCallback<PacketMatchingData> callbackGetMatchingData = new AsyncCallback<PacketMatchingData>() {
+  final AsyncCallback<PacketMatchingStatus> callbackGetMatchingStatus = new AsyncCallback<PacketMatchingStatus>() {
     @Override
-    public void onSuccess(PacketMatchingData result) {
+    public void onSuccess(PacketMatchingStatus result) {
       if (transited) {
         return;
       }
@@ -92,7 +93,7 @@ public class SceneMatching extends SceneBase {
         String message = "無効なマッチング情報が返されました: "
             + MoreObjects.toStringHelper(this).add("sessionId", sessionData.getSessionId())
                 .add("playerListIndex", sessionData.getPlayerListIndex())
-                .add("userCode", UserData.get().getUserCode()).add("packetMatchingData", result)
+                .add("userCode", UserData.get().getUserCode()).add("packetMatchingStatus", result)
                 .toString();
         logger.log(Level.WARNING, message);
         return;

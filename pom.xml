@@ -211,10 +211,5 @@
   		<artifactId>piriti-restlet</artifactId>
   		<version>0.7</version>
   	</dependency>
-<dependency>
-    <groupId>org.eclipse.jetty</groupId>
-    <artifactId>jetty-websocket</artifactId>
-    <version>[7.6,7.99)</version>
-</dependency>
   </dependencies>
 </project>

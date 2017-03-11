@@ -30,14 +30,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import tv.dyndns.kishibe.qmaclone.client.game.GameMode;
-import tv.dyndns.kishibe.qmaclone.client.game.ProblemGenre;
-import tv.dyndns.kishibe.qmaclone.client.game.ProblemType;
-import tv.dyndns.kishibe.qmaclone.client.game.Transition;
-import tv.dyndns.kishibe.qmaclone.client.packet.PacketRoomKey;
-import tv.dyndns.kishibe.qmaclone.client.packet.RestrictionType;
-import tv.dyndns.kishibe.qmaclone.server.database.DatabaseException;
-
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 import com.google.common.cache.Cache;
@@ -46,6 +38,15 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
+
+import tv.dyndns.kishibe.qmaclone.client.game.GameMode;
+import tv.dyndns.kishibe.qmaclone.client.game.ProblemGenre;
+import tv.dyndns.kishibe.qmaclone.client.game.ProblemType;
+import tv.dyndns.kishibe.qmaclone.client.game.Transition;
+import tv.dyndns.kishibe.qmaclone.client.packet.PacketRoomKey;
+import tv.dyndns.kishibe.qmaclone.client.packet.RestrictionType;
+import tv.dyndns.kishibe.qmaclone.server.database.DatabaseException;
+import tv.dyndns.kishibe.qmaclone.server.exception.GameNotFoundException;
 
 public class GameManager {
   private static final Logger logger = Logger.getLogger(GameManager.class.toString());
@@ -93,8 +94,8 @@ public class GameManager {
       logger.log(Level.WARNING, "制限ユーザーのチェックに失敗しました。処理を続行します。", e);
     }
 
-    PacketRoomKey roomKey = new PacketRoomKey(gameMode, gameMode == GameMode.THEME ? theme
-        : roomName, genres, types);
+    PacketRoomKey roomKey = new PacketRoomKey(gameMode,
+        gameMode == GameMode.THEME ? theme : roomName, genres, types);
 
     Game result = matchingSessions.get(roomKey);
 
@@ -163,11 +164,11 @@ public class GameManager {
    *          セッションID
    * @return セッション
    */
-  public Game getSession(int sessionId) {
+  public Game getSession(int sessionId) throws GameNotFoundException {
     Game game = sessions.getIfPresent(sessionId);
     if (game == null) {
-      logger.log(Level.SEVERE, "ゲームセッションが見つかりませんでした sessionId=" + sessionId + " sessions="
-          + sessions.toString());
+      throw new GameNotFoundException(String.format("ゲームセッションが見つかりませんでした sessionId=%d sessions=%s",
+          sessionId, sessions.toString()));
     }
     return game;
   }
@@ -209,7 +210,8 @@ public class GameManager {
   public int getNumberOfPlayers() {
     int numberOfPlayers = 0;
     for (Game game : sessions.asMap().values()) {
-      if (game.getTransition() == Transition.Result || game.getTransition() == Transition.Finished) {
+      if (game.getTransition() == Transition.Result
+          || game.getTransition() == Transition.Finished) {
         continue;
       }
       numberOfPlayers += game.getNumberOfHumanPlayer();

@@ -38,7 +38,7 @@ import tv.dyndns.kishibe.qmaclone.client.packet.PacketChatMessages;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketGameStatus;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketImageLink;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketLogin;
-import tv.dyndns.kishibe.qmaclone.client.packet.PacketMatchingData;
+import tv.dyndns.kishibe.qmaclone.client.packet.PacketMatchingStatus;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketMonth;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketPlayerSummary;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblem;
@@ -216,7 +216,7 @@ public interface ServiceAsync {
 
   void isApplyingThemeModeEditor(int userCode, AsyncCallback<Boolean> callback);
 
-  void getMatchingData(int sessionId, AsyncCallback<PacketMatchingData> callback);
+  void getMatchingStatus(int sessionId, AsyncCallback<PacketMatchingStatus> callback);
 
   void getNumberOfChatLog(AsyncCallback<Integer> callback);
 

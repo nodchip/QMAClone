@@ -7,7 +7,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.eclipse.jetty.websocket.WebSocket;
+import org.eclipse.jetty.websocket.api.Session;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Rule;
@@ -18,12 +18,12 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
+import com.google.common.collect.ImmutableList;
+
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketPlayerSummary;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketServerStatus;
 import tv.dyndns.kishibe.qmaclone.server.database.Database;
-import tv.dyndns.kishibe.qmaclone.server.websocket.WebSockets;
-
-import com.google.common.collect.ImmutableList;
+import tv.dyndns.kishibe.qmaclone.server.websocket.MessageSender;
 
 @RunWith(JUnit4.class)
 public class ServerStatusManagerTest {
@@ -40,11 +40,11 @@ public class ServerStatusManagerTest {
   @Mock
   private PlayerHistoryManager mockPlayerHistoryManager;
   @Mock
-  private WebSockets<PacketServerStatus> mockServerStatusWebSockets;
+  private MessageSender<PacketServerStatus> mockServerStatusWebSockets;
   @Mock
   private ThreadPool mockThreadPool;
   @Mock
-  private WebSocket mockWebSocket;
+  private Session mockSession;
 
   private ServerStatusManager manager;
 
@@ -125,12 +125,7 @@ public class ServerStatusManagerTest {
   }
 
   @Test
-  public void getServerStatusWebSocketShouldReturnSocket() {
-    when(mockServerStatusWebSockets.newWebSocket()).thenReturn(mockWebSocket);
-
-    assertThat(manager.getServerStatusWebSocket()).isNotNull();
-
-    verify(mockServerStatusWebSockets).send(isA(PacketServerStatus.class));
-    verify(mockServerStatusWebSockets).newWebSocket();
+  public void getServerStatusMessageSenderReturnsInstance() {
+    assertThat(manager.getServerStatusMessageSender()).isNotNull();
   }
 }

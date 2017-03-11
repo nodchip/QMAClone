@@ -13,11 +13,15 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.jetty.server.Server;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 
 import tv.dyndns.kishibe.qmaclone.client.game.ProblemGenre;
 import tv.dyndns.kishibe.qmaclone.client.game.ProblemType;
@@ -34,10 +38,6 @@ import tv.dyndns.kishibe.qmaclone.server.handwriting.RecognizerZinnia;
 import tv.dyndns.kishibe.qmaclone.server.image.BrokenImageLinkDetector;
 import tv.dyndns.kishibe.qmaclone.server.image.ImageUtils;
 import tv.dyndns.kishibe.qmaclone.server.sns.SnsClient;
-import tv.dyndns.kishibe.qmaclone.server.websocket.WebSocketServer;
-
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ServiceServletStubTest {
@@ -76,7 +76,7 @@ public class ServiceServletStubTest {
   @Mock
   private ThemeModeEditorManager mockThemeModeEditorManager;
   @Mock
-  private WebSocketServer mockWebSocketServer;
+  private Server mockServer;
   @Mock
   private ImageUtils mockImageManager;
   @Mock
@@ -110,7 +110,7 @@ public class ServiceServletStubTest {
     service = spy(new ServiceServletStub(mockChatManager, mockNormalModeProblemManager,
         mockThemeModeProblemManager, mockGameManager, mockServerStatusManager,
         mockPlayerHistoryManager, mockVoteManager, mockRecognizer, mockThemeModeEditorManager,
-        mockWebSocketServer, mockDatabase, mockPrefectureRanking, mockRatingDistribution,
+        mockServer, mockDatabase, mockPrefectureRanking, mockRatingDistribution,
         mockSnsClient, mockGameLogger, mockThreadPool, mockBadUserDetector,
         mockRestrictedUserUtils, mockProblemCorrectCounterResetCounter,
         mockProblemIndicationCounter, mockBrokenImageLinkDetector));

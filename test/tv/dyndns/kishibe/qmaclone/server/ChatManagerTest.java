@@ -52,7 +52,7 @@ public class ChatManagerTest {
 
   @Test
   public void testGetChatMessagesWebSocketSessions() {
-    assertNotNull(manager.getChatMessagesWebSocket());
+    assertNotNull(manager.getChatMessagesMessageSender());
   }
 
   // TODO(nodchip): Write tests for write().

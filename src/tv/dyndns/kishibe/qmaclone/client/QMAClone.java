@@ -27,7 +27,7 @@ import java.util.logging.Logger;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketChatMessage;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketChatMessages;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketGameStatus;
-import tv.dyndns.kishibe.qmaclone.client.packet.PacketMatchingData;
+import tv.dyndns.kishibe.qmaclone.client.packet.PacketMatchingStatus;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketMatchingPlayer;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketPlayerSummary;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketServerStatus;
@@ -50,7 +50,7 @@ public class QMAClone implements EntryPoint {
 		new PacketChatMessages.Json();
 		new PacketGameStatus.Json();
 		new PacketGameStatus.GamePlayerStatus.Json();
-		new PacketMatchingData.Json();
+		new PacketMatchingStatus.Json();
 		new PacketMatchingPlayer.Json();
 		new PacketPlayerSummary.Json();
 		new PacketServerStatus.Json();
