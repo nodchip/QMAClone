@@ -184,13 +184,6 @@ public class BadUserDetector implements Runnable {
       return;
     }
 
-    try {
-      database.clearRestrictedRemoteAddresses(RestrictionType.MATCH);
-      database.clearRestrictedUserCodes(RestrictionType.MATCH);
-    } catch (DatabaseException e) {
-      logger.log(Level.WARNING, "制限ユーザー(MATCH)のクリアに失敗しました", e);
-      return;
-    }
     for (PacketRankingData user : rankingData.get(3)) {
       int userCode = user.userCode;
       int startCount = startCounts.count(userCode);
