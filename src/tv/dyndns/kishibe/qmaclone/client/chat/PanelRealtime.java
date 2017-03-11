@@ -7,14 +7,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import tv.dyndns.kishibe.qmaclone.client.Service;
-import tv.dyndns.kishibe.qmaclone.client.StatusUpdater;
-import tv.dyndns.kishibe.qmaclone.client.UserData;
-import tv.dyndns.kishibe.qmaclone.client.constant.Constant;
-import tv.dyndns.kishibe.qmaclone.client.packet.PacketChatMessage;
-import tv.dyndns.kishibe.qmaclone.client.packet.PacketChatMessages;
-import tv.dyndns.kishibe.qmaclone.client.packet.RestrictionType;
-
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
@@ -34,15 +26,25 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 
+import tv.dyndns.kishibe.qmaclone.client.Controller;
+import tv.dyndns.kishibe.qmaclone.client.Service;
+import tv.dyndns.kishibe.qmaclone.client.StatusUpdater;
+import tv.dyndns.kishibe.qmaclone.client.UserData;
+import tv.dyndns.kishibe.qmaclone.client.constant.Constant;
+import tv.dyndns.kishibe.qmaclone.client.packet.PacketChatMessage;
+import tv.dyndns.kishibe.qmaclone.client.packet.PacketChatMessages;
+import tv.dyndns.kishibe.qmaclone.client.packet.RestrictionType;
+
 public class PanelRealtime extends Composite implements KeyDownHandler {
   private static final Logger logger = Logger.getLogger(PanelRealtime.class.getName());
   public static final int TIMER_INTERVAL = 5000;
   private static PanelRealtimeUiBinder uiBinder = GWT.create(PanelRealtimeUiBinder.class);
-  private static final List<String> NG_WORDS = ImmutableList.of("エロ動画", "おっぱい", "オッパイ", "調教",
-      "御奉仕", "なまぽ", "ナマポ", "ざーめん", "ザーメン", "おなにー", "オナニー", "ふぇら", "フェラ", "変態", "エロアニメ", "きんたま",
-      "キンタマ", "金玉", "ちんちん", "チンチン", "れいぷ", "レイプ", "くぱぁ", "クパァ", "せんずり", "精液", "ちんぽ", "チンポ", "ケツ",
-      "けつ", "Fuck", "ファック", "セックス", "オナホ", "シコシコ", "亀頭", "エロブログ", "えっち", "エッチ", "セクロス", "せくろす",
-      "女体", "ゲイ", "死ね", "殺す", "ウンコ", "うんこ", "ㄘんㄘん", "淫夢");
+  private static final List<String> NG_WORDS = ImmutableList.of("エロ動画", "おっぱい", "オッパイ", "調教", "御奉仕",
+      "なまぽ", "ナマポ", "ざーめん", "ザーメン", "おなにー", "オナニー", "ふぇら", "フェラ", "変態", "エロアニメ", "きんたま", "キンタマ",
+      "金玉", "ちんちん", "チンチン", "れいぷ", "レイプ", "くぱぁ", "クパァ", "せんずり", "精液", "ちんぽ", "チンポ", "ケツ", "けつ",
+      "Fuck", "ファック", "セックス", "オナホ", "シコシコ", "亀頭", "エロブログ", "えっち", "エッチ", "セクロス", "せくろす", "女体",
+      "ゲイ", "死ね", "殺す", "ウンコ", "うんこ", "ㄘんㄘん", "淫夢");
+  private static final int MIN_PLAY_COUNT_TO_SEND_MESSAGE = 10;
 
   interface PanelRealtimeUiBinder extends UiBinder<Widget, PanelRealtime> {
   }
@@ -105,6 +107,11 @@ public class PanelRealtime extends Composite implements KeyDownHandler {
 
   private void sendMessage() {
     if (!checkContents()) {
+      return;
+    }
+
+    if (textBoxName.getText().equals("未初期化です")) {
+      Controller.getInstance().log("「未初期化です」名義で発言することはできません。名前を変更して下さい。");
       return;
     }
 
@@ -186,10 +193,8 @@ public class PanelRealtime extends Composite implements KeyDownHandler {
     boolean updated = false;
     for (PacketChatMessage message : incomingMessages.list) {
       if (message == null) {
-        logger.log(
-            Level.WARNING,
-            "nullのチャットデータが渡されました"
-                + Arrays.deepToString(incomingMessages.list.toArray(new PacketChatMessage[0])));
+        logger.log(Level.WARNING, "nullのチャットデータが渡されました"
+            + Arrays.deepToString(incomingMessages.list.toArray(new PacketChatMessage[0])));
         continue;
       }
 

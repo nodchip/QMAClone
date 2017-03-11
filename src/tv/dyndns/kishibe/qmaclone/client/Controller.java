@@ -276,7 +276,7 @@ public class Controller extends SimplePanel {
 	 * @param message
 	 *            　エラーメッセージ
 	 */
-	private void log(String message) {
+	public void log(String message) {
 		HTML html = new HTML(SafeHtmlUtils.fromString(message));
 		html.addStyleDependentName("errorMessage");
 		panelErrorMessage.add(html);
