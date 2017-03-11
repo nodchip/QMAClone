@@ -73,7 +73,6 @@ public class WebSocketModule extends AbstractModule {
   }
 
   @Provides
-  @Singleton
   private MessageSender<PacketChatMessages> provideChatMessagesWebSockets(ThreadPool threadPool) {
     return new MessageSender<PacketChatMessages>(threadPool) {
       @Override
@@ -84,7 +83,6 @@ public class WebSocketModule extends AbstractModule {
   }
 
   @Provides
-  @Singleton
   private MessageSender<PacketMatchingStatus> provideMatchingStatusMessageSender(
       ThreadPool threadPool) {
     return new MessageSender<PacketMatchingStatus>(threadPool) {
@@ -96,7 +94,6 @@ public class WebSocketModule extends AbstractModule {
   }
 
   @Provides
-  @Singleton
   private MessageSender<PacketReadyForGame> provideReadyForGameMessageSender(
       ThreadPool threadPool) {
     return new MessageSender<PacketReadyForGame>(threadPool) {
@@ -108,7 +105,6 @@ public class WebSocketModule extends AbstractModule {
   }
 
   @Provides
-  @Singleton
   private MessageSender<PacketGameStatus> provideGameStatusMessageSender(ThreadPool threadPool) {
     return new MessageSender<PacketGameStatus>(threadPool) {
       @Override
@@ -119,7 +115,6 @@ public class WebSocketModule extends AbstractModule {
   }
 
   @Provides
-  @Singleton
   private MessageSender<PacketServerStatus> provideServerStatusMessageSender(
       ThreadPool threadPool) {
     return new MessageSender<PacketServerStatus>(threadPool) {
