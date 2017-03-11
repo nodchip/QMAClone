@@ -14,6 +14,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import com.google.common.collect.ImmutableList;
+
 import tv.dyndns.kishibe.qmaclone.client.UserData;
 import tv.dyndns.kishibe.qmaclone.client.constant.Constant;
 import tv.dyndns.kishibe.qmaclone.client.game.ProblemGenre;
@@ -61,8 +63,8 @@ public class PacketProblemTest {
     problem.answers = new String[] { "a", "b", "c", "d", null, null, null, null };
     problem.choices = new String[] { "A", "B", "C", "D", null, null, null, null };
 
-    String answer = "A" + Constant.DELIMITER_KUMIAWASE_PAIR + "a" + Constant.DELIMITER_GENERAL
-        + "B" + Constant.DELIMITER_KUMIAWASE_PAIR + "b" + Constant.DELIMITER_GENERAL + "C"
+    String answer = "A" + Constant.DELIMITER_KUMIAWASE_PAIR + "a" + Constant.DELIMITER_GENERAL + "B"
+        + Constant.DELIMITER_KUMIAWASE_PAIR + "b" + Constant.DELIMITER_GENERAL + "C"
         + Constant.DELIMITER_KUMIAWASE_PAIR + "c" + Constant.DELIMITER_GENERAL + "D"
         + Constant.DELIMITER_KUMIAWASE_PAIR + "d";
     assertTrue(problem.isCorrect(answer));
@@ -233,5 +235,24 @@ public class PacketProblemTest {
     assertThat(cloned.voteBad).isEqualTo(0);
     assertThat(cloned.indicationMessage).isNull();
     assertThat(cloned.indicationResolved).isNull();
+  }
+
+  @Test
+  public void getImageUrlsReturnsNormalizedImageUrls() {
+    problem.imageChoice = true;
+    problem.choices = new String[] { "http://upload.wikimedia.org/1",
+        "http://upload.wikimedia.org/2", "http://upload.wikimedia.org/3",
+        "http://upload.wikimedia.org/4", };
+    problem.imageAnswer = true;
+    problem.answers = new String[] { "http://upload.wikimedia.org/5",
+        "http://upload.wikimedia.org/6", "http://upload.wikimedia.org/7",
+        "http://upload.wikimedia.org/8", };
+    problem.imageUrl = "http://upload.wikimedia.org/9";
+
+    assertThat(problem.getImageUrls()).isEqualTo(ImmutableList.of("https://upload.wikimedia.org/1",
+        "https://upload.wikimedia.org/2", "https://upload.wikimedia.org/3",
+        "https://upload.wikimedia.org/4", "https://upload.wikimedia.org/5",
+        "https://upload.wikimedia.org/6", "https://upload.wikimedia.org/7",
+        "https://upload.wikimedia.org/8", "https://upload.wikimedia.org/9"));
   }
 }

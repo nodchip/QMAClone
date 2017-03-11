@@ -31,13 +31,6 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-import tv.dyndns.kishibe.qmaclone.client.UserData;
-import tv.dyndns.kishibe.qmaclone.client.constant.Constant;
-import tv.dyndns.kishibe.qmaclone.client.creation.validater.Evaluation;
-import tv.dyndns.kishibe.qmaclone.client.game.ProblemType;
-import tv.dyndns.kishibe.qmaclone.client.util.ImageCache;
-import tv.dyndns.kishibe.qmaclone.client.util.Random;
-
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -45,6 +38,14 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
 import com.google.common.collect.Lists;
 import com.google.gwt.user.client.rpc.IsSerializable;
+
+import tv.dyndns.kishibe.qmaclone.client.UserData;
+import tv.dyndns.kishibe.qmaclone.client.constant.Constant;
+import tv.dyndns.kishibe.qmaclone.client.creation.validater.Evaluation;
+import tv.dyndns.kishibe.qmaclone.client.game.ProblemType;
+import tv.dyndns.kishibe.qmaclone.client.util.ImageCache;
+import tv.dyndns.kishibe.qmaclone.client.util.ImageUrl;
+import tv.dyndns.kishibe.qmaclone.client.util.Random;
 
 public class PacketProblem extends PacketProblemMinimum implements IsSerializable {
 
@@ -369,6 +370,10 @@ public class PacketProblem extends PacketProblemMinimum implements IsSerializabl
       urls.add(choices[0]);
     }
 
+    for (int i = 0; i < urls.size(); ++i) {
+      urls.set(i, ImageUrl.normalize(urls.get(i)));
+    }
+
     return urls;
   }
 
@@ -384,29 +389,33 @@ public class PacketProblem extends PacketProblemMinimum implements IsSerializabl
   public static final int SENTENCE_IMAGE_HEIGHT = 180;
 
   public String getShuffledChoice2AsImageUrl(int index) {
-    return ImageCache.getUrl(shuffledChoices[index], CHOICE2_IMAGE_WIDTH, CHOICE2_IMAGE_HEIGHT);
+    return ImageCache.getUrl(ImageUrl.normalize(shuffledChoices[index]), CHOICE2_IMAGE_WIDTH,
+        CHOICE2_IMAGE_HEIGHT);
   }
 
   public String getShuffledChoice4AsImageUrl(int index) {
-    return ImageCache.getUrl(shuffledChoices[index], CHOICE4_IMAGE_WIDTH, CHOICE4_IMAGE_HEIGHT);
+    return ImageCache.getUrl(ImageUrl.normalize(shuffledChoices[index]), CHOICE4_IMAGE_WIDTH,
+        CHOICE4_IMAGE_HEIGHT);
   }
 
   public String getShuffledChoice4SmallAsImageUrl(int index) {
-    return ImageCache.getUrl(shuffledChoices[index], CHOICE4SMALL_IMAGE_WIDTH,
+    return ImageCache.getUrl(ImageUrl.normalize(shuffledChoices[index]), CHOICE4SMALL_IMAGE_WIDTH,
         CHOICE4SMALL_IMAGE_HEIGHT);
   }
 
   public String getShuffledAnswer4SmallAsImageUrl(int index) {
-    return ImageCache.getUrl(shuffledAnswers[index], CHOICE4SMALL_IMAGE_WIDTH,
+    return ImageCache.getUrl(ImageUrl.normalize(shuffledAnswers[index]), CHOICE4SMALL_IMAGE_WIDTH,
         CHOICE4SMALL_IMAGE_HEIGHT);
   }
 
   public String getClickImageUrl() {
-    return ImageCache.getUrl(shuffledChoices[0], CLICK_IMAGE_WIDTH, CLICK_IMAGE_HEIGHT);
+    return ImageCache.getUrl(ImageUrl.normalize(shuffledChoices[0]), CLICK_IMAGE_WIDTH,
+        CLICK_IMAGE_HEIGHT);
   }
 
   public String getSentenceImageUrl() {
-    return ImageCache.getUrl(imageUrl, SENTENCE_IMAGE_WIDTH, SENTENCE_IMAGE_HEIGHT);
+    return ImageCache.getUrl(ImageUrl.normalize(imageUrl), SENTENCE_IMAGE_WIDTH,
+        SENTENCE_IMAGE_HEIGHT);
   }
 
   public List<String> getResizedImageUrls() {

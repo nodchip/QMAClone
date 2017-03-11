@@ -1,7 +1,5 @@
 package tv.dyndns.kishibe.qmaclone.client.util;
 
-import com.google.gwt.core.client.GWT;
-
 public class ImageCache {
   private static final String URL_PREFIX = "http://kishibe.dyndns.tv/QMAClone/image";
   private static final char[] HEX = "0123456789abcdef".toCharArray();
