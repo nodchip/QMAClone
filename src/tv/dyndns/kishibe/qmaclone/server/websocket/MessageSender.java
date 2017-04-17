@@ -41,20 +41,34 @@ public abstract class MessageSender<T> implements Closeable {
 
   private void send(String json) {
     for (Session session : sessions) {
-      session.getRemote().sendString(json, new WriteCallback() {
-        @Override
-        public void writeSuccess() {
-          // Do nothing.
-        }
+      try {
+        WriteCallback writeCallback = new WriteCallback() {
+          @Override
+          public void writeSuccess() {
+            // Do nothing.
+          }
 
-        @Override
-        public void writeFailed(Throwable x) {
-          logger.log(Level.WARNING, "WebSocketでのデータの送信に失敗しました。接続を閉じます。 remoteAddress="
-              + session.getRemoteAddress().toString(), x);
+          @Override
+          public void writeFailed(Throwable x) {
+            logger.log(Level.WARNING, "WebSocketでのデータの送信に失敗しました。接続を閉じます。 remoteAddress="
+                + session.getRemoteAddress().toString(), x);
+            try {
+              session.close();
+            } catch (Exception e) {
+            }
+            bye(session);
+          }
+        };
+        session.getRemote().sendString(json, writeCallback);
+      } catch (Exception e) {
+        logger.log(Level.WARNING, "WebSocketでのデータの送信に失敗しました。接続を閉じます。 remoteAddress="
+            + session.getRemoteAddress().toString(), e);
+        try {
           session.close();
-          bye(session);
+        } catch (Exception e2) {
         }
-      });
+        bye(session);
+      }
     }
   }
 
