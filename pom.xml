@@ -1,215 +1,278 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <!-- POM file generated with GWT webAppCreator -->
   <modelVersion>4.0.0</modelVersion>
-  <groupId>QMAClone</groupId>
+  <groupId>tv.dyndns.kishibe.qmaclone</groupId>
   <artifactId>QMAClone</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
   <packaging>war</packaging>
+  <name>tv.dyndns.kishibe.qmaclone.QMAClone</name>
+
+  <properties>
+
+    <!-- Setting maven.compiler.source to something different to 1.8
+         needs that you configure the sourceLevel in gwt-maven-plugin since
+         GWT compiler 2.8 requires 1.8 (see gwt-maven-plugin block below) -->
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+
+    <!-- Don't let your Mac use a crazy non-standard encoding -->
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <!-- ensure all GWT deps use the same version (unless overridden) -->
+      <dependency>
+        <groupId>com.google.gwt</groupId>
+        <artifactId>gwt</artifactId>
+        <version>2.8.2</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.11</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+    	<groupId>com.google.guava</groupId>
+    	<artifactId>guava</artifactId>
+    	<version>26.0-jre</version>
+    </dependency>
+    <dependency>
+    	<groupId>com.google.guava</groupId>
+    	<artifactId>guava-gwt</artifactId>
+    	<version>26.0-jre</version>
+    </dependency>
+    <dependency>
+    	<groupId>name.pehl</groupId>
+    	<artifactId>piriti-user</artifactId>
+    	<version>0.7</version>
+    </dependency>
+    <dependency>
+    	<groupId>com.google.gwt</groupId>
+    	<artifactId>gwt-incubator</artifactId>
+    	<version>2.0.1</version>
+    </dependency>
+    <dependency>
+    	<groupId>com.allen-sauer.gwt.dnd</groupId>
+    	<artifactId>gwt-dnd</artifactId>
+    	<version>3.3.4</version>
+    </dependency>
+    <dependency>
+    	<groupId>com.google.gwt.inject</groupId>
+    	<artifactId>gin</artifactId>
+    	<version>2.1.2</version>
+    </dependency>
+    <dependency>
+    	<groupId>commons-dbutils</groupId>
+    	<artifactId>commons-dbutils</artifactId>
+    	<version>1.7</version>
+    </dependency>
+    <dependency>
+    	<groupId>org.apache.commons</groupId>
+    	<artifactId>commons-dbcp2</artifactId>
+    	<version>2.5.0</version>
+    </dependency>
+    <dependency>
+    	<groupId>joda-time</groupId>
+    	<artifactId>joda-time</artifactId>
+    	<version>2.10</version>
+    </dependency>
+    <dependency>
+    	<groupId>org.apache.lucene</groupId>
+    	<artifactId>lucene-core</artifactId>
+    	<version>5.5.5</version>
+    </dependency>
+    <dependency>
+    	<groupId>org.apache.lucene</groupId>
+    	<artifactId>lucene-analyzers-common</artifactId>
+    	<version>5.5.5</version>
+    </dependency>
+    <dependency>
+    	<groupId>org.apache.lucene</groupId>
+    	<artifactId>lucene-queries</artifactId>
+    	<version>5.5.5</version>
+    </dependency>
+    <dependency>
+    	<groupId>net.java.dev.jna</groupId>
+    	<artifactId>jna</artifactId>
+    	<version>5.0.0</version>
+    </dependency>
+    <dependency>
+    	<groupId>net.java.dev.jna</groupId>
+    	<artifactId>jna-platform</artifactId>
+    	<version>5.0.0</version>
+    </dependency>
+    <dependency>
+    	<groupId>com.google.inject</groupId>
+    	<artifactId>guice</artifactId>
+    	<version>4.2.1</version>
+    </dependency>
+    <dependency>
+    	<groupId>com.google.inject.extensions</groupId>
+    	<artifactId>guice-assistedinject</artifactId>
+    	<version>4.2.1</version>
+    </dependency>
+    <dependency>
+    	<groupId>com.google.inject.extensions</groupId>
+    	<artifactId>guice-multibindings</artifactId>
+    	<version>4.2.1</version>
+    </dependency>
+    <dependency>
+    	<groupId>com.restfb</groupId>
+    	<artifactId>restfb</artifactId>
+    	<version>2.11.0</version>
+    </dependency>
+    <dependency>
+    	<groupId>org.twitter4j</groupId>
+    	<artifactId>twitter4j-core</artifactId>
+    	<version>4.0.7</version>
+    </dependency>
+    <dependency>
+    	<groupId>com.google.http-client</groupId>
+    	<artifactId>google-http-client</artifactId>
+    	<version>1.25.0</version>
+    </dependency>
+    <dependency>
+    	<groupId>org.apache.commons</groupId>
+    	<artifactId>commons-math3</artifactId>
+    	<version>3.6.1</version>
+    </dependency>
+    <dependency>
+    	<groupId>commons-fileupload</groupId>
+    	<artifactId>commons-fileupload</artifactId>
+    	<version>1.3.3</version>
+    </dependency>
+    <dependency>
+    	<groupId>net.java.dev.rome</groupId>
+    	<artifactId>rome</artifactId>
+    	<version>1.0.0</version>
+    </dependency>
+    <dependency>
+    	<groupId>tw.edu.ntu.csie</groupId>
+    	<artifactId>libsvm</artifactId>
+    	<version>3.17</version>
+    </dependency>
+    <dependency>
+    	<groupId>com.google.truth</groupId>
+    	<artifactId>truth</artifactId>
+    	<version>0.42</version>
+    </dependency>
+    <dependency>
+    	<groupId>com.google.guiceberry</groupId>
+    	<artifactId>guiceberry</artifactId>
+    	<version>3.3.1</version>
+    </dependency>
+    <dependency>
+    	<groupId>org.mockito</groupId>
+    	<artifactId>mockito-all</artifactId>
+    	<version>2.0.2-beta</version>
+    </dependency>
+    <dependency>
+    	<groupId>org.hamcrest</groupId>
+    	<artifactId>hamcrest-all</artifactId>
+    	<version>1.3</version>
+    </dependency>
+    <dependency>
+    	<groupId>org.apache.commons</groupId>
+    	<artifactId>commons-pool2</artifactId>
+    	<version>2.6.0</version>
+    </dependency>
+    <dependency>
+    	<groupId>mysql</groupId>
+    	<artifactId>mysql-connector-java</artifactId>
+    	<version>8.0.12</version>
+    </dependency>
+    <dependency>
+    	<groupId>name.pehl</groupId>
+    	<artifactId>totoe</artifactId>
+    	<version>0.7</version>
+    </dependency>
+    <dependency>
+    	<groupId>name.pehl</groupId>
+    	<artifactId>piriti-dev</artifactId>
+    	<version>0.7</version>
+    </dependency>
+    <dependency>
+    	<groupId>name.pehl</groupId>
+    	<artifactId>piriti-restlet</artifactId>
+    	<version>0.7</version>
+    </dependency>
+    <dependency>
+    	<groupId>org.eclipse.jetty</groupId>
+    	<artifactId>jetty-server</artifactId>
+    </dependency>
+    <dependency>
+    	<groupId>org.eclipse.jetty</groupId>
+    	<artifactId>jetty-servlet</artifactId>
+    </dependency>
+    <dependency>
+    	<groupId>org.eclipse.jetty.websocket</groupId>
+    	<artifactId>websocket-api</artifactId>
+    </dependency>
+  </dependencies>
+
   <build>
-    <sourceDirectory>src</sourceDirectory>
-    <testSourceDirectory>test</testSourceDirectory>
-    <outputDirectory>war/WEB-INF/classes</outputDirectory>
-    <resources>
-      <resource>
-        <directory>src</directory>
-        <excludes>
-          <exclude>**/*.java</exclude>
-        </excludes>
-      </resource>
-    </resources>
+    <!-- Output classes directly into the webapp, so that IDEs and "mvn process-classes" update them in DevMode -->
+    <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
+
     <plugins>
+
+      <!-- GWT Maven Plugin-->
       <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.1</version>
+        <groupId>net.ltgt.gwt.maven</groupId>
+        <artifactId>gwt-maven-plugin</artifactId>
+        <version>1.0-rc-8</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>compile</goal>
+              <goal>test</goal>
+            </goals>
+          </execution>
+        </executions>
         <configuration>
-          <source/>
-          <target/>
+          <moduleName>tv.dyndns.kishibe.qmaclone.QMAClone</moduleName>
+          <moduleShortName>QMAClone</moduleShortName>
+          <failOnError>true</failOnError>
+          <!-- GWT compiler 2.8 requires 1.8, hence define sourceLevel here if you use
+               a different source language for java compilation -->
+          <sourceLevel>1.8</sourceLevel>
+          <!-- Compiler configuration -->
+          <compilerArgs>
+            <!-- Ask GWT to create the Story of Your Compile (SOYC) (gwt:compile) -->
+            <arg>-compileReport</arg>
+            <arg>-XcompilerMetrics</arg>
+          </compilerArgs>
+          <!-- DevMode configuration -->
+          <warDir>${project.build.directory}/${project.build.finalName}</warDir>
+          <classpathScope>compile+runtime</classpathScope>
+          <!-- URL(s) that should be opened by DevMode (gwt:devmode). -->
+          <startupUrls>
+            <startupUrl>QMAClone.html</startupUrl>
+          </startupUrls>
         </configuration>
       </plugin>
+
+      <!-- Skip normal test execution, we use gwt:test instead -->
       <plugin>
-        <artifactId>maven-war-plugin</artifactId>
-        <version>2.4</version>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.17</version>
         <configuration>
-          <warSourceDirectory>war</warSourceDirectory>
-          <failOnMissingWebXml>false</failOnMissingWebXml>
+          <skip>true</skip>
         </configuration>
       </plugin>
+
     </plugins>
   </build>
-  <dependencies>
-  	<dependency>
-  		<groupId>com.google.guava</groupId>
-  		<artifactId>guava</artifactId>
-  		<version>[18.0,)</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>com.google.guava</groupId>
-  		<artifactId>guava-gwt</artifactId>
-  		<version>[18.0,)</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>com.google.http-client</groupId>
-  		<artifactId>google-http-client</artifactId>
-  		<version>[0,)</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>com.google.inject</groupId>
-  		<artifactId>guice</artifactId>
-  		<version>[3.0,)</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>com.google.inject.extensions</groupId>
-  		<artifactId>guice-assistedinject</artifactId>
-  		<version>[3.0,)</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>com.google.inject.extensions</groupId>
-  		<artifactId>guice-multibindings</artifactId>
-  		<version>[3.0,)</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.apache.commons</groupId>
-  		<artifactId>commons-dbcp2</artifactId>
-  		<version>[2.0.1,)</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>commons-dbutils</groupId>
-  		<artifactId>commons-dbutils</artifactId>
-  		<version>[1.6,)</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>commons-fileupload</groupId>
-  		<artifactId>commons-fileupload</artifactId>
-  		<version>[1.3.1,)</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.apache.commons</groupId>
-  		<artifactId>commons-math3</artifactId>
-  		<version>[3.4.1,)</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.apache.commons</groupId>
-  		<artifactId>commons-pool2</artifactId>
-  		<version>[2.3,)</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>com.google.guiceberry</groupId>
-  		<artifactId>guiceberry</artifactId>
-  		<version>[3.3.1,)</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>com.google.gwt.inject</groupId>
-  		<artifactId>gin</artifactId>
-  		<version>2.1.2</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>com.google.code.gson</groupId>
-  		<artifactId>gson</artifactId>
-  		<version>[2.3.1,)</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>com.allen-sauer.gwt.dnd</groupId>
-  		<artifactId>gwt-dnd</artifactId>
-  		<version>[3.3.3,)</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>com.google.gwt</groupId>
-  		<artifactId>gwt-incubator</artifactId>
-  		<version>[2.0.1,)</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.hamcrest</groupId>
-  		<artifactId>hamcrest-all</artifactId>
-  		<version>[1.3,)</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>joda-time</groupId>
-  		<artifactId>joda-time</artifactId>
-  		<version>[2.7,)</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>junit</groupId>
-  		<artifactId>junit</artifactId>
-  		<version>[4.12,)</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>tw.edu.ntu.csie</groupId>
-  		<artifactId>libsvm</artifactId>
-  		<version>[3.1,)</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.mockito</groupId>
-  		<artifactId>mockito-all</artifactId>
-  		<version>[1.10.19,)</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>mysql</groupId>
-  		<artifactId>mysql-connector-java</artifactId>
-  		<version>[5.1.34,)</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>name.pehl</groupId>
-  		<artifactId>piriti-user</artifactId>
-  		<version>0.7</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>com.google.truth</groupId>
-  		<artifactId>truth</artifactId>
-  		<version>[0.25,)</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.twitter4j</groupId>
-  		<artifactId>twitter4j-core</artifactId>
-  		<version>[4.0.2,)</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.apache.lucene</groupId>
-  		<artifactId>lucene-analyzers-common</artifactId>
-  		<version>[,6)</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.apache.lucene</groupId>
-  		<artifactId>lucene-queries</artifactId>
-  		<version>[,6)</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.apache.lucene</groupId>
-  		<artifactId>lucene-core</artifactId>
-  		<version>[,6)</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>com.restfb</groupId>
-  		<artifactId>restfb</artifactId>
-  		<version>[1.7.1,)</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>net.java.dev.jna</groupId>
-  		<artifactId>jna</artifactId>
-  		<version>[4.1.0,)</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>net.java.dev.jna</groupId>
-  		<artifactId>jna-platform</artifactId>
-  		<version>[4.1.0,)</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>net.java.dev.rome</groupId>
-  		<artifactId>rome</artifactId>
-  		<version>[1.0.0,)</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>name.pehl</groupId>
-  		<artifactId>totoe</artifactId>
-  		<version>[0.7,)</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>name.pehl</groupId>
-  		<artifactId>piriti-dev</artifactId>
-  		<version>0.7</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>name.pehl</groupId>
-  		<artifactId>piriti-restlet</artifactId>
-  		<version>0.7</version>
-  	</dependency>
-  </dependencies>
+  <version>1.0-SNAPSHOT</version>
 </project>

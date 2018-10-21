@@ -1,0 +1,1104 @@
+body, a, div, .p {
+	font-family: 'Noto Sans Japanese', sans-serif;
+	font-size: 16px;
+}
+
+div, td {
+	color: #000000;
+}
+
+a:link, .w, .w a:link {
+	color: #0000cc;
+}
+
+a:visited {
+	color: #551a8b;
+}
+
+a:active {
+	color: #ff0000;
+}
+
+/* ロビー */
+.gwt-Button-startGame {
+	font-size: 48px;
+	width: 256px;
+	height: 64px;
+	cursor: pointer;
+}
+
+/* 問題作成 */
+.problemCreation　h1 {
+	font-size: 24px;
+	font-weight: bold;
+	border: 0px solid white;
+}
+
+.problemCreation　h2 {
+	font-size: 22px;
+	font-weight: bold;
+	cursor: pointer;
+	border: 0px solid white;
+}
+
+.problemCreation　h3 {
+	font-size: 20px;
+	font-weight: bold;
+	border: 0px solid white;
+}
+
+.problemCreation　dl {
+	margin-left: 20px;
+}
+
+.problemCreation　dt {
+	font-size: 16px;
+	margin-left: 20px;
+	font-weight: bold;
+}
+
+.problemCreation　dd {
+	font-size: 16px;
+	margin-left: 40px;
+	font-weight: normal;
+}
+
+.problemCreation　ul {
+	list-style: disc inside;
+}
+
+.problemCreation　li {
+	font-size: 16px;
+	margin-left: 20px;
+}
+
+.problemChangeHistoryDiffColumn {
+	text-align: center;
+}
+
+/* 汎用グリッド */
+.gridFrame td {
+	border-right: 1px #CCC solid;
+	border-bottom: 1px #CCC solid;
+}
+
+.gridNoFrame td {
+	border-right: 0px #CCC solid;
+	border-bottom: 0px #CCC solid;
+}
+
+.gridFontNormal {
+	font-size: 18px;
+	margin: 0px;
+	padding: 0px;
+}
+
+.gridFontSmall {
+	font-size: 12px;
+	margin: 0px;
+	padding: 0px;
+}
+
+.linkHeader {
+	font-size: 12px;
+	margin: 0px;
+	padding: 0px;
+	cursor: pointer;
+	text-decoration: underline;
+}
+
+/* マッチング画面 */
+.gwt-HTML-matchingSkip {
+	background-color: yellow;
+}
+
+/* 他者の回答 */
+.gwt-Label-answerPopup {
+	text-align: center;
+	vertical-align: middle;
+	font-size: 20px;
+	border: 1px solid #C0D0FF;
+	margin: 0px;
+	padding: 0px;
+	width: 170px;
+	height: 32px;
+}
+
+.gwt-Label-answerPopupNormal {
+	background-color: white;
+}
+
+.gwt-Label-answerPopupAnswered {
+	background-color: yellow;
+}
+
+.gwt-Label-answerPopupYes {
+	background-color: aqua;
+}
+
+.gwt-Label-answerPopupNo {
+	background-color: red;
+}
+
+.gwt-HTML-playerName {
+	font-size: 20px;
+}
+
+/* 問題 */
+.gwt-HTML-problemStatement {
+	font-size: 24px;
+	-moz-user-select: none;
+	-khtml-user-select: none;
+	user-select: none;
+	overflow: visible;
+}
+
+/*
+.gwt-HorizontalPanel-externalContaints {
+	z-index: -1;
+	position: absolute;
+}
+*/
+.gwt-HTML-problemStatementCenter {
+	text-align: center;
+}
+
+.gwt-HorizontalPanel-problemInformation {
+	font-size: 16px;
+}
+
+.gwt-Label-cubeHint {
+	font-size: 48px;
+}
+
+.gwt-Label-answer {
+	font-size: 36px;
+	height: 48px;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.gwt-Label-buttonIndex {
+	font-size: 32px;
+}
+
+.gwt-Label-buttonIndexSmall {
+	font-size: 24px;
+}
+
+.gwt-Button-yesNo {
+	font-size: 90px;
+	width: 100px;
+	height: 100px;
+	margin: auto;
+	border: 1px #CCC solid;
+	cursor: pointer;
+	background: transparent;
+	vertical-align: middle;
+	text-align: center;
+}
+
+.gwt-Button-yesNoImage {
+	width: 240px;
+	height: 160px;
+	border: 1px #CCC solid;
+	cursor: pointer;
+	background: transparent;
+}
+
+.gwt-Button-4taku {
+	font-size: 32px;
+	margin: auto;
+	width: 500px;
+	height: 48px;
+	border: 1px #CCC solid;
+	cursor: pointer;
+	background: transparent;
+	vertical-align: middle;
+}
+
+.gwt-Button-4takuImage {
+	width: 200px;
+	height: 128px;
+	border: 1px #CCC solid;
+	cursor: pointer;
+	background: transparent;
+}
+
+.gwt-Button-narabekae {
+	margin: auto;
+	font-size: 40px;
+	width: 48px;
+	height: 48px;
+	border: 2px #CCC solid;
+	cursor: pointer;
+	background: transparent;
+	vertical-align: middle;
+	text-align: center;
+}
+
+.gwt-Button-narabekaeSelected {
+	margin: auto;
+	font-size: 40px;
+	width: 48px;
+	height: 48px;
+	border: 2px #CCC solid;
+	cursor: pointer;
+	background: yellow;
+	vertical-align: middle;
+	text-align: center;
+}
+
+.gwt-Button-narabekaeControl {
+	margin: auto;
+	font-size: 32px;
+	height: 48px;
+	border: 2px #CCC solid;
+	cursor: pointer;
+	background: transparent;
+	vertical-align: middle;
+	text-align: center;
+}
+
+.gwt-Button-typing {
+	margin: 1px;
+	font-size: 32px;
+	width: 42px;
+	height: 48px;
+	border: 1px #AAA solid;
+	cursor: pointer;
+	background: transparent;
+	vertical-align: middle;
+	text-align: center;
+}
+
+.gwt-Button-typingControl {
+	margin: auto;
+	font-size: 32px;
+	height: 48px;
+	border: 1px #AAA solid;
+	cursor: pointer;
+	background: transparent;
+	vertical-align: middle;
+	text-align: center;
+}
+
+.gwt-Button-mojipanel {
+	margin: auto;
+	width: 90px;
+	height: 90px;
+	font-size: 72px;
+	margin: 1px;
+	border: 2px #CCC solid;
+	cursor: pointer;
+	background: transparent;
+	vertical-align: middle;
+	text-align: center;
+}
+
+.gwt-Button-tato {
+	margin: auto;
+	font-size: 32px;
+	height: 48px;
+	width: 500px;
+	border: 2px #CCC solid;
+	cursor: pointer;
+	background: transparent;
+	vertical-align: middle;
+	text-align: center;
+}
+
+.gwt-Button-tatoSelected {
+	margin: auto;
+	font-size: 32px;
+	height: 48px;
+	width: 500px;
+	border: 2px #CCC solid;
+	cursor: pointer;
+	background-color: yellow;
+	vertical-align: middle;
+	text-align: center;
+}
+
+.gwt-Button-tatoImage {
+	margin: auto;
+	font-size: 32px;
+	border: 2px #CCC solid;
+	cursor: pointer;
+	background: transparent;
+	height: 128px;
+	width: 200px;
+}
+
+.gwt-Button-tatoImageSelected {
+	margin: auto;
+	font-size: 32px;
+	border: 2px #CCC solid;
+	cursor: pointer;
+	background: yellow;
+	height: 128px;
+	width: 200px;
+}
+
+.gwt-Button-tatoControl {
+	font-size: 32px;
+	height: 48px;
+	border: 2px #CCC solid;
+	cursor: pointer;
+	background: transparent;
+	vertical-align: middle;
+	text-align: center;
+}
+
+.gwt-Button-junban {
+	margin: auto;
+	font-size: 32px;
+	margin: auto;
+	height: 48px;
+	width: 500px;
+	border: 2px #CCC solid;
+	cursor: pointer;
+	background: transparent;
+	vertical-align: middle;
+	text-align: center;
+}
+
+.gwt-Button-junbanImage {
+	height: 128 px;
+	width: 200 px;
+	border: 2px #CCC solid;
+	cursor: pointer;
+	background: transparent;
+}
+
+.gwt-Button-junbanSelected {
+	margin: auto;
+	font-size: 32px;
+	height: 48px;
+	width: 500px;
+	border: 2px #CCC solid;
+	cursor: pointer;
+	background-color: yellow;
+	vertical-align: middle;
+	text-align: center;
+}
+
+.gwt-Button-junbanImageSelected {
+	height: 128 px;
+	width: 200 px;
+	border: 2px #CCC solid;
+	cursor: pointer;
+	background: yellow;
+}
+
+.gwt-Button-senmusubi {
+	margin: auto;
+	font-size: 24px;
+	width: 250px;
+	border: 2px #CCC solid;
+	cursor: pointer;
+	background: transparent;
+	vertical-align: middle;
+	text-align: center;
+}
+
+.gwt-Button-senmusubiSelected {
+	margin: auto;
+	font-size: 24px;
+	width: 250px;
+	border: 2px #CCC solid;
+	cursor: pointer;
+	background-color: yellow;
+	vertical-align: middle;
+	text-align: center;
+}
+
+.gwt-Button-senmusubiImage {
+	width: 140px;
+	height: 100px;
+	border: 2px #CCC solid;
+	cursor: pointer;
+	background: transparent;
+}
+
+.gwt-Button-senmusubiImageSelected {
+	width: 140px;
+	height: 100px;
+	border: 2px #CCC solid;
+	cursor: pointer;
+	background-color: yellow;
+}
+
+.gwt-Button-senmusubiControl {
+	margin: auto;
+	font-size: 32px;
+	border: 2px #CCC solid;
+	cursor: pointer;
+	background: transparent;
+	vertical-align: middle;
+	text-align: center;
+}
+
+.gwt-Grid-Row-slotCenter {
+	background-color: yellow;
+}
+
+.gwt-Button-slot {
+	margin: auto;
+	font-size: 40px;
+	width: 56px;
+	height: 48px;
+	border: 2px #CCC solid;
+	cursor: pointer;
+	background: transparent;
+	vertical-align: middle;
+	text-align: center;
+}
+
+.gwt-Label-slot {
+	margin: auto;
+	font-size: 40px;
+	width: 48px;
+	height: 48px;
+	vertical-align: middle;
+	text-align: center;
+}
+
+.gwt-Button-slotControl {
+	margin: auto;
+	font-size: 32px;
+	border: 2px #CCC solid;
+	cursor: pointer;
+	background: transparent;
+	vertical-align: middle;
+	text-align: center;
+}
+
+.gwt-HTML-clickCanvas {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+	z-index: 2;
+	font-size: 16px;
+	cursor: pointer;
+}
+
+.gwt-Button-clickControl {
+	margin: auto;
+	font-size: 32px;
+	border: 2px #CCC solid;
+	cursor: pointer;
+	background: transparent;
+	vertical-align: middle;
+	text-align: center;
+}
+
+.gwt-Canvas-stroke {
+	border: 2px #CCC solid;
+	cursor: pointer;
+}
+
+.gwt-Button-tegaki {
+	margin: auto;
+	margin: 1px;
+	font-size: 36px;
+	width: 48px;
+	height: 48px;
+	border: 2px #CCC solid;
+	cursor: pointer;
+	background: transparent;
+	vertical-align: middle;
+	text-align: center;
+}
+
+.gwt-Button-tegakiControl {
+	margin: auto;
+	font-size: 32px;
+	border: 2px #CCC solid;
+	cursor: pointer;
+	background: transparent;
+	vertical-align: middle;
+	text-align: center;
+}
+
+.gwt-Button-hayaimono {
+	margin: auto;
+	font-size: 24px;
+	width: 250px;
+	border: 2px #CCC solid;
+	cursor: pointer;
+	background: transparent;
+	vertical-align: middle;
+	text-align: center;
+}
+
+.gwt-Button-group {
+	font-size: 24px;
+	margin: auto;
+	border: 1px #CCC solid;
+	cursor: move;
+	background: transparent;
+	text-align: center;
+	overflow: visible;
+	user-select: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-khtml-user-select: none;
+	-webkit-user-drag: none;
+	-khtml-user-drag: none;
+	vertical-align: middle;
+	text-align: center;
+}
+
+.gwt-Button-group-header {
+	font-size: 24px;
+	margin: auto;
+	background: transparent;
+	overflow: hidden;
+	user-select: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-khtml-user-select: none;
+	-webkit-user-drag: none;
+	-khtml-user-drag: none;
+	vertical-align: middle;
+	text-align: center;
+}
+
+.gwt-Button-group-control {
+	margin: auto;
+	font-size: 32px;
+	height: 48px;
+	border: 1px #AAA solid;
+	cursor: pointer;
+	background: transparent;
+	user-select: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-khtml-user-select: none;
+	-webkit-user-drag: none;
+	-khtml-user-drag: none;
+	vertical-align: middle;
+	text-align: center;
+}
+
+/* その他 */
+.gwt-HTML-errorMessage {
+	font-size: 8px;
+	color: red;
+}
+
+.gwt-HTML-problemCreationWarning {
+	color: red;
+}
+
+.gwt-HTML-problemCreationInfo {
+	color: green;
+}
+
+.gwt-Label-linkFormWarning {
+	color: red;
+}
+
+.gwt-Label-problemReportButton {
+	font-size: 9px;
+	cursor: pointer;
+}
+
+/* 設定画面 */
+.settingLeftPanel {
+	border: 0px solid #FFFFFF;
+	overflow: hidden;
+}
+
+.settingLeftPanelItem {
+	color: blue;
+	cursor: pointer;
+	text-decoration: underline;
+}
+
+.settingMessage {
+	color: red;
+}
+
+/* ポジションセレクタ */
+.positionSelecter {
+	overflow: visible;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	z-index: 1;
+	font-size: 16px;
+}
+
+/* ページ切り替えボタン */
+.pageSelectButton {
+	background-color: transparent;
+	font-size: 20px;
+	border: 1px #000000 dashed;
+	cursor: pointer;
+	width: 40px;
+}
+
+/* 掲示板用ボタン */
+.gwt-HTML-bbsThreadTitle {
+	color: red;
+	font-size: 22px;
+}
+
+.gwt-HTML-bbsResponseHeader {
+	margin-left: 10px;
+	font-size: 18px;
+}
+
+.gwt-HTML-bbsResponseBody {
+	margin-left: 20px;
+	font-size: 16px;
+}
+
+.timerLabel {
+	width: 480px;
+	height: 40px;
+	font-size: 20px;
+	font-weight: bold;
+	text-align: center;
+	vertical-align: top;
+	color: black;
+	z-index: 5;
+}
+
+.gwt-Button {
+	background: transparent;
+}
+
+.gwt-Label-clickable {
+	color: blue;
+	text-decoration: underline;
+	cursor: pointer;
+	font-size: 12px;
+	text-align: center;
+}
+
+.gwt-Label-clickableEnter {
+	color: red;
+}
+
+.gwt-Grid-problemReportSentence td {
+	font-size: 12px;
+}
+
+.popup-canvas-background {
+	background-color: transparent;
+	cursor: pointer;
+}
+
+/*正解率表示用*/
+tr.accuracyRate0 td {
+	background: #FFD0D0;
+}
+
+tr.accuracyRate1 td {
+	background: #FFD1D0;
+}
+
+tr.accuracyRate2 td {
+	background: #FFD3D0;
+}
+
+tr.accuracyRate3 td {
+	background: #FFD5D0;
+}
+
+tr.accuracyRate4 td {
+	background: #FFD7D0;
+}
+
+tr.accuracyRate5 td {
+	background: #FFD9D0;
+}
+
+tr.accuracyRate6 td {
+	background: #FFDBD0;
+}
+
+tr.accuracyRate7 td {
+	background: #FFDDD0;
+}
+
+tr.accuracyRate8 td {
+	background: #FFDFD0;
+}
+
+tr.accuracyRate9 td {
+	background: #FFE0D0;
+}
+
+tr.accuracyRate10 td {
+	background: #FFE2D0;
+}
+
+tr.accuracyRate11 td {
+	background: #FFE4D0;
+}
+
+tr.accuracyRate12 td {
+	background: #FFE6D0;
+}
+
+tr.accuracyRate13 td {
+	background: #FFE8D0;
+}
+
+tr.accuracyRate14 td {
+	background: #FFEAD0;
+}
+
+tr.accuracyRate15 td {
+	background: #FFECD0;
+}
+
+tr.accuracyRate16 td {
+	background: #FFEED0;
+}
+
+tr.accuracyRate17 td {
+	background: #FFEFD0;
+}
+
+tr.accuracyRate18 td {
+	background: #FFF1D0;
+}
+
+tr.accuracyRate19 td {
+	background: #FFF3D0;
+}
+
+tr.accuracyRate20 td {
+	background: #FFF5D0;
+}
+
+tr.accuracyRate21 td {
+	background: #FFF7D0;
+}
+
+tr.accuracyRate22 td {
+	background: #FFF9D0;
+}
+
+tr.accuracyRate23 td {
+	background: #FFFBD0;
+}
+
+tr.accuracyRate24 td {
+	background: #FFFDD0;
+}
+
+tr.accuracyRate25 td {
+	background: #FFFFD0;
+}
+
+tr.accuracyRate26 td {
+	background: #FDFFD0;
+}
+
+tr.accuracyRate27 td {
+	background: #FBFFD0;
+}
+
+tr.accuracyRate28 td {
+	background: #F9FFD0;
+}
+
+tr.accuracyRate29 td {
+	background: #F7FFD0;
+}
+
+tr.accuracyRate30 td {
+	background: #F5FFD0;
+}
+
+tr.accuracyRate31 td {
+	background: #F3FFD0;
+}
+
+tr.accuracyRate32 td {
+	background: #F1FFD0;
+}
+
+tr.accuracyRate33 td {
+	background: #EFFFD0;
+}
+
+tr.accuracyRate34 td {
+	background: #EEFFD0;
+}
+
+tr.accuracyRate35 td {
+	background: #ECFFD0;
+}
+
+tr.accuracyRate36 td {
+	background: #EAFFD0;
+}
+
+tr.accuracyRate37 td {
+	background: #E8FFD0;
+}
+
+tr.accuracyRate38 td {
+	background: #E6FFD0;
+}
+
+tr.accuracyRate39 td {
+	background: #E4FFD0;
+}
+
+tr.accuracyRate40 td {
+	background: #E2FFD0;
+}
+
+tr.accuracyRate41 td {
+	background: #E0FFD0;
+}
+
+tr.accuracyRate42 td {
+	background: #DFFFD0;
+}
+
+tr.accuracyRate43 td {
+	background: #DDFFD0;
+}
+
+tr.accuracyRate44 td {
+	background: #DBFFD0;
+}
+
+tr.accuracyRate45 td {
+	background: #D9FFD0;
+}
+
+tr.accuracyRate46 td {
+	background: #D7FFD0;
+}
+
+tr.accuracyRate47 td {
+	background: #D5FFD0;
+}
+
+tr.accuracyRate48 td {
+	background: #D3FFD0;
+}
+
+tr.accuracyRate49 td {
+	background: #D1FFD0;
+}
+
+tr.accuracyRate50 td {
+	background: #D0FFD0;
+}
+
+tr.accuracyRate51 td {
+	background: #D0FFD1;
+}
+
+tr.accuracyRate52 td {
+	background: #D0FFD3;
+}
+
+tr.accuracyRate53 td {
+	background: #D0FFD5;
+}
+
+tr.accuracyRate54 td {
+	background: #D0FFD7;
+}
+
+tr.accuracyRate55 td {
+	background: #D0FFD9;
+}
+
+tr.accuracyRate56 td {
+	background: #D0FFDB;
+}
+
+tr.accuracyRate57 td {
+	background: #D0FFDD;
+}
+
+tr.accuracyRate58 td {
+	background: #D0FFDF;
+}
+
+tr.accuracyRate59 td {
+	background: #D0FFE0;
+}
+
+tr.accuracyRate60 td {
+	background: #D0FFE2;
+}
+
+tr.accuracyRate61 td {
+	background: #D0FFE4;
+}
+
+tr.accuracyRate62 td {
+	background: #D0FFE6;
+}
+
+tr.accuracyRate63 td {
+	background: #D0FFE8;
+}
+
+tr.accuracyRate64 td {
+	background: #D0FFEA;
+}
+
+tr.accuracyRate65 td {
+	background: #D0FFEC;
+}
+
+tr.accuracyRate66 td {
+	background: #D0FFEE;
+}
+
+tr.accuracyRate67 td {
+	background: #D0FFEF;
+}
+
+tr.accuracyRate68 td {
+	background: #D0FFF1;
+}
+
+tr.accuracyRate69 td {
+	background: #D0FFF3;
+}
+
+tr.accuracyRate70 td {
+	background: #D0FFF5;
+}
+
+tr.accuracyRate71 td {
+	background: #D0FFF7;
+}
+
+tr.accuracyRate72 td {
+	background: #D0FFF9;
+}
+
+tr.accuracyRate73 td {
+	background: #D0FFFB;
+}
+
+tr.accuracyRate74 td {
+	background: #D0FFFD;
+}
+
+tr.accuracyRate75 td {
+	background: #D0FFFF;
+}
+
+tr.accuracyRate76 td {
+	background: #D0FDFF;
+}
+
+tr.accuracyRate77 td {
+	background: #D0FBFF;
+}
+
+tr.accuracyRate78 td {
+	background: #D0F9FF;
+}
+
+tr.accuracyRate79 td {
+	background: #D0F7FF;
+}
+
+tr.accuracyRate80 td {
+	background: #D0F5FF;
+}
+
+tr.accuracyRate81 td {
+	background: #D0F3FF;
+}
+
+tr.accuracyRate82 td {
+	background: #D0F1FF;
+}
+
+tr.accuracyRate83 td {
+	background: #D0EFFF;
+}
+
+tr.accuracyRate84 td {
+	background: #D0EEFF;
+}
+
+tr.accuracyRate85 td {
+	background: #D0ECFF;
+}
+
+tr.accuracyRate86 td {
+	background: #D0EAFF;
+}
+
+tr.accuracyRate87 td {
+	background: #D0E8FF;
+}
+
+tr.accuracyRate88 td {
+	background: #D0E6FF;
+}
+
+tr.accuracyRate89 td {
+	background: #D0E4FF;
+}
+
+tr.accuracyRate90 td {
+	background: #D0E2FF;
+}
+
+tr.accuracyRate91 td {
+	background: #D0E0FF;
+}
+
+tr.accuracyRate92 td {
+	background: #D0DFFF;
+}
+
+tr.accuracyRate93 td {
+	background: #D0DDFF;
+}
+
+tr.accuracyRate94 td {
+	background: #D0DBFF;
+}
+
+tr.accuracyRate95 td {
+	background: #D0D9FF;
+}
+
+tr.accuracyRate96 td {
+	background: #D0D7FF;
+}
+
+tr.accuracyRate97 td {
+	background: #D0D5FF;
+}
+
+tr.accuracyRate98 td {
+	background: #D0D3FF;
+}
+
+tr.accuracyRate99 td {
+	background: #D0D1FF;
+}
+
+tr.accuracyRate100 td {
+	background: #D0D0FF;
+}
+
+tr.newProblem td {
+	background: #FFFFFF;
+}
