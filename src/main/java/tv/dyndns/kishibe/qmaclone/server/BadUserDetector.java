@@ -34,7 +34,7 @@ public class BadUserDetector implements Runnable {
 	private static final FilenameFilter LOG_FILENAME_FILTER = new FilenameFilter() {
 		@Override
 		public boolean accept(File dir, String name) {
-			return name.startsWith("catalina.") && name.endsWith(".log");
+			return name.startsWith("catalina.out") && !name.endsWith(".gz");
 		}
 	};
 	private static final Pattern GAME_START_PATTERN = Pattern
@@ -94,9 +94,9 @@ public class BadUserDetector implements Runnable {
 				continue;
 			}
 			startCounts.addAll(startedUserId);
-			
+
 			int sessionId = entry.getKey();
-				finishCounts.addAll(finishLogs.getOrDefault(sessionId, ImmutableSet.of()));
+			finishCounts.addAll(finishLogs.getOrDefault(sessionId, ImmutableSet.of()));
 		}
 
 		// ランキング上位100名を取得する
