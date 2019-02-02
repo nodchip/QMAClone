@@ -450,6 +450,35 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
 				.add("remoteAddress", getRemoteAddress()).toString());
 	}
 
+	@Override
+	public void notifyDisconnection(int userCode, int sessionId) throws ServiceException {
+		Game session;
+		try {
+			session = gameManager.getSession(sessionId);
+		} catch (GameNotFoundException e) {
+			String message = "ゲームセッションが見つかりませんでした: sessionId=" + sessionId;
+			logger.log(Level.WARNING, message, e);
+			throw new ServiceException(message, e);
+		}
+
+		// 現時点での順位をもとにレーティングを更新する
+		session.updateRating();
+
+		// 対象のプレイヤー情報を取得する
+		PlayerStatus playerStatus = session.findPlayer(userCode);
+
+		// レーティングを更新する
+		PacketUserData userData = loadUserData(userCode);
+		int oldRating = userData.rating;
+		int newRating = playerStatus.getNewRating();
+		userData.rating = newRating;
+		saveUserData(userData);
+
+		gameLogger.write(MoreObjects.toStringHelper(this).add("method", "notifyDisconnection").add("userCode", userCode)
+				.add("sessionId", sessionId).add("oldRating", oldRating).add("newRating", newRating)
+				.add("remoteAddress", getRemoteAddress()).toString());
+	}
+
 	// ゲームの進行状態を取得する
 	@Override
 	public PacketGameStatus getGameStatus(int sessionId) throws ServiceException {

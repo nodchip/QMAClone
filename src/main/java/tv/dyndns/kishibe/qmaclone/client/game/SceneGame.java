@@ -58,301 +58,313 @@ import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblem;
 
 public class SceneGame extends SceneBase implements ClosingHandler, CloseHandler<Window> {
 
-  private static class GameStatusUpdater extends StatusUpdater<PacketGameStatus> {
-    private final SceneGame scene;
-    private final SessionData sessionData;
+	private static class GameStatusUpdater extends StatusUpdater<PacketGameStatus> {
+		private final SceneGame scene;
+		private final SessionData sessionData;
 
-    public GameStatusUpdater(SceneGame scene, SessionData sessionData) {
-      super(PacketGameStatus.class.getName() + "?" + Constant.KEY_GAME_SESSION_ID + "="
-          + sessionData.getSessionId(), 1000);
-      this.scene = Preconditions.checkNotNull(scene);
-      this.sessionData = Preconditions.checkNotNull(sessionData);
-    }
+		public GameStatusUpdater(SceneGame scene, SessionData sessionData) {
+			super(PacketGameStatus.class.getName() + "?" + Constant.KEY_GAME_SESSION_ID + "="
+					+ sessionData.getSessionId(), 1000);
+			this.scene = Preconditions.checkNotNull(scene);
+			this.sessionData = Preconditions.checkNotNull(sessionData);
+		}
 
-    @Override
-    protected void request(AsyncCallback<PacketGameStatus> callback) {
-      int sessionId = sessionData.getSessionId();
-      Service.Util.getInstance().getGameStatus(sessionId, callback);
-    }
+		@Override
+		protected void request(AsyncCallback<PacketGameStatus> callback) {
+			int sessionId = sessionData.getSessionId();
+			Service.Util.getInstance().getGameStatus(sessionId, callback);
+		}
 
-    @Override
-    protected void onReceived(PacketGameStatus status) {
-      scene.updateGameStatus(status);
-    }
+		@Override
+		protected void onReceived(PacketGameStatus status) {
+			scene.updateGameStatus(status);
+		}
 
-    @Override
-    protected PacketGameStatus parse(String json) {
-      return PacketGameStatus.Json.READER.read(json);
-    }
-  }
+		@Override
+		protected PacketGameStatus parse(String json) {
+			return PacketGameStatus.Json.READER.read(json);
+		}
+	}
 
-  private static final Logger logger = Logger.getLogger(SceneGame.class.getName());
-  private final PanelGame panel = new PanelGame();
-  private final WidgetPlayerList playerList;
-  private QuestionPanel question;
-  private List<PacketProblem> problems;
-  private int problemCounter = 0;
-  private WidgetTimeProgressBar widgetTimeProgressBar;
-  private Transition lastTransition = null;
-  private HandlerRegistration handlerRegistrationCloseHandler = null;
-  private HandlerRegistration handlerRegistrationClosingHandler = null;
-  private boolean first = true;
-  private boolean transited = false;
-  private final StatusUpdater<PacketGameStatus> updater;
-  private final SessionData sessionData;
+	private static final Logger logger = Logger.getLogger(SceneGame.class.getName());
+	private final PanelGame panel = new PanelGame();
+	private final WidgetPlayerList playerList;
+	private QuestionPanel question;
+	private List<PacketProblem> problems;
+	private int problemCounter = 0;
+	private WidgetTimeProgressBar widgetTimeProgressBar;
+	private Transition lastTransition = null;
+	private HandlerRegistration handlerRegistrationCloseHandler = null;
+	private HandlerRegistration handlerRegistrationClosingHandler = null;
+	private boolean first = true;
+	private boolean transited = false;
+	private final StatusUpdater<PacketGameStatus> updater;
+	private final SessionData sessionData;
 
-  public SceneGame(List<PacketProblem> problems, List<PacketMatchingPlayer> players,
-      SessionData sessionData) {
-    this.problems = problems;
-    this.playerList = new WidgetPlayerList(players);
-    this.sessionData = Preconditions.checkNotNull(sessionData);
-    this.updater = new GameStatusUpdater(this, sessionData);
-    panel.setPlayerList(playerList);
-    Controller.getInstance().setGamePanel(panel);
-  }
+	public SceneGame(List<PacketProblem> problems, List<PacketMatchingPlayer> players, SessionData sessionData) {
+		this.problems = problems;
+		this.playerList = new WidgetPlayerList(players);
+		this.sessionData = Preconditions.checkNotNull(sessionData);
+		this.updater = new GameStatusUpdater(this, sessionData);
+		panel.setPlayerList(playerList);
+		Controller.getInstance().setGamePanel(panel);
+	}
 
-  /**
-   * プレイヤー名を更新する
-   */
-  private void updatePlayerNames() {
-    Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
-      @Override
-      public void execute() {
-        int sessionId = sessionData.getSessionId();
-        Service.Util.getInstance().getPlayerSummaries(sessionId, callbackGetPalyerSummaries);
-      }
-    });
-  }
+	/**
+	 * プレイヤー名を更新する
+	 */
+	private void updatePlayerNames() {
+		Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+			@Override
+			public void execute() {
+				int sessionId = sessionData.getSessionId();
+				Service.Util.getInstance().getPlayerSummaries(sessionId, callbackGetPalyerSummaries);
+			}
+		});
+	}
 
-  private final AsyncCallback<List<PacketPlayerSummary>> callbackGetPalyerSummaries = new AsyncCallback<List<PacketPlayerSummary>>() {
-    public void onSuccess(List<PacketPlayerSummary> result) {
-      try {
-        if (result == null) {
-          logger.log(Level.WARNING, "無効なプレイヤー情報リストが返されました");
-          return;
-        }
+	private final AsyncCallback<List<PacketPlayerSummary>> callbackGetPalyerSummaries = new AsyncCallback<List<PacketPlayerSummary>>() {
+		public void onSuccess(List<PacketPlayerSummary> result) {
+			try {
+				if (result == null) {
+					logger.log(Level.WARNING, "無効なプレイヤー情報リストが返されました");
+					return;
+				}
 
-        for (int i = 0; i < result.size(); ++i) {
-          if (result.get(i) != null) {
-            continue;
-          }
+				for (int i = 0; i < result.size(); ++i) {
+					if (result.get(i) != null) {
+						continue;
+					}
 
-          logger.log(Level.WARNING, "無効なプレイヤー情報が返されました - " + result.toString());
-          result.set(i, PacketPlayerSummary.getDefaultPlayerSummary());
-        }
+					logger.log(Level.WARNING, "無効なプレイヤー情報が返されました - " + result.toString());
+					result.set(i, PacketPlayerSummary.getDefaultPlayerSummary());
+				}
 
-        playerList.setPlayerSummary(result);
+				playerList.setPlayerSummary(result);
 
-      } catch (Exception e) {
-        logger.log(Level.WARNING, "プレイヤー情報反映中にエラーが発生しました", e);
-      }
-    }
+			} catch (Exception e) {
+				logger.log(Level.WARNING, "プレイヤー情報反映中にエラーが発生しました", e);
+			}
+		}
 
-    public void onFailure(Throwable caught) {
-      logger.log(Level.WARNING, "プレイヤー情報リストの取得に失敗しました", caught);
-    }
-  };
+		public void onFailure(Throwable caught) {
+			logger.log(Level.WARNING, "プレイヤー情報リストの取得に失敗しました", caught);
+		}
+	};
 
-  public void onSendAnswer() {
-    playerList.onSendAnswer();
-  }
+	public void onSendAnswer() {
+		playerList.onSendAnswer();
+	}
 
-  @Override
-  protected void onLoad() {
-    super.onLoad();
+	@Override
+	protected void onLoad() {
+		super.onLoad();
 
-    updater.start();
+		updater.start();
 
-    if (sessionData.isAddPenalty()) {
-      handlerRegistrationCloseHandler = Window.addCloseHandler(this);
-      handlerRegistrationClosingHandler = Window.addWindowClosingHandler(this);
-    }
-  }
+		handlerRegistrationCloseHandler = Window.addCloseHandler(this);
+		handlerRegistrationClosingHandler = Window.addWindowClosingHandler(this);
+	}
 
-  @Override
-  protected void onUnload() {
-    if (sessionData.isAddPenalty()) {
-      if (handlerRegistrationCloseHandler != null) {
-        handlerRegistrationCloseHandler.removeHandler();
-        handlerRegistrationCloseHandler = null;
-      }
-      if (handlerRegistrationClosingHandler != null) {
-        handlerRegistrationClosingHandler.removeHandler();
-        handlerRegistrationClosingHandler = null;
-      }
-    }
+	@Override
+	protected void onUnload() {
+		if (handlerRegistrationCloseHandler != null) {
+			handlerRegistrationCloseHandler.removeHandler();
+			handlerRegistrationCloseHandler = null;
+		}
+		if (handlerRegistrationClosingHandler != null) {
+			handlerRegistrationClosingHandler.removeHandler();
+			handlerRegistrationClosingHandler = null;
+		}
 
-    updater.stop();
+		updater.stop();
 
-    super.onUnload();
-  }
+		super.onUnload();
+	}
 
-  @Override
-  public void onWindowClosing(ClosingEvent event) {
-    event.setMessage("ゲームプレイ中にウィンドウを閉じた場合\nレーティングにペナルティが加わります\nよろしいですか？");
-  }
+	@Override
+	public void onWindowClosing(ClosingEvent event) {
+		event.setMessage("ゲームプレイ中にウィンドウを閉じた場合\nペナルティが加わる場合があります\nよろしいですか？");
+	}
 
-  @Override
-  public void onClose(CloseEvent<Window> event) {
-    int newRating = UserData.get().getRating() * 99 / 100;
-    UserData.get().setRating(newRating);
-    UserData.get().save();
-  }
+	@Override
+	public void onClose(CloseEvent<Window> event) {
+		int userCode = UserData.get().getUserCode();
+		int sessionId = sessionData.getSessionId();
+		Service.Util.getInstance().notifyDisconnection(userCode, sessionId, nullCallback);
+	}
 
-  private void updateGameStatus(PacketGameStatus gameStatus) {
-    try {
-      if (gameStatus == null) {
-        logger.log(Level.WARNING, "無効なゲーム状態が返されました");
-        return;
-      }
+	private static final AsyncCallback<Void> nullCallback = new AsyncCallback<Void>() {
+		@Override
+		public void onSuccess(Void result) {
+			// Do nothing.
+		}
 
-      if (gameStatus.numberOfPlayingHumans <= 1) {
-        if (handlerRegistrationClosingHandler != null) {
-          handlerRegistrationClosingHandler.removeHandler();
-          handlerRegistrationClosingHandler = null;
-        }
-      }
+		@Override
+		public void onFailure(Throwable caught) {
+			// Do nothing.
+		}
+	};
 
-      if (gameStatus.status != null) {
-        playerList.onGamePlayerStatusReceived(gameStatus.status);
-      }
+	private void updateGameStatus(PacketGameStatus gameStatus) {
+		try {
+			if (gameStatus == null) {
+				logger.log(Level.WARNING, "無効なゲーム状態が返されました");
+				return;
+			}
 
-      if (widgetTimeProgressBar != null) {
-        widgetTimeProgressBar.setTime(gameStatus.restMs / 1000);
-      }
+			// プレイヤー人数が1人の場合、途中でやめてもペナルティを加えないようにする
+			if (gameStatus.numberOfPlayingHumans <= 1) {
+				if (handlerRegistrationCloseHandler != null) {
+					handlerRegistrationCloseHandler.removeHandler();
+					handlerRegistrationCloseHandler = null;
+				}
+				if (handlerRegistrationClosingHandler != null) {
+					handlerRegistrationClosingHandler.removeHandler();
+					handlerRegistrationClosingHandler = null;
+				}
+			}
 
-      if (question != null) {
-        question.onReceiveGameStatus(gameStatus);
-      }
+			if (gameStatus.status != null) {
+				playerList.onGamePlayerStatusReceived(gameStatus.status);
+			}
 
-      if (first || lastTransition != gameStatus.transition) {
-        first = false;
-        lastTransition = gameStatus.transition;
+			if (widgetTimeProgressBar != null) {
+				widgetTimeProgressBar.setTime(gameStatus.restMs / 1000);
+			}
 
-        keepAlive();
+			if (question != null) {
+				question.onReceiveGameStatus(gameStatus);
+			}
 
-        int playerListId = sessionData.getPlayerListIndex();
+			if (first || lastTransition != gameStatus.transition) {
+				first = false;
+				lastTransition = gameStatus.transition;
 
-        switch (gameStatus.transition) {
-        case Problem: {
-          // 次の問題へ
-          // プレイヤー情報窓クローズ
-          problemCounter = gameStatus.problemCounter;
+				keepAlive();
 
-          PacketProblem problem = problems.get(problemCounter);
-          widgetTimeProgressBar = new WidgetTimeProgressBar();
-          question = QuestionPanelFactory.create(problem, widgetTimeProgressBar, sessionData);
-          panel.setQuestionPanel(question);
-          panel.setQuestionNumber(problemCounter);
+				int playerListId = sessionData.getPlayerListIndex();
 
-          updatePlayerNames();
+				switch (gameStatus.transition) {
+				case Problem: {
+					// 次の問題へ
+					// プレイヤー情報窓クローズ
+					problemCounter = gameStatus.problemCounter;
 
-          playerList.onNextProblem(problem);
-          break;
-        }
-        case Answer: {
-          // 問題の解答発表
-          // プレイヤー情報窓オープン
-          question.enableInput(false);
-          question.showCorrectRatioAndCreator();
+					PacketProblem problem = problems.get(problemCounter);
+					widgetTimeProgressBar = new WidgetTimeProgressBar();
+					question = QuestionPanelFactory.create(problem, widgetTimeProgressBar, sessionData);
+					panel.setQuestionPanel(question);
+					panel.setQuestionNumber(problemCounter);
 
-          PacketProblem problem = problems.get(problemCounter);
-          playerList.onAnswer();
+					updatePlayerNames();
 
-          GamePlayerStatus player = gameStatus.status[playerListId];
-          panel.setScore(player.score);
+					playerList.onNextProblem(problem);
+					break;
+				}
+				case Answer: {
+					// 問題の解答発表
+					// プレイヤー情報窓オープン
+					question.enableInput(false);
+					question.showCorrectRatioAndCreator();
 
-          // 正答数更新
-          if (!sessionData.isEvent() || UserData.get().isReflectEventResult()) {
-            boolean isCorrect = problem.isCorrect(player.answer);
-            int[][][] correctCount = UserData.get().getCorrectCount();
-            int goodBadIndex = isCorrect ? 0 : 1;
-            for (ProblemGenre genre : Arrays.asList(ProblemGenre.Random, problem.genre)) {
-              for (ProblemType type : Arrays.asList(ProblemType.Random, problem.type,
-                  ProblemType.fromRandomFlag(problem.randomFlag.getIndex()))) {
-                ++correctCount[genre.ordinal()][type.ordinal()][goodBadIndex];
-              }
-            }
-          }
+					PacketProblem problem = problems.get(problemCounter);
+					playerList.onAnswer();
 
-          // 時間切れの通知
-          if (Strings.isNullOrEmpty(player.answer)) {
-            Service.Util.getInstance().notifyTimeUp(sessionData.getSessionId(), playerListId,
-                UserData.get().getUserCode(), callbackNotifyTimeUp);
-          }
+					GamePlayerStatus player = gameStatus.status[playerListId];
+					panel.setScore(player.score);
 
-          // サウンド再生
-          if (Strings.isNullOrEmpty(player.answer)) {
-            SoundPlayer.getInstance().play(Constant.SOUND_URL_TIME_UP);
-          } else if (problem.isCorrect(player.answer)) {
-            SoundPlayer.getInstance().play(Constant.SOUND_URL_GOOD);
-          } else {
-            SoundPlayer.getInstance().play(Constant.SOUND_URL_BAD);
-          }
+					// 正答数更新
+					if (!sessionData.isEvent() || UserData.get().isReflectEventResult()) {
+						boolean isCorrect = problem.isCorrect(player.answer);
+						int[][][] correctCount = UserData.get().getCorrectCount();
+						int goodBadIndex = isCorrect ? 0 : 1;
+						for (ProblemGenre genre : Arrays.asList(ProblemGenre.Random, problem.genre)) {
+							for (ProblemType type : Arrays.asList(ProblemType.Random, problem.type,
+									ProblemType.fromRandomFlag(problem.randomFlag.getIndex()))) {
+								++correctCount[genre.ordinal()][type.ordinal()][goodBadIndex];
+							}
+						}
+					}
 
-          if (problemCounter + 1 < problems.size()) {
-            PacketProblem nextProblem = problems.get(problemCounter + 1);
-            ImageLoader.loadImages(nextProblem.getResizedImageUrls().toArray(new String[0]),
-                new ImageLoader.CallBack() {
-                  @Override
-                  public void onImagesLoaded(ImageElement[] imageElements) {
-                  }
-                });
-          }
+					// 時間切れの通知
+					if (Strings.isNullOrEmpty(player.answer)) {
+						Service.Util.getInstance().notifyTimeUp(sessionData.getSessionId(), playerListId,
+								UserData.get().getUserCode(), callbackNotifyTimeUp);
+					}
 
-          break;
-        }
-        case Result: {
-          // リザルト画面へ遷移
-          if (!transited) {
-            transited = true;
-            Controller.getInstance().setScene(new SceneResult(problems, sessionData));
-            updater.stop();
-          }
-          break;
-        }
-        default:
-          break;
-        }
-      }
-    } catch (Exception e) {
-      logger.log(Level.WARNING, "ゲーム状態反映中にエラーが発生しました", e);
-    }
-  }
+					// サウンド再生
+					if (Strings.isNullOrEmpty(player.answer)) {
+						SoundPlayer.getInstance().play(Constant.SOUND_URL_TIME_UP);
+					} else if (problem.isCorrect(player.answer)) {
+						SoundPlayer.getInstance().play(Constant.SOUND_URL_GOOD);
+					} else {
+						SoundPlayer.getInstance().play(Constant.SOUND_URL_BAD);
+					}
 
-  private final AsyncCallback<Void> callbackNotifyTimeUp = new AsyncCallback<Void>() {
-    @Override
-    public void onSuccess(Void result) {
-    }
+					if (problemCounter + 1 < problems.size()) {
+						PacketProblem nextProblem = problems.get(problemCounter + 1);
+						ImageLoader.loadImages(nextProblem.getResizedImageUrls().toArray(new String[0]),
+								new ImageLoader.CallBack() {
+									@Override
+									public void onImagesLoaded(ImageElement[] imageElements) {
+									}
+								});
+					}
 
-    @Override
-    public void onFailure(Throwable caught) {
-      logger.log(Level.WARNING, "時間切れの通知に失敗しました", caught);
-    }
-  };
+					break;
+				}
+				case Result: {
+					// リザルト画面へ遷移
+					if (!transited) {
+						transited = true;
+						Controller.getInstance().setScene(new SceneResult(problems, sessionData));
+						updater.stop();
+					}
+					break;
+				}
+				default:
+					break;
+				}
+			}
+		} catch (Exception e) {
+			logger.log(Level.WARNING, "ゲーム状態反映中にエラーが発生しました", e);
+		}
+	}
 
-  /**
-   * ゲームのkeepAliveを行う
-   */
-  private void keepAlive() {
-    Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
-      @Override
-      public void execute() {
-        int sessionId = sessionData.getSessionId();
-        int playerListId = sessionData.getPlayerListIndex();
-        Service.Util.getInstance().keepAliveGame(sessionId, playerListId, callbackKeepAliveGame);
-      }
-    });
-  }
+	private final AsyncCallback<Void> callbackNotifyTimeUp = new AsyncCallback<Void>() {
+		@Override
+		public void onSuccess(Void result) {
+		}
 
-  private final AsyncCallback<Void> callbackKeepAliveGame = new AsyncCallback<Void>() {
-    @Override
-    public void onSuccess(Void result) {
-    }
+		@Override
+		public void onFailure(Throwable caught) {
+			logger.log(Level.WARNING, "時間切れの通知に失敗しました", caught);
+		}
+	};
 
-    @Override
-    public void onFailure(Throwable caught) {
-      logger.log(Level.SEVERE, "ゲーム参加のkeepAliveに失敗しました", caught);
-    }
-  };
+	/**
+	 * ゲームのkeepAliveを行う
+	 */
+	private void keepAlive() {
+		Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+			@Override
+			public void execute() {
+				int sessionId = sessionData.getSessionId();
+				int playerListId = sessionData.getPlayerListIndex();
+				Service.Util.getInstance().keepAliveGame(sessionId, playerListId, callbackKeepAliveGame);
+			}
+		});
+	}
+
+	private final AsyncCallback<Void> callbackKeepAliveGame = new AsyncCallback<Void>() {
+		@Override
+		public void onSuccess(Void result) {
+		}
+
+		@Override
+		public void onFailure(Throwable caught) {
+			logger.log(Level.SEVERE, "ゲーム参加のkeepAliveに失敗しました", caught);
+		}
+	};
 }
