@@ -1,12 +1,9 @@
 package tv.dyndns.kishibe.qmaclone.server;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -16,14 +13,12 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import tv.dyndns.kishibe.qmaclone.client.packet.RestrictionType;
-import tv.dyndns.kishibe.qmaclone.server.BadUserDetector.SessionIdAndUserCode;
-import tv.dyndns.kishibe.qmaclone.server.database.Database;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
+
+import tv.dyndns.kishibe.qmaclone.client.packet.RestrictionType;
+import tv.dyndns.kishibe.qmaclone.server.database.Database;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BadUserDetectorTest {
@@ -50,43 +45,24 @@ public class BadUserDetectorTest {
 				+ "8 12, 2012 9:02:52 午後 tv.dyndns.kishibe.server.GameLogger write\n"
 				+ "情報: ServiceServletStub{method=notifyGameFinished, userCode=123, sessionId=2, oldRating=123, newRating=1423, remoteAddress=127.0.0.1}\n"
 				+ "情報: ServiceServletStub{method=notifyGameFinished, userCode=22950866, sessionId=2953, oldRating=2019, newRating=1876, remoteAddress=203.136.117.99}";
-		Set<Integer> userCodes = Sets.newHashSet();
-		Set<SessionIdAndUserCode> startLogs = Sets.newHashSet();
-		Set<SessionIdAndUserCode> finishLogs = Sets.newHashSet();
-		Map<Integer, List<Double>> userCodeToResponseTimes = Maps.newHashMap();
-		Map<SessionIdAndUserCode, Double> sessionIdAndUserCodeToTimeUpCount = Maps.newHashMap();
+		Map<Integer, Set<Integer>> startLogs = Maps.newHashMap();
+		Map<Integer, Set<Integer>> finishLogs = Maps.newHashMap();
 
-		manager.extractStartAndFinish(body, startLogs, finishLogs, userCodeToResponseTimes,
-				sessionIdAndUserCodeToTimeUpCount, userCodes);
+		manager.extractStartAndFinish(body, startLogs, finishLogs);
 
-		assertEquals(ImmutableSet.of(new SessionIdAndUserCode(1, 123), new SessionIdAndUserCode(2,
-				123), new SessionIdAndUserCode(2, 234)), startLogs);
-		assertEquals(ImmutableSet.of(new SessionIdAndUserCode(1, 123), new SessionIdAndUserCode(2,
-				123), new SessionIdAndUserCode(2953, 22950866)), finishLogs);
-	}
-
-	@Test
-	public void sessionIdAndUserCodeShouldWorkWithHashSet() {
-		SessionIdAndUserCode code0 = new SessionIdAndUserCode(123, 12345678);
-		SessionIdAndUserCode code1 = new SessionIdAndUserCode(234, 23456789);
-
-		Set<SessionIdAndUserCode> codes = Sets.newHashSet();
-		codes.add(code0);
-		codes.add(code1);
-
-		assertTrue(codes.contains(new SessionIdAndUserCode(123, 12345678)));
-		assertFalse(codes.contains(new SessionIdAndUserCode(999, 99999999)));
+		assertThat(startLogs).isEqualTo(ImmutableMap.of(1, ImmutableSet.of(123), 2, ImmutableSet.of(123, 234)));
+		assertThat(finishLogs).isEqualTo(
+				ImmutableMap.of(1, ImmutableSet.of(123), 2, ImmutableSet.of(123), 2953, ImmutableSet.of(22950866)));
 	}
 
 	@Test
 	public void detectBadProblemCreatorShouldJudgeWithNumberOfProblems() throws Exception {
-		when(mockDatabase.getUserCodeToIndicatedProblems()).thenReturn(
-				ImmutableMap.of(FAKE_USER_CODE_1, 100, FAKE_USER_CODE_2, 5));
+		when(mockDatabase.getUserCodeToIndicatedProblems())
+				.thenReturn(ImmutableMap.of(FAKE_USER_CODE_1, 100, FAKE_USER_CODE_2, 5));
 
 		manager.detectBadProblemCreator();
 
 		// verify(mockDatabase).clearRestrictedUserCodes(RestrictionType.PROBLEM_SUBMITTION);
-		verify(mockDatabase).addRestrictedUserCode(FAKE_USER_CODE_1,
-				RestrictionType.PROBLEM_SUBMITTION);
+		verify(mockDatabase).addRestrictedUserCode(FAKE_USER_CODE_1, RestrictionType.PROBLEM_SUBMITTION);
 	}
 }
