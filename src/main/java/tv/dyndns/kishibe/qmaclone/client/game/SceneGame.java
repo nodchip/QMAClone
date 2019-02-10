@@ -189,9 +189,10 @@ public class SceneGame extends SceneBase implements ClosingHandler, CloseHandler
 
 	@Override
 	public void onClose(CloseEvent<Window> event) {
-		int userCode = UserData.get().getUserCode();
-		int sessionId = sessionData.getSessionId();
-		Service.Util.getInstance().notifyDisconnection(userCode, sessionId, nullCallback);
+		// http://kishibe.dyndns.tv/trac/qmaclone/ticket/1057
+//		int userCode = UserData.get().getUserCode();
+//		int sessionId = sessionData.getSessionId();
+//		Service.Util.getInstance().notifyDisconnection(userCode, sessionId, nullCallback);
 	}
 
 	private static final AsyncCallback<Void> nullCallback = new AsyncCallback<Void>() {
