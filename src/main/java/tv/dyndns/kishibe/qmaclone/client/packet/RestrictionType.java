@@ -29,7 +29,7 @@ public enum RestrictionType implements IsSerializable {
 	/**
 	 * 対戦
 	 * 
-	 * レーティング更新時に最下位として計算する
+	 * レーティング更新時に最下位として計算する。ランキングに掲載されなくなる。他の人とマッチングしなくなる。
 	 */
 	MATCH(3),
 	/**
