@@ -85,12 +85,18 @@ public class GameManager {
 	public synchronized Game getOrCreateMatchingSession(GameMode gameMode, String roomName, int classLevel,
 			String theme, Set<ProblemGenre> genres, Set<ProblemType> types, boolean publicEvent,
 			ServerStatusManager serverStatusManager, int userCode, String remoteAddress) {
-		// 隔離部屋は使用しない。通常のプレイヤーよりランクを下げることで対処する。
-		// http://kishibe.dyndns.tv/qmaclone/wiki/wiki.cgi?page=BugTrack-QMAClone%2F490
+		// http://kishibe.dyndns.tv/trac/qmaclone/ticket/1057
+		// プレイ権限を制限されている場合は他のプレイヤーとマッチングしないようにする
+		boolean restrictedUser = false;
 		try {
-			restrictedUserUtils.checkAndUpdateRestrictedUser(userCode, remoteAddress, RestrictionType.MATCH);
+			restrictedUser = restrictedUserUtils.checkAndUpdateRestrictedUser(userCode, remoteAddress,
+					RestrictionType.MATCH);
 		} catch (DatabaseException e) {
 			logger.log(Level.WARNING, "制限ユーザーのチェックに失敗しました。処理を続行します。", e);
+		}
+
+		if (restrictedUser) {
+			gameMode = GameMode.LIMITED;
 		}
 
 		PacketRoomKey roomKey = new PacketRoomKey(gameMode, gameMode == GameMode.THEME ? theme : roomName, genres,
