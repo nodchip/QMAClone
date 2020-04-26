@@ -1,6 +1,7 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:k="urn:import:tv.dyndns.kishibe.qmaclone.client.ui">
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:k="urn:import:tv.dyndns.kishibe.qmaclone.client.ui">
 	<ui:style>
 	.qmaclone-lobby-start-Button {
 		margin: 0;
@@ -45,17 +46,17 @@
 			クイズマジックアカデミー シミュレーションゲーム QMAClone by nodchip (ノドチップ)
 			<p>
 				バグ報告・要望は
-				<a href='http://kishibe.dyndns.tv/qmaclone/wiki/wiki.cgi' target='_blank'>QMACloneバグトラッカー</a>
+				<a href='https://github.com/nodchip/QMAClone/issues'
+					target='_blank'>GitHub QMAClone Issues</a>
 				へお願いいたします。
 			</p>
 			<p>
 				<a href='http://www.facebook.com/pages/QMAClone/335236273163550'
-					target='_blank'>Facebookページ</a>
-				を開設しました。
-				<a href='https://twitter.com/qmaclone' target='_blank'>Twitterアカウント</a>
-				と合わせてご利用下さい。
+					target='_blank'>Facebook</a>
+				・
+				<a href='https://twitter.com/qmaclone' target='_blank'>Twitter</a>
+				もよろしくお願いします。
 			</p>
-			<p>2017年3月11日にガイドラインを改定いたしました。問題作成者の皆様はいま一度ご確認下さい。</p>
 			<table>
 				<tr>
 					<td>
@@ -80,14 +81,16 @@
 								<td align="right">プレイヤー名</td>
 								<td>
 									<g:TextBox ui:field="textBoxPlayerName" width="150px"
-										maxLength="8" title="ゲーム中に表示されるプレイヤー名を入力してください。全角半角問わず最大8文字までです。" />
+										maxLength="8"
+										title="ゲーム中に表示されるプレイヤー名を入力してください。全角半角問わず最大8文字までです。" />
 								</td>
 							</tr>
 							<tr>
 								<td align="right">対戦前の挨拶</td>
 								<td>
 									<g:TextBox ui:field="textBoxGreeting" width="150px"
-										maxLength="10" title="対戦前に表示されるあいさつ文を入力してください。全角半角を問わず10文字までです。"
+										maxLength="10"
+										title="対戦前に表示されるあいさつ文を入力してください。全角半角を問わず10文字までです。"
 										text="よろしく～！" />
 								</td>
 							</tr>
@@ -98,13 +101,15 @@
 							<tr>
 								<td align="right">ジャンル</td>
 								<td>
-									<k:WidgetMultiItemSelector ui:field="multiItemSelectorGenre" />
+									<k:WidgetMultiItemSelector
+										ui:field="multiItemSelectorGenre" />
 								</td>
 							</tr>
 							<tr>
 								<td align="right">出題形式</td>
 								<td>
-									<k:WidgetMultiItemSelector ui:field="multiItemSelectorType" />
+									<k:WidgetMultiItemSelector
+										ui:field="multiItemSelectorType" />
 								</td>
 							</tr>
 							<tr>
@@ -131,21 +136,25 @@
 				<tr>
 					<td>
 						<g:Button ui:field="buttonGameVsCom" text="COM対戦"
-							styleName="{style.qmaclone-lobby-start-Button}" title="COMと対戦する一人用モードです。問題とCOMの難易度は階級により変化します。" />
+							styleName="{style.qmaclone-lobby-start-Button}"
+							title="COMと対戦する一人用モードです。問題とCOMの難易度は階級により変化します。" />
 					</td>
 					<td>
 						<g:Button ui:field="buttonGameAllClass" text="全体対戦"
-							styleName="{style.qmaclone-lobby-start-Button}" title="他の参加者全員と対戦します。問題は全問題から出題されます。" />
+							styleName="{style.qmaclone-lobby-start-Button}"
+							title="他の参加者全員と対戦します。問題は全問題から出題されます。" />
 					</td>
 				</tr>
 				<tr>
 					<td>
 						<g:Button ui:field="buttonGameEvent" text="イベント対戦"
-							styleName="{style.qmaclone-lobby-start-Button}" title="同じイベント名を指定した人と対戦します。問題は全問題から出題されます。" />
+							styleName="{style.qmaclone-lobby-start-Button}"
+							title="同じイベント名を指定した人と対戦します。問題は全問題から出題されます。" />
 					</td>
 					<td>
 						<g:Button ui:field="buttonGameTheme" text="テーマモード"
-							styleName="{style.qmaclone-lobby-start-Button}" title="選んだテーマの問題が出題されるモードです。同じテーマを選んだプレイヤーと対戦できます。" />
+							styleName="{style.qmaclone-lobby-start-Button}"
+							title="選んだテーマの問題が出題されるモードです。同じテーマを選んだプレイヤーと対戦できます。" />
 					</td>
 				</tr>
 				<tr>
@@ -155,8 +164,8 @@
 							title="イベント対戦で使用するイベント名を入力して下さい。" />
 						<g:Button ui:field="buttonShowEventRooms" text="参照" />
 						<br />
-						<g:CheckBox ui:field="checkBoxPublicEvent" text="イベント戦を公開する"
-							title="公開すると他の人が参照ボタンを使って選べるようになります" />
+						<g:CheckBox ui:field="checkBoxPublicEvent"
+							text="イベント戦を公開する" title="公開すると他の人が参照ボタンを使って選べるようになります" />
 					</td>
 					<td align="center">
 						テーマ
