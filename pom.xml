@@ -130,7 +130,7 @@
     <dependency>
     	<groupId>com.restfb</groupId>
     	<artifactId>restfb</artifactId>
-    	<version>2.18.1</version>
+    	<version>3.5.0</version>
     </dependency>
     <dependency>
     	<groupId>org.twitter4j</groupId>
