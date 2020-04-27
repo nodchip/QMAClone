@@ -108,7 +108,7 @@ public class ServerStatusManagerTest {
     PacketServerStatus status = manager.getServerStatus();
     manager.updateServerStatus();
 
-    assertThat(manager.getServerStatus()).isSameAs(status);
+    assertThat(manager.getServerStatus()).isSameInstanceAs(status);
 
     verify(mockServerStatusWebSockets).send(isA(PacketServerStatus.class));
   }
