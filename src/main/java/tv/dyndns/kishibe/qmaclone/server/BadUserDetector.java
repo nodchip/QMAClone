@@ -72,7 +72,7 @@ public class BadUserDetector implements Runnable {
 		// ゲーム開始回数とゲーム終了回数をカウントする
 		// ゲーム開始カウントは2人以上でゲームを開始した場合
 		// ゲーム終了カウントは常時
-		for (File file : new File("/var/log/tomcat8").listFiles(LOG_FILENAME_FILTER)) {
+		for (File file : new File("/var/log/tomcat9").listFiles(LOG_FILENAME_FILTER)) {
 			System.out.println(file);
 			String body;
 			try {

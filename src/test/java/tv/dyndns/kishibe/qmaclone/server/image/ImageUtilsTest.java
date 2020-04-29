@@ -35,22 +35,22 @@ public class ImageUtilsTest {
   @Ignore
   @Test
   public void testImageManagerTest() {
-    assertTrue(new File("/var/qmaclone/image").isDirectory());
-    assertTrue(new File("/var/qmaclone/image/input").isDirectory());
-    assertTrue(new File("/var/qmaclone/image/output").isDirectory());
-    assertEquals(new File("/var/qmaclone/image"), ImageIO.getCacheDirectory());
+    assertTrue(new File("/home/tomcat/qmaclone/image").isDirectory());
+    assertTrue(new File("/home/tomcat/qmaclone/image/input").isDirectory());
+    assertTrue(new File("/home/tomcat/qmaclone/image/output").isDirectory());
+    assertEquals(new File("/home/tomcat/qmaclone/image"), ImageIO.getCacheDirectory());
     assertTrue(ImageIO.getUseCache());
   }
 
   @Test
   public void testGetInputCacheFile() {
-    assertEquals(new File("/var/qmaclone/image/input/66/ab7ab659551ee960af518f169c688f319a6574"),
+    assertEquals(new File("/home/tomcat/qmaclone/image/input/66/ab7ab659551ee960af518f169c688f319a6574"),
         imageUtils.getInputCacheFile("QMAClone"));
   }
 
   @Test
   public void testGetOutputCacheFile() {
-    assertEquals(new File("/var/qmaclone/image/output/a9/fd962cc05723ab44db1bbb75a33ba655b3d51f"),
+    assertEquals(new File("/home/tomcat/qmaclone/image/output/a9/fd962cc05723ab44db1bbb75a33ba655b3d51f"),
         imageUtils.getOutputCacheFile(new Parameter("QMAClone", 512, 384, true)));
   }
 
@@ -128,7 +128,7 @@ public class ImageUtilsTest {
 
   @Test
   public void testGetLastModified() throws IOException {
-    File file = new File("/var/qmaclone/image/output/a9/fd962cc05723ab44db1bbb75a33ba655b3d51f");
+    File file = new File("/home/tomcat/qmaclone/image/output/a9/fd962cc05723ab44db1bbb75a33ba655b3d51f");
     Files.createParentDirs(file);
     Files.write("test", file, Charset.forName("utf-8"));
     file.deleteOnExit();

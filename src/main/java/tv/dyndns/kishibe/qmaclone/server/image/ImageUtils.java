@@ -76,7 +76,7 @@ public class ImageUtils {
 	}
 
 	private static Logger logger = Logger.getLogger(ImageUtils.class.toString());
-	private static final String CACHE_ROOT_PATH = "/var/qmaclone/image";
+	private static final String CACHE_ROOT_PATH = "/home/tomcat/qmaclone/image";
 	private static final String CACHE_INPUT_PATH = CACHE_ROOT_PATH + "/input";
 	private static final String CACHE_OUTPUT_PATH = CACHE_ROOT_PATH + "/output";
 

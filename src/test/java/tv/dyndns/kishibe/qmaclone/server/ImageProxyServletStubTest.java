@@ -41,7 +41,7 @@ public class ImageProxyServletStubTest {
   @Before
   public void setUp() {
     try {
-      FileUtils.deleteDirectory(new File("/var/qmaclone/image"));
+      FileUtils.deleteDirectory(new File("/home/tomcat/qmaclone/image"));
     } catch (IOException e) {
     }
     service = new ImageProxyServletStub(mockImageManager);
