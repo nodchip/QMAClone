@@ -17,7 +17,7 @@ public class CellChatLog extends AbstractCell<PacketChatMessage> {
 		}
 		final String trip = Utility.makeTrip(value.userCode, value.remoteAddress);
 		final String date = Utility.toDateFormat(new Date(value.date));
-		sb.appendHtmlConstant("<table cellpadding=\"0\" cellspacing=\"0\"><tbody><tr><td style=\"vertical-align: top;\" align=\"left\"><img style=\"width: 48px; height: 48px;\" class=\"gwt-Image\" src=\"http://kishibe.dyndns.tv/qmaclone_icon/"
+		sb.appendHtmlConstant("<table cellpadding=\"0\" cellspacing=\"0\"><tbody><tr><td style=\"vertical-align: top;\" align=\"left\"><img style=\"width: 48px; height: 48px;\" class=\"gwt-Image\" src=\"http://kishibe.dyndns.tv/qmaclone/icon/"
 				+ value.imageFileName
 				+ "\"></td><td style=\"vertical-align: top;\" align=\"left\"><table style=\"width: 100%;\" cellpadding=\"0\" cellspacing=\"0\"><tbody><tr><td style=\"vertical-align: top;\" align=\"left\"><div style=\"width: 680px;\" class=\"gwt-HTML\">");
 		sb.append(value.resId).append(' ').appendEscaped(value.name);

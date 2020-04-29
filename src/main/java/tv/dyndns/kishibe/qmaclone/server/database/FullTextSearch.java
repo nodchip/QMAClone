@@ -79,7 +79,7 @@ import tv.dyndns.kishibe.qmaclone.server.util.Normalizer;
 
 public class FullTextSearch {
 	private static final Logger logger = Logger.getLogger(FullTextSearch.class.toString());
-	private static final Path INDEX_FILE_DIRECTORY = FileSystems.getDefault().getPath("/tmp/qmaclone/lucene");
+	private static final Path INDEX_FILE_DIRECTORY = FileSystems.getDefault().getPath("/var/qmaclone/lucene");
 	private static final int TIME_OUT_SEC = 10;
 	private static final int MAX_NUMBER_OF_SEARCH_REUSLTS = 10000;
 	private static final String FIELD_PROBLEM_ID = "problemId";

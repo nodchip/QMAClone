@@ -57,7 +57,7 @@ public class CellTableRanking extends CellTable<PacketRankingData> {
 		addColumn(new SafeHtmlColumn<PacketRankingData>() {
 			@Override
 			public SafeHtml getValue(PacketRankingData object) {
-				return TEMPLATES.icon(UriUtils.fromString("http://kishibe.dyndns.tv/qmaclone_icon/"
+				return TEMPLATES.icon(UriUtils.fromString("http://kishibe.dyndns.tv/qmaclone/icon/"
 						+ object.imageFileName));
 			}
 		}, "");

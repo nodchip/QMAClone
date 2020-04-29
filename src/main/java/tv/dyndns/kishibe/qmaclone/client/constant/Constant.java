@@ -87,13 +87,13 @@ public class Constant {
   public static final String ICON_UPLOAD_RESPONSE_FAILED_TO_DETECT_IMAGE_FILE_TYPE = "--FAILED_TO_DETECT_IMAGE_FILE_TYPE--";
   public static final String ICON_UPLOAD_RESPONSE_REQUEST_FORMAT_ERROR = "--REQUEST_FORMAT_ERROR--";
   public static final String ICON_UPLOAD_RESPONSE_IMAGE_FILE_NAME_FORMAT_ERROR = "--IMAGE_FILE_NAME_FORMAT_ERROR--";
-  public static final String ICON_URL_PREFIX = "http://kishibe.dyndns.tv/qmaclone_icon/";
+  public static final String ICON_URL_PREFIX = "http://kishibe.dyndns.tv/qmaclone/icon/";
   public static final String FILE_PATH_BASE = "/var/www/html/";
-  public static final String ICON_FOLDER_PATH = FILE_PATH_BASE + "qmaclone_icon/";
+  public static final String ICON_FOLDER_PATH = FILE_PATH_BASE + "qmaclone/icon/";
   public static final int ICON_SIZE = 48;
   public static final int ICON_SIZE_BIG = 64;
   public static final String ICON_NO_IMAGE = "noimage.jpg";
-  public static final String SOUND_URL_PREFIX = "http://kishibe.dyndns.tv/qmaclone_sound/";
+  public static final String SOUND_URL_PREFIX = "http://kishibe.dyndns.tv/qmaclone/sound/";
   public static final String SOUND_URL_GOOD = SOUND_URL_PREFIX + "chime00.wav";
   public static final String SOUND_URL_BAD = SOUND_URL_PREFIX + "beep14.wav";
   public static final String SOUND_URL_TIME_UP = SOUND_URL_PREFIX + "bell02.wav";
