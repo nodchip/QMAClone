@@ -20,6 +20,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
+import javax.servlet.ServletException;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
@@ -173,7 +174,12 @@ public class ImageUtils {
 		graphics.fill(new Rectangle(canvasWidth, canvasHeight));
 
 		graphics.drawImage(middleImage, offsetX, offsetY, imageWidth, imageHeight, null);
-		ImageIO.write(outputImage, "jpeg", outputFile);
+		try {
+			ImageIO.write(outputImage, "jpeg", outputFile);
+		} catch (IOException e) {
+			logger.log(Level.WARNING, "画像ファイルの保存に失敗しました。 outputFile=" + outputFile, e);
+			throw new IOException(e);
+		}
 
 		logger.log(Level.INFO, String.format("%d bytes -> %d bytes (%s->%s)", inputFile.length(), outputFile.length(),
 				inputFile.getPath(), outputFile.getPath()));
