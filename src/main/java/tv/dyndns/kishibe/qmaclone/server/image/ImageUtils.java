@@ -10,6 +10,7 @@ import java.awt.image.AreaAveragingScaleFilter;
 import java.awt.image.BufferedImage;
 import java.awt.image.FilteredImageSource;
 import java.awt.image.ImageFilter;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -20,13 +21,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
-import javax.servlet.ServletException;
 
 import org.apache.commons.codec.digest.DigestUtils;
-
-import tv.dyndns.kishibe.qmaclone.server.ThreadPool;
-import tv.dyndns.kishibe.qmaclone.server.util.Downloader;
-import tv.dyndns.kishibe.qmaclone.server.util.DownloaderException;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
@@ -37,6 +33,10 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
+
+import tv.dyndns.kishibe.qmaclone.server.ThreadPool;
+import tv.dyndns.kishibe.qmaclone.server.util.Downloader;
+import tv.dyndns.kishibe.qmaclone.server.util.DownloaderException;
 
 public class ImageUtils {
 
@@ -140,8 +140,8 @@ public class ImageUtils {
 	 * @throws IOException
 	 */
 	@VisibleForTesting
-	void resizeImage(File inputFile, int canvasWidth, int canvasHeight, boolean keepAspectRatio, File outputFile)
-			throws IOException {
+	void resizeImage(File inputFile, int canvasWidth, int canvasHeight, boolean keepAspectRatio,
+			OutputStream outputStream) throws IOException {
 		BufferedImage inputImage = ImageIO.read(inputFile);
 
 		if (inputImage == null) {
@@ -175,14 +175,11 @@ public class ImageUtils {
 
 		graphics.drawImage(middleImage, offsetX, offsetY, imageWidth, imageHeight, null);
 		try {
-			ImageIO.write(outputImage, "jpeg", outputFile);
+			ImageIO.write(outputImage, "jpeg", outputStream);
 		} catch (IOException e) {
-			logger.log(Level.WARNING, "画像ファイルの保存に失敗しました。 outputFile=" + outputFile, e);
+			logger.log(Level.WARNING, "画像の出力に失敗しました。", e);
 			throw new IOException(e);
 		}
-
-		logger.log(Level.INFO, String.format("%d bytes -> %d bytes (%s->%s)", inputFile.length(), outputFile.length(),
-				inputFile.getPath(), outputFile.getPath()));
 	}
 
 	/**
@@ -244,15 +241,15 @@ public class ImageUtils {
 		}
 
 		// 画像がリサイズされていなければリサイズする
-		if (!outputCacheFile.isFile()) {
-			// BugTrack-QMAClone/434 - QMAClone wiki
-			// http://kishibe.dyndns.tv/qmaclone/wiki/wiki.cgi?page=BugTrack%2DQMAClone%2F434#1330156832
-			File tempFile = File.createTempFile("ImageUtils-resize", null);
-			resizeImage(inputCacheFile, width, height, keepAspectRatio, tempFile);
-			tempFile.renameTo(outputCacheFile);
-		}
-
-		return Files.toByteArray(outputCacheFile);
+		// BugTrack-QMAClone/434 - QMAClone wiki
+		// http://kishibe.dyndns.tv/qmaclone/wiki/wiki.cgi?page=BugTrack%2DQMAClone%2F434#1330156832
+		// リサイズ後の画像をファイルとしてストレージに書き込もうとすると失敗する。
+		// 回避策として、リサイズ後の画像を直接出力する。
+		// アイコンの画像変更が出来ない · Issue #1079 · nodchip/QMAClone
+		// https://github.com/nodchip/QMAClone/issues/1079
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		resizeImage(inputCacheFile, width, height, keepAspectRatio, outputStream);
+		return outputStream.toByteArray();
 	}
 
 	public boolean isImage(File file) {
