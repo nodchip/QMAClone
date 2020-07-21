@@ -86,8 +86,13 @@ public class ImageUtils {
 	private final LoadingCache<Parameter, byte[]> cache = CacheBuilder.newBuilder().softValues()
 			.build(new CacheLoader<Parameter, byte[]>() {
 				@Override
-				public byte[] load(Parameter key) throws Exception {
-					return getImage(key);
+				public byte[] load(Parameter key) {
+					try {
+						return getImage(key);
+					} catch (Exception e) {
+						logger.log(Level.WARNING, "画像の取得に失敗しました。 key=" + key, e);
+						return null;
+					}
 				}
 			});
 
