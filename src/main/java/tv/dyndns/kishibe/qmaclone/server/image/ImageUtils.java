@@ -242,7 +242,11 @@ public class ImageUtils {
 				throw new IOException("ダウンロードに失敗しました: url=" + url, e);
 			}
 
+			logger.info(String.format("画像のダウンロードに成功しました。 tempFile=%s", tempFile));
+
 			tempFile.renameTo(inputCacheFile);
+
+			logger.info(String.format("画像を移動しました。 tempFile=%s inputCacheFile=%s", tempFile, inputCacheFile));
 		}
 
 		// 画像がリサイズされていなければリサイズする
