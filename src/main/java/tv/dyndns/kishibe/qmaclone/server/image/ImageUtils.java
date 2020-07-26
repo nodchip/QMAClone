@@ -242,11 +242,15 @@ public class ImageUtils {
 				throw new IOException("ダウンロードに失敗しました: url=" + url, e);
 			}
 
-			logger.info(String.format("画像のダウンロードに成功しました。 tempFile=%s", tempFile));
+			logger.info(String.format("画像ファイルのダウンロードに成功しました。 tempFile=%s", tempFile));
 
-			tempFile.renameTo(inputCacheFile);
+			java.nio.file.Files.copy(tempFile.toPath(), inputCacheFile.toPath());
 
-			logger.info(String.format("画像を移動しました。 tempFile=%s inputCacheFile=%s", tempFile, inputCacheFile));
+			logger.info(String.format("画像ファイルをコピーしました。 tempFile=%s inputCacheFile=%s", tempFile, inputCacheFile));
+
+			if (!inputCacheFile.isFile()) {
+				throw new IOException(String.format("画像ファイルが見つかりませんでした。 inputCacheFile=%s", inputCacheFile));
+			}
 		}
 
 		// 画像がリサイズされていなければリサイズする
