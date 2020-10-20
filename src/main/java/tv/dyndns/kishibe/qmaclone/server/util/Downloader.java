@@ -31,6 +31,7 @@ import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.HttpResponse;
+import com.google.api.client.http.HttpResponseException;
 import com.google.api.client.http.HttpTransport;
 import com.google.common.base.Preconditions;
 import com.google.common.io.ByteStreams;
@@ -54,6 +55,10 @@ public class Downloader {
       HttpRequest getRequest = requestFactory.buildGetRequest(new GenericUrl(url.toString()));
       HttpResponse getResponse = getRequest.execute();
       return ByteStreams.toByteArray(getResponse.getContent());
+    } catch (HttpResponseException e) {
+      String message = String.format("\"ファイルのダウンロードに失敗しました: url=%s e.getStatusCode()=%d e.getStatusMessage()=%s", url,
+          e.getStatusCode(), e.getStatusMessage());
+      throw new DownloaderException(message);
     } catch (IOException e) {
       throw new DownloaderException("ファイルのダウンロードに失敗しました: url=" + url, e);
     }
@@ -67,6 +72,10 @@ public class Downloader {
       HttpRequest getRequest = requestFactory.buildGetRequest(new GenericUrl(url.toString()));
       HttpResponse getResponse = getRequest.execute();
       return getResponse.parseAsString();
+    } catch (HttpResponseException e) {
+      String message = String.format("\"ファイルのダウンロードに失敗しました: url=%s e.getStatusCode()=%d e.getStatusMessage()=%s", url,
+          e.getStatusCode(), e.getStatusMessage());
+      throw new DownloaderException(message);
     } catch (IOException e) {
       throw new DownloaderException("ファイルのダウンロードに失敗しました: url=" + url, e);
     }
@@ -75,10 +84,8 @@ public class Downloader {
   /**
    * 画像ファイルをダウンロードする
    * 
-   * @param url
-   *          ダウンロード元url
-   * @param file
-   *          出力先ファイル
+   * @param url  ダウンロード元url
+   * @param file 出力先ファイル
    * @return HTTPステータスコード
    * @throws IOException
    */
@@ -99,6 +106,10 @@ public class Downloader {
       }
 
       Files.asByteSink(file).writeFrom(getResponse.getContent());
+    } catch (HttpResponseException e) {
+      String message = String.format("\"ファイルのダウンロードに失敗しました: url=%s e.getStatusCode()=%d e.getStatusMessage()=%s", url,
+          e.getStatusCode(), e.getStatusMessage());
+      throw new DownloaderException(message);
     } catch (IOException e) {
       throw new DownloaderException("ファイルのダウンロードに失敗しました: url=" + url, e);
     }
