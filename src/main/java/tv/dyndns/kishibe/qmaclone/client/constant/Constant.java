@@ -89,6 +89,7 @@ public class Constant {
   public static final String ICON_UPLOAD_RESPONSE_IMAGE_FILE_NAME_FORMAT_ERROR = "--IMAGE_FILE_NAME_FORMAT_ERROR--";
   public static final String ICON_URL_PREFIX = "http://kishibe.dyndns.tv/qmaclone/icon/";
   public static final String FILE_PATH_BASE = "/home/tomcat/";
+  public static final String ICON_TEMP_FOLDER_PATH = FILE_PATH_BASE + "qmaclone/icon/";
   public static final String ICON_FOLDER_PATH = "/var/www/html/qmaclone/icon/";
   public static final int ICON_SIZE = 48;
   public static final int ICON_SIZE_BIG = 64;

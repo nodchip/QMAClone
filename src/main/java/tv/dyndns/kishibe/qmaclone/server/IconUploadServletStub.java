@@ -58,127 +58,136 @@ import com.google.inject.Inject;
 @SuppressWarnings("serial")
 public class IconUploadServletStub extends HttpServlet implements Servlet {
 
-	private static final Logger logger = Logger.getLogger(IconUploadServletStub.class.getName());
-	private final Database database;
+  private static final Logger logger = Logger.getLogger(IconUploadServletStub.class.getName());
+  private final Database database;
 
-	@Inject
-	public IconUploadServletStub(Database database) {
-		this.database = database;
-	}
+  @Inject
+  public IconUploadServletStub(Database database) {
+    this.database = database;
+  }
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws IOException, ServletException {
-		try (InputStream inputStream = request.getInputStream();
-				OutputStream outputStream = response.getOutputStream()) {
-			processRequest(request, response);
-		}
-	}
+  protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    try (InputStream inputStream = request.getInputStream(); OutputStream outputStream = response.getOutputStream()) {
+      processRequest(request, response);
+    }
+  }
 
-	private void processRequest(HttpServletRequest request, HttpServletResponse response)
-			throws IOException, ServletException {
-		logger.log(Level.INFO, request.toString());
+  private void processRequest(HttpServletRequest request, HttpServletResponse response)
+      throws IOException, ServletException {
+    logger.log(Level.INFO, request.toString());
 
-		FileItemFactory factory = new DiskFileItemFactory();
-		ServletFileUpload upload = new ServletFileUpload(factory);
-		upload.setSizeMax(64L * 1024L);
-		List<FileItem> items = null;
+    FileItemFactory factory = new DiskFileItemFactory();
+    ServletFileUpload upload = new ServletFileUpload(factory);
+    upload.setSizeMax(64L * 1024L);
+    List<FileItem> items = null;
 
-		try {
-			List<FileItem> temp = upload.parseRequest(request);
-			items = temp;
-		} catch (FileUploadException e) {
-			writeResponse(response, Constant.ICON_UPLOAD_RESPONSE_FAILED_TO_PARSE_REQUEST);
-			return;
-		}
+    try {
+      List<FileItem> temp = upload.parseRequest(request);
+      items = temp;
+    } catch (FileUploadException e) {
+      writeResponse(response, Constant.ICON_UPLOAD_RESPONSE_FAILED_TO_PARSE_REQUEST);
+      return;
+    }
 
-		String userCode = null;
-		BufferedImage inputImage = null;
-		long originalFileSize = 0;
+    String userCode = null;
+    BufferedImage inputImage = null;
+    long originalFileSize = 0;
 
-		for (FileItem item : items) {
-			if (item.isFormField()) {
-				String key = item.getFieldName();
-				String value = item.getString();
+    for (FileItem item : items) {
+      if (item.isFormField()) {
+        String key = item.getFieldName();
+        String value = item.getString();
 
-				if (key.equals(Constant.FORM_NAME_USER_CODE)) {
-					userCode = value;
-				}
+        if (key.equals(Constant.FORM_NAME_USER_CODE)) {
+          userCode = value;
+        }
 
-				continue;
-			}
+        continue;
+      }
 
-			// 画像確認
-			originalFileSize = item.getSize();
-			try (InputStream inputStream = item.getInputStream()) {
-				inputImage = ImageIO.read(inputStream);
-			} catch (IOException e) {
-				writeResponse(response, Constant.ICON_UPLOAD_RESPONSE_FAILED_TO_DETECT_IMAGE_FILE_TYPE);
-				return;
-			}
+      // 画像確認
+      originalFileSize = item.getSize();
+      try (InputStream inputStream = item.getInputStream()) {
+        inputImage = ImageIO.read(inputStream);
+      } catch (IOException e) {
+        writeResponse(response, Constant.ICON_UPLOAD_RESPONSE_FAILED_TO_DETECT_IMAGE_FILE_TYPE);
+        return;
+      }
 
-			if (inputImage == null) {
-				writeResponse(response, Constant.ICON_UPLOAD_RESPONSE_FAILED_TO_DETECT_IMAGE_FILE_TYPE);
-				return;
-			}
-		}
+      if (inputImage == null) {
+        writeResponse(response, Constant.ICON_UPLOAD_RESPONSE_FAILED_TO_DETECT_IMAGE_FILE_TYPE);
+        return;
+      }
+    }
 
-		if (userCode == null || inputImage == null) {
-			writeResponse(response, Constant.ICON_UPLOAD_RESPONSE_REQUEST_FORMAT_ERROR);
-			return;
-		}
+    if (userCode == null || inputImage == null) {
+      writeResponse(response, Constant.ICON_UPLOAD_RESPONSE_REQUEST_FORMAT_ERROR);
+      return;
+    }
 
-		String extension = "jpg";
-		String fileTitle = Utility.createFileName();
-		String fileName = fileTitle + "." + extension;
+    String extension = "jpg";
+    String fileTitle = Utility.createFileName();
+    String fileName = fileTitle + "." + extension;
 
-		// リサイズ
-		// TODO(nodchip): ユーティリティクラスへ抽出
-		int size = Constant.ICON_SIZE * 2;
-		ImageFilter imageFilter = new AreaAveragingScaleFilter(size, size);
-		Image middleImage = new Canvas().createImage(new FilteredImageSource(inputImage.getSource(), imageFilter));
-		BufferedImage outputImage = new BufferedImage(size, size, BufferedImage.TYPE_INT_RGB);
-		outputImage.createGraphics().drawImage(middleImage, 0, 0, size, size, null);
+    // リサイズ
+    // TODO(nodchip): ユーティリティクラスへ抽出
+    int size = Constant.ICON_SIZE * 2;
+    ImageFilter imageFilter = new AreaAveragingScaleFilter(size, size);
+    Image middleImage = new Canvas().createImage(new FilteredImageSource(inputImage.getSource(), imageFilter));
+    BufferedImage outputImage = new BufferedImage(size, size, BufferedImage.TYPE_INT_RGB);
+    outputImage.createGraphics().drawImage(middleImage, 0, 0, size, size, null);
 
-		// ファイル書き込み
-		new File(Constant.ICON_FOLDER_PATH).mkdirs();
-		File outputFile = new File(Constant.ICON_FOLDER_PATH, fileName);
-		try {
-			ImageIO.write(outputImage, "jpg", outputFile);
-		} catch (IOException e) {
-			logger.log(Level.WARNING, String.format("画像ファイルの保存に失敗しました。 outputFile=%s", outputFile), e);
-			throw new ServletException(e);
-		}
+    // 一時ファイル書き込み
+    new File(Constant.ICON_TEMP_FOLDER_PATH).mkdirs();
+    File tempOutputFile = new File(Constant.ICON_TEMP_FOLDER_PATH, fileName);
+    try {
+      ImageIO.write(outputImage, "jpg", tempOutputFile);
+    } catch (Exception e) {
+      logger.log(Level.WARNING, String.format("画像ファイルの保存に失敗しました。 tempOutputFile=%s", tempOutputFile), e);
+      throw new ServletException(e);
+    }
 
-		logger.log(Level.INFO, String.format("%d bytes -> %d bytes (%s)", originalFileSize, outputFile.length(),
-				outputFile.getPath()));
+    logger.log(Level.INFO, String.format("%d bytes -> %d bytes (%s)", originalFileSize, tempOutputFile.length(),
+        tempOutputFile.getPath()));
 
-		// データベース書き込み
-		int userId = Integer.parseInt(userCode);
-		PacketUserData userData;
-		try {
-			userData = database.getUserData(userId);
-		} catch (DatabaseException e) {
-			logger.log(Level.WARNING, "ユーザーデータの読み込みに失敗しました", e);
-			throw new ServletException(e);
-		}
-		File oldFile = new File(Constant.ICON_FOLDER_PATH, userData.imageFileName);
-		if (oldFile.isFile() && !oldFile.getName().equals(Constant.ICON_NO_IMAGE)) {
-			oldFile.delete();
-		}
-		userData.imageFileName = fileName;
-		try {
-			database.setUserData(userData);
-		} catch (DatabaseException e) {
-			logger.log(Level.WARNING, "ユーザーデータの保存に失敗しました", e);
-			throw new ServletException(e);
-		}
+    // webで公開しているフォルダへの配置
+    new File(Constant.ICON_FOLDER_PATH).mkdirs();
+    File outputFile = new File(Constant.ICON_FOLDER_PATH, fileName);
+    try {
+      tempOutputFile.renameTo(outputFile);
+    } catch (Exception e) {
+      logger.log(Level.WARNING, String.format("画像ファイルのwebで公開しているフォルダへの配置に失敗しました。 tempOutputFile=%s outputFile=%s",
+          tempOutputFile, outputFile), e);
+      throw new ServletException(e);
+    }
 
-		// レスポンス書き込み
-		writeResponse(response, Constant.ICON_UPLOAD_RESPONSE_OK);
-	}
+    // データベース書き込み
+    int userId = Integer.parseInt(userCode);
+    PacketUserData userData;
+    try {
+      userData = database.getUserData(userId);
+    } catch (DatabaseException e) {
+      logger.log(Level.WARNING, "ユーザーデータの読み込みに失敗しました", e);
+      throw new ServletException(e);
+    }
+    File oldFile = new File(Constant.ICON_FOLDER_PATH, userData.imageFileName);
+    if (oldFile.isFile() && !oldFile.getName().equals(Constant.ICON_NO_IMAGE)) {
+      oldFile.delete();
+    }
+    userData.imageFileName = fileName;
+    try {
+      database.setUserData(userData);
+    } catch (DatabaseException e) {
+      logger.log(Level.WARNING, "ユーザーデータの保存に失敗しました", e);
+      throw new ServletException(e);
+    }
 
-	private void writeResponse(HttpServletResponse response, String message) throws IOException {
-		response.setContentType("text/plain");
-		response.getOutputStream().write(message.getBytes());
-	}
+    // レスポンス書き込み
+    writeResponse(response, Constant.ICON_UPLOAD_RESPONSE_OK);
+  }
+
+  private void writeResponse(HttpServletResponse response, String message) throws IOException {
+    response.setContentType("text/plain");
+    response.getOutputStream().write(message.getBytes());
+  }
 }
