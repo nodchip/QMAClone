@@ -22,7 +22,8 @@
 			定期的に正解率統計画面から自作問題の状況を確認し、指摘フラグが付いた場合はすぐに確認し修正してください。
 			<g:HorizontalPanel>
 				<g:Button ui:field="buttonNewProblem" text="入力内容をリセットする" />
-				<g:Button ui:field="buttonMoveToVerification" text="送信確認画面に移動する" />
+				<g:Button ui:field="buttonMoveToVerification"
+					text="送信確認画面に移動する" />
 				<g:Button ui:field="buttonSendProblem" text="問題を送信する"
 					visible="false" title="似たような問題が無い事を確認しましたか？" />
 			</g:HorizontalPanel>
@@ -40,7 +41,8 @@
 			<g:VerticalPanel ui:field="panelWarning" />
 			<g:HTML ui:field="htmlTypeCaution" />
 			<g:SimplePanel ui:field="panelChangeHistory" />
-			<g:HTMLPanel ui:field="htmlPanelWrongAnswer" visible="false">
+			<g:HTMLPanel ui:field="htmlPanelWrongAnswer"
+				visible="false">
 				<h1>誤答例</h1>
 				<g:SimplePanel ui:field="panelWrongAnswer" />
 			</g:HTMLPanel>
@@ -295,6 +297,9 @@
 						<li>以下の地図から○○を選べ</li>
 					</ul>
 					(指摘後一ヶ月放置で修正可能)
+					<ul>
+						<li>名義修正により、当該作問者の作問数が、「同一作品、種類、所属等の問題を、ゲームバランスが崩れると管理人が判断する程度」に該当する場合も含む</li>
+					</ul>
 				</li>
 				<li>
 					同一、またはほぼ同一の内容の問題を同一作問者が出題形式を変えて投稿する行為
@@ -303,6 +308,7 @@
 					</ul>
 					(指摘後一ヶ月放置で修正可能)
 				</li>
+				<li>「同一、またはほぼ同一の内容の問題を同一作問者が出題形式を変えて投稿する行為」に該当し、指摘されている問題に対し、名義を変更するのみで指摘修正完了とする行為</li>
 				<li>音声による出題 (指摘後一ヶ月放置で修正可能)</li>
 				<li>著作権に問題のある画像の問題及びアイコンへの使用 (指摘なしで即時修正可能)</li>
 				<li>他のクイズサイトからの許可を得ない丸写し・又は表現を変えた投稿 (指摘なしで即時修正可能)</li>
@@ -319,7 +325,8 @@
 				<li>
 					1人あたり1万問を超える問題作成の禁止 (指摘後一ヶ月放置で修正可能)
 					<ul>
-						<li>但し、すでに1万問を超えている分についてはこの限りではない</li>
+						<li>名義修正により、当該作問者による問題数が1万問を超えた場合も含む</li>
+						<li>但し、すでに過去に1万問を超えている分についてはこの限りではない</li>
 					</ul>
 				</li>
 				<li>正解率5%以下の問題が1人あたり500問を超えた場合の新規問題の作成 (指摘後一ヶ月放置で修正可能)</li>
@@ -333,7 +340,13 @@
 				<li>指摘事由にあたらない問題への指摘を短期間に複数回以上行うなど、指摘行為の濫用</li>
 				<li>レートの不正操作</li>
 				<li>多数の人を不快にさせる言動を繰り返し行うこと</li>
-				<li>1人あたり同一日に6問以上の問題作成</li>
+				<li>
+					1人あたり同一日に6問以上の問題作成
+					<ul>
+						<li>名義修正により、当該作問者による同一日の作問数が6問以上となる場合も含む</li>
+					</ul>
+				</li>
+				<li>指摘されている問題に対する、指摘されている事項を解消しない修正</li>
 			</ul>
 
 			<h2>投稿された内容の著作権について</h2>
