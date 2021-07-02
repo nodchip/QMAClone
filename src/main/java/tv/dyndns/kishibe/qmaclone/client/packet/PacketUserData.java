@@ -116,6 +116,8 @@ public class PacketUserData implements IsSerializable {
     webSocketUsage = WebSocketUsage.Default;
     difficultSelect = Constant.DIFFICULT_SELECT_EASY;
     theme = "";
+    registerCreatedProblem = true;
+    registerIndicatedProblem = true;
   }
 
   public void setReflectEventResult(boolean reflectEventResult) {
