@@ -193,8 +193,7 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
   /**
    * 出題形式の説明文を設定する
    * 
-   * @param text
-   *          説明文
+   * @param text 説明文
    */
   public void setTypeDescription(String text) {
     if (Strings.isNullOrEmpty(text)) {
@@ -224,7 +223,8 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
     // 問題ノートの更新
     // BugTrack-QMAClone/589 - QMAClone wiki
     // http://kishibe.dyndns.tv/qmaclone/wiki/wiki.cgi?page=BugTrack%2DQMAClone%2F589
-    // if (previousProblemNote != null && previousProblemNote.equals(problem.note)) {
+    // if (previousProblemNote != null && previousProblemNote.equals(problem.note))
+    // {
     // eval.warn.add(MESSAGE_UPDATE_NOTE);
     // }
 
@@ -258,8 +258,7 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
 
   private final AsyncCallback<List<PacketProblem>> callbackSearchSimilarProblem = new AsyncCallback<List<PacketProblem>>() {
     public void onSuccess(List<PacketProblem> result) {
-      panelSimilar
-          .setWidget(new ProblemReportUi(result, true, true, MAX_SIMILER_PROBLEMS_PER_PAGE));
+      panelSimilar.setWidget(new ProblemReportUi(result, true, true, MAX_SIMILER_PROBLEMS_PER_PAGE));
     }
 
     public void onFailure(Throwable caught) {
@@ -328,8 +327,8 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
   };
 
   private void setEnable(boolean enabled) {
-    FocusWidget[] widgets = { buttonNewProblem, buttonMoveToVerification, buttonSendProblem,
-        textBoxGetProblem, buttonGetProblem, buttonCopyProblem, buttonNextProblem };
+    FocusWidget[] widgets = { buttonNewProblem, buttonMoveToVerification, buttonSendProblem, textBoxGetProblem,
+        buttonGetProblem, buttonCopyProblem, buttonNextProblem };
     for (FocusWidget widget : widgets) {
       widget.setEnabled(enabled);
     }
@@ -477,8 +476,8 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
     final DialogBox dialogBox = new DialogBox(true);
 
     VerticalPanel panel = new VerticalPanel();
-    panel.add(new HTML(new SafeHtmlBuilder().appendEscapedLines(
-        "現在アニメジャンルにおいて連続投稿制限中です。\n" + "送信した問題が受け付けられない場合があります。\n" + "その他のジャンルは通常通り投稿できます。")
+    panel.add(new HTML(new SafeHtmlBuilder()
+        .appendEscapedLines("現在アニメジャンルにおいて連続投稿制限中です。\n" + "送信した問題が受け付けられない場合があります。\n" + "その他のジャンルは通常通り投稿できます。")
         .toSafeHtml()));
     panel.add(new Button("OK", new ClickHandler() {
       @Override
@@ -540,8 +539,7 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
     @Override
     public void onSuccess(Boolean result) {
       if (!result) {
-        Window.alert("連続投稿制限: 時間を置いて再度お試しください\n"
-            + "http://kishibe.dyndns.tv/QMAClone/　からアクセスしている場合は\n"
+        Window.alert("連続投稿制限: 時間を置いて再度お試しください\n" + "http://kishibe.dyndns.tv/QMAClone/　からアクセスしている場合は\n"
             + "http://kishibe.dyndns.tv:8080/QMAClone/　から御アクセスください。");
         sendingProblem = false;
         widgetProblemForm.setEnable(true);
@@ -564,6 +562,18 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
 
   private void uploadProblem() {
     PacketProblem problem = widgetProblemForm.getProblem();
+
+    // 同一人物による同一タイトルの作問について · Issue #1087 · nodchip/QMAClone
+    // https://github.com/nodchip/QMAClone/issues/1087
+    if (problem.indication != null) {
+      if (!Window.confirm("指摘が解除されていません。キャンセルを押し、指摘を解除してから再度送信することをお勧めいたします。\nそのまま送信しますか？")) {
+        sendingProblem = false;
+        widgetProblemForm.setEnable(true);
+        setEnable(true);
+        return;
+      }
+    }
+
     int userCode = UserData.get().getUserCode();
     boolean resetAnswerCount = widgetProblemForm.isReserveResetAnswerCount();
 
@@ -577,8 +587,7 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
       Service.Util.getInstance().resetVote(problem.id, callbackResetVote);
     }
 
-    Service.Util.getInstance().uploadProblem(problem, userCode, resetAnswerCount,
-        callbackUploadProblem);
+    Service.Util.getInstance().uploadProblem(problem, userCode, resetAnswerCount, callbackUploadProblem);
   }
 
   private final AsyncCallback<Void> callbackRemovePlayerAnswers = new AsyncCallback<Void>() {
@@ -657,8 +666,7 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
       return;
     }
 
-    Service.Util.getInstance().generateDiffHtml(before.summary, after.summary,
-        callbackGenerateDiffHtml);
+    Service.Util.getInstance().generateDiffHtml(before.summary, after.summary, callbackGenerateDiffHtml);
   }
 
   private final AsyncCallback<String> callbackGenerateDiffHtml = new AsyncCallback<String>() {
