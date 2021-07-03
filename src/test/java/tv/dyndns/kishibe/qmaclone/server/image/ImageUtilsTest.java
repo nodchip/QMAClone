@@ -5,8 +5,11 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.awt.image.BufferedImage;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.charset.Charset;
 
 import javax.imageio.ImageIO;
@@ -58,7 +61,9 @@ public class ImageUtilsTest {
   public void testResizeImage() throws IOException {
     File file = File.createTempFile("QMAClone", null);
     file.deleteOnExit();
-    imageUtils.resizeImage(new File("testdata/1394387_2204778689.jpg"), 32, 16, true, file);
+    try (OutputStream stream = new BufferedOutputStream(new FileOutputStream(file))) {
+      imageUtils.resizeImage(new File("testdata/1394387_2204778689.jpg"), 32, 16, true, stream);
+    }
     BufferedImage image = ImageIO.read(file);
     assertEquals(32, image.getWidth());
     assertEquals(16, image.getHeight());
@@ -68,7 +73,9 @@ public class ImageUtilsTest {
   public void resizeImageShouldFillTransparencyWithWhiteForGif() throws IOException {
     File file = File.createTempFile("QMAClone", null);
     file.deleteOnExit();
-    imageUtils.resizeImage(new File("testdata/img378.gif"), 512, 384, true, file);
+    try (OutputStream stream = new BufferedOutputStream(new FileOutputStream(file))) {
+      imageUtils.resizeImage(new File("testdata/img378.gif"), 512, 384, true, stream);
+    }
     BufferedImage image = ImageIO.read(file);
     int rgb = image.getRGB(0, 0);
     int r = rgb & 0xff;
@@ -85,8 +92,10 @@ public class ImageUtilsTest {
   public void resizeImageShouldFillTransparencyWithWhiteForPng() throws IOException {
     File file = File.createTempFile("QMAClone", null);
     file.deleteOnExit();
-    imageUtils.resizeImage(new File("testdata/160px-Japanese_Map_symbol_(Police_station).svg.png"),
-        512, 384, true, file);
+    try (OutputStream stream = new BufferedOutputStream(new FileOutputStream(file))) {
+      imageUtils.resizeImage(new File("testdata/160px-Japanese_Map_symbol_(Police_station).svg.png"), 512, 384, true,
+          stream);
+    }
     BufferedImage image = ImageIO.read(file);
     int rgb = image.getRGB(0, 0);
     int r = rgb & 0xff;
@@ -103,7 +112,9 @@ public class ImageUtilsTest {
   public void testResizeImageShouldFillCanvasIfKeepAspectRatioIsFalse() throws IOException {
     File file = File.createTempFile("QMAClone", null);
     file.deleteOnExit();
-    imageUtils.resizeImage(new File("testdata/1394387_2204778689.jpg"), 32, 16, false, file);
+    try (OutputStream stream = new BufferedOutputStream(new FileOutputStream(file))) {
+      imageUtils.resizeImage(new File("testdata/1394387_2204778689.jpg"), 32, 16, false, stream);
+    }
     BufferedImage image = ImageIO.read(file);
     int rgb = image.getRGB(0, 0);
     int r = rgb & 0xff;
@@ -118,7 +129,9 @@ public class ImageUtilsTest {
   public void testResizeImageThrowsExceptionOnFileNotFound() throws IOException {
     File file = File.createTempFile("QMAClone", null);
     file.deleteOnExit();
-    imageUtils.resizeImage(new File("testdata/hogehoge.fugafuga"), 32, 16, true, file);
+    try (OutputStream stream = new BufferedOutputStream(new FileOutputStream(file))) {
+      imageUtils.resizeImage(new File("testdata/hogehoge.fugafuga"), 32, 16, true, stream);
+    }
   }
 
   @Test
@@ -133,7 +146,6 @@ public class ImageUtilsTest {
     Files.write("test", file, Charset.forName("utf-8"));
     file.deleteOnExit();
 
-    assertEquals(file.lastModified(),
-        imageUtils.getLastModified(new Parameter("QMAClone", 512, 384, true)));
+    assertEquals(file.lastModified(), imageUtils.getLastModified(new Parameter("QMAClone", 512, 384, true)));
   }
 }
