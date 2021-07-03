@@ -10,8 +10,7 @@ import com.sun.jna.Pointer;
 import tv.dyndns.kishibe.qmaclone.client.constant.Constant;
 
 public class ZinniaObjectFactory extends BasePooledObjectFactory<Pointer> {
-  private static final String MODEL_FILE_PATH = Constant.FILE_PATH_BASE
-      + "qmaclone/handwriting-ja.model";
+  private static final String MODEL_FILE_PATH = Constant.FILE_PATH_BASE + "handwriting-ja.model";
   private final ZinniaLibrary zinnia;
 
   @Inject

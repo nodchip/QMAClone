@@ -29,9 +29,9 @@
 	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/gwt-plus-v1-0.3-alpha/gwt-plus-v1-0.3-alpha.jar"/>
 	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/gwt-web-sockets-1.0.0/gwt-web-sockets-1.0.0.jar"/>
 	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/javamail-1.5.1/javax.mail.jar"/>
-	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/gwt-2.8.2/gwt-dev-modified.jar"/>
-	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/gwt-2.8.2/gwt-servlet.jar"/>
-	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/gwt-2.8.2/gwt-user.jar"/>
+	<classpathentry kind="var" path="JAVA_DIRECTORY/gwt-2.9.0/gwt-dev.jar"/>
+	<classpathentry kind="var" path="JAVA_DIRECTORY/gwt-2.9.0/gwt-servlet.jar"/>
+	<classpathentry kind="var" path="JAVA_DIRECTORY/gwt-2.9.0/gwt-user.jar"/>
 	<classpathentry kind="var" path="JAVA_DIRECTORY"/>
 	<classpathentry kind="output" path="target/QMAClone-1.0-SNAPSHOT/WEB-INF/classes"/>
 </classpath>

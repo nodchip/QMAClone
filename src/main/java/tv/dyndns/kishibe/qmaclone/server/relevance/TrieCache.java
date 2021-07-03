@@ -15,8 +15,7 @@ import tv.dyndns.kishibe.qmaclone.client.constant.Constant;
 
 public class TrieCache {
 
-  private static final File DICTIONARY_FILE = new File(
-      Constant.FILE_PATH_BASE + "qmaclone/trie.bin");
+  private static final File DICTIONARY_FILE = new File(Constant.FILE_PATH_BASE + "trie.bin");
   private static final Object STATIC_KEY = new Object();
   private final Dictionaries.Factory dictionariesFactory;
   private final Trie.Factory trieFactory;
@@ -24,8 +23,8 @@ public class TrieCache {
       .expireAfterWrite(1, TimeUnit.DAYS).maximumSize(1).build(new CacheLoader<Object, Trie>() {
         @Override
         public Trie load(Object key) throws Exception {
-          if (DICTIONARY_FILE.isFile() && System
-              .currentTimeMillis() < DICTIONARY_FILE.lastModified() + 7L * 24 * 60 * 60 * 1000) {
+          if (DICTIONARY_FILE.isFile()
+              && System.currentTimeMillis() < DICTIONARY_FILE.lastModified() + 7L * 24 * 60 * 60 * 1000) {
             Trie trie = trieFactory.create();
             trie.load(DICTIONARY_FILE);
             return trie;

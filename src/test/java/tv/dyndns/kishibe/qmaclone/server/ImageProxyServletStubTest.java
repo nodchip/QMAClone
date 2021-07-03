@@ -22,6 +22,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
+import tv.dyndns.kishibe.qmaclone.client.constant.Constant;
 import tv.dyndns.kishibe.qmaclone.server.image.ImageUtils;
 import tv.dyndns.kishibe.qmaclone.server.image.ImageUtils.Parameter;
 
@@ -41,7 +42,7 @@ public class ImageProxyServletStubTest {
   @Before
   public void setUp() {
     try {
-      FileUtils.deleteDirectory(new File("/var/cache/qmaclone/image"));
+      FileUtils.deleteDirectory(new File(Constant.FILE_PATH_BASE + "image"));
     } catch (IOException e) {
     }
     service = new ImageProxyServletStub(mockImageManager);

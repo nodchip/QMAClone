@@ -23,11 +23,10 @@ import tv.dyndns.kishibe.qmaclone.server.util.Normalizer;
 
 public class WikipediaAllTitlesDictionary implements Dictionary {
 
-  private static final Logger logger = Logger
-      .getLogger(WikipediaAllTitlesDictionary.class.getName());
+  private static final Logger logger = Logger.getLogger(WikipediaAllTitlesDictionary.class.getName());
   private static final String WIKIPEDIA_ALL_TITLE_URL = "https://dumps.wikimedia.org/jawiki/latest/jawiki-latest-all-titles-in-ns0.gz";
   private static final File WIKIPEDIA_ALL_TITLE_FILE = new File(
-      Constant.FILE_PATH_BASE + "qmaclone/jawiki-latest-all-titles-in-ns0.gz");
+      Constant.FILE_PATH_BASE + "jawiki-latest-all-titles-in-ns0.gz");
   private final Downloader downloader;
 
   @Inject
@@ -47,8 +46,8 @@ public class WikipediaAllTitlesDictionary implements Dictionary {
   }
 
   private void ensureFile() throws IOException {
-    if (WIKIPEDIA_ALL_TITLE_FILE.isFile() && System
-        .currentTimeMillis() < WIKIPEDIA_ALL_TITLE_FILE.lastModified() + 7L * 24 * 60 * 60 * 1000) {
+    if (WIKIPEDIA_ALL_TITLE_FILE.isFile()
+        && System.currentTimeMillis() < WIKIPEDIA_ALL_TITLE_FILE.lastModified() + 7L * 24 * 60 * 60 * 1000) {
       return;
     }
 
@@ -65,9 +64,9 @@ public class WikipediaAllTitlesDictionary implements Dictionary {
 
     try (
         Scanner scanner = new Scanner(
-            new BufferedInputStream(new GZIPInputStream(
-                new BufferedInputStream(new FileInputStream(WIKIPEDIA_ALL_TITLE_FILE)))),
-        "utf-8")) {
+            new BufferedInputStream(
+                new GZIPInputStream(new BufferedInputStream(new FileInputStream(WIKIPEDIA_ALL_TITLE_FILE)))),
+            "utf-8")) {
       while (scanner.hasNextLine()) {
         String line = scanner.nextLine().trim();
         if (line.isEmpty()) {

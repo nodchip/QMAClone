@@ -30,8 +30,7 @@ public class Constant {
 
   public static final int MAX_PROBLEMS_PER_PLAYER = 2;
   public static final int MAX_PLAYER_PER_SESSION = 8;
-  public static final int MAX_PROBLEMS_PER_SESSION = MAX_PLAYER_PER_SESSION
-      * MAX_PROBLEMS_PER_PLAYER;
+  public static final int MAX_PROBLEMS_PER_SESSION = MAX_PLAYER_PER_SESSION * MAX_PROBLEMS_PER_PLAYER;
   public static final int MAX_PERFECT_BORDER_TIME = 0;
   public static final double MAX_POINT_COMPRESS = 0.5;
   public static final double MIN_POINT_COMPRESS = 0.5;
@@ -40,18 +39,16 @@ public class Constant {
   public static final int WAIT_SECOND_FOR_MATCHING = 100;
   public static final int SECONDS_FROM_READY_TO_PROBLEM = 10;
   public static final int MAX_TIMING_DELAY = 200;
-  private static final String[] CLASS_NAMES = { "ヴァンパイア", "トロール", "ユニコーン", "ホムンクルス", "ミノタウロス",
-      "ガーゴイル", "クラーケン", "リザードマン", "スフィンクス", "デュラハン", "グレムリン", "ケンタウロス", "ゾンビ", "ヘルハウンド", "カーバンクル",
-      "マンドレイク", "ヒドラ", "ドッペルゲンガー", "サラマンダー", "ゴーレム", "グリフォン", "ロック", "フェンリル", "ワルキューレ", "ケルベロス",
-      "ワーウルフ", "サイクロプス", "キマイラ", "イフリート", "バジリスク", "マンティコア", "マーメイド", "オーク", "バンシー", "バルログ",
-      "ジャバウォック", "フェニックス", "ケットシー", "ケツァルコアトル", "メドゥーサ", "リバイアサン", "ワイバーン", "鵺", "ケルピー", "マミー",
-      "スキュラ", "ペガサス", "カロン", "ヒポグリフ", "ベヒモス", "サンダーバード", "シーサーペント", "麒麟", "イエティ", "インキュバス", "サキュバス",
-      "スライム", "エント", "コカトリス", "ブラウニー", "バンダースナッチ", "ペリュトン", "パビルサグ", "ミミック", "ジャック・オ・ランタン",
-      "ポルターガイスト", "ノーム", "クネヒト・ルプレヒト", "ドラゴン", "エルフ", "ドワーフ", "天狗", "龍", "ウンディーネ", "ウィル・オ・ザ・ウィスプ",
-      "ゴブリン", "リャナンシー", "オーガ", "ホビット", "スレイプニル", "スマウグ", "ネメアンライオン", "アルゴス", "エキドナ", "ムスッペル",
-      "ミルメコレオ", "パズズ", "タロス", "カクス", "アモン", "ヘカトンケイル", "エコー", "メフィストフェレス", "ギガース", "シルフ", "エンジェル",
-      "キューピッド", "チョンチョン", "開明獣", "九尾の狐", "コロポックル", "河童", "ガルーダ", "ナーガ", "バロン", "ギリメカラ", "クサントス",
-      "バリオス", "八岐大蛇", "酒呑童子", "蚩尤", "八咫烏", "セルキー", "ハンプティ・ダンプティ", "フンババ", "リー・バン", "リッチ" };
+  private static final String[] CLASS_NAMES = { "ヴァンパイア", "トロール", "ユニコーン", "ホムンクルス", "ミノタウロス", "ガーゴイル", "クラーケン",
+      "リザードマン", "スフィンクス", "デュラハン", "グレムリン", "ケンタウロス", "ゾンビ", "ヘルハウンド", "カーバンクル", "マンドレイク", "ヒドラ", "ドッペルゲンガー", "サラマンダー",
+      "ゴーレム", "グリフォン", "ロック", "フェンリル", "ワルキューレ", "ケルベロス", "ワーウルフ", "サイクロプス", "キマイラ", "イフリート", "バジリスク", "マンティコア",
+      "マーメイド", "オーク", "バンシー", "バルログ", "ジャバウォック", "フェニックス", "ケットシー", "ケツァルコアトル", "メドゥーサ", "リバイアサン", "ワイバーン", "鵺", "ケルピー",
+      "マミー", "スキュラ", "ペガサス", "カロン", "ヒポグリフ", "ベヒモス", "サンダーバード", "シーサーペント", "麒麟", "イエティ", "インキュバス", "サキュバス", "スライム",
+      "エント", "コカトリス", "ブラウニー", "バンダースナッチ", "ペリュトン", "パビルサグ", "ミミック", "ジャック・オ・ランタン", "ポルターガイスト", "ノーム", "クネヒト・ルプレヒト",
+      "ドラゴン", "エルフ", "ドワーフ", "天狗", "龍", "ウンディーネ", "ウィル・オ・ザ・ウィスプ", "ゴブリン", "リャナンシー", "オーガ", "ホビット", "スレイプニル", "スマウグ",
+      "ネメアンライオン", "アルゴス", "エキドナ", "ムスッペル", "ミルメコレオ", "パズズ", "タロス", "カクス", "アモン", "ヘカトンケイル", "エコー", "メフィストフェレス", "ギガース",
+      "シルフ", "エンジェル", "キューピッド", "チョンチョン", "開明獣", "九尾の狐", "コロポックル", "河童", "ガルーダ", "ナーガ", "バロン", "ギリメカラ", "クサントス", "バリオス",
+      "八岐大蛇", "酒呑童子", "蚩尤", "八咫烏", "セルキー", "ハンプティ・ダンプティ", "フンババ", "リー・バン", "リッチ" };
   public static final int NUMBER_OF_CLASSES = CLASS_NAMES.length;
   private static final double ACCURACY_RATE_UPPER_START = 1.0;
   private static final double ACCURACY_RATE_LOWER_START = 0.8;
@@ -88,8 +85,8 @@ public class Constant {
   public static final String ICON_UPLOAD_RESPONSE_REQUEST_FORMAT_ERROR = "--REQUEST_FORMAT_ERROR--";
   public static final String ICON_UPLOAD_RESPONSE_IMAGE_FILE_NAME_FORMAT_ERROR = "--IMAGE_FILE_NAME_FORMAT_ERROR--";
   public static final String ICON_URL_PREFIX = "http://kishibe.dyndns.tv/qmaclone/icon/";
-  public static final String FILE_PATH_BASE = "/var/cache/";
-  public static final String ICON_TEMP_FOLDER_PATH = FILE_PATH_BASE + "qmaclone/icon/";
+  public static final String FILE_PATH_BASE = "/home/tomcat/qmaclone/";
+  public static final String ICON_TEMP_FOLDER_PATH = FILE_PATH_BASE + "icon/";
   public static final String ICON_FOLDER_PATH = "/var/www/html/qmaclone/icon/";
   public static final int ICON_SIZE = 48;
   public static final int ICON_SIZE_BIG = 64;
@@ -116,15 +113,16 @@ public class Constant {
   public static final int BBS_DISPLAY_INFO_ANONYMOUS = 0;
   public static final int BBS_DISPLAY_INFO_NAME_ONLY = 1;
   public static final int BBS_DISPLAY_INFO_ALL_DATA = 2;
-  // public static final String NAMES_OF_GENRE[] = { "ノンジャンル", "アニメ＆ゲーム", "スポーツ", "芸能", "ライフスタイル",
+  // public static final String NAMES_OF_GENRE[] = { "ノンジャンル", "アニメ＆ゲーム", "スポーツ",
+  // "芸能", "ライフスタイル",
   // "社会", "文系学問", "理系学問", "未分類" };
-  // public static final String INITIAL_OF_GENRE[] = { "ノ", "ア", "ス", "芸", "ラ", "社", "文", "理", "未"
+  // public static final String INITIAL_OF_GENRE[] = { "ノ", "ア", "ス", "芸", "ラ",
+  // "社", "文", "理", "未"
   // };
   public static final int LINK_DATA_PER_PAGE = 10;
-  public static final String[] PREFECTURE_NAMES = { "無所属", "北海道", "青森", "岩手", "宮城", "秋田", "山形",
-      "福島", "茨城", "栃木", "群馬", "埼玉", "千葉", "東京", "神奈川", "新潟", "富山", "石川", "福井", "山梨", "長野", "岐阜",
-      "静岡", "愛知", "三重", "滋賀", "京都", "大阪", "兵庫", "奈良", "和歌山", "鳥取", "島根", "岡山", "広島", "山口", "徳島",
-      "香川", "愛媛", "高知", "福岡", "佐賀", "長崎", "熊本", "大分", "宮崎", "鹿児島", "沖縄", };
+  public static final String[] PREFECTURE_NAMES = { "無所属", "北海道", "青森", "岩手", "宮城", "秋田", "山形", "福島", "茨城", "栃木", "群馬",
+      "埼玉", "千葉", "東京", "神奈川", "新潟", "富山", "石川", "福井", "山梨", "長野", "岐阜", "静岡", "愛知", "三重", "滋賀", "京都", "大阪", "兵庫", "奈良",
+      "和歌山", "鳥取", "島根", "岡山", "広島", "山口", "徳島", "香川", "愛媛", "高知", "福岡", "佐賀", "長崎", "熊本", "大分", "宮崎", "鹿児島", "沖縄", };
   public static final int MAX_RATING_HISTORY = 100;
   public static final int RATING_DISTRIBUTION_WIDTH = 20;
   public static final int CLICK_IMAGE_WIDTH = 512;
@@ -176,10 +174,10 @@ public class Constant {
     ACCURACY_RATE_UPPER_BOUND[numberOfClasses + 4] = 0.8;
 
     for (int i = 0; i < numberOfClasses; ++i) {
-      ACCURACY_RATE_LOWER_BOUND[i] = (ACCURACY_RATE_LOWER_START - ACCURACY_RATE_LOWER_END)
-          * (numberOfClasses - i - 1) / numberOfClasses + ACCURACY_RATE_LOWER_END;
-      ACCURACY_RATE_UPPER_BOUND[i] = (ACCURACY_RATE_UPPER_START - ACCURACY_RATE_UPPER_END)
-          * (numberOfClasses - i - 1) / numberOfClasses + ACCURACY_RATE_UPPER_END;
+      ACCURACY_RATE_LOWER_BOUND[i] = (ACCURACY_RATE_LOWER_START - ACCURACY_RATE_LOWER_END) * (numberOfClasses - i - 1)
+          / numberOfClasses + ACCURACY_RATE_LOWER_END;
+      ACCURACY_RATE_UPPER_BOUND[i] = (ACCURACY_RATE_UPPER_START - ACCURACY_RATE_UPPER_END) * (numberOfClasses - i - 1)
+          / numberOfClasses + ACCURACY_RATE_UPPER_END;
     }
   }
 
