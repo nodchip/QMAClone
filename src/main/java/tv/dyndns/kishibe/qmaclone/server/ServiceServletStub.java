@@ -121,7 +121,7 @@ import tv.dyndns.kishibe.qmaclone.server.util.diff_match_patch.Diff;
 @SuppressWarnings("serial")
 public class ServiceServletStub extends RemoteServiceServlet implements Service {
 	private static final Logger logger = Logger.getLogger(ServiceServletStub.class.toString());
-	private static final File PROBLEM_CREATION_LOG_FILE = new File("/home/tomcat/qmaclone/problem.log");
+	private static final File PROBLEM_CREATION_LOG_FILE = new File("/var/cache/qmaclone/problem.log");
 	private static final Set<String> LOGGING_EXCLUDED_METHODS = ImmutableSet.of("keepAlive", "getServerStatus",
 			"getGameStatus", "keepAliveGame", "waitForGame", "receiveMessageFromChat");
 	private final Random random = new Random();
