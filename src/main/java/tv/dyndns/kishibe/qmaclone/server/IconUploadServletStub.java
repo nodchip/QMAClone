@@ -31,6 +31,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -154,7 +155,7 @@ public class IconUploadServletStub extends HttpServlet implements Servlet {
     new File(Constant.ICON_FOLDER_PATH).mkdirs();
     File outputFile = new File(Constant.ICON_FOLDER_PATH, fileName);
     try {
-      tempOutputFile.renameTo(outputFile);
+      Files.move(tempOutputFile.toPath(), outputFile.toPath());
     } catch (Exception e) {
       logger.log(Level.WARNING, String.format("画像ファイルのwebで公開しているフォルダへの配置に失敗しました。 tempOutputFile=%s outputFile=%s",
           tempOutputFile, outputFile), e);
