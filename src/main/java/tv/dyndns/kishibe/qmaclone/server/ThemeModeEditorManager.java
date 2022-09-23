@@ -47,12 +47,12 @@ public class ThemeModeEditorManager {
 		// メール送信
 		PacketUserData userData = database.getUserData(userCode);
 		Properties properties = System.getProperties();
-		properties.setProperty("mail.smtp.host", "smtp.gmail.com");
-		properties.setProperty("mail.smtp.socketFactory.port", "465");
-		properties.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-		properties.setProperty("mail.smtp.auth", "true");
-		properties.setProperty("mail.smtp.port", "465");
-
+		properties.put("mail.smtp.auth", "true");
+		properties.put("mail.smtp.starttls.enable", "true");
+		properties.put("mail.smtp.host", "smtp.gmail.com");
+		properties.put("mail.smtp.port", "587");
+		properties.put("mail.smtp.debug", "true");
+    
 		Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
 			protected PasswordAuthentication getPasswordAuthentication() {
 				try {
