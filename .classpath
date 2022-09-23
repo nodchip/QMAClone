@@ -28,7 +28,6 @@
 	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/gwt-visualization-1.1.2/gwt-visualization.jar"/>
 	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/gwt-plus-v1-0.3-alpha/gwt-plus-v1-0.3-alpha.jar"/>
 	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/gwt-web-sockets-1.0.0/gwt-web-sockets-1.0.0.jar"/>
-	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/javamail-1.5.1/javax.mail.jar"/>
 	<classpathentry kind="var" path="JAVA_DIRECTORY"/>
 	<classpathentry kind="var" path="JAVA_DIRECTORY/gwt-2.10.0/gwt-dev.jar"/>
 	<classpathentry kind="var" path="JAVA_DIRECTORY/gwt-2.10.0/gwt-servlet.jar"/>
