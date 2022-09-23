@@ -1,0 +1,60 @@
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
+
+#  #%# capabilities=autoconf suggest
+#  #%# family=auto
+
+import urllib.request
+import sys
+
+PREFIX='qmaclone_'
+MODE_TO_TITLES = {
+    'current_players': 'Current Players',
+    'total_players': 'Total Players',
+    'current_sessions': 'Current Sessions',
+    'total_sessions': 'Total Sessions',
+    'page_view': 'Page View',
+    'problems': 'Problems',
+    'login_players': 'Login Players',
+    'active_players': 'Active Players',
+    'players_in_whole': 'Players in Whole',
+}
+
+def config(mode):
+    print(f'graph_title {MODE_TO_TITLES[mode]}')
+    print(f'graph_category qmaclone')
+    print(f'graph_vlabel Value')
+    print(f'{mode}.label mode')
+
+
+def autoconf():
+    print('yes')
+
+
+def suggest():
+    for mode in MODE_TO_TITLES.keys():
+        print(mode)
+
+
+def main():
+    file = __file__
+#     file = '/etc/munin/plugins/qmaclone_active_players'
+    mode = file[file.index(PREFIX)+len(PREFIX):]
+
+    if len(sys.argv) == 1:
+#         with urllib.request.urlopen('http://gilgamesh:58080/QMAClone/stats?mode=' + mode) as res:
+        with urllib.request.urlopen('http://127.0.0.1:58080/QMAClone/stats?mode=' + mode) as res:
+            print(res.read().decode('utf-8'))
+
+    elif len(sys.argv) == 2:
+        if sys.argv[1] == 'config':
+            config(mode)
+        elif sys.argv[1] == 'autoconf':
+            autoconf()
+        elif sys.argv[1] == 'suggest':
+            suggest()
+
+
+if __name__ == '__main__':
+    main()
+
