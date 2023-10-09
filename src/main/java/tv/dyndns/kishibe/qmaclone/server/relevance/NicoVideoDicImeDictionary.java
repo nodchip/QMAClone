@@ -21,7 +21,7 @@ import tv.dyndns.kishibe.qmaclone.server.util.DownloaderException;
 public class NicoVideoDicImeDictionary implements Dictionary {
 
   private static final Logger logger = Logger.getLogger(NicoVideoDicImeDictionary.class.getName());
-  private static final String NICO_VIDEO_DIC_IME_URL = "http://public.s3.tkido.com.s3-website-ap-northeast-1.amazonaws.com/nicoime.zip";
+  private static final String NICO_VIDEO_DIC_IME_URL = "http://tkido.com/nicoime/nicoime.zip";
   private static final File NICO_VIDEO_DIC_IME_FILE = new File(Constant.FILE_PATH_BASE + "nicoime.zip");
   private final Downloader downloader;
 
