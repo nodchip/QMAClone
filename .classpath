@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry exported="true" kind="con" path="com.gwtplugins.gwt.eclipse.core.GWT_CONTAINER"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
@@ -16,9 +16,9 @@
 	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/gwt-plus-v1-0.3-alpha/gwt-plus-v1-0.3-alpha.jar"/>
 	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/gwt-web-sockets-1.0.0/gwt-web-sockets-1.0.0.jar"/>
 	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY"/>
-	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/gwt-2.10.0/gwt-dev.jar"/>
-	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/gwt-2.10.0/gwt-servlet.jar"/>
-	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/gwt-2.10.0/gwt-user.jar"/>
+	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/gwt-2.9.0/gwt-dev.jar"/>
+	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/gwt-2.9.0/gwt-servlet.jar"/>
+	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/gwt-2.9.0/gwt-user.jar"/>
 	<classpathentry kind="src" output="target/QMAClone-1.0-SNAPSHOT/WEB-INF/classes" path="src/main/java">
 		<attributes>
 			<attribute name="optional" value="true"/>
@@ -27,9 +27,9 @@
 	</classpathentry>
 	<classpathentry kind="src" output="target/test-classes" path="src/test/java">
 		<attributes>
+			<attribute name="test" value="true"/>
 			<attribute name="optional" value="true"/>
 			<attribute name="maven.pomderived" value="true"/>
-			<attribute name="test" value="true"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="output" path="target/QMAClone-1.0-SNAPSHOT/WEB-INF/classes"/>
