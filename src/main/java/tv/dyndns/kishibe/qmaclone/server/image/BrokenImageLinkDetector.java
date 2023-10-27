@@ -39,7 +39,7 @@ public class BrokenImageLinkDetector implements Runnable {
       logger.log(Level.WARNING, "ホスト名の取得に失敗しました");
     }
 
-    if (!SKIP_HOST_CHECK_FOR_TESTING && "nighthawk".equals(hostName)) {
+    if (!SKIP_HOST_CHECK_FOR_TESTING && "endwalker".equals(hostName)) {
       logger.log(Level.INFO, "デバッグ実行のためリンク切れ画像の検出を行いませんでした");
       return;
     }
