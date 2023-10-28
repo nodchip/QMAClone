@@ -265,7 +265,9 @@ public interface Database {
 	// ////////////////////////////////////////////////////////////////////////
 	int getNumberOfActiveUsers() throws DatabaseException;
 
-	String getPassword(String type) throws DatabaseException;
+  String getPassword(String type) throws DatabaseException;
+
+  void setPassword(String type, String password) throws DatabaseException;
 
 	public List<PacketProblem> getAdsenseProblems(String query) throws DatabaseException;
 

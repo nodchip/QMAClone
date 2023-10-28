@@ -728,6 +728,12 @@ public class CachedDatabase implements Database {
 			throw new DatabaseException(e);
 		}
 	}
+	
+  @Override
+  public void setPassword(String type, String password) throws DatabaseException {
+    database.setPassword(type, password);
+    passwordCache.invalidate(type);
+  }
 
 	// //////////////////////////////////////////////////////////////////////////////
 	// 問題

@@ -1306,14 +1306,23 @@ public class DirectDatabase implements Database {
 		}
 	}
 
-	@Override
-	public String getPassword(String type) throws DatabaseException {
-		try {
-			return runner.query("SELECT password FROM password WHERE type = ?", new ScalarHandler<String>(), type);
-		} catch (SQLException e) {
-			throw new DatabaseException(e);
-		}
-	}
+  @Override
+  public String getPassword(String type) throws DatabaseException {
+    try {
+      return runner.query("SELECT password FROM password WHERE type = ?", new ScalarHandler<String>(), type);
+    } catch (SQLException e) {
+      throw new DatabaseException(e);
+    }
+  }
+
+  @Override
+  public void setPassword(String type, String password) throws DatabaseException {
+    try {
+      runner.update("REPLACE password (type, password) VALUES (?, ?)", type, password);
+    } catch (SQLException e) {
+      throw new DatabaseException(e);
+    }
+  }
 
 	@Override
 	public int getNumberOfChatLog() throws DatabaseException {
