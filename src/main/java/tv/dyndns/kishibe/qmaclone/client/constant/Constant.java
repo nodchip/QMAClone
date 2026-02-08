@@ -132,17 +132,35 @@ public class Constant {
   public static final int MIN_NUMBER_OF_THEME_MODE_PROBLEMS = 100;
   public static final int MAX_NUMBER_OF_CREATION_PER_HOUR = 3;
   public static final int WEB_SOCKET_PORT = 60080;
+  private static final String WEB_SOCKET_URL_LOCAL = "ws://localhost:" + WEB_SOCKET_PORT
+      + "/QMAClone/websocket/";
+  private static final String WEB_SOCKET_URL_REMOTE = "ws://kishibe.dyndns.tv/QMAClone/websocket/";
   public static final String WEB_SOCKET_URL = getWebSocketUrl();
   public static final String KEY_GAME_SESSION_ID = "game_session_id";
 
+  /**
+   * 実行環境に応じてWebSocket接続先URLを返す。
+   */
   private static String getWebSocketUrl() {
-    if (GWT.isClient() && Location.getHost().contains(":8888")) {
-      return "ws://localhost:" + WEB_SOCKET_PORT + "/QMAClone/websocket/";
-    } else if (GWT.isClient() && Location.getHost().contains(":8080")) {
-      return "ws://localhost:" + WEB_SOCKET_PORT + "/QMAClone/websocket/";
-    } else {
-      return "ws://kishibe.dyndns.tv/QMAClone/websocket/";
+    if (!GWT.isClient()) {
+      return WEB_SOCKET_URL_REMOTE;
     }
+
+    try {
+      return resolveWebSocketUrlForHostName(true, Location.getHostName());
+    } catch (Throwable e) {
+      return WEB_SOCKET_URL_REMOTE;
+    }
+  }
+
+  /**
+   * クライアント実行時のホスト名からWebSocket接続先URLを決定する。
+   */
+  static String resolveWebSocketUrlForHostName(boolean isClient, String hostName) {
+    if (isClient && ("localhost".equals(hostName) || "127.0.0.1".equals(hostName))) {
+      return WEB_SOCKET_URL_LOCAL;
+    }
+    return WEB_SOCKET_URL_REMOTE;
   }
 
   public static final int MAX_NUMBER_OF_ANSWERS = 8;
