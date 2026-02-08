@@ -1,0 +1,7 @@
+eclipse.preferences.version=1
+gwtMavenModuleName=tv.dyndns.kishibe.qmaclone.QMAClone
+gwtMavenModuleShortName=QMAClone
+jarsExcludedFromWebInfLib=
+lastWarOutDir=C\:/Users/nodchip/git/QMAClone/war
+warSrcDir=src/main/webapp
+warSrcDirIsOutput=false

@@ -1,2 +1,6 @@
 /target
 /log.txt
+/.vscode/
+/src/main/gwt-unitCache/
+/src/main/webapp/WEB-INF/deploy/tv.dyndns.kishibe.qmaclone.QMAClone/
+/src/main/webapp/tv.dyndns.kishibe.qmaclone.QMAClone/
