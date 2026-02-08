@@ -1,5 +1,10 @@
 package tv.dyndns.kishibe.qmaclone.server.sns;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -44,10 +49,27 @@ public class TwitterClient implements SnsClient {
       return;
     }
 
+    ensureTwitterSdkPropertiesFile(Paths.get(System.getProperty("user.dir")));
     TwitterCredentialsOAuth2 credentials = new TwitterCredentialsOAuth2(clientIid, clientSecret, accessToken,
         refreshToken, true);
     twitterApi = new TwitterApi(credentials);
     twitterApi.addCallback(new RefreshTokenCallback(database));
+  }
+
+  /**
+   * twitter-api-java-sdk の初期化で参照される sdk.properties を必要に応じて作成する。
+   */
+  static void ensureTwitterSdkPropertiesFile(Path workingDirectory) {
+    Path sdkPropertiesPath = workingDirectory.resolve("sdk.properties");
+    if (Files.exists(sdkPropertiesPath)) {
+      return;
+    }
+
+    try {
+      Files.write(sdkPropertiesPath, "sdk.exclude.fields=\n".getBytes(StandardCharsets.UTF_8));
+    } catch (IOException e) {
+      logger.log(Level.WARNING, "Failed to create sdk.properties for twitter-api-java-sdk.", e);
+    }
   }
 
   @Override
