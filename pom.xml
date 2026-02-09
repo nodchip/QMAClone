@@ -246,24 +246,29 @@
     <dependency>
     	<groupId>org.eclipse.jetty</groupId>
     	<artifactId>jetty-server</artifactId>
+    	<scope>provided</scope>
     </dependency>
     <dependency>
     	<groupId>org.eclipse.jetty</groupId>
     	<artifactId>jetty-servlet</artifactId>
+    	<scope>provided</scope>
     </dependency>
     <dependency>
     	<groupId>org.eclipse.jetty.websocket</groupId>
     	<artifactId>websocket-api</artifactId>
+    	<scope>provided</scope>
     </dependency>
     <dependency>
     	<groupId>org.eclipse.jetty.websocket</groupId>
     	<artifactId>websocket-servlet</artifactId>
     	<version>9.2.14.v20151106</version>
+    	<scope>provided</scope>
     </dependency>
     <dependency>
     	<groupId>org.eclipse.jetty.websocket</groupId>
     	<artifactId>websocket-server</artifactId>
     	<version>9.2.14.v20151106</version>
+    	<scope>provided</scope>
     </dependency>
     <dependency>
     	<groupId>com.sun.mail</groupId>
