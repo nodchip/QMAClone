@@ -189,6 +189,11 @@
     	<version>1.12.2</version>
     </dependency>
     <dependency>
+    	<groupId>org.slf4j</groupId>
+    	<artifactId>slf4j-jdk14</artifactId>
+    	<version>1.7.16</version>
+    </dependency>
+    <dependency>
     	<groupId>tw.edu.ntu.csie</groupId>
     	<artifactId>libsvm</artifactId>
     	<version>3.24</version>
