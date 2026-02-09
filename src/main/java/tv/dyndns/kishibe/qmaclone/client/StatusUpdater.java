@@ -110,8 +110,10 @@ public abstract class StatusUpdater<T> {
 	@VisibleForTesting
 	boolean isWebSocketUsed() {
 		WebSocketUsage webSocketUsage = UserData.get().getWebSocketUsage();
-		return webSocketUsage == WebSocketUsage.On || webSocketUsage == WebSocketUsage.Default
-				&& UserData.get().getUserCode() % 10 <= ENABLED_USER_CODE_LOWER_DIGIT;
+		boolean isEnabledByUserSetting = webSocketUsage == WebSocketUsage.On
+				|| webSocketUsage == WebSocketUsage.Default
+						&& UserData.get().getUserCode() % 10 <= ENABLED_USER_CODE_LOWER_DIGIT;
+		return isEnabledByUserSetting;
 	}
 
 	private final MessageHandler messageHandler = new MessageHandler() {

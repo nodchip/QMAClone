@@ -133,6 +133,8 @@ public class Constant {
   public static final int MAX_NUMBER_OF_CREATION_PER_HOUR = 3;
   public static final int WEB_SOCKET_PORT = 60080;
   private static final String WEB_SOCKET_URL_REMOTE = "ws://kishibe.dyndns.tv/QMAClone/websocket/";
+  private static final String WEB_SOCKET_PATH = "/websocket/";
+  private static final String WEB_SOCKET_PATH_DEVMODE = "/devmode-websocket/";
   public static final String WEB_SOCKET_URL = getWebSocketUrl();
   public static final String KEY_GAME_SESSION_ID = "game_session_id";
 
@@ -160,8 +162,10 @@ public class Constant {
     if (!isClient || host == null || host.isEmpty()) {
       return WEB_SOCKET_URL_REMOTE;
     }
-    return resolveWebSocketScheme(protocol) + "://" + host + resolveContextPath(locationPath)
-        + "/websocket/";
+    String contextPath = resolveContextPath(locationPath);
+    String path =
+        contextPath.isEmpty() && isDevModeHost(host) ? WEB_SOCKET_PATH_DEVMODE : WEB_SOCKET_PATH;
+    return resolveWebSocketScheme(protocol) + "://" + host + contextPath + path;
   }
 
   static String resolveWebSocketScheme(String protocol) {
@@ -180,6 +184,26 @@ public class Constant {
       return "";
     }
     return locationPath.substring(0, secondSlashIndex);
+  }
+
+  static boolean isWebSocketAvailableForLocation(boolean isClient, String host,
+      String locationPath) {
+    return true;
+  }
+
+  static boolean isDevModeHost(String host) {
+    return host != null && host.endsWith(":8888");
+  }
+
+  public static boolean isWebSocketAvailableOnCurrentLocation() {
+    if (!GWT.isClient()) {
+      return true;
+    }
+    try {
+      return isWebSocketAvailableForLocation(true, Location.getHost(), Location.getPath());
+    } catch (Throwable e) {
+      return true;
+    }
   }
 
   public static final int MAX_NUMBER_OF_ANSWERS = 8;

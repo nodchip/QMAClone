@@ -19,6 +19,13 @@ public class ConstantTest {
   }
 
   @Test
+  public void resolveWebSocketUrlForLocationShouldUseDevModePathOnRoot() {
+    assertEquals("ws://127.0.0.1:8888/devmode-websocket/",
+        Constant.resolveWebSocketUrlForLocation(true, "http:", "127.0.0.1:8888",
+            "/QMAClone.html"));
+  }
+
+  @Test
   public void resolveWebSocketUrlForLocationShouldUseWssForHttps() {
     assertEquals("wss://kishibe.dyndns.tv/QMAClone/websocket/",
         Constant.resolveWebSocketUrlForLocation(true, "https:", "kishibe.dyndns.tv",
@@ -50,5 +57,17 @@ public class ConstantTest {
   @Test
   public void resolveContextPathShouldReturnEmptyForRootPath() {
     assertEquals("", Constant.resolveContextPath("/QMAClone.html"));
+  }
+
+  @Test
+  public void isWebSocketAvailableForLocationShouldBeTrueOnDevModeRoot() {
+    assertEquals(true,
+        Constant.isWebSocketAvailableForLocation(true, "127.0.0.1:8888", "/QMAClone.html"));
+  }
+
+  @Test
+  public void isWebSocketAvailableForLocationShouldBeTrueOnTomcatContext() {
+    assertEquals(true, Constant.isWebSocketAvailableForLocation(true, "localhost:8080",
+        "/QMAClone-1.0-SNAPSHOT/"));
   }
 }
