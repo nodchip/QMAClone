@@ -3,7 +3,7 @@
   <fixed facet="wst.jsdt.web"/>
   <installed facet="java" version="1.8"/>
   <installed facet="com.gwtplugins.gwt.facet" version="1.0"/>
-  <installed facet="jst.web" version="2.5"/>
   <installed facet="wst.jsdt.web" version="1.0"/>
   <installed facet="jst.jaxrs" version="2.1"/>
+  <installed facet="jst.web" version="3.1"/>
 </faceted-project>
