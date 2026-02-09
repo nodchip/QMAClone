@@ -57,7 +57,7 @@
     <dependency>
     	<groupId>name.pehl</groupId>
     	<artifactId>piriti-user</artifactId>
-    	<version>0.7</version>
+    	<version>0.8</version>
     </dependency>
     <dependency>
     	<groupId>com.google.gwt</groupId>
@@ -236,12 +236,12 @@
     <dependency>
     	<groupId>name.pehl</groupId>
     	<artifactId>piriti-dev</artifactId>
-    	<version>0.7</version>
+    	<version>0.8</version>
     </dependency>
     <dependency>
     	<groupId>name.pehl</groupId>
     	<artifactId>piriti-restlet</artifactId>
-    	<version>0.7</version>
+    	<version>0.8</version>
     </dependency>
     <dependency>
     	<groupId>org.eclipse.jetty</groupId>
