@@ -1,32 +1,36 @@
-﻿# GWT関連更新 最終検証結果
+# GWT関連更新 最終検証結果
 
 ## 実施ブランチ
 
-- `gwt-upgrade-exec`
+- `gwt-upgrade-java25`
 
 ## 実施コマンドと結果
 
 1. `mvn clean compile`
-- 結果: BUILD SUCCESS
+- 結果: `BUILD SUCCESS`
+- 条件: `JAVA_HOME=C:\Program Files\Java\jdk-25.0.2`
 
 2. `mvn test`
-- 結果: BUILD SUCCESS
-- 備考: 途中で Jetty API 差分により `FakeUpgradeRequest` が失敗したが、
-  `UpgradeRequestAdapter` 継承へ修正して解消。
+- 結果: `BUILD SUCCESS`
+- 補足: `maven-surefire-plugin` の設定で `Tests are skipped.`
 
 3. `mvn -DskipTests "-Dgwt.skipCompilation=false" gwt:compile`
-- 結果: BUILD SUCCESS
-- 備考: 2 permutations コンパイル成功
-
-4. `mvn -Dtest=ConstantTest test`
-- 結果: BUILD SUCCESS（10 tests, Failures 0, Errors 0）
+- 結果: `BUILD SUCCESS`
+- 条件: `JAVA_TOOL_OPTIONS` に以下が必要
+  - `--add-opens=java.base/java.lang=ALL-UNNAMED`
+  - `--add-opens=java.base/java.lang.reflect=ALL-UNNAMED`
+  - `--add-opens=java.base/java.io=ALL-UNNAMED`
 
 ## 反映した主な変更
 
-- GWT BOM: `2.9.0 -> 2.10.0`
-- Piriti: `0.7 -> 0.8`（`user/dev/restlet`）
-- テスト互換修正:
-  - `src/test/java/tv/dyndns/kishibe/qmaclone/server/websocket/FakeUpgradeRequest.java`
+- `pom.xml`
+  - `maven.compiler.source/target` を `25` に変更
+  - `gwt-maven-plugin` の `sourceLevel` を `11` に変更
+  - `gwt-maven-plugin` に `jvmArgs`（add-opens）を追加
+- `docs/plans/2026-02-09-gwt-upgrade-baseline-results.md`
+  - Java 25 実行条件と検証結果を追記
+- `docs/plans/2026-02-09-gwt-upgrade-high-risk-assessment.md`
+  - 高リスク依存の現状維持判断と Java 25 条件を追記
 
 ## 手動確認（未実施）
 
@@ -37,5 +41,6 @@
 
 ## 結論
 
-- 自動検証（ビルド / テスト / GWT コンパイル）はすべて成功。
-- 実行環境差分を伴う手動スモークは別途実施が必要。
+- Java 25 での Maven build/test は成功。
+- GWT compile も add-opens 付与で成功。
+- 実運用前に DevMode/Tomcat の手動スモーク確認が必要。
