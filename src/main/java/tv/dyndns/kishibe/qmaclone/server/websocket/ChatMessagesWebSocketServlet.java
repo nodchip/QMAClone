@@ -3,6 +3,7 @@ package tv.dyndns.kishibe.qmaclone.server.websocket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
@@ -15,10 +16,11 @@ import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 
 import tv.dyndns.kishibe.qmaclone.server.ChatManager;
+import tv.dyndns.kishibe.qmaclone.server.Injectors;
 
 /**
  * チャットメッセージを返すWebSocketの接続リクエストを処理する
- * 
+ *
  * @author nodchip
  */
 @SuppressWarnings("serial")
@@ -35,15 +37,21 @@ public class ChatMessagesWebSocketServlet extends WebSocketServlet {
 
     @OnWebSocketClose
     public void onClose(int statusCode, String reason) {
-      chatManager.getChatMessagesMessageSender().bye(session);
+      if (session != null) {
+        chatManager.getChatMessagesMessageSender().bye(session);
+      }
       this.session = null;
     }
 
     @OnWebSocketError
     public void onError(Throwable cause) {
       logger.log(Level.WARNING, "チャットメッセージWebSocketセッションでエラーが起こりました。 remoteAddress="
-          + session.getRemoteAddress().toString(), cause);
-      chatManager.getChatMessagesMessageSender().bye(session);
+          + (session == null || session.getRemoteAddress() == null ? "unknown"
+              : session.getRemoteAddress().toString()),
+          cause);
+      if (session != null) {
+        chatManager.getChatMessagesMessageSender().bye(session);
+      }
       this.session = null;
     }
   }
@@ -51,6 +59,10 @@ public class ChatMessagesWebSocketServlet extends WebSocketServlet {
   private static final Logger logger = Logger
       .getLogger(ChatMessagesWebSocketServlet.class.toString());
   private static ChatManager chatManager;
+
+  public ChatMessagesWebSocketServlet() {
+    this(Injectors.get().getInstance(ChatManager.class));
+  }
 
   @Inject
   public ChatMessagesWebSocketServlet(ChatManager chatManager) {

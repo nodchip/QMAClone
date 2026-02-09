@@ -12,20 +12,43 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class ConstantTest {
   @Test
-  public void resolveWebSocketUrlForHostNameShouldUseLocalForLocalhost() {
-    assertEquals("ws://localhost:60080/QMAClone/websocket/",
-        Constant.resolveWebSocketUrlForHostName(true, "localhost"));
+  public void resolveWebSocketUrlForLocationShouldUseWsForHttp() {
+    assertEquals("ws://localhost:8080/QMAClone-1.0-SNAPSHOT/websocket/",
+        Constant.resolveWebSocketUrlForLocation(true, "http:", "localhost:8080",
+            "/QMAClone-1.0-SNAPSHOT/"));
   }
 
   @Test
-  public void resolveWebSocketUrlForHostNameShouldUseLocalForLoopbackIp() {
-    assertEquals("ws://localhost:60080/QMAClone/websocket/",
-        Constant.resolveWebSocketUrlForHostName(true, "127.0.0.1"));
+  public void resolveWebSocketUrlForLocationShouldUseWssForHttps() {
+    assertEquals("wss://kishibe.dyndns.tv/QMAClone/websocket/",
+        Constant.resolveWebSocketUrlForLocation(true, "https:", "kishibe.dyndns.tv",
+            "/QMAClone/"));
   }
 
   @Test
-  public void resolveWebSocketUrlForHostNameShouldUseRemoteForNonLocal() {
+  public void resolveWebSocketUrlForLocationShouldUseRemoteFallbackWhenNotClient() {
     assertEquals("ws://kishibe.dyndns.tv/QMAClone/websocket/",
-        Constant.resolveWebSocketUrlForHostName(true, "kishibe.dyndns.tv"));
+        Constant.resolveWebSocketUrlForLocation(false, "http:", "localhost:8080",
+            "/QMAClone-1.0-SNAPSHOT/"));
+  }
+
+  @Test
+  public void resolveWebSocketSchemeShouldReturnWsForHttp() {
+    assertEquals("ws", Constant.resolveWebSocketScheme("http:"));
+  }
+
+  @Test
+  public void resolveWebSocketSchemeShouldReturnWssForHttps() {
+    assertEquals("wss", Constant.resolveWebSocketScheme("https:"));
+  }
+
+  @Test
+  public void resolveContextPathShouldReturnContextPath() {
+    assertEquals("/QMAClone", Constant.resolveContextPath("/QMAClone/index.html"));
+  }
+
+  @Test
+  public void resolveContextPathShouldReturnEmptyForRootPath() {
+    assertEquals("", Constant.resolveContextPath("/QMAClone.html"));
   }
 }

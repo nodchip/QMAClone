@@ -9,38 +9,43 @@ import tv.dyndns.kishibe.qmaclone.client.constant.Constant;
 import tv.dyndns.kishibe.qmaclone.server.exception.InvalidGameSessionIdException;
 
 /**
- * ゲーム関連のヘルパークラス群
- * 
- * @author nodchip
+ * ゲーム関連のヘルパークラス
  */
 public class GameUtil {
   /**
-   * WebSocketのセッションからゲームセッションIDを抜き出す
-   * 
-   * @param session
-   *          WebSocketのセッション
-   * @return ゲームセッションID
-   * @throws InvalidGameSessionIdException
-   *           ゲームセッションIDが不正だった場合
+   * Jetty WebSocket セッションからゲームセッションIDを抽出する。
    */
   public static int extractGameSessionId(Session session) throws InvalidGameSessionIdException {
-    Map<String, List<String>> parameterMap = session.getUpgradeRequest().getParameterMap();
+    return extractGameSessionId(session.getUpgradeRequest().getParameterMap());
+  }
+
+  /**
+   * JSR-356 WebSocket セッションからゲームセッションIDを抽出する。
+   */
+  public static int extractGameSessionId(javax.websocket.Session session)
+      throws InvalidGameSessionIdException {
+    return extractGameSessionId(session.getRequestParameterMap());
+  }
+
+  private static int extractGameSessionId(Map<String, List<String>> parameterMap)
+      throws InvalidGameSessionIdException {
     if (!parameterMap.containsKey(Constant.KEY_GAME_SESSION_ID)) {
-      throw new InvalidGameSessionIdException("クエリパラメータ-にゲームセッションIDが含まれていません");
+      throw new InvalidGameSessionIdException("クエリパラメータにゲームセッションIDが含まれていません");
     }
 
     List<String> gameSessionIds = parameterMap.get(Constant.KEY_GAME_SESSION_ID);
     if (gameSessionIds.isEmpty()) {
-      throw new InvalidGameSessionIdException("クエリパラメータ-のゲームセッションIDが空です");
-    } else if (gameSessionIds.size() > 1) {
-      throw new InvalidGameSessionIdException("クエリパラメータ-に複数のゲームセッションIDが含まれています");
+      throw new InvalidGameSessionIdException("クエリパラメータのゲームセッションIDが空です");
+    }
+    if (gameSessionIds.size() > 1) {
+      throw new InvalidGameSessionIdException("クエリパラメータに複数のゲームセッションIDが含まれています");
     }
 
     String gameSessionIdString = gameSessionIds.get(0);
     try {
       return Integer.parseInt(gameSessionIdString);
     } catch (NumberFormatException e) {
-      throw new InvalidGameSessionIdException("ゲームセッションIDの書式が不正です", e);
+      throw new InvalidGameSessionIdException("ゲームセッションIDの形式が不正です", e);
     }
   }
 }

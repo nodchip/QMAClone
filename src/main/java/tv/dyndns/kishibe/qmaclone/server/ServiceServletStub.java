@@ -50,7 +50,6 @@ import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.eclipse.jetty.server.Server;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.MoreObjects;
@@ -133,9 +132,7 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
   private final PlayerHistoryManager playerHistoryManager;
   private final VoteManager voteManager;
   private final Recognizable recognizer;
-  private final ThemeModeEditorManager themeModeEditorManager;
-  private final Server server;
-  private final Database database;
+  private final ThemeModeEditorManager themeModeEditorManager;  private final Database database;
   private final PrefectureRanking prefectureRanking;
   private final RatingDistribution ratingDistribution;
   private final SnsClient snsClient;
@@ -159,9 +156,7 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
     this.playerHistoryManager = injector.getInstance(PlayerHistoryManager.class);
     this.voteManager = injector.getInstance(VoteManager.class);
     this.recognizer = injector.getInstance(Recognizable.class);
-    this.themeModeEditorManager = injector.getInstance(ThemeModeEditorManager.class);
-    this.server = injector.getInstance(Server.class);
-    this.database = injector.getInstance(Database.class);
+    this.themeModeEditorManager = injector.getInstance(ThemeModeEditorManager.class);    this.database = injector.getInstance(Database.class);
     this.prefectureRanking = injector.getInstance(PrefectureRanking.class);
     this.ratingDistribution = injector.getInstance(RatingDistribution.class);
     this.snsClient = injector.getInstance(SnsClients.class);
@@ -177,7 +172,7 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
   public ServiceServletStub(ChatManager chatManager, NormalModeProblemManager normalModeProblemManager,
       ThemeModeProblemManager themeModeProblemManager, GameManager gameManager, ServerStatusManager serverStatusManager,
       PlayerHistoryManager playerHistoryManager, VoteManager voteManager, Recognizable recognizer,
-      ThemeModeEditorManager themeModeEditorManager, Server server, Database database,
+      ThemeModeEditorManager themeModeEditorManager, Database database,
       PrefectureRanking prefectureRanking, RatingDistribution ratingDistribution,
       @Named("SnsClients") SnsClient snsClient, GameLogger gameLogger, ThreadPool threadPool,
       BadUserDetector badUserDetector, RestrictedUserUtils restrictedUserUtils,
@@ -192,9 +187,7 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
     this.playerHistoryManager = playerHistoryManager;
     this.voteManager = voteManager;
     this.recognizer = recognizer;
-    this.themeModeEditorManager = themeModeEditorManager;
-    this.server = server;
-    this.database = database;
+    this.themeModeEditorManager = themeModeEditorManager;    this.database = database;
     this.prefectureRanking = prefectureRanking;
     this.ratingDistribution = ratingDistribution;
     this.snsClient = snsClient;
@@ -265,12 +258,6 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
 
   @Override
   public void destroy() {
-    try {
-      server.stop();
-    } catch (Exception e) {
-      logger.log(Level.WARNING, "WebSocketの停止に失敗しました", e);
-    }
-
     threadPool.shutdown();
     super.destroy();
   }

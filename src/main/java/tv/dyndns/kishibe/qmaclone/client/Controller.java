@@ -201,7 +201,12 @@ public class Controller extends SimplePanel {
 			// rootPanel.add(new PanelAdvertisement());
 			rootPanel.add(panelChat);
 
-			setScene(new SceneLobby());
+			try {
+				setScene(new SceneLobby());
+			} catch (Throwable caught) {
+				logger.log(Level.SEVERE, "ロビー画面の初期化に失敗しました", caught);
+				log("ロビー画面の初期化に失敗しました。詳細はログを確認してください。");
+			}
 
 			// チャットの表示
 			setChatEnabled(UserData.get().isChatEnabled());

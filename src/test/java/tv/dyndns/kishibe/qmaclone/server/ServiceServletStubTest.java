@@ -13,7 +13,6 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.jetty.server.Server;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -76,8 +75,6 @@ public class ServiceServletStubTest {
   @Mock
   private ThemeModeEditorManager mockThemeModeEditorManager;
   @Mock
-  private Server mockServer;
-  @Mock
   private ImageUtils mockImageManager;
   @Mock
   private Database mockDatabase;
@@ -110,7 +107,7 @@ public class ServiceServletStubTest {
     service = spy(new ServiceServletStub(mockChatManager, mockNormalModeProblemManager,
         mockThemeModeProblemManager, mockGameManager, mockServerStatusManager,
         mockPlayerHistoryManager, mockVoteManager, mockRecognizer, mockThemeModeEditorManager,
-        mockServer, mockDatabase, mockPrefectureRanking, mockRatingDistribution,
+        mockDatabase, mockPrefectureRanking, mockRatingDistribution,
         mockSnsClient, mockGameLogger, mockThreadPool, mockBadUserDetector,
         mockRestrictedUserUtils, mockProblemCorrectCounterResetCounter,
         mockProblemIndicationCounter, mockBrokenImageLinkDetector));

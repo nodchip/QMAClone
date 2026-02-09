@@ -3,6 +3,7 @@ package tv.dyndns.kishibe.qmaclone.server.websocket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
@@ -16,12 +17,13 @@ import com.google.inject.Inject;
 
 import tv.dyndns.kishibe.qmaclone.server.Game;
 import tv.dyndns.kishibe.qmaclone.server.GameManager;
+import tv.dyndns.kishibe.qmaclone.server.Injectors;
 import tv.dyndns.kishibe.qmaclone.server.exception.GameNotFoundException;
 import tv.dyndns.kishibe.qmaclone.server.exception.InvalidGameSessionIdException;
 
 /**
- * マッチング状態を返すWebSocketの接続リクエストを処理する
- * 
+ * マッチング状況を返すWebSocketの接続リクエストを処理する
+ *
  * @author nodchip
  */
 @SuppressWarnings("serial")
@@ -61,7 +63,9 @@ public class MatchingStatusWebSocketServlet extends WebSocketServlet {
         game = gameManager.getSession(gameSessionId);
       } catch (GameNotFoundException e) {
         logger.log(Level.WARNING, "ゲームセッションが見つかりませんでした gameSessionId=" + gameSessionId, e);
-        session.close();
+        if (session != null) {
+          session.close();
+        }
         return;
       }
 
@@ -72,18 +76,24 @@ public class MatchingStatusWebSocketServlet extends WebSocketServlet {
     @OnWebSocketError
     public void onError(Throwable cause) {
       logger.log(Level.WARNING, "マッチング状況WebSocketセッションでエラーが起こりました。 remoteAddress="
-          + session.getRemoteAddress().toString(), cause);
+          + (session == null || session.getRemoteAddress() == null ? "unknown"
+              : session.getRemoteAddress().toString()),
+          cause);
 
       Game game;
       try {
         game = gameManager.getSession(gameSessionId);
       } catch (GameNotFoundException e) {
         logger.log(Level.WARNING, "ゲームセッションが見つかりませんでした gameSessionId=" + gameSessionId, e);
-        session.close();
+        if (session != null) {
+          session.close();
+        }
         return;
       }
 
-      game.getMatchingStatusMessageSender().bye(session);
+      if (session != null) {
+        game.getMatchingStatusMessageSender().bye(session);
+      }
       this.session = null;
     }
   }
@@ -91,6 +101,10 @@ public class MatchingStatusWebSocketServlet extends WebSocketServlet {
   private static final Logger logger = Logger
       .getLogger(ChatMessagesWebSocketServlet.class.toString());
   private static GameManager gameManager;
+
+  public MatchingStatusWebSocketServlet() {
+    this(Injectors.get().getInstance(GameManager.class));
+  }
 
   @Inject
   public MatchingStatusWebSocketServlet(GameManager gameManager) {

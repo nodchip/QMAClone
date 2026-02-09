@@ -3,11 +3,18 @@ package tv.dyndns.kishibe.qmaclone.server;
 import static com.google.inject.Scopes.SINGLETON;
 import static com.google.inject.name.Names.named;
 
+import com.google.gson.Gson;
 import com.google.gwt.logging.server.RemoteLoggingServiceImpl;
 import com.google.inject.AbstractModule;
+import com.google.inject.Provides;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
 import com.sun.jna.Native;
 
+import tv.dyndns.kishibe.qmaclone.client.packet.PacketChatMessages;
+import tv.dyndns.kishibe.qmaclone.client.packet.PacketGameStatus;
+import tv.dyndns.kishibe.qmaclone.client.packet.PacketMatchingStatus;
+import tv.dyndns.kishibe.qmaclone.client.packet.PacketReadyForGame;
+import tv.dyndns.kishibe.qmaclone.client.packet.PacketServerStatus;
 import tv.dyndns.kishibe.qmaclone.server.database.DatabaseModule;
 import tv.dyndns.kishibe.qmaclone.server.handwriting.Recognizable;
 import tv.dyndns.kishibe.qmaclone.server.handwriting.RecognizerZinnia;
@@ -20,7 +27,7 @@ import tv.dyndns.kishibe.qmaclone.server.service.LinkServletStub;
 import tv.dyndns.kishibe.qmaclone.server.sns.SnsClient;
 import tv.dyndns.kishibe.qmaclone.server.sns.SnsClients;
 import tv.dyndns.kishibe.qmaclone.server.util.DownloaderModule;
-import tv.dyndns.kishibe.qmaclone.server.websocket.WebSocketModule;
+import tv.dyndns.kishibe.qmaclone.server.websocket.MessageSender;
 
 public class QMACloneModule extends AbstractModule {
   @Override
@@ -65,6 +72,63 @@ public class QMACloneModule extends AbstractModule {
     install(new DatabaseModule());
     install(new RelevanceModule());
     install(new DownloaderModule());
-    install(new WebSocketModule());
+  }
+
+  @Provides
+  @com.google.inject.Singleton
+  MessageSender<PacketChatMessages> provideChatMessagesMessageSender(ThreadPool threadPool) {
+    return new MessageSender<PacketChatMessages>(threadPool) {
+      @Override
+      protected String encode(PacketChatMessages data) {
+        return new Gson().toJson(data);
+      }
+    };
+  }
+
+  @Provides
+  @com.google.inject.Singleton
+  MessageSender<PacketMatchingStatus> provideMatchingStatusMessageSender(
+      ThreadPool threadPool) {
+    return new MessageSender<PacketMatchingStatus>(threadPool) {
+      @Override
+      protected String encode(PacketMatchingStatus data) {
+        return new Gson().toJson(data);
+      }
+    };
+  }
+
+  @Provides
+  @com.google.inject.Singleton
+  MessageSender<PacketReadyForGame> provideReadyForGameMessageSender(
+      ThreadPool threadPool) {
+    return new MessageSender<PacketReadyForGame>(threadPool) {
+      @Override
+      protected String encode(PacketReadyForGame data) {
+        return new Gson().toJson(data);
+      }
+    };
+  }
+
+  @Provides
+  @com.google.inject.Singleton
+  MessageSender<PacketGameStatus> provideGameStatusMessageSender(ThreadPool threadPool) {
+    return new MessageSender<PacketGameStatus>(threadPool) {
+      @Override
+      protected String encode(PacketGameStatus data) {
+        return new Gson().toJson(data);
+      }
+    };
+  }
+
+  @Provides
+  @com.google.inject.Singleton
+  MessageSender<PacketServerStatus> provideServerStatusMessageSender(
+      ThreadPool threadPool) {
+    return new MessageSender<PacketServerStatus>(threadPool) {
+      @Override
+      protected String encode(PacketServerStatus data) {
+        return new Gson().toJson(data);
+      }
+    };
   }
 }
