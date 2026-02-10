@@ -13,7 +13,7 @@
 ## 2. 更新対象（現状）
 
 - GWT 本体:
-  - `com.google.gwt:gwt-user` / `gwt-servlet` / `gwt-dev`（BOM `com.google.gwt:gwt:2.9.0`）
+  - `com.google.gwt:gwt-user` / `gwt-servlet` / `gwt-dev`（BOM `com.google.gwt:gwt`）
 - 関連ライブラリ:
   - `com.google.gwt.inject:gin:2.1.2`
   - `com.allen-sauer.gwt.dnd:gwt-dnd:3.3.4`
