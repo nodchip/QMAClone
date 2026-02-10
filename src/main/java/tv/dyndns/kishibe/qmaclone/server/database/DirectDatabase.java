@@ -109,6 +109,11 @@ public class DirectDatabase implements Database {
 		this.cachedDatabase = cachedDatabase;
 		this.fullTextSearch = fullTextSearch;
 		this.wrongAnswerHandler = wrongAnswerHandler;
+		try {
+			new DatabaseSchemaMigrator(this.runner).migratePlayerAuthColumns();
+		} catch (DatabaseException e) {
+			throw new IllegalStateException("playerテーブル認証列の移行に失敗しました", e);
+		}
 	}
 
 	@Override
