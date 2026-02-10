@@ -74,6 +74,7 @@ public class PanelSettingUserCodePresenterTest {
     presenter.callbackLookupUserDataByGooglePlusId.onSuccess(fakeUserDataList);
 
     verify(mockView).setUserDataList(fakeUserDataList);
+    verify(mockView).setShowUserCodeListButtonVisible(false);
     verify(mockView).setSwitchToConnectedUserCodeButtonVisible(false);
     verify(mockView).setDisconnectUserCodeButtonVisible(false);
     verify(mockView).setSwitchToConnectedUserCodeButtonVisible(true);
@@ -81,7 +82,7 @@ public class PanelSettingUserCodePresenterTest {
   }
 
   @Test
-  public void callbackLookupUserDataByGooglePlusIdShouldShowDisconnectIfOneUserData() {
+  public void callbackLookupUserDataByGooglePlusIdShouldShowDisconnectOnlyIfOneUserDataOnInitialLoad() {
     ImmutableList<PacketUserData> fakeUserDataList = ImmutableList.of(TestDataProvider.getUserData());
     presenter.callbackLookupUserDataByGooglePlusId.onSuccess(fakeUserDataList);
 
@@ -89,6 +90,23 @@ public class PanelSettingUserCodePresenterTest {
     verify(mockView).setSwitchToConnectedUserCodeButtonVisible(false);
     verify(mockView).setDisconnectUserCodeButtonVisible(false);
     verify(mockView, never()).setSwitchToConnectedUserCodeButtonVisible(true);
+    verify(mockView).setDisconnectUserCodeButtonVisible(true);
+  }
+
+  @Test
+  public void callbackLookupUserDataByGooglePlusIdShouldShowSwitchAndDisconnectIfOneUserDataAfterShowButton() {
+    when(mockUserData.getAuthProvider()).thenReturn("google");
+    when(mockUserData.getAuthSubject()).thenReturn(FAKE_GOOGLE_PLUS_ID);
+    presenter.showUserCodeList();
+
+    ImmutableList<PacketUserData> fakeUserDataList = ImmutableList.of(TestDataProvider.getUserData());
+    presenter.callbackLookupUserDataByGooglePlusIdByUserAction.onSuccess(fakeUserDataList);
+
+    verify(mockView).setUserDataList(fakeUserDataList);
+    verify(mockView).setShowUserCodeListButtonVisible(false);
+    verify(mockView).setSwitchToConnectedUserCodeButtonVisible(false);
+    verify(mockView).setDisconnectUserCodeButtonVisible(false);
+    verify(mockView).setSwitchToConnectedUserCodeButtonVisible(true);
     verify(mockView).setDisconnectUserCodeButtonVisible(true);
   }
 
@@ -196,7 +214,7 @@ public class PanelSettingUserCodePresenterTest {
 
     verify(mockService)
         .lookupUserDataByExternalAccount(
-            "google", FAKE_GOOGLE_PLUS_ID, presenter.callbackLookupUserDataByGooglePlusId);
+            "google", FAKE_GOOGLE_PLUS_ID, presenter.callbackLookupUserDataByGooglePlusIdByUserAction);
   }
 
   @Test
@@ -222,7 +240,7 @@ public class PanelSettingUserCodePresenterTest {
     verify(mockView).setConnectButtonEnable(false);
     verify(mockService)
         .lookupUserDataByExternalAccount(
-            "google", FAKE_GOOGLE_PLUS_ID, presenter.callbackLookupUserDataByGooglePlusId);
+            "google", FAKE_GOOGLE_PLUS_ID, presenter.callbackLookupUserDataByGooglePlusIdByUserAction);
     verify(mockExternalAccountConnector, never()).authorize(presenter.callbackAuthorize);
   }
 
