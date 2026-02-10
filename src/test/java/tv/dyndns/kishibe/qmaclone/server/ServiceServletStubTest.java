@@ -53,7 +53,6 @@ public class ServiceServletStubTest {
   private static final RestrictionType RESTRICTION_TYPE = RestrictionType.BBS;
   private static final String REMOTE_ADDRESS = "1.2.3.4";
   private static final int PROBLEM_ID = 11111;
-  private static final String GOOGLE_PLUS_ID = "fake google plus id";
   private static final String AUTH_PROVIDER = "google";
   private static final String AUTH_SUBJECT = "sub-1";
 
@@ -314,37 +313,6 @@ public class ServiceServletStubTest {
         RESTRICTION_TYPE);
 
     service.clearRestrictedRemoteAddresses(RESTRICTION_TYPE);
-  }
-
-  @Test
-  public void lookupUserCodeByGooglePlusIdShouldDelegateToDatabase() throws Exception {
-    when(mockDatabase.lookupUserCodeByGooglePlusId(GOOGLE_PLUS_ID)).thenReturn(
-        ImmutableList.of(TestDataProvider.getUserData()));
-
-    assertEquals(ImmutableList.of(TestDataProvider.getUserData()),
-        service.lookupUserDataByGooglePlusId(GOOGLE_PLUS_ID));
-  }
-
-  @Test(expected = ServiceException.class)
-  public void lookupUserCodeByGooglePlusIdShouldThrowExceptionOnError() throws Exception {
-    when(mockDatabase.lookupUserCodeByGooglePlusId(GOOGLE_PLUS_ID)).thenThrow(
-        new DatabaseException());
-
-    assertEquals(USER_CODE, service.lookupUserDataByGooglePlusId(GOOGLE_PLUS_ID));
-  }
-
-  @Test
-  public void disconnectUserCodeShouldDelegateToDatabase() throws Exception {
-    service.disconnectUserCode(USER_CODE);
-
-    verify(mockDatabase).disconnectUserCodeFromGooglePlus(USER_CODE);
-  }
-
-  @Test(expected = ServiceException.class)
-  public void disconnectUserCodeShouldThrowExceptionOnError() throws Exception {
-    doThrow(new DatabaseException()).when(mockDatabase).disconnectUserCodeFromGooglePlus(USER_CODE);
-
-    service.disconnectUserCode(USER_CODE);
   }
 
   @Test

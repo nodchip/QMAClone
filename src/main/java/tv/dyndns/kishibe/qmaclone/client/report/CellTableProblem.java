@@ -266,7 +266,6 @@ public class CellTableProblem extends CellTable<PacketProblem> {
 		// addColumn("+1", null, new SafeHtmlColumn<PacketProblem>() {
 		// @Override
 		// public SafeHtml getValue(PacketProblem object) {
-		// return PlusOne.getButton(object.id, false);
 		// }
 		// }, null);
 

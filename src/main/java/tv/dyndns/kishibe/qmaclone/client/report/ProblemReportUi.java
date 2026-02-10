@@ -61,17 +61,6 @@ public class ProblemReportUi extends Composite {
 		final SimplePager.Resources pagerResources = GWT.create(SimplePager.Resources.class);
 		pager = new SimplePager(TextLocation.CENTER, pagerResources, false, 0, true);
 		pager.setDisplay(cellTableProblem);
-		// cellTableProblem.addRangeChangeHandler(new RangeChangeEvent.Handler() {
-		// @Override
-		// public void onRangeChange(RangeChangeEvent EVENT) {
-		// Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
-		// @Override
-		// public void execute() {
-		// PlusOne.render();
-		// }
-		// });
-		// }
-		// });
 		cellTableProblem.addLoadingStateChangeHandler(new LoadingStateChangeEvent.Handler() {
 			@Override
 			public void onLoadingStateChanged(LoadingStateChangeEvent event) {

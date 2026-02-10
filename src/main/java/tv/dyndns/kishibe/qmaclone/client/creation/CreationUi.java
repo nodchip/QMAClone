@@ -169,7 +169,7 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
     htmlPanelWrongAnswer.setVisible(false);
     htmlPanelBbs.setVisible(false);
 
-    // TODO(nodchip): 問題作成時にGoogle+ログインを強制する
+    // TODO(nodchip): 問題作成時に外部アカウントログインを強制する
     if (UserData.get().getPlayCount() < MIN_NUMBER_OF_PROBLEM_TO_SHOW_PROBLEM_FORM) {
       htmlPanelSorry.setVisible(true);
       // } else if (Strings.isNullOrEmpty(UserData.get().getGooglePlusId())) {

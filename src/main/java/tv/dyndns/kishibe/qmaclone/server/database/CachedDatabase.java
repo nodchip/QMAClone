@@ -299,17 +299,6 @@ public class CachedDatabase implements Database {
 	}
 
 	@Override
-	public List<PacketUserData> lookupUserCodeByGooglePlusId(String googlePlusId)
-			throws DatabaseException {
-		return database.lookupUserCodeByGooglePlusId(googlePlusId);
-	}
-
-	@Override
-	public void disconnectUserCodeFromGooglePlus(int userCode) throws DatabaseException {
-		database.disconnectUserCodeFromGooglePlus(userCode);
-	}
-
-	@Override
 	public List<PacketUserData> lookupUserDataByExternalAccount(String provider, String subject)
 			throws DatabaseException {
 		return database.lookupUserDataByExternalAccount(provider, subject);

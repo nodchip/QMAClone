@@ -1501,26 +1501,6 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
   }
 
   @Override
-  public List<PacketUserData> lookupUserDataByGooglePlusId(final String googlePlusId) throws ServiceException {
-    return wrap("ユーザーコードの検索に失敗しました", new DatabaseAccessible<List<PacketUserData>>() {
-      @Override
-      public List<PacketUserData> access() throws DatabaseException {
-        return database.lookupUserCodeByGooglePlusId(googlePlusId);
-      }
-    });
-  }
-
-  @Override
-  public void disconnectUserCode(final int userCode) throws ServiceException {
-    wrap("Google+連携の解除に失敗しました", new DatabaseAccessible<Void>() {
-      @Override
-      public Void access() throws DatabaseException {
-        database.disconnectUserCodeFromGooglePlus(userCode);
-        return null;
-      }
-    });
-  }
-  @Override
   public List<PacketUserData> lookupUserDataByExternalAccount(
       final String provider, final String subject) throws ServiceException {
     return wrap("外部アカウントのユーザーデータ検索に失敗しました", new DatabaseAccessible<List<PacketUserData>>() {

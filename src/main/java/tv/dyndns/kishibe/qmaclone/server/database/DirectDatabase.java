@@ -372,24 +372,6 @@ public class DirectDatabase implements Database {
 	}
 
 	@Override
-	public List<PacketUserData> lookupUserCodeByGooglePlusId(String googlePlusId) throws DatabaseException {
-		try {
-			return runner.query("SELECT * FROM player WHERE GOOGLE_PLUS_ID = ?", userDataHandler, googlePlusId);
-		} catch (SQLException e) {
-			throw new DatabaseException(e);
-		}
-	}
-
-	@Override
-	public void disconnectUserCodeFromGooglePlus(int userCode) throws DatabaseException {
-		try {
-			runner.update("UPDATE player SET GOOGLE_PLUS_ID = NULL WHERE USER_CODE = ?", userCode);
-		} catch (SQLException e) {
-			throw new DatabaseException(e);
-		}
-	}
-
-	@Override
 	public List<PacketUserData> lookupUserDataByExternalAccount(String provider, String subject)
 			throws DatabaseException {
 		try {

@@ -405,7 +405,6 @@ public interface ServiceAsync {
 	 * 
 	 * @param googlePlusId Google+ ID
 	 */
-	void lookupUserDataByGooglePlusId(String googlePlusId, AsyncCallback<List<PacketUserData>> callback);
 
 	void lookupUserDataByExternalAccount(
 			String provider, String subject, AsyncCallback<List<PacketUserData>> callback);
@@ -415,7 +414,6 @@ public interface ServiceAsync {
 	 * 
 	 * @param userCode ユーザーコード
 	 */
-	void disconnectUserCode(int userCode, AsyncCallback<Void> callback);
 
 	void disconnectExternalAccount(int userCode, AsyncCallback<Void> callback);
 }

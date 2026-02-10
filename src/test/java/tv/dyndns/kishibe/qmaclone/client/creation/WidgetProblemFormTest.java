@@ -86,7 +86,6 @@ public class WidgetProblemFormTest extends QMACloneGWTTestCaseBase {
     assertNull(p.indicationResolved);
     // assertEquals(problem.indicationMessage, p.indicationMessage);
 
-    assertTrue(form.htmlPlusOne.getHTML().isEmpty());
   }
 
   @Test
@@ -122,7 +121,6 @@ public class WidgetProblemFormTest extends QMACloneGWTTestCaseBase {
     assertEquals(problem.indication, p.indication);
     // assertEquals(problem.indicationMessage, p.indicationMessage);
 
-    assertFalse(form.htmlPlusOne.getHTML().isEmpty());
   }
 
   @Test

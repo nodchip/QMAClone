@@ -51,10 +51,6 @@ public interface Database {
 
 	Map<Integer, Integer> getUserCodeToIndicatedProblems() throws DatabaseException;
 
-	List<PacketUserData> lookupUserCodeByGooglePlusId(String googlePlusId) throws DatabaseException;
-
-	void disconnectUserCodeFromGooglePlus(int userCode) throws DatabaseException;
-
 	List<PacketUserData> lookupUserDataByExternalAccount(String provider, String subject)
 			throws DatabaseException;
 

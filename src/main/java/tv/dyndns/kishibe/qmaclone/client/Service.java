@@ -125,7 +125,6 @@ public interface Service extends RemoteService {
 	 * @return ユーザーコード
 	 * @throws ServiceException
 	 */
-	List<PacketUserData> lookupUserDataByGooglePlusId(String googlePlusId) throws ServiceException;
 
 	List<PacketUserData> lookupUserDataByExternalAccount(String provider, String subject)
 			throws ServiceException;
@@ -136,7 +135,6 @@ public interface Service extends RemoteService {
 	 * @param userCode ユーザーコード
 	 * @throws ServiceException
 	 */
-	void disconnectUserCode(int userCode) throws ServiceException;
 
 	void disconnectExternalAccount(int userCode) throws ServiceException;
 

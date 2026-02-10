@@ -85,7 +85,6 @@ public class DatabaseTest {
   private static final int FAKE_PROBLEM_ID = 11111111;
   private static final String FAKE_ANSWER = "fake answer";
   private static final int FAKE_COUNT = 22222;
-  private static final String FAKE_GOOGLE_PLUS_ID = "fake google plus id";
   private static final String FAKE_AUTH_PROVIDER = "google";
   private static final String FAKE_AUTH_SUB = "sub-1";
 
@@ -162,32 +161,6 @@ public class DatabaseTest {
 
     assertEquals(userData2.userCode, FAKE_USER_CODE);
     assertEquals(userData.playerName, userData2.playerName);
-  }
-
-  @Test
-  public void testUserDataWithGooglePlusId() throws Exception {
-    PacketUserData userData = TestDataProvider.getUserData();
-    userData.userCode = FAKE_USER_CODE;
-    userData.googlePlusId = FAKE_GOOGLE_PLUS_ID;
-
-    database.setUserData(userData);
-
-    assertEquals(ImmutableList.of(userData),
-        database.lookupUserCodeByGooglePlusId(FAKE_GOOGLE_PLUS_ID));
-  }
-
-  @Test
-  public void disconnectUserCodeFromGooglePlusShould() throws Exception {
-    PacketUserData userData = TestDataProvider.getUserData();
-    userData.userCode = FAKE_USER_CODE;
-    userData.googlePlusId = FAKE_GOOGLE_PLUS_ID;
-
-    database.setUserData(userData);
-    database.clearCache();
-    database.disconnectUserCodeFromGooglePlus(FAKE_USER_CODE);
-
-    assertEquals(Lists.<PacketUserData> newArrayList(),
-        database.lookupUserCodeByGooglePlusId(FAKE_GOOGLE_PLUS_ID));
   }
 
   @Test
