@@ -73,13 +73,6 @@
     </dependency>
     <dependency>
     	<groupId>local.legacy</groupId>
-    	<artifactId>gwt-plus</artifactId>
-    	<version>1-0.3-alpha</version>
-    	<scope>system</scope>
-    	<systemPath>${third.party.dir}/gwt-plus-v1-0.3-alpha.jar</systemPath>
-    </dependency>
-    <dependency>
-    	<groupId>local.legacy</groupId>
     	<artifactId>gwt-web-sockets</artifactId>
     	<version>1.0.0</version>
     	<scope>system</scope>
