@@ -24,7 +24,7 @@
 ## 影響
 
 - 高リスク依存はこのバッチではバージョン変更なし。
-- ただし GWT 本体 2.10.0 への更新後も以下は成功:
+- ただし GWT 本体更新後も以下は成功:
   - `mvn -DskipTests compile`
   - `JAVA_TOOL_OPTIONS=--add-opens... mvn -DskipTests "-Dgwt.skipCompilation=false" gwt:compile`
   - `mvn test`

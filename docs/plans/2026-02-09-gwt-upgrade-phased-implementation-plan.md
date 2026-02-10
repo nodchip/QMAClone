@@ -86,3 +86,112 @@ mvn -Pgwt-compile-java25 -DskipTests gwt:compile
 - すべての更新ステップで固定ゲートを通過している。
 - DevMode/Tomcat の主要導線確認が完了している。
 - ログと判定記録（継続/ロールバック）が追跡可能な形で残っている。
+
+## 10. 実行ログ（2026-02-10）
+
+### 10.1 Phase 0 ベースライン取得
+- 依存ツリーを取得: `target/dependency-tree-before.txt`
+- 実行コマンド:
+```powershell
+mvn -q -DskipTests dependency:tree > target/dependency-tree-before.txt
+```
+- 結果: 成功
+
+### 10.2 固定ゲート事前確認（プロファイル導入後）
+- 実行コマンド:
+```powershell
+mvn -DskipTests compile
+mvn test
+mvn -Pgwt-compile-java25 -DskipTests gwt:compile
+mvn -Pgwt-compile-java25 "-Dgwt.skipCompilation=false" -DskipTests gwt:compile
+```
+- 結果:
+  - `compile`: 成功
+  - `test`: 成功（Surefire設定により通常テストはskip）
+  - `gwt:compile`: 成功（既定値では skip）
+  - `gwt:compile` 実行強制: 成功（Permutation compile/link 完了）
+
+### 10.3 手動確認（実施待ち）
+- DevMode: `http://127.0.0.1:8888/QMAClone.html`
+- Tomcat（Windows/Ubuntu）:
+  - 初期画面表示
+  - タブ内部表示
+  - RPC 成功
+  - WebSocket `101 Switching Protocols`
+
+### 10.4 Phase 1（GWT本体更新）
+- 実施内容:
+  - GWT BOM を `org.gwtproject:gwt:2.12.2` へ更新
+  - `gwt-user` / `gwt-servlet` / `gwt-dev` の groupId を `org.gwtproject` へ更新
+- 実行コマンド:
+```powershell
+mvn -U -DskipTests compile
+mvn test
+mvn -Pgwt-compile-java25 -DskipTests gwt:compile
+mvn -Pgwt-compile-java25 "-Dgwt.skipCompilation=false" -DskipTests gwt:compile
+```
+- 結果:
+  - 固定ゲート通過
+  - `gwt:compile` 実行強制時も成功（Permutation compile/link 完了）
+
+### 10.5 Phase 2（中リスク群の事前評価）
+- 実施内容:
+  - `gin` / `gwt-dnd` は更新候補なし（据え置き）
+  - `piriti-user` / `piriti-dev` は `0.10` を試行後、`0.8` へロールバック
+- `0.10` 試行時の失敗:
+  - `gwt:compile` 実行強制で `piriti-user-0.10.jar` 内 `javax.xml.bind.annotation.*` が
+    `java.awt` import 解決不可となりコンパイル失敗
+- ロールバック後の実行コマンド:
+```powershell
+mvn -DskipTests compile
+mvn test
+mvn -Pgwt-compile-java25 -DskipTests gwt:compile
+mvn -Pgwt-compile-java25 "-Dgwt.skipCompilation=false" -DskipTests gwt:compile
+```
+- 結果:
+  - 固定ゲート通過
+  - Phase 2 は「据え置き完了（piriti は現行維持）」として扱う
+
+### 10.6 Phase 3（高リスク群評価）
+- 実施内容:
+  - `gwt-incubator` / `gwt-plus` / `gwt-visualization` の更新候補有無を確認
+  - 更新候補なしのため現状維持
+- 実行コマンド:
+```powershell
+mvn versions:display-dependency-updates "-Dincludes=com.google.gwt:gwt-incubator,local.legacy:gwt-plus,local.legacy:gwt-visualization"
+mvn -DskipTests compile
+mvn test
+mvn -Pgwt-compile-java25 -DskipTests gwt:compile
+mvn -Pgwt-compile-java25 "-Dgwt.skipCompilation=false" -DskipTests gwt:compile
+```
+- 結果:
+  - 高リスク群は更新候補なし（このバッチでは変更なし）
+  - 固定ゲート通過
+
+### 10.7 Phase 4（最終統合検証・2026-02-10 追加実行）
+- 実施内容:
+  - 固定ゲートを直列で再実行
+  - DevMode/Tomcat の接続可否 -> HTTP 到達 -> WebSocket Upgrade の順で切り分け
+- 実行コマンド:
+```powershell
+$env:JAVA_HOME='C:\Program Files\Java\jdk-25.0.2'
+$env:Path="$env:JAVA_HOME\bin;$env:Path"
+mvn -DskipTests compile
+mvn test
+mvn -Pgwt-compile-java25 -DskipTests gwt:compile
+netstat -ano | Select-String -Pattern ':8888|:8080'
+Invoke-WebRequest -Uri 'http://127.0.0.1:8888/QMAClone.html' -UseBasicParsing -TimeoutSec 5
+Invoke-WebRequest -Uri 'http://127.0.0.1:8080/' -UseBasicParsing -TimeoutSec 5
+curl.exe -i -N -H "Connection: Upgrade" -H "Upgrade: websocket" -H "Sec-WebSocket-Version: 13" -H "Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==" "http://127.0.0.1:8888/devmode-websocket/tv.dyndns.kishibe.qmaclone.client.packet.PacketServerStatus?gameSessionId=1"
+```
+- 結果:
+  - `compile`: 成功
+  - `test`: 成功（Surefire設定により通常テストは skip）
+  - `gwt:compile`: 成功（`GWT compilation is skipped`）
+  - `127.0.0.1:8888` は LISTENING を確認
+  - `http://127.0.0.1:8888/QMAClone.html`: `503 Service Unavailable`
+  - `http://127.0.0.1:8080/`: 接続不可
+  - WebSocket Upgrade（DevMode URL）: `503 Service Unavailable`（`101` にならず）
+- 判定:
+  - 固定ゲートは通過
+  - 実行系（DevMode/Tomcat）確認は未完。サーバーログ確認と起動状態の是正が必要

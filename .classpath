@@ -8,27 +8,12 @@
 	<classpathentry exported="true" kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/gwt-visualization-1.1.2/gwt-visualization.jar"/>
 	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/gwt-plus-v1-0.3-alpha/gwt-plus-v1-0.3-alpha.jar"/>
 	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/gwt-web-sockets-1.0.0/gwt-web-sockets-1.0.0.jar"/>
-	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY"/>
-	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/gwt-2.9.0/gwt-dev.jar"/>
-	<classpathentry exported="true" kind="var" path="JAVA_DIRECTORY/gwt-2.9.0/gwt-servlet.jar"/>
-	<classpathentry kind="src" output="target/QMAClone-1.0-SNAPSHOT/WEB-INF/classes" path="src/main/java">
-		<attributes>
-			<attribute name="optional" value="true"/>
-			<attribute name="maven.pomderived" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" output="target/test-classes" path="src/test/java">
-		<attributes>
-			<attribute name="test" value="true"/>
-			<attribute name="optional" value="true"/>
-			<attribute name="maven.pomderived" value="true"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry excluding="**" kind="src" output="target/QMAClone-1.0-SNAPSHOT/WEB-INF/classes" path="src/main/resources">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>
@@ -42,20 +27,33 @@
 			<attribute name="optional" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="src" path="target/generated-sources/annotations">
+	<classpathentry kind="lib" path="C:/Users/nodchip/マイドライブ/files/java/gwt-2.12.2/gwt-user.jar">
 		<attributes>
-			<attribute name="optional" value="true"/>
-			<attribute name="maven.pomderived" value="true"/>
-			<attribute name="ignore_optional_problems" value="true"/>
-			<attribute name="m2e-apt" value="true"/>
+			<attribute name="javadoc_location" value="file:/C:/Users/nodchip/マイドライブ/files/java/gwt-2.12.2/doc/javadoc/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="src" output="target/test-classes" path="target/generated-test-sources/test-annotations">
+	<classpathentry kind="lib" path="C:/Users/nodchip/マイドライブ/files/java/gwt-2.12.2/gwt-codeserver.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="file:/C:/Users/nodchip/マイドライブ/files/java/gwt-2.12.2/doc/javadoc/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/nodchip/マイドライブ/files/java/gwt-2.12.2/gwt-dev.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="file:/C:/Users/nodchip/マイドライブ/files/java/gwt-2.12.2/doc/javadoc/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/nodchip/マイドライブ/files/java/gwt-2.12.2/validation-api-1.0.0.GA-sources.jar"/>
+	<classpathentry kind="lib" path="C:/Users/nodchip/マイドライブ/files/java/gwt-2.12.2/validation-api-1.0.0.GA.jar" sourcepath="C:/Users/nodchip/マイドライブ/files/java/gwt-2.12.2/validation-api-1.0.0.GA-sources.jar"/>
+	<classpathentry kind="src" output="target/QMAClone-1.0-SNAPSHOT/WEB-INF/classes" path="src/main/java">
 		<attributes>
 			<attribute name="optional" value="true"/>
 			<attribute name="maven.pomderived" value="true"/>
-			<attribute name="ignore_optional_problems" value="true"/>
-			<attribute name="m2e-apt" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" output="target/test-classes" path="src/test/java">
+		<attributes>
+			<attribute name="optional" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
 			<attribute name="test" value="true"/>
 		</attributes>
 	</classpathentry>
