@@ -10,10 +10,10 @@
 		</g:HTMLPanel>
 		<g:HTMLPanel ui:field="htmlRequireGooglePlusLogin"
 			visible="false">
-			問題作成はGoogle+アカウント連携をした方のみに限定させていただいております。
+			問題作成はGoogleアカウント連携（OIDC）をした方のみに限定させていただいております。
 			申し訳ありません。
-			Google+アカウント連携は「設定」→「ユーザーコード」から行うことができます。
-			Google+アカウント連携をされた方でこの表示が表示されている場合はF5を押して再読み込みを行ってください。
+			Googleアカウント連携（OIDC）は「設定」→「ユーザーコード」から行うことができます。
+			Googleアカウント連携（OIDC）をされた方でこの表示が表示されている場合はF5を押して再読み込みを行ってください。
 			よろしくお願い致します。
 		</g:HTMLPanel>
 		<g:HTMLPanel ui:field="htmlPanelMain" visible="false">

@@ -33,7 +33,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import tv.dyndns.kishibe.qmaclone.client.PlusOne;
 import tv.dyndns.kishibe.qmaclone.client.Service;
 import tv.dyndns.kishibe.qmaclone.client.UserData;
 import tv.dyndns.kishibe.qmaclone.client.Utility;
@@ -51,7 +50,6 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import com.google.gwt.core.client.JavaScriptException;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -97,8 +95,6 @@ public class WidgetProblemForm extends VerticalPanel implements ClickHandler, Ch
   private final CreationUi creationUi;
   private final Label labelAnswerCounter = new Label("0/0");
   private final CheckBox checkBoxResetAnswerCount = new CheckBox("回答数をリセットする");
-  @VisibleForTesting
-  final HTML htmlPlusOne = new HTML();
   private final Label labelGood = new Label("0");
   private final CheckBox checkBoxResetVote = new CheckBox("良問投票をリセットする");
   private final CheckBox checkBoxImageChoice = new CheckBox("画像選択肢");
@@ -255,7 +251,7 @@ public class WidgetProblemForm extends VerticalPanel implements ClickHandler, Ch
     // 回答数
     grid.setText(row, 0, "+1");
     HorizontalPanel panelVoteCount = new HorizontalPanel();
-    panelVoteCount.add(htmlPlusOne);
+    panelVoteCount.add(new Label("廃止済み"));
     grid.setWidget(row++, 1, panelVoteCount);
 
     // 評価
@@ -329,19 +325,7 @@ public class WidgetProblemForm extends VerticalPanel implements ClickHandler, Ch
     }
 
     labelAnswerCounter.setText(problem.good + "/" + problem.bad);
-
-    if (problem.isCopiedProblem()) {
-      htmlPlusOne.setHTML("");
-    } else {
-      htmlPlusOne.setHTML(PlusOne.getButton(problem.id, true));
-      try {
-        PlusOne.render();
-      } catch (JavaScriptException e) {
-        logger.warning("+1ボタンのレンダリングに失敗しました");
-      }
-    }
-
-    textAreaNote.setText(problem.note.trim());
+textAreaNote.setText(problem.note.trim());
     checkBoxImageAnswer.setValue(problem.imageAnswer);
     checkBoxImageChoice.setValue(problem.imageChoice);
 

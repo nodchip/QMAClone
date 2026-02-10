@@ -7,13 +7,11 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import tv.dyndns.kishibe.qmaclone.client.PlusOne;
 import tv.dyndns.kishibe.qmaclone.client.Service;
 import tv.dyndns.kishibe.qmaclone.client.UserData;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblem;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -80,12 +78,6 @@ public class ProblemReportUi extends Composite {
 				if (event.getLoadingState() != LoadingStateChangeEvent.LoadingState.LOADED) {
 					return;
 				}
-				Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
-					@Override
-					public void execute() {
-						PlusOne.render();
-					}
-				});
 			}
 		});
 		if (problems.size() < maxProblemsPerPage) {

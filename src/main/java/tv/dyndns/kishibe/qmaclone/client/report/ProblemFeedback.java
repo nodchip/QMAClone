@@ -3,14 +3,12 @@ package tv.dyndns.kishibe.qmaclone.client.report;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import tv.dyndns.kishibe.qmaclone.client.PlusOne;
 import tv.dyndns.kishibe.qmaclone.client.Service;
 import tv.dyndns.kishibe.qmaclone.client.UserData;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblem;
 
 import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -49,13 +47,7 @@ public class ProblemFeedback extends Composite {
 		this.dataProvider = dataProvider;
 		this.problem = problem;
 		initWidget(uiBinder.createAndBindUi(this));
-		plusOneHtml.setHTML(PlusOne.getButton(problem.id, true));
-		Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
-			@Override
-			public void execute() {
-				PlusOne.render();
-			}
-		});
+		plusOneHtml.setHTML("");
 	}
 
 	@UiHandler("submitButton")
