@@ -45,7 +45,8 @@ public class PanelSettingUserCodePresenterTest {
 
   @Test
   public void onLoadShouldProcessWithoutGooglePlusId() {
-    when(mockUserData.getGooglePlusId()).thenReturn(null);
+    when(mockUserData.getAuthProvider()).thenReturn(null);
+    when(mockUserData.getAuthSubject()).thenReturn(null);
 
     presenter.onLoad();
 
@@ -55,14 +56,15 @@ public class PanelSettingUserCodePresenterTest {
 
   @Test
   public void onLoadShouldProcessWithGooglePlusId() {
-    when(mockUserData.getGooglePlusId()).thenReturn(FAKE_GOOGLE_PLUS_ID);
+    when(mockUserData.getAuthProvider()).thenReturn("google");
+    when(mockUserData.getAuthSubject()).thenReturn(FAKE_GOOGLE_PLUS_ID);
 
     presenter.onLoad();
 
     verify(mockView).showAlreadyConnectedMessage();
     verify(mockService)
-        .lookupUserDataByGooglePlusId(
-            FAKE_GOOGLE_PLUS_ID, presenter.callbackLookupUserDataByGooglePlusId);
+        .lookupUserDataByExternalAccount(
+            "google", FAKE_GOOGLE_PLUS_ID, presenter.callbackLookupUserDataByGooglePlusId);
   }
 
   @Test
@@ -139,7 +141,7 @@ public class PanelSettingUserCodePresenterTest {
   }
 
   @Test
-  public void connectShouldAuthorizeGooglePlusId() {
+  public void connectShouldAuthorizeExternalAccount() {
     presenter.connect();
 
     verify(mockView).setConnectButtonEnable(false);
@@ -152,9 +154,10 @@ public class PanelSettingUserCodePresenterTest {
     presenter.callbackAuthorize.onSuccess("google", FAKE_GOOGLE_PLUS_ID);
 
     verify(mockService)
-        .lookupUserDataByGooglePlusId(
-            FAKE_GOOGLE_PLUS_ID, presenter.callbackLookupUserDataByGooglePlusId);
-    verify(mockUserData).setGooglePlusId(FAKE_GOOGLE_PLUS_ID);
+        .lookupUserDataByExternalAccount(
+            "google", FAKE_GOOGLE_PLUS_ID, presenter.callbackLookupUserDataByGooglePlusId);
+    verify(mockUserData).setAuthProvider("google");
+    verify(mockUserData).setAuthSubject(FAKE_GOOGLE_PLUS_ID);
     verify(mockUserData).save();
   }
 
@@ -164,8 +167,8 @@ public class PanelSettingUserCodePresenterTest {
     presenter.callbackAuthorize.onSuccess("google", FAKE_GOOGLE_PLUS_ID);
 
     verify(mockService)
-        .lookupUserDataByGooglePlusId(
-            FAKE_GOOGLE_PLUS_ID, presenter.callbackLookupUserDataByGooglePlusId);
+        .lookupUserDataByExternalAccount(
+            "google", FAKE_GOOGLE_PLUS_ID, presenter.callbackLookupUserDataByGooglePlusId);
   }
 
   @Test
@@ -195,7 +198,7 @@ public class PanelSettingUserCodePresenterTest {
     presenter.disconnectUserCode();
 
     verify(mockView).setDisconnectUserCodeButtonEnabled(false);
-    verify(mockService).disconnectUserCode(FAKE_USER_CODE_1, presenter.callbackDisconnectUserCode);
+    verify(mockService).disconnectExternalAccount(FAKE_USER_CODE_1, presenter.callbackDisconnectUserCode);
   }
 
   @Test
@@ -206,19 +209,20 @@ public class PanelSettingUserCodePresenterTest {
     presenter.disconnectUserCode();
 
     verify(mockView).setDisconnectUserCodeButtonEnabled(false);
-    verify(mockService).disconnectUserCode(FAKE_USER_CODE_1, presenter.callbackDisconnectUserCode);
+    verify(mockService).disconnectExternalAccount(FAKE_USER_CODE_1, presenter.callbackDisconnectUserCode);
     verify(mockView).showRequiredReloadMessage();
   }
 
   @Test
   public void callbackDisconnectUserCodeShouldUpdateUserCodeList() {
-    when(mockUserData.getGooglePlusId()).thenReturn(FAKE_GOOGLE_PLUS_ID);
+    when(mockUserData.getAuthProvider()).thenReturn("google");
+    when(mockUserData.getAuthSubject()).thenReturn(FAKE_GOOGLE_PLUS_ID);
 
     presenter.callbackDisconnectUserCode.onSuccess(null);
 
     verify(mockService)
-        .lookupUserDataByGooglePlusId(
-            FAKE_GOOGLE_PLUS_ID, presenter.callbackLookupUserDataByGooglePlusId);
+        .lookupUserDataByExternalAccount(
+            "google", FAKE_GOOGLE_PLUS_ID, presenter.callbackLookupUserDataByGooglePlusId);
     verify(mockView).setDisconnectUserCodeButtonEnabled(true);
   }
 }

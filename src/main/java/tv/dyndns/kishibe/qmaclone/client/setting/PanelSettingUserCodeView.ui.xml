@@ -13,20 +13,20 @@
     <g:Button ui:field="buttonSwitchToUserCode" enabled="true">ユーザーコードを切り替える</g:Button><br />
     <g:HTML ui:field="htmlInvalidUserCode" visible="false" styleName="{style.invalid-usercode}">ユーザーコードが正しく入力されていません。またはユーザーコードが見つかりません。</g:HTML><br />
 	
-	<h2>Google+連携</h2>
-		QMACloneユーザーコードをGoogle+アカウントに連携させることができます。<br />
-		QMACloneユーザーコードをGoogle+アカウントに連携させると、どのブラウザからでも共通のプレイヤー情報でプレイできます。<br />
+	<h2>Googleアカウント連携（OIDC）</h2>
+		QMACloneユーザーコードをGoogleアカウントに連携させることができます。<br />
+		QMACloneユーザーコードをGoogleアカウントに連携させると、どのブラウザからでも共通のプレイヤー情報でプレイできます。<br />
 		すでに連携させている場合は連携させたユーザーアカウントに切り替えることができます。<br />
-		複数のユーザーコードをGoogle+アカウントに連携させる場合は、上のボタンでユーザーコードを切り替えたあと、下のボタンでGoogle+に連携させてください<br/>
+		複数のユーザーコードをGoogleアカウントに連携させる場合は、上のボタンでユーザーコードを切り替えたあと、下のボタンでGoogleに連携させてください<br/>
 		<br />
 		注意:　ポップアップをブロックしている方は許可してください。<br />
 		<br />
-		<g:Button ui:field="buttonConnect" visible="false">現在のユーザーコードをGoogle+に連携させる</g:Button><br />
+		<g:Button ui:field="buttonConnect" visible="false">現在のユーザーコードをGoogleに連携させる</g:Button><br />
 		<g:HTML ui:field="htmlAlreadyConnected" visible="false">すでに連携させています。新たに連携させる必要はありません。</g:HTML><br />
-		<g:HTML ui:field="htmlConnected" visible="false">QMACloneユーザーコードをGoogle+アカウントに連携させました。</g:HTML><br />
+		<g:HTML ui:field="htmlConnected" visible="false">QMACloneユーザーコードをGoogleアカウントに連携させました。</g:HTML><br />
 
 		<g:VerticalPanel ui:field="panelUserCodeList"/>		
-		<g:Button ui:field="buttonShowUserCodeList" visible="false">Google+連携させたユーザーコードを表示する</g:Button><br />
+		<g:Button ui:field="buttonShowUserCodeList" visible="false">Google連携させたユーザーコードを表示する</g:Button><br />
 		<g:Button ui:field="buttonSwitchToConnectedUserCode" visible="false">ユーザーコードを切り替える</g:Button><br />
 		<g:Button ui:field="buttonDisconnectUserCode" visible="false">指定したユーザーコードの連携を解除する</g:Button><br />
 	</g:HTMLPanel>

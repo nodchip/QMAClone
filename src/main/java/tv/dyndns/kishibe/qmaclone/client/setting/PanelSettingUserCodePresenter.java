@@ -83,18 +83,19 @@ public class PanelSettingUserCodePresenter {
   }
 
   public void onLoad() {
-    String googlePlusId = userData.getGooglePlusId();
-    if (Strings.isNullOrEmpty(googlePlusId)) {
+    String authProvider = userData.getAuthProvider();
+    String authSubject = userData.getAuthSubject();
+    if (Strings.isNullOrEmpty(authProvider) || Strings.isNullOrEmpty(authSubject)) {
       view.showConnectButton();
       view.showShowUserCodeListButton();
     } else {
       view.showAlreadyConnectedMessage();
-      updateUserCodeList(googlePlusId);
+      updateUserCodeList(authProvider, authSubject);
     }
   }
 
-  private void updateUserCodeList(String googlePlusId) {
-    service.lookupUserDataByGooglePlusId(googlePlusId, callbackLookupUserDataByGooglePlusId);
+  private void updateUserCodeList(String provider, String subject) {
+    service.lookupUserDataByExternalAccount(provider, subject, callbackLookupUserDataByGooglePlusId);
   }
 
   @VisibleForTesting
@@ -175,17 +176,16 @@ public class PanelSettingUserCodePresenter {
   final ExternalAccountConnector.Callback callbackAuthorize = new ExternalAccountConnector.Callback() {
     @Override
     public void onSuccess(String provider, String subject) {
-      String googlePlusId = subject;
-
       switch (authorizeMode) {
         case CONNECT:
-          userData.setGooglePlusId(googlePlusId);
+          userData.setAuthProvider(provider);
+          userData.setAuthSubject(subject);
           userData.save();
-          updateUserCodeList(googlePlusId);
+          updateUserCodeList(provider, subject);
           break;
 
         case SHOW_USER_CODE_LIST:
-          updateUserCodeList(googlePlusId);
+          updateUserCodeList(provider, subject);
           break;
       }
     }
@@ -222,7 +222,7 @@ public class PanelSettingUserCodePresenter {
     view.setDisconnectUserCodeButtonEnabled(false);
 
     int userCode = view.getSelectedUserCode();
-    service.disconnectUserCode(userCode, callbackDisconnectUserCode);
+    service.disconnectExternalAccount(userCode, callbackDisconnectUserCode);
 
     if (userCode == userData.getUserCode()) {
       view.showRequiredReloadMessage();
@@ -233,7 +233,7 @@ public class PanelSettingUserCodePresenter {
   AsyncCallback<Void> callbackDisconnectUserCode = new AsyncCallback<Void>() {
     @Override
     public void onSuccess(Void result) {
-      updateUserCodeList(userData.getGooglePlusId());
+      updateUserCodeList(userData.getAuthProvider(), userData.getAuthSubject());
       view.setDisconnectUserCodeButtonEnabled(true);
     }
 
