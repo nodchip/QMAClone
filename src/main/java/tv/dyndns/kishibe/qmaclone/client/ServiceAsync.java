@@ -407,10 +407,15 @@ public interface ServiceAsync {
 	 */
 	void lookupUserDataByGooglePlusId(String googlePlusId, AsyncCallback<List<PacketUserData>> callback);
 
+	void lookupUserDataByExternalAccount(
+			String provider, String subject, AsyncCallback<List<PacketUserData>> callback);
+
 	/**
 	 * 連携済みのユーザーコードを解除する
 	 * 
 	 * @param userCode ユーザーコード
 	 */
 	void disconnectUserCode(int userCode, AsyncCallback<Void> callback);
+
+	void disconnectExternalAccount(int userCode, AsyncCallback<Void> callback);
 }

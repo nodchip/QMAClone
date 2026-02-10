@@ -91,6 +91,8 @@ public class PacketUserData implements IsSerializable {
   public boolean registerCreatedProblem;
   public boolean registerIndicatedProblem;
   public String googlePlusId;
+  public String authProvider;
+  public String authSubject;
   public String theme;
 
   public PacketUserData() {
@@ -147,7 +149,8 @@ public class PacketUserData implements IsSerializable {
         .add("qwertyAlphabet", qwertyAlphabet)
         .add("registerCreatedProblem", registerCreatedProblem)
         .add("registerIndicatedProblem", registerIndicatedProblem)
-        .add("googlePlusId", googlePlusId).add("THEME", theme).toString();
+        .add("googlePlusId", googlePlusId).add("authProvider", authProvider)
+        .add("authSubject", authSubject).add("THEME", theme).toString();
   }
 
   @Override
@@ -175,7 +178,8 @@ public class PacketUserData implements IsSerializable {
         && qwertyKatakana == rh.qwertyKatakana && qwertyAlphabet == rh.qwertyAlphabet
         && registerCreatedProblem == rh.registerCreatedProblem
         && registerIndicatedProblem == rh.registerIndicatedProblem
-        && equal(googlePlusId, rh.googlePlusId) && equal(theme, rh.theme);
+        && equal(googlePlusId, rh.googlePlusId) && equal(authProvider, rh.authProvider)
+        && equal(authSubject, rh.authSubject) && equal(theme, rh.theme);
   }
 
   @Override
@@ -186,6 +190,6 @@ public class PacketUserData implements IsSerializable {
         rankingMove, bbsDispInfo, bbsAge, chat, newAndOldProblems, ignoreUserCodes, timerMode,
         publicEvent, hideAnswer, showInfo, reflectEventResult, webSocketUsage, volatility,
         qwertyHiragana, qwertyKatakana, qwertyAlphabet, registerCreatedProblem,
-        registerIndicatedProblem, googlePlusId, theme);
+        registerIndicatedProblem, googlePlusId, authProvider, authSubject, theme);
   }
 }

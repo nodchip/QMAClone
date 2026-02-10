@@ -54,6 +54,8 @@ public class ServiceServletStubTest {
   private static final String REMOTE_ADDRESS = "1.2.3.4";
   private static final int PROBLEM_ID = 11111;
   private static final String GOOGLE_PLUS_ID = "fake google plus id";
+  private static final String AUTH_PROVIDER = "google";
+  private static final String AUTH_SUBJECT = "sub-1";
 
   private ServiceServletStub service;
   @Mock
@@ -343,6 +345,38 @@ public class ServiceServletStubTest {
     doThrow(new DatabaseException()).when(mockDatabase).disconnectUserCodeFromGooglePlus(USER_CODE);
 
     service.disconnectUserCode(USER_CODE);
+  }
+
+  @Test
+  public void lookupUserDataByExternalAccountShouldDelegateToDatabase() throws Exception {
+    when(mockDatabase.lookupUserDataByExternalAccount(AUTH_PROVIDER, AUTH_SUBJECT)).thenReturn(
+        ImmutableList.of(TestDataProvider.getUserData()));
+
+    assertEquals(
+        ImmutableList.of(TestDataProvider.getUserData()),
+        service.lookupUserDataByExternalAccount(AUTH_PROVIDER, AUTH_SUBJECT));
+  }
+
+  @Test(expected = ServiceException.class)
+  public void lookupUserDataByExternalAccountShouldThrowExceptionOnError() throws Exception {
+    when(mockDatabase.lookupUserDataByExternalAccount(AUTH_PROVIDER, AUTH_SUBJECT)).thenThrow(
+        new DatabaseException());
+
+    service.lookupUserDataByExternalAccount(AUTH_PROVIDER, AUTH_SUBJECT);
+  }
+
+  @Test
+  public void disconnectExternalAccountShouldDelegateToDatabase() throws Exception {
+    service.disconnectExternalAccount(USER_CODE);
+
+    verify(mockDatabase).disconnectExternalAccount(USER_CODE);
+  }
+
+  @Test(expected = ServiceException.class)
+  public void disconnectExternalAccountShouldThrowExceptionOnError() throws Exception {
+    doThrow(new DatabaseException()).when(mockDatabase).disconnectExternalAccount(USER_CODE);
+
+    service.disconnectExternalAccount(USER_CODE);
   }
 
   @Test

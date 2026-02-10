@@ -127,6 +127,9 @@ public interface Service extends RemoteService {
 	 */
 	List<PacketUserData> lookupUserDataByGooglePlusId(String googlePlusId) throws ServiceException;
 
+	List<PacketUserData> lookupUserDataByExternalAccount(String provider, String subject)
+			throws ServiceException;
+
 	/**
 	 * 連携済みのユーザーコードを解除する
 	 * 
@@ -134,6 +137,8 @@ public interface Service extends RemoteService {
 	 * @throws ServiceException
 	 */
 	void disconnectUserCode(int userCode) throws ServiceException;
+
+	void disconnectExternalAccount(int userCode) throws ServiceException;
 
 	/***************************************************************************
 	 * ランキング

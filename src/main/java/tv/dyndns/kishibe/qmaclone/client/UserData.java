@@ -456,6 +456,22 @@ public class UserData implements CloseHandler<Window> {
     data.googlePlusId = googlePlusId;
   }
 
+  public String getAuthProvider() {
+    return data.authProvider;
+  }
+
+  public void setAuthProvider(String authProvider) {
+    data.authProvider = authProvider;
+  }
+
+  public String getAuthSubject() {
+    return data.authSubject;
+  }
+
+  public void setAuthSubject(String authSubject) {
+    data.authSubject = authSubject;
+  }
+
   public String getTheme() {
     return data.theme;
   }
