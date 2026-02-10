@@ -135,6 +135,11 @@ public class PanelSettingUserCodeView extends Composite implements
 	}
 
 	@Override
+	public void hideConnectButton() {
+		buttonConnect.setVisible(false);
+	}
+
+	@Override
 	public void setConnectButtonEnable(boolean enabled) {
 		buttonConnect.setEnabled(enabled);
 	}
@@ -180,6 +185,11 @@ public class PanelSettingUserCodeView extends Composite implements
 	@Override
 	public void setShowUserCodeListButtonEnable(boolean enabled) {
 		buttonShowUserCodeList.setEnabled(enabled);
+	}
+
+	@Override
+	public void setShowUserCodeListButtonVisible(boolean visible) {
+		buttonShowUserCodeList.setVisible(visible);
 	}
 
 	@Override

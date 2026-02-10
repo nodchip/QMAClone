@@ -74,6 +74,8 @@ public class PanelSettingUserCodePresenterTest {
     presenter.callbackLookupUserDataByGooglePlusId.onSuccess(fakeUserDataList);
 
     verify(mockView).setUserDataList(fakeUserDataList);
+    verify(mockView).setSwitchToConnectedUserCodeButtonVisible(false);
+    verify(mockView).setDisconnectUserCodeButtonVisible(false);
     verify(mockView).setSwitchToConnectedUserCodeButtonVisible(true);
     verify(mockView).setDisconnectUserCodeButtonVisible(true);
   }
@@ -84,6 +86,8 @@ public class PanelSettingUserCodePresenterTest {
     presenter.callbackLookupUserDataByGooglePlusId.onSuccess(fakeUserDataList);
 
     verify(mockView).setUserDataList(fakeUserDataList);
+    verify(mockView).setSwitchToConnectedUserCodeButtonVisible(false);
+    verify(mockView).setDisconnectUserCodeButtonVisible(false);
     verify(mockView, never()).setSwitchToConnectedUserCodeButtonVisible(true);
     verify(mockView).setDisconnectUserCodeButtonVisible(true);
   }
@@ -94,6 +98,8 @@ public class PanelSettingUserCodePresenterTest {
     presenter.callbackLookupUserDataByGooglePlusId.onSuccess(fakeUserDataList);
 
     verify(mockView).setUserDataList(fakeUserDataList);
+    verify(mockView).setSwitchToConnectedUserCodeButtonVisible(false);
+    verify(mockView).setDisconnectUserCodeButtonVisible(false);
     verify(mockView, never()).setSwitchToConnectedUserCodeButtonVisible(true);
     verify(mockView, never()).setDisconnectUserCodeButtonVisible(true);
   }
@@ -145,6 +151,7 @@ public class PanelSettingUserCodePresenterTest {
     presenter.connect();
 
     verify(mockView).setConnectButtonEnable(false);
+    verify(mockView).setShowUserCodeListButtonEnable(false);
     verify(mockExternalAccountConnector).authorize(presenter.callbackAuthorize);
   }
 
@@ -153,12 +160,31 @@ public class PanelSettingUserCodePresenterTest {
     presenter.connect();
     presenter.callbackAuthorize.onSuccess("google", FAKE_GOOGLE_PLUS_ID);
 
-    verify(mockService)
+    verify(mockService, never())
         .lookupUserDataByExternalAccount(
             "google", FAKE_GOOGLE_PLUS_ID, presenter.callbackLookupUserDataByGooglePlusId);
     verify(mockUserData).setAuthProvider("google");
     verify(mockUserData).setAuthSubject(FAKE_GOOGLE_PLUS_ID);
-    verify(mockUserData).save();
+    verify(mockUserData).save(presenter.callbackSaveExternalAccount);
+  }
+
+  @Test
+  public void callbackSaveExternalAccountShouldHideConnectButtonAndRequireReload() {
+    when(mockUserData.getAuthProvider()).thenReturn("google");
+    when(mockUserData.getAuthSubject()).thenReturn(FAKE_GOOGLE_PLUS_ID);
+
+    presenter.callbackSaveExternalAccount.onSuccess(null);
+
+    verify(mockView).hideConnectButton();
+    verify(mockView).setShowUserCodeListButtonVisible(false);
+    verify(mockView).setSwitchToConnectedUserCodeButtonVisible(false);
+    verify(mockView).setDisconnectUserCodeButtonVisible(false);
+    verify(mockView).showAlreadyConnectedMessage();
+    verify(mockView).setSwitchToUserCodeButtonEnable(false);
+    verify(mockView).setConnectButtonEnable(false);
+    verify(mockView).setShowUserCodeListButtonEnable(false);
+    verify(mockView).setDisconnectUserCodeButtonEnabled(false);
+    verify(mockView).showRequiredReloadMessage();
   }
 
   @Test
@@ -173,10 +199,29 @@ public class PanelSettingUserCodePresenterTest {
 
   @Test
   public void showUserCodeListShouldAuthorize() {
+    when(mockUserData.getAuthProvider()).thenReturn(null);
+    when(mockUserData.getAuthSubject()).thenReturn(null);
+
     presenter.showUserCodeList();
 
     verify(mockView).setShowUserCodeListButtonEnable(false);
+    verify(mockView).setConnectButtonEnable(false);
     verify(mockExternalAccountConnector).authorize(presenter.callbackAuthorize);
+  }
+
+  @Test
+  public void showUserCodeListShouldLookupDirectlyWhenAuthInfoExists() {
+    when(mockUserData.getAuthProvider()).thenReturn("google");
+    when(mockUserData.getAuthSubject()).thenReturn(FAKE_GOOGLE_PLUS_ID);
+
+    presenter.showUserCodeList();
+
+    verify(mockView).setShowUserCodeListButtonEnable(false);
+    verify(mockView).setConnectButtonEnable(false);
+    verify(mockService)
+        .lookupUserDataByExternalAccount(
+            "google", FAKE_GOOGLE_PLUS_ID, presenter.callbackLookupUserDataByGooglePlusId);
+    verify(mockExternalAccountConnector, never()).authorize(presenter.callbackAuthorize);
   }
 
   @Test
@@ -193,7 +238,6 @@ public class PanelSettingUserCodePresenterTest {
   @Test
   public void disconnectUserCodeShouldCallRpc() {
     when(mockView.getSelectedUserCode()).thenReturn(FAKE_USER_CODE_1);
-    when(mockUserData.getUserCode()).thenReturn(FAKE_USER_CODE_2);
 
     presenter.disconnectUserCode();
 
@@ -204,25 +248,24 @@ public class PanelSettingUserCodePresenterTest {
   @Test
   public void disconnectUserCodeShouldRequireReloadIfMine() {
     when(mockView.getSelectedUserCode()).thenReturn(FAKE_USER_CODE_1);
-    when(mockUserData.getUserCode()).thenReturn(FAKE_USER_CODE_1);
 
     presenter.disconnectUserCode();
 
     verify(mockView).setDisconnectUserCodeButtonEnabled(false);
     verify(mockService).disconnectExternalAccount(FAKE_USER_CODE_1, presenter.callbackDisconnectUserCode);
+  }
+
+  @Test
+  public void callbackDisconnectUserCodeShouldShowReloadMessage() {
+    presenter.callbackDisconnectUserCode.onSuccess(null);
+
     verify(mockView).showRequiredReloadMessage();
   }
 
   @Test
-  public void callbackDisconnectUserCodeShouldUpdateUserCodeList() {
-    when(mockUserData.getAuthProvider()).thenReturn("google");
-    when(mockUserData.getAuthSubject()).thenReturn(FAKE_GOOGLE_PLUS_ID);
+  public void callbackDisconnectUserCodeShouldEnableButtonOnFailure() {
+    presenter.callbackDisconnectUserCode.onFailure(new RuntimeException("failure"));
 
-    presenter.callbackDisconnectUserCode.onSuccess(null);
-
-    verify(mockService)
-        .lookupUserDataByExternalAccount(
-            "google", FAKE_GOOGLE_PLUS_ID, presenter.callbackLookupUserDataByGooglePlusId);
     verify(mockView).setDisconnectUserCodeButtonEnabled(true);
   }
 }

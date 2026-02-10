@@ -32,6 +32,8 @@ public class PanelSettingUserCodePresenter {
 
     void showConnectButton();
 
+    void hideConnectButton();
+
     void setConnectButtonEnable(boolean enabled);
 
     void showAlreadyConnectedMessage();
@@ -45,6 +47,8 @@ public class PanelSettingUserCodePresenter {
     void setSwitchToConnectedUserCodeButtonVisible(boolean visible);
 
     void setShowUserCodeListButtonEnable(boolean enabled);
+
+    void setShowUserCodeListButtonVisible(boolean visible);
 
     void showShowUserCodeListButton();
 
@@ -98,14 +102,25 @@ public class PanelSettingUserCodePresenter {
     service.lookupUserDataByExternalAccount(provider, subject, callbackLookupUserDataByGooglePlusId);
   }
 
+  private void disableAllActionButtonsUntilReload() {
+    view.setSwitchToUserCodeButtonEnable(false);
+    view.setConnectButtonEnable(false);
+    view.setShowUserCodeListButtonEnable(false);
+    view.setDisconnectUserCodeButtonEnabled(false);
+  }
+
   @VisibleForTesting
   AsyncCallback<List<PacketUserData>> callbackLookupUserDataByGooglePlusId =
       new AsyncCallback<List<PacketUserData>>() {
         @Override
         public void onSuccess(List<PacketUserData> result) {
+          view.setShowUserCodeListButtonEnable(true);
+          view.setSwitchToConnectedUserCodeButtonVisible(false);
+          view.setDisconnectUserCodeButtonVisible(false);
           view.setUserDataList(result);
 
           if (result.isEmpty()) {
+            view.showConnectedMessage();
             return;
           }
           view.setDisconnectUserCodeButtonVisible(true);
@@ -116,13 +131,14 @@ public class PanelSettingUserCodePresenter {
 
         @Override
         public void onFailure(Throwable caught) {
-          logger.log(Level.WARNING, "ユーザーデータの検索に失敗しました", caught);
+          view.setShowUserCodeListButtonEnable(true);
+          view.setConnectButtonEnable(true);
+          logger.log(Level.WARNING, "繝ｦ繝ｼ繧ｶ繝ｼ繝・・繧ｿ縺ｮ讀懃ｴ｢縺ｫ螟ｱ謨励＠縺ｾ縺励◆", caught);
         }
       };
 
   /**
-   * 入力されたユーザーコードに切り替える。
-   */
+   * 蜈･蜉帙＆繧後◆繝ｦ繝ｼ繧ｶ繝ｼ繧ｳ繝ｼ繝峨↓蛻・ｊ譖ｿ縺医ｋ縲・   */
   public void switchToUserCode() {
     view.setInvalidUserCodeMessageVisible(false);
     view.setSwitchToUserCodeButtonEnable(false);
@@ -155,15 +171,15 @@ public class PanelSettingUserCodePresenter {
 
     @Override
     public void onFailure(Throwable caught) {
-      logger.log(Level.WARNING, "ユーザーコードの読み込みに失敗しました", caught);
+      logger.log(Level.WARNING, "繝ｦ繝ｼ繧ｶ繝ｼ繧ｳ繝ｼ繝峨・隱ｭ縺ｿ霎ｼ縺ｿ縺ｫ螟ｱ謨励＠縺ｾ縺励◆", caught);
     }
   };
 
   /**
-   * 現在のユーザーコードを外部アカウントに接続する。
-   */
+   * 迴ｾ蝨ｨ縺ｮ繝ｦ繝ｼ繧ｶ繝ｼ繧ｳ繝ｼ繝峨ｒ螟夜Κ繧｢繧ｫ繧ｦ繝ｳ繝医↓謗･邯壹☆繧九・   */
   public void connect() {
     view.setConnectButtonEnable(false);
+    view.setShowUserCodeListButtonEnable(false);
     authorize(AuthorizeMode.CONNECT);
   }
 
@@ -180,8 +196,7 @@ public class PanelSettingUserCodePresenter {
         case CONNECT:
           userData.setAuthProvider(provider);
           userData.setAuthSubject(subject);
-          userData.save();
-          updateUserCodeList(provider, subject);
+          userData.save(callbackSaveExternalAccount);
           break;
 
         case SHOW_USER_CODE_LIST:
@@ -192,21 +207,49 @@ public class PanelSettingUserCodePresenter {
 
     @Override
     public void onFailure(Exception reason) {
-      logger.log(Level.WARNING, "外部アカウント認可に失敗しました", reason);
+      view.setConnectButtonEnable(true);
+      view.setShowUserCodeListButtonEnable(true);
+      logger.log(Level.WARNING, "螟夜Κ繧｢繧ｫ繧ｦ繝ｳ繝郁ｪ榊庄縺ｫ螟ｱ謨励＠縺ｾ縺励◆", reason);
+    }
+  };
+
+  @VisibleForTesting
+  AsyncCallback<Void> callbackSaveExternalAccount = new AsyncCallback<Void>() {
+    @Override
+    public void onSuccess(Void result) {
+      view.hideConnectButton();
+      view.setShowUserCodeListButtonVisible(false);
+      view.setSwitchToConnectedUserCodeButtonVisible(false);
+      view.setDisconnectUserCodeButtonVisible(false);
+      view.showAlreadyConnectedMessage();
+      disableAllActionButtonsUntilReload();
+      view.showRequiredReloadMessage();
+    }
+
+    @Override
+    public void onFailure(Throwable caught) {
+      view.setConnectButtonEnable(true);
+      view.setShowUserCodeListButtonEnable(true);
+      logger.log(Level.WARNING, "外部アカウント設定の保存に失敗しました", caught);
     }
   };
 
   /**
-   * 外部アカウントに接続しているユーザーコード一覧を表示する。
-   */
+   * 螟夜Κ繧｢繧ｫ繧ｦ繝ｳ繝医↓謗･邯壹＠縺ｦ縺・ｋ繝ｦ繝ｼ繧ｶ繝ｼ繧ｳ繝ｼ繝我ｸ隕ｧ繧定｡ｨ遉ｺ縺吶ｋ縲・   */
   public void showUserCodeList() {
     view.setShowUserCodeListButtonEnable(false);
+    view.setConnectButtonEnable(false);
+    String provider = userData.getAuthProvider();
+    String subject = userData.getAuthSubject();
+    if (!Strings.isNullOrEmpty(provider) && !Strings.isNullOrEmpty(subject)) {
+      updateUserCodeList(provider, subject);
+      return;
+    }
     authorize(AuthorizeMode.SHOW_USER_CODE_LIST);
   }
 
   /**
-   * 接続済みのユーザーコードに切り替える。
-   */
+   * 謗･邯壽ｸ医∩縺ｮ繝ｦ繝ｼ繧ｶ繝ｼ繧ｳ繝ｼ繝峨↓蛻・ｊ譖ｿ縺医ｋ縲・   */
   public void switchToConnectedUserCode() {
     view.setSwitchToUserCodeButtonEnable(false);
 
@@ -216,30 +259,26 @@ public class PanelSettingUserCodePresenter {
   }
 
   /**
-   * 接続済みのユーザーコードを切断する。
-   */
+   * 謗･邯壽ｸ医∩縺ｮ繝ｦ繝ｼ繧ｶ繝ｼ繧ｳ繝ｼ繝峨ｒ蛻・妙縺吶ｋ縲・   */
   public void disconnectUserCode() {
     view.setDisconnectUserCodeButtonEnabled(false);
 
     int userCode = view.getSelectedUserCode();
     service.disconnectExternalAccount(userCode, callbackDisconnectUserCode);
-
-    if (userCode == userData.getUserCode()) {
-      view.showRequiredReloadMessage();
-    }
   }
 
   @VisibleForTesting
   AsyncCallback<Void> callbackDisconnectUserCode = new AsyncCallback<Void>() {
     @Override
     public void onSuccess(Void result) {
-      updateUserCodeList(userData.getAuthProvider(), userData.getAuthSubject());
-      view.setDisconnectUserCodeButtonEnabled(true);
+      view.showRequiredReloadMessage();
     }
 
     @Override
     public void onFailure(Throwable caught) {
-      logger.log(Level.WARNING, "ユーザーコード切断に失敗しました", caught);
+      view.setDisconnectUserCodeButtonEnabled(true);
+      logger.log(Level.WARNING, "繝ｦ繝ｼ繧ｶ繝ｼ繧ｳ繝ｼ繝牙・譁ｭ縺ｫ螟ｱ謨励＠縺ｾ縺励◆", caught);
     }
   };
 }
+

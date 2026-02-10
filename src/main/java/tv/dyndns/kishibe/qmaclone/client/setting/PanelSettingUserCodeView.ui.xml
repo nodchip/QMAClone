@@ -21,13 +21,13 @@
 		<br />
 		注意:　ポップアップをブロックしている方は許可してください。<br />
 		<br />
-		<g:Button ui:field="buttonConnect" visible="false">現在のユーザーコードをGoogleに連携させる</g:Button><br />
+		<g:Button ui:field="buttonConnect" visible="false">現在のユーザーコードをGoogleアカウントに紐づける</g:Button><br />
 		<g:HTML ui:field="htmlAlreadyConnected" visible="false">すでに連携させています。新たに連携させる必要はありません。</g:HTML><br />
 		<g:HTML ui:field="htmlConnected" visible="false">QMACloneユーザーコードをGoogleアカウントに連携させました。</g:HTML><br />
 
 		<g:VerticalPanel ui:field="panelUserCodeList"/>		
-		<g:Button ui:field="buttonShowUserCodeList" visible="false">Google連携させたユーザーコードを表示する</g:Button><br />
-		<g:Button ui:field="buttonSwitchToConnectedUserCode" visible="false">ユーザーコードを切り替える</g:Button><br />
-		<g:Button ui:field="buttonDisconnectUserCode" visible="false">指定したユーザーコードの連携を解除する</g:Button><br />
+		<g:Button ui:field="buttonShowUserCodeList" visible="false">Googleログインして紐づけ済みユーザーコードを表示する</g:Button><br />
+		<g:Button ui:field="buttonSwitchToConnectedUserCode" visible="false">選択したユーザーコードに切り替える</g:Button><br />
+		<g:Button ui:field="buttonDisconnectUserCode" visible="false">選択したユーザーコードとGoogleアカウントの紐づけを解除する</g:Button><br />
 	</g:HTMLPanel>
 </ui:UiBinder> 
