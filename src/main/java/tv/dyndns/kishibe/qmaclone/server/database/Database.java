@@ -55,6 +55,11 @@ public interface Database {
 
 	void disconnectUserCodeFromGooglePlus(int userCode) throws DatabaseException;
 
+	List<PacketUserData> lookupUserDataByExternalAccount(String provider, String subject)
+			throws DatabaseException;
+
+	void disconnectExternalAccount(int userCode) throws DatabaseException;
+
 	// ////////////////////////////////////////////////////////////////////////
 	// ページビュー
 	// ////////////////////////////////////////////////////////////////////////

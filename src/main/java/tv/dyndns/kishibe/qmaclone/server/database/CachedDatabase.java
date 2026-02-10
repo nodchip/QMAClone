@@ -309,6 +309,17 @@ public class CachedDatabase implements Database {
 		database.disconnectUserCodeFromGooglePlus(userCode);
 	}
 
+	@Override
+	public List<PacketUserData> lookupUserDataByExternalAccount(String provider, String subject)
+			throws DatabaseException {
+		return database.lookupUserDataByExternalAccount(provider, subject);
+	}
+
+	@Override
+	public void disconnectExternalAccount(int userCode) throws DatabaseException {
+		database.disconnectExternalAccount(userCode);
+	}
+
 	// //////////////////////////////////////////////////////////////////////////////
 	// ランキング
 	private final LoadingCache<Object, List<List<PacketRankingData>>> rankingDataCache = CacheBuilder

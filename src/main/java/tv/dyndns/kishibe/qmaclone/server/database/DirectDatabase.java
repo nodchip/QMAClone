@@ -387,6 +387,31 @@ public class DirectDatabase implements Database {
 		}
 	}
 
+	@Override
+	public List<PacketUserData> lookupUserDataByExternalAccount(String provider, String subject)
+			throws DatabaseException {
+		try {
+			return runner.query(
+					"SELECT * FROM player WHERE AUTH_PROVIDER = ? AND AUTH_SUB = ?",
+					userDataHandler,
+					provider,
+					subject);
+		} catch (SQLException e) {
+			throw new DatabaseException(e);
+		}
+	}
+
+	@Override
+	public void disconnectExternalAccount(int userCode) throws DatabaseException {
+		try {
+			runner.update(
+					"UPDATE player SET AUTH_PROVIDER = NULL, AUTH_SUB = NULL WHERE USER_CODE = ?",
+					userCode);
+		} catch (SQLException e) {
+			throw new DatabaseException(e);
+		}
+	}
+
 	private static final String KEY_SESSION = "SESSION";
 	private static final String KEY_PLAY = "PLAY";
 	private static final String KEY_PAGE_VIEW = "page_view";

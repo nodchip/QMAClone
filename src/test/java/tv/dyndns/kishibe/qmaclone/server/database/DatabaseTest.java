@@ -86,6 +86,8 @@ public class DatabaseTest {
   private static final String FAKE_ANSWER = "fake answer";
   private static final int FAKE_COUNT = 22222;
   private static final String FAKE_GOOGLE_PLUS_ID = "fake google plus id";
+  private static final String FAKE_AUTH_PROVIDER = "google";
+  private static final String FAKE_AUTH_SUB = "sub-1";
 
   @Rule
   public GuiceBerryRule rule = new GuiceBerryRule(QMACloneTestEnv.class);
@@ -186,6 +188,42 @@ public class DatabaseTest {
 
     assertEquals(Lists.<PacketUserData> newArrayList(),
         database.lookupUserCodeByGooglePlusId(FAKE_GOOGLE_PLUS_ID));
+  }
+
+  @Test
+  public void lookupUserDataByExternalAccountShouldReturnMatchedUser() throws Exception {
+    PacketUserData userData = TestDataProvider.getUserData();
+    userData.userCode = FAKE_USER_CODE;
+    database.setUserData(userData);
+    runner.update(
+        "UPDATE player SET AUTH_PROVIDER = ?, AUTH_SUB = ? WHERE USER_CODE = ?",
+        FAKE_AUTH_PROVIDER,
+        FAKE_AUTH_SUB,
+        FAKE_USER_CODE);
+    database.clearCache();
+
+    List<PacketUserData> actual =
+        database.lookupUserDataByExternalAccount(FAKE_AUTH_PROVIDER, FAKE_AUTH_SUB);
+    assertEquals(1, actual.size());
+    assertEquals(FAKE_USER_CODE, actual.get(0).userCode);
+  }
+
+  @Test
+  public void disconnectExternalAccountShouldClearMapping() throws Exception {
+    PacketUserData userData = TestDataProvider.getUserData();
+    userData.userCode = FAKE_USER_CODE;
+    database.setUserData(userData);
+    runner.update(
+        "UPDATE player SET AUTH_PROVIDER = ?, AUTH_SUB = ? WHERE USER_CODE = ?",
+        FAKE_AUTH_PROVIDER,
+        FAKE_AUTH_SUB,
+        FAKE_USER_CODE);
+    database.clearCache();
+
+    database.disconnectExternalAccount(FAKE_USER_CODE);
+    List<PacketUserData> actual =
+        database.lookupUserDataByExternalAccount(FAKE_AUTH_PROVIDER, FAKE_AUTH_SUB);
+    assertTrue(actual.isEmpty());
   }
 
   @Test
