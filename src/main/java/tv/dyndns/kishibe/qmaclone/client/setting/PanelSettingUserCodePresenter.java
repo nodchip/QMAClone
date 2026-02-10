@@ -120,6 +120,7 @@ public class PanelSettingUserCodePresenter {
           view.setUserDataList(result);
 
           if (result.isEmpty()) {
+            view.setConnectButtonEnable(true);
             view.showConnectedMessage();
             return;
           }

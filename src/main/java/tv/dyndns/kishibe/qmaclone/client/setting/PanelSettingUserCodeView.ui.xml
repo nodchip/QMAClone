@@ -23,7 +23,7 @@
 		<br />
 		<g:Button ui:field="buttonConnect" visible="false">現在のユーザーコードをGoogleアカウントに紐づける</g:Button><br />
 		<g:HTML ui:field="htmlAlreadyConnected" visible="false">すでに連携させています。新たに連携させる必要はありません。</g:HTML><br />
-		<g:HTML ui:field="htmlConnected" visible="false">QMACloneユーザーコードをGoogleアカウントに連携させました。</g:HTML><br />
+		<g:HTML ui:field="htmlConnected" visible="false">このGoogleアカウントに紐づくQMACloneユーザーコードは見つかりませんでした。必要であれば「現在のユーザーコードをGoogleアカウントに紐づける」を実行してください。</g:HTML><br />
 
 		<g:VerticalPanel ui:field="panelUserCodeList"/>		
 		<g:Button ui:field="buttonShowUserCodeList" visible="false">Googleログインして紐づけ済みユーザーコードを表示する</g:Button><br />

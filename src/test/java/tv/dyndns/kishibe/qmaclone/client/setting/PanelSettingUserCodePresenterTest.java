@@ -98,8 +98,10 @@ public class PanelSettingUserCodePresenterTest {
     presenter.callbackLookupUserDataByGooglePlusId.onSuccess(fakeUserDataList);
 
     verify(mockView).setUserDataList(fakeUserDataList);
+    verify(mockView).setConnectButtonEnable(true);
     verify(mockView).setSwitchToConnectedUserCodeButtonVisible(false);
     verify(mockView).setDisconnectUserCodeButtonVisible(false);
+    verify(mockView).showConnectedMessage();
     verify(mockView, never()).setSwitchToConnectedUserCodeButtonVisible(true);
     verify(mockView, never()).setDisconnectUserCodeButtonVisible(true);
   }
