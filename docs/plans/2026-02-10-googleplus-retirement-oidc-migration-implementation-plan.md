@@ -379,3 +379,58 @@ Expected: PASS
 git add src/main/java/tv/dyndns/kishibe/qmaclone/server/database/Database.java src/main/java/tv/dyndns/kishibe/qmaclone/server/ServiceServletStub.java src/main/java/tv/dyndns/kishibe/qmaclone/client/Service.java src/main/java/tv/dyndns/kishibe/qmaclone/client/ServiceAsync.java src/test/java/tv/dyndns/kishibe/qmaclone/server/ServiceServletStubTest.java
 git commit -m "Google+互換APIを削除し外部認証APIへ統一"
 ```
+
+### Task 9: 設定画面UXフロー調整（文言・状態遷移・例外時UI）
+
+**Files:**
+- Modify: `src/main/java/tv/dyndns/kishibe/qmaclone/client/setting/PanelSettingUserCodeView.ui.xml`
+- Modify: `src/main/java/tv/dyndns/kishibe/qmaclone/client/setting/PanelSettingUserCodeView.java`
+- Modify: `src/main/java/tv/dyndns/kishibe/qmaclone/client/setting/PanelSettingUserCodePresenter.java`
+- Modify: `src/test/java/tv/dyndns/kishibe/qmaclone/client/setting/PanelSettingUserCodePresenterTest.java`
+
+**Step 1: 失敗テストを追加**
+
+追加観点:
+- 連携成功後に `紐づける` ボタンが非表示になる。
+- 一覧件数 0/1/2+ で `切り替える` と `解除する` の表示が期待どおりに分岐する。
+- ログインキャンセル時に押下前状態へ戻る。
+- 解除成功時に全ボタン無効化と再読込案内が表示される。
+
+Run:
+```powershell
+mvn -Dtest=PanelSettingUserCodePresenterTest test
+```
+Expected: FAIL（新規観点分）
+
+**Step 2: 最小実装**
+
+- ボタン文言を設計書 `11.1` に合わせて更新。
+- `Presenter` で状態遷移を整理。
+- 解除成功時は全ボタン無効化 + 再読込案内表示を統一。
+- 0件時メッセージを `紐づけ済みユーザーコードはありません` に統一。
+
+**Step 3: テスト実行**
+
+Run:
+```powershell
+mvn -Dtest=PanelSettingUserCodePresenterTest test
+```
+Expected: PASS
+
+**Step 4: ビルド反映**
+
+Run:
+```powershell
+mvn -DskipTests compile
+mvn -Pgwt-compile-java25 "-Dgwt.skipCompilation=false" -DskipTests gwt:compile
+mvn package -DskipTests
+powershell -ExecutionPolicy Bypass -File .\deploy_qmaclone_tomcat9.ps1 -SkipBuild
+```
+Expected: PASS
+
+**Step 5: コミット**
+
+```powershell
+git add src/main/java/tv/dyndns/kishibe/qmaclone/client/setting/PanelSettingUserCodeView.ui.xml src/main/java/tv/dyndns/kishibe/qmaclone/client/setting/PanelSettingUserCodeView.java src/main/java/tv/dyndns/kishibe/qmaclone/client/setting/PanelSettingUserCodePresenter.java src/test/java/tv/dyndns/kishibe/qmaclone/client/setting/PanelSettingUserCodePresenterTest.java
+git commit -m "設定画面のGoogle連携UXフローを安定性優先で調整"
+```

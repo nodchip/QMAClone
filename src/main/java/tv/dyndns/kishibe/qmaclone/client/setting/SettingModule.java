@@ -19,11 +19,6 @@ public class SettingModule extends AbstractGinModule {
   @Provides
   @Singleton
   public ExternalAccountConnector provideExternalAccountConnector() {
-    return new ExternalAccountConnector() {
-      @Override
-      public void authorize(Callback callback) {
-        callback.onFailure(new UnsupportedOperationException("External account connector is not configured."));
-      }
-    };
+    return new GoogleExternalAccountConnector();
   }
 }

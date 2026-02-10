@@ -140,8 +140,12 @@ public class UserData implements CloseHandler<Window> {
   }
 
   public void save() {
+    save(callbackSaveUserData);
+  }
+
+  public void save(final AsyncCallback<Void> callback) {
     Cookies.setCookie(KEY_USER_CODE, Integer.toString(data.userCode), getExpireTime());
-    Service.Util.getInstance().saveUserData(data, callbackSaveUserData);
+    Service.Util.getInstance().saveUserData(data, callback == null ? callbackSaveUserData : callback);
   }
 
   private final AsyncCallback<Void> callbackSaveUserData = new AsyncCallback<Void>() {
