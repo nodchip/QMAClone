@@ -26,8 +26,11 @@
 - 高リスク依存はこのバッチではバージョン変更なし。
 - ただし GWT 本体 2.10.0 への更新後も以下は成功:
   - `mvn -DskipTests compile`
-  - `mvn -DskipTests "-Dgwt.skipCompilation=false" gwt:compile`
+  - `JAVA_TOOL_OPTIONS=--add-opens... mvn -DskipTests "-Dgwt.skipCompilation=false" gwt:compile`
   - `mvn test`
+- 注意:
+  - Java 25 では Piriti generator（Guice/CGLIB）が強カプセル化に抵触するため、
+    `gwt:compile` 実行時に `JAVA_TOOL_OPTIONS` で `--add-opens` 指定が必要。
 
 ## 次フェーズ案
 

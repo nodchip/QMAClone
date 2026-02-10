@@ -320,6 +320,11 @@
             <arg>-compileReport</arg>
             <arg>-XcompilerMetrics</arg>
           </compilerArgs>
+          <jvmArgs>
+            <jvmArg>--add-opens=java.base/java.lang=ALL-UNNAMED</jvmArg>
+            <jvmArg>--add-opens=java.base/java.lang.reflect=ALL-UNNAMED</jvmArg>
+            <jvmArg>--add-opens=java.base/java.io=ALL-UNNAMED</jvmArg>
+          </jvmArgs>
           <!-- DevMode configuration -->
           <warDir>${project.build.directory}/${project.build.finalName}</warDir>
           <classpathScope>compile+runtime</classpathScope>
