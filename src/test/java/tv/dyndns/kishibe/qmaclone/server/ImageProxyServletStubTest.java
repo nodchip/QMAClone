@@ -14,20 +14,17 @@ import org.apache.commons.io.FileUtils;
 import org.apache.http.impl.cookie.DateParseException;
 import org.apache.http.impl.cookie.DateUtils;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.Rule;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import tv.dyndns.kishibe.qmaclone.client.constant.Constant;
 import tv.dyndns.kishibe.qmaclone.server.image.ImageUtils;
 import tv.dyndns.kishibe.qmaclone.server.image.ImageUtils.Parameter;
 
+@ExtendWith(MockitoExtension.class)
 public class ImageProxyServletStubTest {
-
-  @Rule
-  public final MockitoRule mocks = MockitoJUnit.rule();
 
   @Mock
   private ImageProxyServletStub service;
