@@ -5,3 +5,6 @@
 /src/main/webapp/WEB-INF/deploy/tv.dyndns.kishibe.qmaclone.QMAClone/
 /src/main/webapp/tv.dyndns.kishibe.qmaclone.QMAClone/
 /.worktrees/
+/gwt-unitCache/
+/war/WEB-INF/deploy/
+/war/tv.dyndns.kishibe.qmaclone.QMAClone.JUnit/
