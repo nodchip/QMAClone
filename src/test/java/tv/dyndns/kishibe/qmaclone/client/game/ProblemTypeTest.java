@@ -1,17 +1,14 @@
 package tv.dyndns.kishibe.qmaclone.client.game;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.EnumSet;
 
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-@RunWith(JUnit4.class)
 public class ProblemTypeTest {
 	@Test
 	public void testGetInitial() {
@@ -58,19 +55,19 @@ public class ProblemTypeTest {
 		assertFalse(ProblemType.Random.isPolygonCreation());
 	}
 
-	@Ignore
+	@Disabled
 	@Test
 	public void testValidate() {
 		// TODO(nodchip): テストを書く
 	}
 
-	@Ignore
+	@Disabled
 	@Test
 	public void testJudge() {
 		// TODO(nodchip): テストを書く
 	}
 
-	@Ignore
+	@Disabled
 	@Test
 	public void testShuffleAnswersAndChoices() {
 		// TODO(nodchip): テストを書く
