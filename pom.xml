@@ -264,28 +264,31 @@
     <dependency>
     	<groupId>org.eclipse.jetty</groupId>
     	<artifactId>jetty-server</artifactId>
+    	<version>9.4.58.v20250814</version>
     	<scope>provided</scope>
     </dependency>
     <dependency>
     	<groupId>org.eclipse.jetty</groupId>
     	<artifactId>jetty-servlet</artifactId>
+    	<version>9.4.58.v20250814</version>
     	<scope>provided</scope>
     </dependency>
     <dependency>
     	<groupId>org.eclipse.jetty.websocket</groupId>
     	<artifactId>websocket-api</artifactId>
+    	<version>9.4.58.v20250814</version>
     	<scope>provided</scope>
     </dependency>
     <dependency>
     	<groupId>org.eclipse.jetty.websocket</groupId>
     	<artifactId>websocket-servlet</artifactId>
-    	<version>9.2.14.v20151106</version>
+    	<version>9.4.58.v20250814</version>
     	<scope>provided</scope>
     </dependency>
     <dependency>
     	<groupId>org.eclipse.jetty.websocket</groupId>
     	<artifactId>websocket-server</artifactId>
-    	<version>9.2.14.v20151106</version>
+    	<version>9.4.58.v20250814</version>
     	<scope>provided</scope>
     </dependency>
     <dependency>
