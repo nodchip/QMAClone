@@ -4,18 +4,16 @@ import static org.mockito.Mockito.verify;
 
 import java.util.List;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.MockitoAnnotations;
 
 import tv.dyndns.kishibe.qmaclone.client.ServiceAsync;
 
 import com.google.common.collect.ImmutableList;
 
-@RunWith(MockitoJUnitRunner.class)
 public class ThemeSelectorPresenterTest {
 
 	private static final String FAKE_THEME = "fake THEME";
@@ -27,17 +25,20 @@ public class ThemeSelectorPresenterTest {
 	private ThemeRankingPresenter mockThemeRankingPresenter;
 	@Mock
 	private ThemeSelectorPresenter.View mockView;
+	private AutoCloseable closeableMocks;
 	private ThemeSelectorPresenter presenter;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
+		closeableMocks = MockitoAnnotations.openMocks(this);
 		presenter = new ThemeSelectorPresenter(mockService, mockThemeRankingPresenter);
 		presenter.setView(mockView);
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		verify(mockService).getThemeModeThemes(presenter.callbackGetThemeModeThemes);
+		closeableMocks.close();
 	}
 
 	@Test

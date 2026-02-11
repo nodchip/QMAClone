@@ -4,19 +4,17 @@ import static org.mockito.Mockito.verify;
 
 import java.util.List;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.MockitoAnnotations;
 
 import tv.dyndns.kishibe.qmaclone.client.ServiceAsync;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketRankingData;
 
 import com.google.common.collect.ImmutableList;
 
-@RunWith(MockitoJUnitRunner.class)
 public class GeneralRankingPresenterTest {
 
 	private static final List<List<PacketRankingData>> FAKE_RANKINGS = ImmutableList
@@ -27,17 +25,20 @@ public class GeneralRankingPresenterTest {
 	private ServiceAsync mockService;
 	@Mock
 	private GeneralRankingPresenter.View mockView;
+	private AutoCloseable closeableMocks;
 	private GeneralRankingPresenter presenter;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
+		closeableMocks = MockitoAnnotations.openMocks(this);
 		presenter = new GeneralRankingPresenter(mockService);
 		presenter.setView(mockView);
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		verify(mockService).getGeneralRanking(presenter.callbackGetRankingData);
+		closeableMocks.close();
 	}
 
 	@Test

@@ -4,19 +4,17 @@ import static org.mockito.Mockito.verify;
 
 import java.util.List;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.MockitoAnnotations;
 
 import tv.dyndns.kishibe.qmaclone.client.ServiceAsync;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketMonth;
 
 import com.google.common.collect.ImmutableList;
 
-@RunWith(MockitoJUnitRunner.class)
 public class DateRangeSelectorPresenterTest {
 
 	private static final int FAKE_YEAR = 2112;
@@ -30,17 +28,20 @@ public class DateRangeSelectorPresenterTest {
 	private ThemeRankingPresenter mockThemeRankingPresenter;
 	@Mock
 	private DateRangeSelectorPresenter.View mockView;
+	private AutoCloseable closeableMocks;
 	private DateRangeSelectorPresenter presenter;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
+		closeableMocks = MockitoAnnotations.openMocks(this);
 		presenter = new DateRangeSelectorPresenter(mockService, mockThemeRankingPresenter);
 		presenter.setView(mockView);
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		verify(mockService).getThemeRankingDateRanges(presenter.callbackGetThemeRankingDateRanges);
+		closeableMocks.close();
 	}
 
 	@Test
