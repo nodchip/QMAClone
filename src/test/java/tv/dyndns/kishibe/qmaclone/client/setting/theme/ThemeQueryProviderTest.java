@@ -2,18 +2,16 @@ package tv.dyndns.kishibe.qmaclone.client.setting.theme;
 
 import static org.mockito.Mockito.verify;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.MockitoAnnotations;
 
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketThemeQuery;
 import tv.dyndns.kishibe.qmaclone.client.setting.PanelSettingThemeQuery;
 
 import com.google.gwt.view.client.HasData;
 
-@RunWith(MockitoJUnitRunner.class)
 public class ThemeQueryProviderTest {
 
 	private static final String FAKE_THEME = "AAA";
@@ -21,10 +19,12 @@ public class ThemeQueryProviderTest {
 	private PanelSettingThemeQuery mockPresenter;
 	@Mock
 	private HasData<PacketThemeQuery> mockHasData;
+	private AutoCloseable closeableMocks;
 	private ThemeQueryProvider themeQueryProvider;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
+		closeableMocks = MockitoAnnotations.openMocks(this);
 		themeQueryProvider = new ThemeQueryProvider(mockPresenter, FAKE_THEME);
 	}
 
@@ -40,6 +40,11 @@ public class ThemeQueryProviderTest {
 		themeQueryProvider.onRangeChanged(mockHasData);
 
 		verify(mockPresenter).onThemeQueryRequested(FAKE_THEME, mockHasData);
+	}
+
+	@org.junit.jupiter.api.AfterEach
+	public void tearDown() throws Exception {
+		closeableMocks.close();
 	}
 
 }
