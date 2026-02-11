@@ -100,7 +100,7 @@ public class FullTextSearch {
   private static final String PREFIX_TYPE = "問題形式:";
   private static final String PREFIX_CREATOR = "問題作成者:";
   private static final String PREFIX_RANDOM = "ランダム:";
-  private static final int MAX_CLAUSE_COUNT = 65536;
+  private static final int MAX_CLAUSE_COUNT = 262144;
   private static final String TERM_OR = "OR";
   private final Object lockIndexWriter = new Object();
   private final ThreadPool threadPool;
@@ -113,7 +113,7 @@ public class FullTextSearch {
   @Inject
   public FullTextSearch(ThreadPool threadPool, DevelopmentUtil developmentUtil, QueryRunner queryRunner,
       ViterbiTokenizer.Factory viterbiTokenizerfactory, ViterbiAnalyzer.Factory viterbiAnalyzerFactory) {
-    BooleanQuery.setMaxClauseCount(MAX_CLAUSE_COUNT);
+    IndexSearcher.setMaxClauseCount(MAX_CLAUSE_COUNT);
     this.threadPool = Preconditions.checkNotNull(threadPool);
     this.developmentUtil = Preconditions.checkNotNull(developmentUtil);
     this.queryRunner = Preconditions.checkNotNull(queryRunner);
@@ -389,7 +389,7 @@ public class FullTextSearch {
       TopDocs docs = searcher.search(query.build(), Integer.MAX_VALUE);
 
       for (ScoreDoc doc : docs.scoreDocs) {
-        Document document = reader.document(doc.doc);
+        Document document = reader.storedFields().document(doc.doc);
         int problemId = Integer.parseInt(document.get(FIELD_PROBLEM_ID));
         problemIds.add(problemId);
       }
@@ -537,7 +537,7 @@ public class FullTextSearch {
           TopDocs docs = searcher.search(query.build(), MAX_NUMBER_OF_SEARCH_REUSLTS);
           List<Integer> problemIds = new ArrayList<Integer>(docs.scoreDocs.length);
           for (ScoreDoc doc : docs.scoreDocs) {
-            Document document = reader.document(doc.doc);
+            Document document = reader.storedFields().document(doc.doc);
             int problemId = Integer.parseInt(document.get(FIELD_PROBLEM_ID));
             problemIds.add(problemId);
           }
@@ -585,7 +585,7 @@ public class FullTextSearch {
           TopDocs docs = searcher.search(query, 10);
           List<Integer> problemIds = new ArrayList<Integer>(docs.scoreDocs.length);
           for (ScoreDoc doc : docs.scoreDocs) {
-            Document document = reader.document(doc.doc);
+            Document document = reader.storedFields().document(doc.doc);
             int problemId = Integer.parseInt(document.get(FIELD_PROBLEM_ID));
             problemIds.add(problemId);
           }
@@ -623,7 +623,7 @@ public class FullTextSearch {
           TopDocs docs = searcher.search(query, 1000);
           List<Integer> problemIds = new ArrayList<Integer>(docs.scoreDocs.length);
           for (ScoreDoc doc : docs.scoreDocs) {
-            Document document = reader.document(doc.doc);
+            Document document = reader.storedFields().document(doc.doc);
             int problemId = Integer.parseInt(document.get(FIELD_PROBLEM_ID));
             problemIds.add(problemId);
           }
@@ -656,7 +656,7 @@ public class FullTextSearch {
       IndexSearcher searcher = new IndexSearcher(reader);
       TopDocs docs = searcher.search(query, MAX_NUMBER_OF_SEARCH_REUSLTS);
       for (ScoreDoc doc : docs.scoreDocs) {
-        Document document = reader.document(doc.doc);
+        Document document = reader.storedFields().document(doc.doc);
         System.out.println(document.get(FIELD_SENTENCE));
       }
     }
