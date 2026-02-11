@@ -1,12 +1,10 @@
 package tv.dyndns.kishibe.qmaclone.client.setting.theme;
 
 import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketThemeQuery;
 
@@ -17,7 +15,6 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
  * 
  * @author nodchip
  */
-@RunWith(JUnit4.class)
 public class ThemeQueryCellTest {
 
 	private static final String FAKE_THEME = "AAA";
@@ -25,7 +22,7 @@ public class ThemeQueryCellTest {
 	private PacketThemeQuery fakeThemeQuery;
 	private ThemeQueryCell themeQueryCell;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		fakeThemeQuery = new PacketThemeQuery();
 		fakeThemeQuery.setTheme(FAKE_THEME);
