@@ -24,7 +24,7 @@
     <zinnia.library.dir>C:/home/nodchip/zinnia/zinnia</zinnia.library.dir>
     <gwt.skipCompilation>true</gwt.skipCompilation>
     <surefire.skip>true</surefire.skip>
-    <argLine>-Djdk.net.file.ftpfallback=true -Dnet.bytebuddy.experimental=true -Djna.library.path=${zinnia.library.dir} -Djava.library.path=${zinnia.library.dir}</argLine>
+    <argLine>-Djdk.net.file.ftpfallback=true -Dnet.bytebuddy.experimental=true --add-opens java.base/java.lang=ALL-UNNAMED -Djna.library.path=${zinnia.library.dir} -Djava.library.path=${zinnia.library.dir}</argLine>
   </properties>
 
   <dependencyManagement>
