@@ -2,17 +2,15 @@ package tv.dyndns.kishibe.qmaclone.client.packet;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.Arrays;
 import java.util.Date;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.ImmutableList;
 
@@ -23,11 +21,10 @@ import tv.dyndns.kishibe.qmaclone.client.game.ProblemType;
 import tv.dyndns.kishibe.qmaclone.client.game.RandomFlag;
 import tv.dyndns.kishibe.qmaclone.client.testing.TestDataProvider;
 
-@RunWith(JUnit4.class)
 public class PacketProblemTest {
   private PacketProblem problem;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     problem = TestDataProvider.getProblem();
   }
