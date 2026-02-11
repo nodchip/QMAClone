@@ -33,7 +33,6 @@ import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.joda.time.DateTime;
-import org.junit.Rule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -63,7 +62,7 @@ import tv.dyndns.kishibe.qmaclone.client.packet.RestrictionType;
 import tv.dyndns.kishibe.qmaclone.client.testing.TestDataProvider;
 import tv.dyndns.kishibe.qmaclone.server.PageView;
 import tv.dyndns.kishibe.qmaclone.server.database.DirectDatabase.WrongAnswerHandler;
-import tv.dyndns.kishibe.qmaclone.server.testing.QMACloneTestEnv;
+import tv.dyndns.kishibe.qmaclone.server.testing.GuiceInjectionExtension;
 import tv.dyndns.kishibe.qmaclone.server.util.Normalizer;
 
 import com.google.common.base.MoreObjects;
@@ -71,10 +70,9 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Range;
-import com.google.guiceberry.junit4.GuiceBerryRule;
 import com.google.inject.Inject;
 
-@ExtendWith(MockitoExtension.class)
+@ExtendWith({MockitoExtension.class, GuiceInjectionExtension.class})
 public class DatabaseTest {
 
   private static final int FAKE_USER_CODE = 12345678;
@@ -88,8 +86,6 @@ public class DatabaseTest {
   private static final String FAKE_AUTH_PROVIDER = "google";
   private static final String FAKE_AUTH_SUB = "sub-1";
 
-  @Rule
-  public GuiceBerryRule rule = new GuiceBerryRule(QMACloneTestEnv.class);
   @Inject
   private CachedDatabase database;
   @Mock
