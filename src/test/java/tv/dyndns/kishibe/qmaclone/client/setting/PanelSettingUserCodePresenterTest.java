@@ -6,11 +6,11 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.MockitoAnnotations;
 
 import tv.dyndns.kishibe.qmaclone.client.ServiceAsync;
 import tv.dyndns.kishibe.qmaclone.client.UserData;
@@ -20,7 +20,6 @@ import tv.dyndns.kishibe.qmaclone.client.testing.TestDataProvider;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
-@RunWith(MockitoJUnitRunner.class)
 public class PanelSettingUserCodePresenterTest {
 
   private static final String FAKE_GOOGLE_PLUS_ID = "fake google plus id";
@@ -34,10 +33,12 @@ public class PanelSettingUserCodePresenterTest {
   private PanelSettingUserCodePresenter.View mockView;
   @Mock
   private UserData mockUserData;
+  private AutoCloseable closeableMocks;
   private PanelSettingUserCodePresenter presenter;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
+    closeableMocks = MockitoAnnotations.openMocks(this);
     presenter =
         new PanelSettingUserCodePresenter(mockService, mockExternalAccountConnector, mockUserData);
     presenter.setView(mockView);
@@ -287,5 +288,10 @@ public class PanelSettingUserCodePresenterTest {
     presenter.callbackDisconnectUserCode.onFailure(new RuntimeException("failure"));
 
     verify(mockView).setDisconnectUserCodeButtonEnabled(true);
+  }
+
+  @AfterEach
+  public void tearDown() throws Exception {
+    closeableMocks.close();
   }
 }
