@@ -23,8 +23,12 @@
 
 ### GWT / クライアント
 - クライアント変更後は GWT 再コンパイル成功を完了条件に含める。
+- 依存関係を更新した場合は、`mvn "-Dgwt.skipCompilation=false" gwt:compile` の成功を確認してから完了とする。
 - 基盤クラス（例: `StatusUpdater`）変更時は、`@Override` エラー連鎖を関連画面まで確認する。
 - `cache.js` を更新した場合、配備先が最新成果物を参照していることを確認する。
+- 依存関係は安定版のみ使用し、RC / alpha / milestone 版は採用しない。
+- `name.pehl:piriti-user` と `name.pehl:piriti-dev` は `0.8` に固定し、GWT 再コンパイル検証なしで更新しない。
+- `gwt:compile` が失敗した場合はデプロイを中断し、`-SkipBuild` による回避配備を行わない。
 
 ### Jetty / Tomcat / クラスローダ
 - DevMode と Tomcat でクラスローダ挙動が異なる前提で検証する。
@@ -43,6 +47,7 @@
 ### デプロイ / ローカル運用
 - Tomcat 再配備時は、必要に応じて旧展開物削除とサービス再起動で静的状態を確実に破棄する。
 - Eclipse で不整合が疑われる場合は、`target` と `gwt-unitCache` のクリーンを実施する。
+- 検証（`build` / `test` / `gwt:compile`）が1つでも失敗した場合はデプロイを中断し、修正と再検証完了まで配備しない。
 
 ### Git / worktree 運用
 - worktree ブランチを `master` に取り込むときは、必ず fast-forward merge（`git merge --ff-only`）を使用する。
@@ -62,6 +67,8 @@
 - 改善: JUnit移行は `@Rule` 有無で対象を分離し、GuiceBerry 依存テストは Extension 実装完了まで Vintage 実行を維持する。
 - ミス: 移行可否判定に、ネイティブ依存（`zinnia.dll` 必須）を持つテストを混在させ、失敗要因の切り分けが遅れた。
 - 改善: 移行検証の基準テストは、ネイティブ依存の有無で先に分離してから実行する。
+- ミス: `piriti` 変更時に `gwt:compile` の失敗要因（JAXB / rebind 例外）が揺れ、原因切り分けに時間を要した。
+- 改善: `piriti` は `0.8` 固定を維持し、変更検証時は `mvn "-Dgwt.skipCompilation=false" gwt:compile` を単独実行して成否を先に確定する。
 
 ### JUnit移行（QMAClone）
 - JUnit5移行前に `@Rule` の有無でテストを分類し、`@Rule` 依存テストは別タスクとして扱う。
