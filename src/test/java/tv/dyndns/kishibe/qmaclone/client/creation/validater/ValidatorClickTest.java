@@ -1,22 +1,19 @@
 package tv.dyndns.kishibe.qmaclone.client.creation.validater;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Arrays;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import tv.dyndns.kishibe.qmaclone.client.game.ProblemType;
 
-@RunWith(JUnit4.class)
 public class ValidatorClickTest extends ValidatorTestBase {
   private ValidatorClick validator;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     super.setUp();
     validator = new ValidatorClick();
