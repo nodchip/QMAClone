@@ -1,36 +1,28 @@
 package tv.dyndns.kishibe.qmaclone.client.util;
 
-import static org.mockito.Mockito.verify;
-
 import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicInteger;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-@RunWith(JUnit4.class)
 public class CommandRunnerTest {
-
-  @Rule
-  public final MockitoRule mocks = MockitoJUnit.rule();
-
-  @Mock
-  private Runnable mockRunnable1;
-  @Mock
-  private Runnable mockRunnable2;
-  @Mock
-  private Runnable mockRunnable3;
-
+  private final AtomicInteger count1 = new AtomicInteger();
+  private final AtomicInteger count2 = new AtomicInteger();
+  private final AtomicInteger count3 = new AtomicInteger();
   private CommandRunner runner;
 
-  @Before
-  public void setUp() throws Exception {
-    runner = new CommandRunner(Arrays.asList(mockRunnable1, mockRunnable2, mockRunnable3));
+  @BeforeEach
+  public void setUp() {
+    runner = new CommandRunner(Arrays.asList(count1::incrementAndGet, count2::incrementAndGet, count3::incrementAndGet));
+  }
+
+  @AfterEach
+  public void tearDown() {
+    count1.set(0);
+    count2.set(0);
+    count3.set(0);
   }
 
   @Test
@@ -39,8 +31,8 @@ public class CommandRunnerTest {
     runner.run();
     runner.run();
 
-    verify(mockRunnable1).run();
-    verify(mockRunnable2).run();
-    verify(mockRunnable3).run();
+    org.junit.jupiter.api.Assertions.assertEquals(1, count1.get());
+    org.junit.jupiter.api.Assertions.assertEquals(1, count2.get());
+    org.junit.jupiter.api.Assertions.assertEquals(1, count3.get());
   }
 }

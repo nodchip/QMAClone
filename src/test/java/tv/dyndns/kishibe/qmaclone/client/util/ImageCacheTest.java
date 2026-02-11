@@ -1,6 +1,6 @@
 package tv.dyndns.kishibe.qmaclone.client.util;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import tv.dyndns.kishibe.qmaclone.client.QMACloneGWTTestCaseBase;
 
