@@ -12,32 +12,59 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
-import org.junit.Rule;
+import org.apache.commons.io.FileUtils;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import tv.dyndns.kishibe.qmaclone.client.game.ProblemGenre;
 import tv.dyndns.kishibe.qmaclone.client.game.ProblemType;
 import tv.dyndns.kishibe.qmaclone.client.game.RandomFlag;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblem;
-import tv.dyndns.kishibe.qmaclone.server.testing.QMACloneTestEnv;
+import tv.dyndns.kishibe.qmaclone.server.testing.GuiceInjectionExtension;
 import tv.dyndns.kishibe.qmaclone.server.util.IntArray;
 import tv.dyndns.kishibe.qmaclone.server.util.Normalizer;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
-import com.google.guiceberry.junit4.GuiceBerryRule;
 import com.google.inject.Inject;
 
+@ExtendWith(GuiceInjectionExtension.class)
 public class FullTextSearchTest {
 
-  @Rule
-  public final GuiceBerryRule rule = new GuiceBerryRule(QMACloneTestEnv.class);
+  private static final String INDEX_DIRECTORY_PROPERTY = "qmaclone.lucene.index.dir";
+  private static Path tempIndexDirectory;
+
+  @BeforeAll
+  static void setUpIndexDirectory() throws Exception {
+    tempIndexDirectory = Files.createTempDirectory("qmaclone-fulltextsearch-");
+    System.setProperty(INDEX_DIRECTORY_PROPERTY, tempIndexDirectory.toString());
+  }
+
+  @AfterAll
+  static void tearDownIndexDirectory() throws Exception {
+    System.clearProperty(INDEX_DIRECTORY_PROPERTY);
+    if (tempIndexDirectory != null) {
+      FileUtils.deleteDirectory(tempIndexDirectory.toFile());
+    }
+  }
+
   @Inject
   private Database database;
   @Inject
   private FullTextSearch fullTextSearch;
+
+  @Test
+  public void indexDirectoryShouldBeOverridableForTest() {
+    Path actual = FullTextSearch.resolveIndexFileDirectory();
+    assertNotNull(actual);
+    assertEquals(tempIndexDirectory, actual);
+  }
 
   @Test
   public final void testEscapeQuery() {

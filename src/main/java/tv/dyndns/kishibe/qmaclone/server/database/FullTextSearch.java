@@ -80,7 +80,9 @@ import com.google.inject.Injector;
 
 public class FullTextSearch {
   private static final Logger logger = Logger.getLogger(FullTextSearch.class.toString());
-  private static final Path INDEX_FILE_DIRECTORY = FileSystems.getDefault().getPath("/home/tomcat/qmaclone/lucene");
+  private static final String INDEX_DIRECTORY_PROPERTY = "qmaclone.lucene.index.dir";
+  private static final Path DEFAULT_INDEX_FILE_DIRECTORY =
+      FileSystems.getDefault().getPath("/home/tomcat/qmaclone/lucene");
   private static final int TIME_OUT_SEC = 10;
   private static final int MAX_NUMBER_OF_SEARCH_REUSLTS = 10000;
   private static final String FIELD_PROBLEM_ID = "problemId";
@@ -107,6 +109,7 @@ public class FullTextSearch {
   private final QueryRunner queryRunner;
   private final ViterbiTokenizer.Factory viterbiTokenizerfactory;
   private final ViterbiAnalyzer.Factory viterbiAnalyzerFactory;
+  private final Path indexFileDirectory;
 
   @Inject
   public FullTextSearch(ThreadPool threadPool, DevelopmentUtil developmentUtil, QueryRunner queryRunner,
@@ -117,6 +120,7 @@ public class FullTextSearch {
     this.queryRunner = Preconditions.checkNotNull(queryRunner);
     this.viterbiTokenizerfactory = Preconditions.checkNotNull(viterbiTokenizerfactory);
     this.viterbiAnalyzerFactory = Preconditions.checkNotNull(viterbiAnalyzerFactory);
+    this.indexFileDirectory = resolveIndexFileDirectory();
 
     if (!isIndexExists()) {
       try {
@@ -127,9 +131,18 @@ public class FullTextSearch {
     }
   }
 
+  @VisibleForTesting
+  static Path resolveIndexFileDirectory() {
+    String overriddenPath = System.getProperty(INDEX_DIRECTORY_PROPERTY);
+    if (!Strings.isNullOrEmpty(overriddenPath)) {
+      return FileSystems.getDefault().getPath(overriddenPath);
+    }
+    return DEFAULT_INDEX_FILE_DIRECTORY;
+  }
+
   private boolean isIndexExists() {
     try {
-      return DirectoryReader.indexExists(FSDirectory.open(INDEX_FILE_DIRECTORY));
+      return DirectoryReader.indexExists(FSDirectory.open(indexFileDirectory));
     } catch (IOException e) {
       logger.log(Level.WARNING, "インデクスの存在確認に失敗しました", e);
     }
@@ -137,11 +150,11 @@ public class FullTextSearch {
   }
 
   private void generateIndex() throws IOException, DatabaseException {
-    FileUtils.deleteDirectory(INDEX_FILE_DIRECTORY.toFile());
-    INDEX_FILE_DIRECTORY.toFile().mkdirs();
+    FileUtils.deleteDirectory(indexFileDirectory.toFile());
+    indexFileDirectory.toFile().mkdirs();
 
     synchronized (lockIndexWriter) {
-      FSDirectory d = FSDirectory.open(INDEX_FILE_DIRECTORY);
+      FSDirectory d = FSDirectory.open(indexFileDirectory);
       try (IndexWriter writer = new IndexWriter(d,
           new IndexWriterConfig(new NGramAnalyzer()).setOpenMode(OpenMode.CREATE))) {
         // 循環参照のため直接インスタンス化する
@@ -151,7 +164,7 @@ public class FullTextSearch {
   }
 
   private IndexWriter newIndexWriter() throws CorruptIndexException, LockObtainFailedException, IOException {
-    return new IndexWriter(FSDirectory.open(INDEX_FILE_DIRECTORY),
+    return new IndexWriter(FSDirectory.open(indexFileDirectory),
         new IndexWriterConfig(new NGramAnalyzer()).setOpenMode(OpenMode.APPEND));
   }
 
@@ -363,7 +376,7 @@ public class FullTextSearch {
   IntArray searchProblemsForThemeMode(List<String> queryStrings) throws CorruptIndexException, IOException {
     Stopwatch stopwatch = Stopwatch.createStarted();
 
-    try (IndexReader reader = DirectoryReader.open(FSDirectory.open(INDEX_FILE_DIRECTORY))) {
+    try (IndexReader reader = DirectoryReader.open(FSDirectory.open(indexFileDirectory))) {
 
       // クエリ生成 加法標準形
       BooleanQuery query = new BooleanQuery();
@@ -516,7 +529,7 @@ public class FullTextSearch {
         // ランダムフラグ
         query.add(toRangeQuery(FIELD_RANDOM_FLAG, randomFlags), Occur.MUST);
 
-        try (IndexReader reader = DirectoryReader.open(FSDirectory.open(INDEX_FILE_DIRECTORY))) {
+        try (IndexReader reader = DirectoryReader.open(FSDirectory.open(indexFileDirectory))) {
           IndexSearcher searcher = new IndexSearcher(reader);
           TopDocs docs = searcher.search(query, MAX_NUMBER_OF_SEARCH_REUSLTS);
           List<Integer> problemIds = new ArrayList<Integer>(docs.scoreDocs.length);
@@ -559,7 +572,7 @@ public class FullTextSearch {
     Future<List<Integer>> future = threadPool.submit(new Callable<List<Integer>>() {
       @Override
       public List<Integer> call() throws Exception {
-        try (IndexReader reader = DirectoryReader.open(FSDirectory.open(INDEX_FILE_DIRECTORY))) {
+        try (IndexReader reader = DirectoryReader.open(FSDirectory.open(indexFileDirectory))) {
           String[] fields = new String[] { FIELD_SIMILAR };
           String searchQuery = problem.getSearchDocument();
           IndexSearcher searcher = new IndexSearcher(reader);
@@ -600,7 +613,7 @@ public class FullTextSearch {
     Future<List<Integer>> future = threadPool.submit(new Callable<List<Integer>>() {
       @Override
       public List<Integer> call() throws Exception {
-        try (IndexReader reader = DirectoryReader.open(FSDirectory.open(INDEX_FILE_DIRECTORY))) {
+        try (IndexReader reader = DirectoryReader.open(FSDirectory.open(indexFileDirectory))) {
           IndexSearcher searcher = new IndexSearcher(reader);
 
           Query query = stringToQuery(FIELD_SENTENCE, queryString);
@@ -636,7 +649,7 @@ public class FullTextSearch {
     // Query query = search.wordToQuery(FIELD_SEARCH, word);
     // Query query = new TermQuery(new Term(FIELD_SEARCH, word));
 
-    try (IndexReader reader = DirectoryReader.open(FSDirectory.open(INDEX_FILE_DIRECTORY))) {
+    try (IndexReader reader = DirectoryReader.open(FSDirectory.open(search.indexFileDirectory))) {
       IndexSearcher searcher = new IndexSearcher(reader);
       TopDocs docs = searcher.search(query, MAX_NUMBER_OF_SEARCH_REUSLTS);
       for (ScoreDoc doc : docs.scoreDocs) {
