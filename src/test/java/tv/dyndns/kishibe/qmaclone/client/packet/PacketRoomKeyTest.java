@@ -1,11 +1,9 @@
 package tv.dyndns.kishibe.qmaclone.client.packet;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import tv.dyndns.kishibe.qmaclone.client.game.GameMode;
 import tv.dyndns.kishibe.qmaclone.client.game.ProblemGenre;
@@ -13,7 +11,6 @@ import tv.dyndns.kishibe.qmaclone.client.game.ProblemType;
 
 import com.google.common.collect.ImmutableSet;
 
-@RunWith(JUnit4.class)
 public class PacketRoomKeyTest {
 	private PacketRoomKey keyEvent1;
 	private PacketRoomKey keyEvent2;
@@ -22,7 +19,7 @@ public class PacketRoomKeyTest {
 	private PacketRoomKey keyTheme1;
 	private PacketRoomKey keyTheme2;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		keyEvent1 = new PacketRoomKey(GameMode.EVENT, null, ImmutableSet.of(ProblemGenre.Sports),
 				ImmutableSet.of(ProblemType.YonTaku));
