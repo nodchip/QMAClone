@@ -4,18 +4,17 @@ import static org.mockito.Mockito.verify;
 
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.MockitoAnnotations;
 
 import tv.dyndns.kishibe.qmaclone.client.ServiceAsync;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketRankingData;
 
 import com.google.common.collect.ImmutableList;
 
-@RunWith(MockitoJUnitRunner.class)
 public class ThemeRankingPresenterTest {
 
 	private static final String FAKE_THEME = "fake THEME";
@@ -28,10 +27,12 @@ public class ThemeRankingPresenterTest {
 	private ThemeRankingPresenter.View mockView;
 	@Mock
 	private ServiceAsync mockService;
+	private AutoCloseable closeableMocks;
 	private ThemeRankingPresenter presenter;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
+		closeableMocks = MockitoAnnotations.openMocks(this);
 		presenter = new ThemeRankingPresenter(mockService);
 		presenter.setView(mockView);
 	}
@@ -75,6 +76,11 @@ public class ThemeRankingPresenterTest {
 		presenter.callbackGetThemeRanking.onSuccess(FAKE_RANKING);
 
 		verify(mockView).setRanking(FAKE_RANKING);
+	}
+
+	@AfterEach
+	public void tearDown() throws Exception {
+		closeableMocks.close();
 	}
 
 }
