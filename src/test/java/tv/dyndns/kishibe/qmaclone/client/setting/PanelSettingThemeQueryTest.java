@@ -1,23 +1,21 @@
 package tv.dyndns.kishibe.qmaclone.client.setting;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.MockitoAnnotations;
 
 import tv.dyndns.kishibe.qmaclone.client.ServiceAsync;
 import tv.dyndns.kishibe.qmaclone.client.UserData;
 
 import com.google.gwt.core.client.Scheduler;
 
-@RunWith(MockitoJUnitRunner.class)
 public class PanelSettingThemeQueryTest {
 
 	private static final int FAKE_USER_CODE = 111;
@@ -36,17 +34,20 @@ public class PanelSettingThemeQueryTest {
 	private ServiceAsync mockService;
 	@Mock
 	private Scheduler mockScheduler;
+	private AutoCloseable closeableMocks;
 
 	private PanelSettingThemeQuery panel;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
+		closeableMocks = MockitoAnnotations.openMocks(this);
 		UserData.get().setUserCode(FAKE_USER_CODE);
 		panel = new PanelSettingThemeQuery(mockView, mockService, mockScheduler);
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
+		closeableMocks.close();
 		verify(mockService).isThemeModeEditor(FAKE_USER_CODE, panel.callbackIsThemeModeEditor);
 	}
 
