@@ -1,9 +1,9 @@
 package tv.dyndns.kishibe.qmaclone.client.game.accuracyrate;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblemMinimum;
 
@@ -11,7 +11,7 @@ public class AccuracyRateNormalizerMarubatsuTest {
 
 	private AccuracyRateNormalizerMarubatsu accuracyRateNormalizer;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		accuracyRateNormalizer = new AccuracyRateNormalizerMarubatsu();
 	}
