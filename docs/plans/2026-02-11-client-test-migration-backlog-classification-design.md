@@ -4,9 +4,11 @@
 
 `src/test/java/tv/dyndns/kishibe/qmaclone/client` 配下のテストを再分類した結果、次の内訳となった。
 
+- 総数: 70
 - 移行済み: 52
 - GWT依存: 17
 - 特殊互換（Rule 等）: 1（`ValidatorStressTest`）
+- 通常Jupiter化可能: 0
 
 通常の JUnit4 -> Jupiter 一括置換で前進できる領域はほぼ消化済みであり、今後は GWT依存と特殊互換の管理が中心になる。
 
@@ -57,3 +59,11 @@
 
 - 本番コードへの影響なし
 - バックログ管理ドキュメントのみ更新
+
+## 検証記録（2026-02-11）
+
+1. 分類再集計（PowerShell）
+   - 結果: `total=70 / 移行済み=52 / GWT依存=17 / 特殊互換=1 / 通常Jupiter化可能=0`
+2. build
+   - コマンド: `mvn -DskipTests package`
+   - 結果: `BUILD SUCCESS`
