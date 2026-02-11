@@ -1,10 +1,8 @@
 package tv.dyndns.kishibe.qmaclone.client.util;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.Test;
 
 import tv.dyndns.kishibe.qmaclone.client.game.LetterType;
 import tv.dyndns.kishibe.qmaclone.client.util.StringUtils.VoicedSoundMark;
@@ -14,7 +12,6 @@ import tv.dyndns.kishibe.qmaclone.client.util.StringUtils.VoicedSoundMark;
  * 
  * @author nodchip
  */
-@RunWith(JUnit4.class)
 public class StringUtilsTest {
 	@Test
 	public void testConvertToFullWidth() {
