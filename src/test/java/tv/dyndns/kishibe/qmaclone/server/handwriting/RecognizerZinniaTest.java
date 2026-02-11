@@ -3,21 +3,29 @@ package tv.dyndns.kishibe.qmaclone.server.handwriting;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.util.Random;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
-import org.junit.Rule;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-import tv.dyndns.kishibe.qmaclone.server.testing.QMACloneTestEnv;
+import tv.dyndns.kishibe.qmaclone.server.testing.GuiceInjectionExtension;
 
-import com.google.guiceberry.junit4.GuiceBerryRule;
 import com.google.inject.Inject;
 
+@ExtendWith(GuiceInjectionExtension.class)
 public class RecognizerZinniaTest {
 
-	@Rule
-	public final GuiceBerryRule rule = new GuiceBerryRule(QMACloneTestEnv.class);
+	@BeforeEach
+	public void requireZinniaNative() {
+		boolean exists = Files.exists(Paths.get("C:/home/nodchip/zinnia/zinnia/zinnia.dll"));
+		assumeTrue(exists, "zinnia.dll が見つからないためスキップ");
+	}
+
 	@Inject
 	private RecognizerZinnia recognizer;
 
