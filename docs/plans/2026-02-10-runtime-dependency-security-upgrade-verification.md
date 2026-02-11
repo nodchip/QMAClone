@@ -14,11 +14,11 @@
 - [x] deploy_qmaclone_tomcat9.ps1 -SkipBuild (Done, 2026-02-10 23:59 JST)
 
 ## Notes
-- mysql 8.0.33 縺ｯ `mysql:mysql-connector-java` 縺九ｉ `com.mysql:mysql-connector-j` 縺ｸ縺ｮ relocation 隴ｦ蜻翫≠繧奇ｼ井ｺ呈鋤蜍穂ｽ懊・邯咏ｶ夲ｼ峨・
+- mysql 8.0.33 は `mysql:mysql-connector-java` から `com.mysql:mysql-connector-j` への relocation 警告あり（互換動作は継続）。
 ## Manual Checks
-- [ ] 險ｭ螳夂判髱｢陦ｨ遉ｺ
-- [ ] 繝ｦ繝ｼ繧ｶ繝ｼ繧ｳ繝ｼ繝牙・譖ｿ
-- [ ] Google騾｣謳ｺ陦ｨ遉ｺ/隗｣髯､
+- [ ] 設定画面表示
+- [ ] ユーザーコード切替
+- [ ] Google連携表示/解除
 
 ## Manual Check Status
 - 手動確認は未実施（ユーザー確認待ち）

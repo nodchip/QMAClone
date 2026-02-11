@@ -1,31 +1,33 @@
-# GWT譖ｴ譁ｰ繝吶・繧ｹ繝ｩ繧､繝ｳ讀懆ｨｼ邨先棡
+# GWT更新ベースライン検証結果
 
-- 螳滓命譌･: 2026-02-10
-- 菴懈･ｭ繝・ぅ繝ｬ繧ｯ繝医Μ: `.worktrees/gwt-upgrade-java25`
+- 実施日: 2026-02-10
+- 作業ディレクトリ: `.worktrees/gwt-upgrade-java25`
 
-## 螳溯｡後さ繝槭Φ繝臥ｵ先棡
+## 実行コマンド結果
 
 1. `mvn -q -DskipTests dependency:tree > target/dependency-tree-before.txt`
-- 邨先棡: 謌仙粥
-- 蜃ｺ蜉・ `target/dependency-tree-before.txt`
+- 結果: 成功
+- 出力: `target/dependency-tree-before.txt`
 
 2. `mvn clean compile`
-- 邨先棡: `BUILD SUCCESS`
-- 陬懆ｶｳ: `javac [debug target 1.8]` 縺ｧ螳溯｡後＆繧後∫樟譎らせ縺ｮ `source/target` 縺ｯ 1.8
+- 結果: `BUILD SUCCESS`
+- 補足: `javac [debug target 1.8]` が表示され、現行設定の `source/target` は 1.8
 
 3. `mvn test`
-- 邨先棡: `BUILD SUCCESS`
-- 陬懆ｶｳ: surefire 縺ｯ `Tests are skipped.`・育樟陦瑚ｨｭ螳夲ｼ・
+- 結果: `BUILD SUCCESS`
+- 補足: surefire は `Tests are skipped.`（既定設定）
+
 4. `mvn -DskipTests gwt:compile`
-- 邨先棡: `BUILD SUCCESS`
-- 陬懆ｶｳ: `GWT compilation is skipped`・・gwt.skipCompilation=true` 縺梧怏蜉ｹ・・
-## 謇句虚遒ｺ隱搾ｼ域悽遶ｯ譛ｫ縺ｧ縺ｯ譛ｪ螳滓命・・
+- 結果: `BUILD SUCCESS`
+- 補足: `GWT compilation is skipped`（`gwt.skipCompilation=true` が有効）
+
+## 手動確認（本端末では未実施）
 - DevMode: `http://127.0.0.1:8888/QMAClone.html`
-- Tomcat: 驟榊ｙURL
-- 遒ｺ隱崎ｦｳ轤ｹ:
-  - 逕ｻ髱｢陦ｨ遉ｺ蜿ｯ蜷ｦ
-  - WebSocket 縺ｮ 101/404/500
-  - 荳ｻ隕∝ｰ守ｷ夲ｼ医Ο繧ｰ繧､繝ｳ繝ｻ繝ｭ繝薙・繝ｻ繝√Ε繝・ヨ・・
+- Tomcat: 配備URL
+- 確認観点:
+  - 画面表示可否
+  - WebSocket の 101/404/500
+  - 主要導線（ログイン・ロビー・チャット）
 
 ## Java 25 + GWT compile 補足
 
