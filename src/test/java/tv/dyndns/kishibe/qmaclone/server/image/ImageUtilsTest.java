@@ -15,7 +15,6 @@ import java.nio.charset.Charset;
 
 import javax.imageio.ImageIO;
 
-import org.junit.Rule;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,17 +22,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import tv.dyndns.kishibe.qmaclone.client.constant.Constant;
 import tv.dyndns.kishibe.qmaclone.server.image.ImageUtils.Parameter;
-import tv.dyndns.kishibe.qmaclone.server.testing.QMACloneTestEnv;
+import tv.dyndns.kishibe.qmaclone.server.testing.GuiceInjectionExtension;
 
 import com.google.common.io.Files;
-import com.google.guiceberry.junit4.GuiceBerryRule;
 import com.google.inject.Inject;
 
 @ExtendWith(MockitoExtension.class)
+@ExtendWith(GuiceInjectionExtension.class)
 public class ImageUtilsTest {
-
-  @Rule
-  public final GuiceBerryRule rule = new GuiceBerryRule(QMACloneTestEnv.class);
   @Inject
   private ImageUtils imageUtils;
 
@@ -152,3 +148,4 @@ public class ImageUtilsTest {
     assertEquals(file.lastModified(), imageUtils.getLastModified(new Parameter("QMAClone", 512, 384, true)));
   }
 }
+

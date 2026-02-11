@@ -62,12 +62,12 @@
     <dependency>
     	<groupId>com.google.guava</groupId>
     	<artifactId>guava</artifactId>
-    	<version>28.0-jre</version>
+    	<version>33.5.0-jre</version>
     </dependency>
     <dependency>
     	<groupId>com.google.guava</groupId>
     	<artifactId>guava-gwt</artifactId>
-    	<version>28.0-jre</version>
+    	<version>33.5.0-jre</version>
     </dependency>
     <dependency>
     	<groupId>name.pehl</groupId>
@@ -149,27 +149,22 @@
     <dependency>
     	<groupId>net.java.dev.jna</groupId>
     	<artifactId>jna</artifactId>
-    	<version>5.5.0</version>
+    	<version>5.18.1</version>
     </dependency>
     <dependency>
     	<groupId>net.java.dev.jna</groupId>
     	<artifactId>jna-platform</artifactId>
-    	<version>5.5.0</version>
+    	<version>5.18.1</version>
     </dependency>
     <dependency>
     	<groupId>com.google.inject</groupId>
     	<artifactId>guice</artifactId>
-    	<version>4.2.3</version>
+    	<version>7.0.0</version>
     </dependency>
     <dependency>
     	<groupId>com.google.inject.extensions</groupId>
     	<artifactId>guice-assistedinject</artifactId>
-    	<version>4.2.3</version>
-    </dependency>
-    <dependency>
-    	<groupId>com.google.inject.extensions</groupId>
-    	<artifactId>guice-multibindings</artifactId>
-    	<version>4.2.3</version>
+    	<version>7.0.0</version>
     </dependency>
     <dependency>
     	<groupId>com.restfb</groupId>

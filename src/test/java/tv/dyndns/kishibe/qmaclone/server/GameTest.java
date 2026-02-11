@@ -13,27 +13,25 @@ import java.util.List;
 import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.Rule;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import tv.dyndns.kishibe.qmaclone.client.game.GameMode;
 import tv.dyndns.kishibe.qmaclone.client.game.ProblemGenre;
 import tv.dyndns.kishibe.qmaclone.client.game.ProblemType;
 import tv.dyndns.kishibe.qmaclone.client.packet.NewAndOldProblems;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblem;
-import tv.dyndns.kishibe.qmaclone.server.testing.QMACloneTestEnv;
+import tv.dyndns.kishibe.qmaclone.server.testing.GuiceInjectionExtension;
 
 import com.google.common.collect.EnumMultiset;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multiset;
-import com.google.guiceberry.junit4.GuiceBerryRule;
 import com.google.inject.Inject;
 
+@ExtendWith(GuiceInjectionExtension.class)
 public class GameTest {
 
   private static final String FAKE_REMOTE_ADDRESS = "1.2.3.4";
-  @Rule
-  public final GuiceBerryRule rule = new GuiceBerryRule(QMACloneTestEnv.class);
   @Inject
   private Game.Factory gameFactory;
   private Game game;
@@ -159,3 +157,4 @@ public class GameTest {
     assertEquals(16, problems.size());
   }
 }
+

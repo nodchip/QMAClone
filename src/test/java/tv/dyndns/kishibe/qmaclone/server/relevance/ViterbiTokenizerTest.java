@@ -12,7 +12,6 @@ import java.util.Set;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
-import org.junit.Rule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,16 +20,13 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.stubbing.Answer;
 
-import tv.dyndns.kishibe.qmaclone.server.testing.QMACloneTestEnv;
+import tv.dyndns.kishibe.qmaclone.server.testing.GuiceInjectionExtension;
 
-import com.google.guiceberry.junit4.GuiceBerryRule;
 import com.google.inject.Inject;
 
 @ExtendWith(MockitoExtension.class)
+@ExtendWith(GuiceInjectionExtension.class)
 public class ViterbiTokenizerTest {
-
-  @Rule
-  public final GuiceBerryRule rule = new GuiceBerryRule(QMACloneTestEnv.class);
   @Inject
   private WordSegmenter wordSegmenter;
   private ViterbiAnalyzer viterbiAnalyzer;
@@ -73,3 +69,4 @@ public class ViterbiTokenizerTest {
   }
 
 }
+

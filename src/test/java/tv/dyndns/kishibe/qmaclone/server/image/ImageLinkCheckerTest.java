@@ -3,18 +3,18 @@ package tv.dyndns.kishibe.qmaclone.server.image;
 import static com.google.common.truth.Truth.assertThat;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.Rule;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import tv.dyndns.kishibe.qmaclone.client.game.ProblemType;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketImageLink;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblem;
-import tv.dyndns.kishibe.qmaclone.server.testing.QMACloneTestEnv;
+import tv.dyndns.kishibe.qmaclone.server.testing.GuiceInjectionExtension;
 
-import com.google.guiceberry.junit4.GuiceBerryRule;
 import com.google.gwt.thirdparty.guava.common.collect.Lists;
 import com.google.inject.Inject;
 
+@ExtendWith(GuiceInjectionExtension.class)
 public class ImageLinkCheckerTest {
 
   private static final String IMAGE_URL_OK = "https://www.google.co.jp/images/nav_logo170_hr.png";
@@ -22,9 +22,6 @@ public class ImageLinkCheckerTest {
   private static final String IMAGE_URL_MALFORMED = "this is a malformed url";
   private static final String IMAGE_URL_UNKNOWN_HOST = "http://www.okayamamokei.com/logo.png";
   private static final int PROBLEM_ID = -111111;
-
-  @Rule
-  public final GuiceBerryRule rule = new GuiceBerryRule(QMACloneTestEnv.class);
   @Inject
   private ImageLinkChecker imageLinkChecker;
 
@@ -93,3 +90,4 @@ public class ImageLinkCheckerTest {
     return problem;
   }
 }
+

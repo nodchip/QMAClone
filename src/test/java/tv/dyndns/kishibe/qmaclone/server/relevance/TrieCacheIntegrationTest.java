@@ -6,15 +6,15 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.List;
 
-import org.junit.Rule;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-import tv.dyndns.kishibe.qmaclone.server.testing.QMACloneTestEnv;
+import tv.dyndns.kishibe.qmaclone.server.testing.GuiceInjectionExtension;
 
 import com.google.common.collect.Lists;
-import com.google.guiceberry.junit4.GuiceBerryRule;
 import com.google.inject.Inject;
 
+@ExtendWith(GuiceInjectionExtension.class)
 public class TrieCacheIntegrationTest {
 
 	private static final String TEST_DATA = "少年時代から無鉄砲な江戸っ子の坊っちゃんと、肉親から疎んじられる彼に無償の愛を注ぐ女中である清の描写から『坊っちゃん』の物語は幕を開く。"
@@ -31,8 +31,6 @@ public class TrieCacheIntegrationTest {
 			+ "卑劣な仕打ちに憤激した坊っちゃんと山嵐は、赤シャツと野だいこの不祥事を暴くための監視を始め、ついに芸者遊び帰りの赤シャツと野だいこを取り押さえる。"
 			+ "そして芸者遊びについて詰問するも、しらを切られたため、業を煮やし、激しく暴行を加えた。"
 			+ "即刻辞職した坊っちゃんは、帰郷後、街鉄（現在の都電）の技手となって、再び、清と同居生活を始めるが、清が亡くなり、遺言通り小日向の養源寺に葬った事を記して、『坊っちゃん』の物語は幕を閉じる。";
-	@Rule
-	public final GuiceBerryRule rule = new GuiceBerryRule(QMACloneTestEnv.class);
 	@Inject
 	private TrieCache trieCache;
 
@@ -44,3 +42,4 @@ public class TrieCacheIntegrationTest {
 	}
 
 }
+

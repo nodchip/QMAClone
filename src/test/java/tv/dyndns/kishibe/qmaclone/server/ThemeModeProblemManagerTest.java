@@ -17,27 +17,24 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.Rule;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import tv.dyndns.kishibe.qmaclone.client.constant.Constant;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblemMinimum;
-import tv.dyndns.kishibe.qmaclone.server.testing.QMACloneTestEnv;
+import tv.dyndns.kishibe.qmaclone.server.testing.GuiceInjectionExtension;
 import tv.dyndns.kishibe.qmaclone.server.util.IntArray;
 
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multiset;
 import com.google.common.collect.Sets;
-import com.google.guiceberry.junit4.GuiceBerryRule;
 import com.google.inject.Inject;
 
+@ExtendWith(GuiceInjectionExtension.class)
 public class ThemeModeProblemManagerTest {
 
 	private static final int LARGE_LOOP = 10000;
-
-	@Rule
-	public final GuiceBerryRule rule = new GuiceBerryRule(QMACloneTestEnv.class);
 	@Inject
 	private ThemeModeProblemManager manager;
 
@@ -136,3 +133,4 @@ public class ThemeModeProblemManagerTest {
 		}
 	}
 }
+

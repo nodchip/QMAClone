@@ -16,27 +16,24 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.junit.Rule;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import tv.dyndns.kishibe.qmaclone.client.constant.Constant;
 import tv.dyndns.kishibe.qmaclone.client.game.ProblemGenre;
 import tv.dyndns.kishibe.qmaclone.client.game.ProblemType;
 import tv.dyndns.kishibe.qmaclone.client.packet.NewAndOldProblems;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblemMinimum;
-import tv.dyndns.kishibe.qmaclone.server.testing.QMACloneTestEnv;
+import tv.dyndns.kishibe.qmaclone.server.testing.GuiceInjectionExtension;
 
 import com.google.common.collect.Lists;
-import com.google.guiceberry.junit4.GuiceBerryRule;
 import com.google.inject.Inject;
 
+@ExtendWith(GuiceInjectionExtension.class)
 public class NormalModeProblemManagerTest {
 
   private static final int LARGE_LOOP = 10000;
   private static final int SMALL_LOOP = 1000;
-
-  @Rule
-  public final GuiceBerryRule rule = new GuiceBerryRule(QMACloneTestEnv.class);
   @Inject
   private NormalModeProblemManager manager;
 
@@ -210,3 +207,4 @@ public class NormalModeProblemManagerTest {
     }
   }
 }
+
