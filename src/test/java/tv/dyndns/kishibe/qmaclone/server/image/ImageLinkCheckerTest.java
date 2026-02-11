@@ -2,11 +2,9 @@ package tv.dyndns.kishibe.qmaclone.server.image;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.Test;
 
 import tv.dyndns.kishibe.qmaclone.client.game.ProblemType;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketImageLink;
@@ -17,7 +15,6 @@ import com.google.guiceberry.junit4.GuiceBerryRule;
 import com.google.gwt.thirdparty.guava.common.collect.Lists;
 import com.google.inject.Inject;
 
-@RunWith(JUnit4.class)
 public class ImageLinkCheckerTest {
 
   private static final String IMAGE_URL_OK = "https://www.google.co.jp/images/nav_logo170_hr.png";
@@ -31,7 +28,7 @@ public class ImageLinkCheckerTest {
   @Inject
   private ImageLinkChecker imageLinkChecker;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
   }
 

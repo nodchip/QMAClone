@@ -3,6 +3,7 @@ package tv.dyndns.kishibe.qmaclone.server.image;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.awt.image.BufferedImage;
 import java.io.BufferedOutputStream;
@@ -14,11 +15,11 @@ import java.nio.charset.Charset;
 
 import javax.imageio.ImageIO;
 
-import org.junit.Ignore;
 import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import tv.dyndns.kishibe.qmaclone.client.constant.Constant;
 import tv.dyndns.kishibe.qmaclone.server.image.ImageUtils.Parameter;
@@ -28,7 +29,7 @@ import com.google.common.io.Files;
 import com.google.guiceberry.junit4.GuiceBerryRule;
 import com.google.inject.Inject;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ImageUtilsTest {
 
   @Rule
@@ -36,7 +37,7 @@ public class ImageUtilsTest {
   @Inject
   private ImageUtils imageUtils;
 
-  @Ignore
+  @Disabled
   @Test
   public void testImageManagerTest() {
     assertTrue(new File(Constant.FILE_PATH_BASE + "image").isDirectory());
@@ -126,12 +127,13 @@ public class ImageUtilsTest {
     assertNotEquals(255, b);
   }
 
-  @Test(expected = IOException.class)
+  @Test
   public void testResizeImageThrowsExceptionOnFileNotFound() throws IOException {
     File file = File.createTempFile("QMAClone", null);
     file.deleteOnExit();
     try (OutputStream stream = new BufferedOutputStream(new FileOutputStream(file))) {
-      imageUtils.resizeImage(new File("testdata/hogehoge.fugafuga"), 32, 16, true, stream);
+      assertThrows(IOException.class,
+          () -> imageUtils.resizeImage(new File("testdata/hogehoge.fugafuga"), 32, 16, true, stream));
     }
   }
 

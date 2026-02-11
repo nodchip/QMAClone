@@ -13,11 +13,9 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.io.FileUtils;
 import org.apache.http.impl.cookie.DateParseException;
 import org.apache.http.impl.cookie.DateUtils;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
@@ -26,7 +24,6 @@ import tv.dyndns.kishibe.qmaclone.client.constant.Constant;
 import tv.dyndns.kishibe.qmaclone.server.image.ImageUtils;
 import tv.dyndns.kishibe.qmaclone.server.image.ImageUtils.Parameter;
 
-@RunWith(JUnit4.class)
 public class ImageProxyServletStubTest {
 
   @Rule
@@ -39,7 +36,7 @@ public class ImageProxyServletStubTest {
   @Mock
   private ImageUtils mockImageManager;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     try {
       FileUtils.deleteDirectory(new File(Constant.FILE_PATH_BASE + "image"));

@@ -6,7 +6,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 
-import org.junit.After;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,7 +39,7 @@ public class BrokenImageLinkDetectorTest {
         mockDatabase);
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     BrokenImageLinkDetector.SKIP_HOST_CHECK_FOR_TESTING = false;
   }

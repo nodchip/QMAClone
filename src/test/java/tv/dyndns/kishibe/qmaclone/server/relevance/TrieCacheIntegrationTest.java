@@ -2,12 +2,12 @@ package tv.dyndns.kishibe.qmaclone.server.relevance;
 
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.List;
 
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import tv.dyndns.kishibe.qmaclone.server.testing.QMACloneTestEnv;
 

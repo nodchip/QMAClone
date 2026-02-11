@@ -12,13 +12,13 @@ import java.util.Set;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.stubbing.Answer;
 
 import tv.dyndns.kishibe.qmaclone.server.testing.QMACloneTestEnv;
@@ -26,7 +26,7 @@ import tv.dyndns.kishibe.qmaclone.server.testing.QMACloneTestEnv;
 import com.google.guiceberry.junit4.GuiceBerryRule;
 import com.google.inject.Inject;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ViterbiTokenizerTest {
 
   @Rule
@@ -37,7 +37,7 @@ public class ViterbiTokenizerTest {
   @Mock
   private ViterbiTokenizer.Factory viterbiTokenizerFactory;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     viterbiAnalyzer = new ViterbiAnalyzer(viterbiTokenizerFactory);
   }

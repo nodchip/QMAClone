@@ -4,19 +4,17 @@ import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.isIn;
 import static org.hamcrest.Matchers.isOneOf;
 import static org.hamcrest.Matchers.lessThan;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.Test;
 
 import tv.dyndns.kishibe.qmaclone.client.game.GameMode;
 import tv.dyndns.kishibe.qmaclone.client.game.ProblemGenre;
@@ -31,7 +29,6 @@ import com.google.common.collect.Multiset;
 import com.google.guiceberry.junit4.GuiceBerryRule;
 import com.google.inject.Inject;
 
-@RunWith(JUnit4.class)
 public class GameTest {
 
   private static final String FAKE_REMOTE_ADDRESS = "1.2.3.4";
@@ -41,7 +38,7 @@ public class GameTest {
   private Game.Factory gameFactory;
   private Game game;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     game = gameFactory.create(0, 0, false, false, null, false, GameMode.WHOLE);
   }

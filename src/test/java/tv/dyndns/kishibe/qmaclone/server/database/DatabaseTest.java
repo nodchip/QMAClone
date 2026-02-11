@@ -33,13 +33,13 @@ import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.joda.time.DateTime;
-import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import tv.dyndns.kishibe.qmaclone.client.game.ProblemGenre;
 import tv.dyndns.kishibe.qmaclone.client.game.ProblemType;
@@ -74,7 +74,7 @@ import com.google.common.collect.Range;
 import com.google.guiceberry.junit4.GuiceBerryRule;
 import com.google.inject.Inject;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class DatabaseTest {
 
   private static final int FAKE_USER_CODE = 12345678;
@@ -99,7 +99,7 @@ public class DatabaseTest {
   @Inject
   private WrongAnswerHandler wrongAnswerHandler;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     database.clearCache();
   }
@@ -553,7 +553,7 @@ public class DatabaseTest {
     assertEquals(a, b + c);
   }
 
-  @Ignore
+  @Disabled
   @Test
   public void searchProblemShouldWorkWithEscapeSequences() throws Exception {
     List<PacketProblem> problems = database.searchProblem("%n -%w", null, false,

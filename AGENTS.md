@@ -55,3 +55,14 @@
 ### 設定画面UX（Google連携）
 - onLoad 由来の表示と、showUserCodeList 押下由来の表示は別フローとして扱う。
 - 1件表示時の切り替えボタンは、初期ロードでは非表示、ユーザー操作由来では表示を基本とする。
+## 追加の振り返り（2026-02-11, QMAClone）
+- ミス: JUnit5移行時に `@Rule` / GuiceBerry 依存テストを一括で Jupiter 化し、DI 初期化が動かず `null` 参照を大量発生させた。
+- 改善: JUnit移行は `@Rule` 有無で対象を分離し、GuiceBerry 依存テストは Extension 実装完了まで Vintage 実行を維持する。
+- ミス: 移行可否判定に、ネイティブ依存（`zinnia.dll` 必須）を持つテストを混在させ、失敗要因の切り分けが遅れた。
+- 改善: 移行検証の基準テストは、ネイティブ依存の有無で先に分離してから実行する。
+
+### JUnit移行（QMAClone）
+- JUnit5移行前に `@Rule` の有無でテストを分類し、`@Rule` 依存テストは別タスクとして扱う。
+- GuiceBerry を利用するテストは、Jupiter Extension が未整備なら JUnit4/Vintage のまま維持する。
+- 部分実行で `mvn -Dtest=... test` を使う場合、必要に応じて `-DfailIfNoTests=false` を付与し、GWT側の「0件失敗」で誤判定しない。
+- `ServicesTest` のようなネイティブライブラリ依存テストは、JUnit移行の正常性判定から分離して扱う。

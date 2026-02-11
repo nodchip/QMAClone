@@ -1,19 +1,16 @@
 package tv.dyndns.kishibe.qmaclone.server.sns;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.Test;
 
 /**
  * {@link TwitterClient} のテスト。
  */
-@RunWith(JUnit4.class)
 public class TwitterClientTest {
 
   /**

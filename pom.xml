@@ -21,9 +21,10 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <third.party.dir>${project.basedir}/third_party</third.party.dir>
+    <zinnia.library.dir>C:/home/nodchip/zinnia/zinnia</zinnia.library.dir>
     <gwt.skipCompilation>true</gwt.skipCompilation>
     <surefire.skip>true</surefire.skip>
-    <argLine>-Djdk.net.file.ftpfallback=true -Dnet.bytebuddy.experimental=true</argLine>
+    <argLine>-Djdk.net.file.ftpfallback=true -Dnet.bytebuddy.experimental=true -Djna.library.path=${zinnia.library.dir} -Djava.library.path=${zinnia.library.dir}</argLine>
   </properties>
 
   <dependencyManagement>

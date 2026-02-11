@@ -1,18 +1,16 @@
 package tv.dyndns.kishibe.qmaclone.server;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 
 import java.util.Arrays;
 
-import org.junit.Before;
-import org.junit.Ignore;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
@@ -27,7 +25,6 @@ import tv.dyndns.kishibe.qmaclone.client.testing.TestDataProvider;
  * 
  * @author nodchip
  */
-@RunWith(JUnit4.class)
 public class ComputerPlayerTest {
 
   @Rule
@@ -38,19 +35,19 @@ public class ComputerPlayerTest {
   private PlayerAnswer.Factory mockPlayerAnswerFactory;
   private ComputerPlayer player;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     player = new ComputerPlayer(mockPlayerAnswerFactory, Arrays.asList(1425));
   }
 
   @Test
-  @Ignore
+  @Disabled
   public void testSelectIconFileName() {
     fail("Not yet implemented");
   }
 
   @Test
-  @Ignore
+  @Disabled
   public void testNewPlayer() {
     fail("Not yet implemented");
   }
@@ -68,7 +65,7 @@ public class ComputerPlayerTest {
   }
 
   @Test
-  @Ignore
+  @Disabled
   public void testGetGreeting() {
     fail("Not yet implemented");
   }

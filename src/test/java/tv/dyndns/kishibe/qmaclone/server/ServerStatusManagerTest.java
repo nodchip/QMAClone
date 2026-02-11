@@ -1,19 +1,17 @@
 package tv.dyndns.kishibe.qmaclone.server;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.eclipse.jetty.websocket.api.Session;
-import org.junit.Before;
-import org.junit.Ignore;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
@@ -25,7 +23,6 @@ import tv.dyndns.kishibe.qmaclone.client.packet.PacketServerStatus;
 import tv.dyndns.kishibe.qmaclone.server.database.Database;
 import tv.dyndns.kishibe.qmaclone.server.websocket.MessageSender;
 
-@RunWith(JUnit4.class)
 public class ServerStatusManagerTest {
 
   @Rule
@@ -48,7 +45,7 @@ public class ServerStatusManagerTest {
 
   private ServerStatusManager manager;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     when(mockDatabase.loadPageView()).thenReturn(new PageView());
     when(mockDatabase.getNumberOfActiveUsers()).thenReturn(12345);
@@ -77,7 +74,7 @@ public class ServerStatusManagerTest {
   }
 
   @Test
-  @Ignore
+  @Disabled
   public void testSaveServerStatus() {
     fail("Not yet implemented");
   }
@@ -92,13 +89,13 @@ public class ServerStatusManagerTest {
   }
 
   @Test
-  @Ignore
+  @Disabled
   public void testGetLoginUsers() {
     fail("Not yet implemented");
   }
 
   @Test
-  @Ignore
+  @Disabled
   public void testChangeStatics() {
     fail("Not yet implemented");
   }

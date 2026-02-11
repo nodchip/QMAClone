@@ -1,13 +1,10 @@
 package tv.dyndns.kishibe.qmaclone.server;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.Test;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
-@RunWith(JUnit4.class)
 public class ServicesTest {
 	@Test
 	public void test() {
