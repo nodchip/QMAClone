@@ -22,6 +22,7 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <third.party.dir>${project.basedir}/third_party</third.party.dir>
     <zinnia.library.dir>C:/home/nodchip/zinnia/zinnia</zinnia.library.dir>
+    <jetty.version>9.4.58.v20250814</jetty.version>
     <gwt.skipCompilation>true</gwt.skipCompilation>
     <surefire.skip>true</surefire.skip>
     <argLine>-Djdk.net.file.ftpfallback=true -Dnet.bytebuddy.experimental=true --add-opens java.base/java.lang=ALL-UNNAMED -Djna.library.path=${zinnia.library.dir} -Djava.library.path=${zinnia.library.dir}</argLine>
@@ -37,6 +38,138 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
+      <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-bom</artifactId>
+        <version>${jetty.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-webapp</artifactId>
+        <version>${jetty.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-xml</artifactId>
+        <version>${jetty.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-servlet</artifactId>
+        <version>${jetty.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-security</artifactId>
+        <version>${jetty.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-server</artifactId>
+        <version>${jetty.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-servlets</artifactId>
+        <version>${jetty.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-continuation</artifactId>
+        <version>${jetty.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-http</artifactId>
+        <version>${jetty.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-util</artifactId>
+        <version>${jetty.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-io</artifactId>
+        <version>${jetty.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-annotations</artifactId>
+        <version>${jetty.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-plus</artifactId>
+        <version>${jetty.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-jndi</artifactId>
+        <version>${jetty.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>apache-jsp</artifactId>
+        <version>${jetty.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-client</artifactId>
+        <version>${jetty.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-util-ajax</artifactId>
+        <version>${jetty.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.jetty.websocket</groupId>
+        <artifactId>websocket-client</artifactId>
+        <version>${jetty.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.jetty.websocket</groupId>
+        <artifactId>websocket-common</artifactId>
+        <version>${jetty.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.jetty.websocket</groupId>
+        <artifactId>websocket-api</artifactId>
+        <version>${jetty.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.code.findbugs</groupId>
+        <artifactId>jsr305</artifactId>
+        <version>3.0.2</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.code.gson</groupId>
+        <artifactId>gson</artifactId>
+        <version>2.13.2</version>
+      </dependency>
+      <dependency>
+        <groupId>org.ow2.asm</groupId>
+        <artifactId>asm</artifactId>
+        <version>9.9.1</version>
+      </dependency>
+      <dependency>
+        <groupId>org.ow2.asm</groupId>
+        <artifactId>asm-commons</artifactId>
+        <version>9.9.1</version>
+      </dependency>
+      <dependency>
+        <groupId>org.ow2.asm</groupId>
+        <artifactId>asm-util</artifactId>
+        <version>9.9.1</version>
+      </dependency>
+      <dependency>
+        <groupId>com.ibm.icu</groupId>
+        <artifactId>icu4j</artifactId>
+        <version>78.2</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -50,13 +183,13 @@
     <dependency>
     	<groupId>org.junit.jupiter</groupId>
     	<artifactId>junit-jupiter</artifactId>
-    	<version>5.10.2</version>
+    	<version>6.0.2</version>
     	<scope>test</scope>
     </dependency>
     <dependency>
     	<groupId>org.junit.vintage</groupId>
     	<artifactId>junit-vintage-engine</artifactId>
-    	<version>5.10.2</version>
+    	<version>6.0.2</version>
     	<scope>test</scope>
     </dependency>
     <dependency>
@@ -72,7 +205,7 @@
     <dependency>
     	<groupId>name.pehl</groupId>
     	<artifactId>piriti-user</artifactId>
-    	<version>0.10</version>
+    	<version>0.8</version>
     </dependency>
     <dependency>
     	<groupId>com.google.gwt</groupId>
@@ -159,12 +292,12 @@
     <dependency>
     	<groupId>com.google.inject</groupId>
     	<artifactId>guice</artifactId>
-    	<version>7.0.0</version>
+    	<version>5.1.0</version>
     </dependency>
     <dependency>
     	<groupId>com.google.inject.extensions</groupId>
     	<artifactId>guice-assistedinject</artifactId>
-    	<version>7.0.0</version>
+    	<version>5.1.0</version>
     </dependency>
     <dependency>
     	<groupId>com.restfb</groupId>
@@ -242,9 +375,9 @@
     	<version>2.13.1</version>
     </dependency>
     <dependency>
-    	<groupId>mysql</groupId>
-    	<artifactId>mysql-connector-java</artifactId>
-    	<version>8.0.33</version>
+    	<groupId>com.mysql</groupId>
+    	<artifactId>mysql-connector-j</artifactId>
+    	<version>9.6.0</version>
     </dependency>
     <dependency>
     	<groupId>name.pehl</groupId>
@@ -254,7 +387,7 @@
     <dependency>
     	<groupId>name.pehl</groupId>
     	<artifactId>piriti-dev</artifactId>
-    	<version>0.10</version>
+    	<version>0.8</version>
     </dependency>
     <dependency>
     	<groupId>name.pehl</groupId>
@@ -289,7 +422,7 @@
       <plugin>
         <groupId>net.ltgt.gwt.maven</groupId>
         <artifactId>gwt-maven-plugin</artifactId>
-        <version>1.0-rc-8</version>
+        <version>1.2.0</version>
         <executions>
           <execution>
             <goals>
@@ -324,7 +457,7 @@
       <!-- Skip normal test execution, we use gwt:test instead -->
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>3.2.5</version>
+        <version>3.5.4</version>
         <configuration>
           <skip>${surefire.skip}</skip>
           <argLine>${argLine}</argLine>
