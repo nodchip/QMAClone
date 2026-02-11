@@ -9,8 +9,6 @@ import static org.mockito.Mockito.when;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import org.eclipse.jetty.websocket.api.RemoteEndpoint;
-import org.eclipse.jetty.websocket.api.Session;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,6 +16,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+
+import javax.websocket.RemoteEndpoint.Async;
+import javax.websocket.Session;
 
 import tv.dyndns.kishibe.qmaclone.server.ThreadPool;
 
@@ -33,7 +34,7 @@ public class MessageSenderTest {
   @Mock
   private Session mockSession;
   @Mock
-  private RemoteEndpoint mockRemoteEndpoint;
+  private Async mockAsyncRemoteEndpoint;
   @SuppressWarnings("rawtypes")
   @Mock
   private ScheduledFuture mockScheduledFuture;
@@ -55,16 +56,16 @@ public class MessageSenderTest {
 
   @Test
   public void sendSendsMessage() {
-    when(mockSession.getRemote()).thenReturn(mockRemoteEndpoint);
+    when(mockSession.getAsyncRemote()).thenReturn(mockAsyncRemoteEndpoint);
 
     sender.join(mockSession);
     sender.send(new FakeMessage());
 
-    verify(mockRemoteEndpoint).sendString(eq(MESSAGE), any());
+    verify(mockAsyncRemoteEndpoint).sendText(eq(MESSAGE), any());
   }
 
   @Test
-  public void closeClosesSession() {
+  public void closeClosesSession() throws Exception {
     sender.join(mockSession);
     sender.close();
 
@@ -78,6 +79,6 @@ public class MessageSenderTest {
     sender.close();
     sender.send(new FakeMessage());
 
-    verify(mockRemoteEndpoint, times(0)).sendString(eq(MESSAGE), any());
+    verify(mockAsyncRemoteEndpoint, times(0)).sendText(eq(MESSAGE), any());
   }
 }

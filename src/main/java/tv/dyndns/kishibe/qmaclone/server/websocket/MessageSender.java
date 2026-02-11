@@ -2,16 +2,12 @@ package tv.dyndns.kishibe.qmaclone.server.websocket;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import org.eclipse.jetty.websocket.api.Session;
-import org.eclipse.jetty.websocket.api.WriteCallback;
 
 import com.google.common.base.Preconditions;
 
@@ -67,14 +63,6 @@ public abstract class MessageSender<T> implements Closeable {
     sessions.clear();
   }
 
-  public void join(Session session) {
-    sessions.put(session, new JettyConnection(session));
-  }
-
-  public void bye(Session session) {
-    sessions.remove(session);
-  }
-
   public void join(javax.websocket.Session session) {
     sessions.put(session, new JavaxConnection(session));
   }
@@ -99,53 +87,6 @@ public abstract class MessageSender<T> implements Closeable {
     String getRemoteAddress();
 
     Object getSessionKey();
-  }
-
-  private final class JettyConnection implements Connection {
-    private final Session session;
-
-    private JettyConnection(Session session) {
-      this.session = Preconditions.checkNotNull(session);
-    }
-
-    @Override
-    public void send(String json) {
-      session.getRemote().sendString(json, new WriteCallback() {
-        @Override
-        public void writeSuccess() {
-          // Do nothing.
-        }
-
-        @Override
-        public void writeFailed(Throwable x) {
-          logger.log(Level.WARNING,
-              "WebSocket でのデータ送信に失敗しました。接続を閉じます。remoteAddress="
-                  + getRemoteAddress(),
-              x);
-          close();
-          sessions.remove(getSessionKey());
-        }
-      });
-    }
-
-    @Override
-    public void close() {
-      try {
-        session.close();
-      } catch (Exception e) {
-      }
-    }
-
-    @Override
-    public String getRemoteAddress() {
-      InetSocketAddress remoteAddress = session.getRemoteAddress();
-      return remoteAddress == null ? "unknown" : remoteAddress.toString();
-    }
-
-    @Override
-    public Object getSessionKey() {
-      return session;
-    }
   }
 
   private final class JavaxConnection implements Connection {

@@ -16,8 +16,8 @@ public class ConstantTest {
   }
 
   @Test
-  public void resolveWebSocketUrlForLocationShouldUseDevModePathOnRoot() {
-    assertEquals("ws://127.0.0.1:8888/devmode-websocket/",
+  public void resolveWebSocketUrlForLocationShouldUseWebSocketPathOnRoot() {
+    assertEquals("ws://127.0.0.1:8888/websocket/",
         Constant.resolveWebSocketUrlForLocation(true, "http:", "127.0.0.1:8888",
             "/QMAClone.html"));
   }

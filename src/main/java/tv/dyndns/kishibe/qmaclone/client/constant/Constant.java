@@ -134,7 +134,6 @@ public class Constant {
   public static final int WEB_SOCKET_PORT = 60080;
   private static final String WEB_SOCKET_URL_REMOTE = "ws://kishibe.dyndns.tv/QMAClone/websocket/";
   private static final String WEB_SOCKET_PATH = "/websocket/";
-  private static final String WEB_SOCKET_PATH_DEVMODE = "/devmode-websocket/";
   public static final String WEB_SOCKET_URL = getWebSocketUrl();
   public static final String KEY_GAME_SESSION_ID = "game_session_id";
 
@@ -163,9 +162,7 @@ public class Constant {
       return WEB_SOCKET_URL_REMOTE;
     }
     String contextPath = resolveContextPath(locationPath);
-    String path =
-        contextPath.isEmpty() && isDevModeHost(host) ? WEB_SOCKET_PATH_DEVMODE : WEB_SOCKET_PATH;
-    return resolveWebSocketScheme(protocol) + "://" + host + contextPath + path;
+    return resolveWebSocketScheme(protocol) + "://" + host + contextPath + WEB_SOCKET_PATH;
   }
 
   static String resolveWebSocketScheme(String protocol) {
@@ -189,10 +186,6 @@ public class Constant {
   static boolean isWebSocketAvailableForLocation(boolean isClient, String host,
       String locationPath) {
     return true;
-  }
-
-  static boolean isDevModeHost(String host) {
-    return host != null && host.endsWith(":8888");
   }
 
   public static boolean isWebSocketAvailableOnCurrentLocation() {

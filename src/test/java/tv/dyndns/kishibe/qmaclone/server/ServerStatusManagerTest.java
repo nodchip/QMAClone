@@ -7,7 +7,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.eclipse.jetty.websocket.api.Session;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.Rule;
@@ -40,8 +39,6 @@ public class ServerStatusManagerTest {
   private MessageSender<PacketServerStatus> mockServerStatusWebSockets;
   @Mock
   private ThreadPool mockThreadPool;
-  @Mock
-  private Session mockSession;
 
   private ServerStatusManager manager;
 

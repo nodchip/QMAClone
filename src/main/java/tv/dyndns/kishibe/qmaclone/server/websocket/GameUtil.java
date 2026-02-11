@@ -3,8 +3,6 @@ package tv.dyndns.kishibe.qmaclone.server.websocket;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.jetty.websocket.api.Session;
-
 import tv.dyndns.kishibe.qmaclone.client.constant.Constant;
 import tv.dyndns.kishibe.qmaclone.server.exception.InvalidGameSessionIdException;
 
@@ -12,13 +10,6 @@ import tv.dyndns.kishibe.qmaclone.server.exception.InvalidGameSessionIdException
  * ゲーム関連のヘルパークラス
  */
 public class GameUtil {
-  /**
-   * Jetty WebSocket セッションからゲームセッションIDを抽出する。
-   */
-  public static int extractGameSessionId(Session session) throws InvalidGameSessionIdException {
-    return extractGameSessionId(session.getUpgradeRequest().getParameterMap());
-  }
-
   /**
    * JSR-356 WebSocket セッションからゲームセッションIDを抽出する。
    */

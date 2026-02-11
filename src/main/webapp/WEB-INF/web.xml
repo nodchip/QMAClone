@@ -69,51 +69,6 @@
 	</servlet-mapping>
 -->
 
-	<servlet>
-		<servlet-name>devmodeServerStatusWebSocketServlet</servlet-name>
-		<servlet-class>tv.dyndns.kishibe.qmaclone.server.websocket.ServerStatusWebSocketServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>devmodeServerStatusWebSocketServlet</servlet-name>
-		<url-pattern>/devmode-websocket/tv.dyndns.kishibe.qmaclone.client.packet.PacketServerStatus</url-pattern>
-	</servlet-mapping>
-
-	<servlet>
-		<servlet-name>devmodeChatMessagesWebSocketServlet</servlet-name>
-		<servlet-class>tv.dyndns.kishibe.qmaclone.server.websocket.ChatMessagesWebSocketServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>devmodeChatMessagesWebSocketServlet</servlet-name>
-		<url-pattern>/devmode-websocket/tv.dyndns.kishibe.qmaclone.client.packet.PacketChatMessages</url-pattern>
-	</servlet-mapping>
-
-	<servlet>
-		<servlet-name>devmodeMatchingStatusWebSocketServlet</servlet-name>
-		<servlet-class>tv.dyndns.kishibe.qmaclone.server.websocket.MatchingStatusWebSocketServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>devmodeMatchingStatusWebSocketServlet</servlet-name>
-		<url-pattern>/devmode-websocket/tv.dyndns.kishibe.qmaclone.client.packet.PacketMatchingStatus</url-pattern>
-	</servlet-mapping>
-
-	<servlet>
-		<servlet-name>devmodeReadyForGameWebSocketServlet</servlet-name>
-		<servlet-class>tv.dyndns.kishibe.qmaclone.server.websocket.ReadyForGameWebSocketServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>devmodeReadyForGameWebSocketServlet</servlet-name>
-		<url-pattern>/devmode-websocket/tv.dyndns.kishibe.qmaclone.client.packet.PacketReadyForGame</url-pattern>
-	</servlet-mapping>
-
-	<servlet>
-		<servlet-name>devmodeGameStatusWebSocketServlet</servlet-name>
-		<servlet-class>tv.dyndns.kishibe.qmaclone.server.websocket.GameStatusWebSocketServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>devmodeGameStatusWebSocketServlet</servlet-name>
-		<url-pattern>/devmode-websocket/tv.dyndns.kishibe.qmaclone.client.packet.PacketGameStatus</url-pattern>
-	</servlet-mapping>
-
 	<welcome-file-list>
 		<welcome-file>QMAClone.html</welcome-file>
 	</welcome-file-list>
