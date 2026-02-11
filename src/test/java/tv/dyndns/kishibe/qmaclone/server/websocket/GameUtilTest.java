@@ -20,7 +20,7 @@ import tv.dyndns.kishibe.qmaclone.client.constant.Constant;
 import tv.dyndns.kishibe.qmaclone.server.exception.InvalidGameSessionIdException;
 
 /**
- * {@link GameUtil}のチE��チE
+ * {@link GameUtil}のテスト
  * 
  * @author nodchip
  */

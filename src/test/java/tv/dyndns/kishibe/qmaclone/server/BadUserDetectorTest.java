@@ -40,14 +40,14 @@ public class BadUserDetectorTest {
 
 	@Test
 	public void extractStartAndGoalShouldParseLogs() {
-		String body = "惁E��: Game{method=transitFromMachingToReady, sessionId=1, userCode=123}\n"
-				+ "惁E��: Game{method=transitFromMachingToReady, sessionId=2, userCode=123}\n"
-				+ "惁E��: Game{method=transitFromMachingToReady, sessionId=2, userCode=234}\n"
-				+ "8 12, 2012 9:02:51 午征Etv.dyndns.kishibe.server.GameLogger write\n"
-				+ "惁E��: ServiceServletStub{method=notifyGameFinished, userCode=123, sessionId=1, oldRating=123, newRating=1274, remoteAddress=127.0.0.1}\n"
-				+ "8 12, 2012 9:02:52 午征Etv.dyndns.kishibe.server.GameLogger write\n"
-				+ "惁E��: ServiceServletStub{method=notifyGameFinished, userCode=123, sessionId=2, oldRating=123, newRating=1423, remoteAddress=127.0.0.1}\n"
-				+ "惁E��: ServiceServletStub{method=notifyGameFinished, userCode=22950866, sessionId=2953, oldRating=2019, newRating=1876, remoteAddress=203.136.117.99}";
+		String body = "情報: Game{method=transitFromMachingToReady, sessionId=1, userCode=123}\n"
+				+ "情報: Game{method=transitFromMachingToReady, sessionId=2, userCode=123}\n"
+				+ "情報: Game{method=transitFromMachingToReady, sessionId=2, userCode=234}\n"
+				+ "8 12, 2012 9:02:51 午後 tv.dyndns.kishibe.server.GameLogger write\n"
+				+ "情報: ServiceServletStub{method=notifyGameFinished, userCode=123, sessionId=1, oldRating=123, newRating=1274, remoteAddress=127.0.0.1}\n"
+				+ "8 12, 2012 9:02:52 午後 tv.dyndns.kishibe.server.GameLogger write\n"
+				+ "情報: ServiceServletStub{method=notifyGameFinished, userCode=123, sessionId=2, oldRating=123, newRating=1423, remoteAddress=127.0.0.1}\n"
+				+ "情報: ServiceServletStub{method=notifyGameFinished, userCode=22950866, sessionId=2953, oldRating=2019, newRating=1876, remoteAddress=203.136.117.99}";
 		Map<Integer, Set<Integer>> startLogs = Maps.newHashMap();
 		Map<Integer, Set<Integer>> finishLogs = Maps.newHashMap();
 
