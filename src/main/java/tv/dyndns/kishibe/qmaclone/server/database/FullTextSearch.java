@@ -27,7 +27,7 @@ import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field.Store;
-import org.apache.lucene.document.IntField;
+import org.apache.lucene.document.IntPoint;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.CorruptIndexException;
@@ -41,7 +41,6 @@ import org.apache.lucene.queries.mlt.MoreLikeThisQuery;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.NumericRangeQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
@@ -188,13 +187,13 @@ public class FullTextSearch {
     document.add(new StringField(FIELD_CREATOR_DIRECTLY, problem.creator, Store.NO));
 
     // ジャンル
-    document.add(new IntField(FIELD_GENRE, problem.genre.getIndex(), Store.NO));
+    document.add(new IntPoint(FIELD_GENRE, problem.genre.getIndex()));
 
     // 出題形式
-    document.add(new IntField(FIELD_TYPE, problem.type.getIndex(), Store.NO));
+    document.add(new IntPoint(FIELD_TYPE, problem.type.getIndex()));
 
     // ランダム
-    document.add(new IntField(FIELD_RANDOM_FLAG, problem.randomFlag.getIndex(), Store.NO));
+    document.add(new IntPoint(FIELD_RANDOM_FLAG, problem.randomFlag.getIndex()));
 
     // 類似問題検索
     document.add(
@@ -224,7 +223,7 @@ public class FullTextSearch {
   }
 
   private Query wordToQuery(String field, String word) throws IOException {
-    BooleanQuery query = new BooleanQuery();
+    BooleanQuery.Builder query = new BooleanQuery.Builder();
     try (NGramAnalyzer analyzer = new NGramAnalyzer();
         TokenStream ts = analyzer.tokenStream(field, new StringReader(word))) {
       ts.reset();
@@ -235,30 +234,30 @@ public class FullTextSearch {
       }
       ts.end();
 
-      return query;
+      return query.build();
     }
   }
 
   private Query concatenateWithOr(List<Query> queries) {
-    BooleanQuery or = new BooleanQuery();
+    BooleanQuery.Builder or = new BooleanQuery.Builder();
     for (Query query : queries) {
       or.add(query, Occur.SHOULD);
     }
-    return or;
+    return or.build();
   }
 
   private Query stringToQuery(String field, String string) throws IOException {
     List<Query> queries = new ArrayList<>();
 
-    BooleanQuery query = new BooleanQuery();
+    BooleanQuery.Builder query = new BooleanQuery.Builder();
 
     StringTokenizer st = new StringTokenizer(string);
     while (st.hasMoreTokens()) {
       String word = st.nextToken();
       if (word.equals(TERM_OR)) {
         // OR が現れた場合は後ほど結合する
-        queries.add(query);
-        query = new BooleanQuery();
+        queries.add(query.build());
+        query = new BooleanQuery.Builder();
 
       } else if (word.startsWith("-")) {
         query.add(wordToQuery(field, word.substring(1)), Occur.MUST_NOT);
@@ -270,11 +269,11 @@ public class FullTextSearch {
 
     if (queries.isEmpty()) {
       // OR が現れていない場合はクエリをそのまま返す
-      return query;
+      return query.build();
     }
 
     // OR が現れた場合はすべてのクエリを OR でつないで返す
-    queries.add(query);
+    queries.add(query.build());
     return concatenateWithOr(queries);
   }
 
@@ -321,7 +320,7 @@ public class FullTextSearch {
   }
 
   private Query queryStringToThemeModeQuery(String string) throws IOException {
-    BooleanQuery query = new BooleanQuery();
+    BooleanQuery.Builder query = new BooleanQuery.Builder();
 
     StringTokenizer st = new StringTokenizer(string);
     while (st.hasMoreTokens()) {
@@ -338,7 +337,7 @@ public class FullTextSearch {
         if (genre == null) {
           continue;
         }
-        query.add(NumericRangeQuery.newIntRange(FIELD_GENRE, genre.getIndex(), genre.getIndex(), true, true), occur);
+        query.add(IntPoint.newRangeQuery(FIELD_GENRE, genre.getIndex(), genre.getIndex()), occur);
 
       } else if (word.startsWith(PREFIX_TYPE)) {
         // 出題形式
@@ -346,7 +345,7 @@ public class FullTextSearch {
         if (type == null) {
           continue;
         }
-        query.add(NumericRangeQuery.newIntRange(FIELD_TYPE, type.getIndex(), type.getIndex(), true, true), occur);
+        query.add(IntPoint.newRangeQuery(FIELD_TYPE, type.getIndex(), type.getIndex()), occur);
 
       } else if (word.startsWith(PREFIX_CREATOR)) {
         // 問題作成者
@@ -361,7 +360,7 @@ public class FullTextSearch {
           continue;
         }
         int randomFlag = Ints.tryParse(random);
-        query.add(NumericRangeQuery.newIntRange(FIELD_RANDOM_FLAG, randomFlag, randomFlag, true, true), occur);
+        query.add(IntPoint.newRangeQuery(FIELD_RANDOM_FLAG, randomFlag, randomFlag), occur);
 
       } else {
         // 問題文
@@ -369,7 +368,7 @@ public class FullTextSearch {
       }
     }
 
-    return query;
+    return query.build();
   }
 
   @VisibleForTesting
@@ -379,7 +378,7 @@ public class FullTextSearch {
     try (IndexReader reader = DirectoryReader.open(FSDirectory.open(indexFileDirectory))) {
 
       // クエリ生成 加法標準形
-      BooleanQuery query = new BooleanQuery();
+      BooleanQuery.Builder query = new BooleanQuery.Builder();
       for (String queryString : queryStrings) {
         query.add(queryStringToThemeModeQuery(queryString), Occur.SHOULD);
       }
@@ -387,7 +386,7 @@ public class FullTextSearch {
       IntArray problemIds = new IntArray();
 
       IndexSearcher searcher = new IndexSearcher(reader);
-      TopDocs docs = searcher.search(query, Integer.MAX_VALUE);
+      TopDocs docs = searcher.search(query.build(), Integer.MAX_VALUE);
 
       for (ScoreDoc doc : docs.scoreDocs) {
         Document document = reader.document(doc.doc);
@@ -428,7 +427,7 @@ public class FullTextSearch {
       indexes.add(element.getIndex());
     }
 
-    BooleanQuery query = new BooleanQuery();
+    BooleanQuery.Builder query = new BooleanQuery.Builder();
     int begin = -1;
     for (int i = 0; i < 31; ++i) {
       if (indexes.contains(i)) {
@@ -439,13 +438,17 @@ public class FullTextSearch {
         if (begin == -1) {
           continue;
         }
-        Query q = NumericRangeQuery.newIntRange(field, begin, i, true, false);
+        Query q = IntPoint.newRangeQuery(field, begin, i - 1);
         query.add(q, Occur.SHOULD);
         begin = -1;
       }
     }
 
-    return query;
+    if (begin != -1) {
+      query.add(IntPoint.newRangeQuery(field, begin, 30), Occur.SHOULD);
+    }
+
+    return query.build();
   }
 
   /**
@@ -494,7 +497,7 @@ public class FullTextSearch {
           randomFlags = EnumSet.complementOf(EnumSet.of(RandomFlag.NotSelected));
         }
 
-        BooleanQuery query = new BooleanQuery();
+        BooleanQuery.Builder query = new BooleanQuery.Builder();
 
         // 問題文
         if (!queryEmpty) {
@@ -531,7 +534,7 @@ public class FullTextSearch {
 
         try (IndexReader reader = DirectoryReader.open(FSDirectory.open(indexFileDirectory))) {
           IndexSearcher searcher = new IndexSearcher(reader);
-          TopDocs docs = searcher.search(query, MAX_NUMBER_OF_SEARCH_REUSLTS);
+          TopDocs docs = searcher.search(query.build(), MAX_NUMBER_OF_SEARCH_REUSLTS);
           List<Integer> problemIds = new ArrayList<Integer>(docs.scoreDocs.length);
           for (ScoreDoc doc : docs.scoreDocs) {
             Document document = reader.document(doc.doc);
