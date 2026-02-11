@@ -1,22 +1,21 @@
 package tv.dyndns.kishibe.qmaclone.client.setting;
 
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.MockitoAnnotations;
 
 import tv.dyndns.kishibe.qmaclone.client.ServiceAsync;
 import tv.dyndns.kishibe.qmaclone.client.packet.RestrictionType;
 
 import com.google.common.collect.ImmutableSet;
 
-@RunWith(MockitoJUnitRunner.class)
 public class PanelSettingRestrictedUserTest {
 
 	private static final int FAKE_USER_CODE = 12345678;
@@ -26,14 +25,21 @@ public class PanelSettingRestrictedUserTest {
 	private ServiceAsync mockService;
 	@Mock
 	private PanelSettingRestrictedUser.View mockView;
+	private AutoCloseable closeableMocks;
 	private PanelSettingRestrictedUser presenter;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
+		closeableMocks = MockitoAnnotations.openMocks(this);
 		presenter = spy(new PanelSettingRestrictedUser(mockService, mockView));
 		when(mockView.getUserCode()).thenReturn(FAKE_USER_CODE);
 		when(mockView.getType()).thenReturn(FAKE_RESTRICTION_TYPE);
 		when(mockView.getRemoteAddress()).thenReturn(FAKE_REMOTE_ADDRESS);
+	}
+
+	@AfterEach
+	public void tearDownMocks() throws Exception {
+		closeableMocks.close();
 	}
 
 	@Test
