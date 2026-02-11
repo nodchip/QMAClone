@@ -1,8 +1,9 @@
 package tv.dyndns.kishibe.qmaclone.server;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
@@ -13,11 +14,13 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -38,7 +41,8 @@ import tv.dyndns.kishibe.qmaclone.server.image.BrokenImageLinkDetector;
 import tv.dyndns.kishibe.qmaclone.server.image.ImageUtils;
 import tv.dyndns.kishibe.qmaclone.server.sns.SnsClient;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class ServiceServletStubTest {
   private static final String QUERY = "query";
   private static final String CREATOR = "creator";
@@ -103,7 +107,7 @@ public class ServiceServletStubTest {
   private PacketProblem problem2;
   private PacketProblem problem3;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     service = spy(new ServiceServletStub(mockChatManager, mockNormalModeProblemManager,
         mockThemeModeProblemManager, mockGameManager, mockServerStatusManager,
@@ -161,7 +165,7 @@ public class ServiceServletStubTest {
   @Test
   public void getProblemIndicationEligibilityShouldReturnOkForAvailableEligibile() throws Exception {
     PacketUserData userData = new PacketUserData();
-    userData.playerName = "プレイヤー名";
+    userData.playerName = "\u30d7\u30ec\u30a4\u30e4\u30fc\u540d";
 
     when(mockProblemIndicationCounter.isAbleToIndicate(USER_CODE)).thenReturn(true);
     when(mockDatabase.getUserData(USER_CODE)).thenReturn(userData);
@@ -173,7 +177,7 @@ public class ServiceServletStubTest {
   @Test
   public void getProblemIndicationEligibilityShouldRejectIfTooManyRequests() throws Exception {
     PacketUserData userData = new PacketUserData();
-    userData.playerName = "プレイヤー名";
+    userData.playerName = "\u30d7\u30ec\u30a4\u30e4\u30fc\u540d";
 
     when(mockProblemIndicationCounter.isAbleToIndicate(USER_CODE)).thenReturn(false);
     when(mockDatabase.getUserData(USER_CODE)).thenReturn(userData);
@@ -185,7 +189,7 @@ public class ServiceServletStubTest {
   @Test
   public void getProblemIndicationEligibilityShouldRejectIfPlayerNameUnchanged() throws Exception {
     PacketUserData userData = new PacketUserData();
-    userData.playerName = "未初期化です";
+    userData.playerName = "\u672a\u521d\u671f\u5316\u3067\u3059";
 
     when(mockProblemIndicationCounter.isAbleToIndicate(USER_CODE)).thenReturn(true);
     when(mockDatabase.getUserData(USER_CODE)).thenReturn(userData);
@@ -201,12 +205,14 @@ public class ServiceServletStubTest {
     verify(mockDatabase).addRestrictedUserCode(USER_CODE, RESTRICTION_TYPE);
   }
 
-  @Test(expected = ServiceException.class)
+  @Test
   public void addRestrictedUserCodeShouldThrowExceptionOnError() throws Exception {
     doThrow(new DatabaseException()).when(mockDatabase).addRestrictedUserCode(USER_CODE,
         RESTRICTION_TYPE);
 
-    service.addRestrictedUserCode(USER_CODE, RESTRICTION_TYPE);
+    assertThrows(
+        ServiceException.class,
+        () -> service.addRestrictedUserCode(USER_CODE, RESTRICTION_TYPE));
   }
 
   @Test
@@ -216,12 +222,14 @@ public class ServiceServletStubTest {
     verify(mockDatabase).removeRestrictedUserCode(USER_CODE, RESTRICTION_TYPE);
   }
 
-  @Test(expected = ServiceException.class)
+  @Test
   public void removeRestrictedUserCodeShouldThrowExceptionOnError() throws Exception {
     doThrow(new DatabaseException()).when(mockDatabase).removeRestrictedUserCode(USER_CODE,
         RESTRICTION_TYPE);
 
-    service.removeRestrictedUserCode(USER_CODE, RESTRICTION_TYPE);
+    assertThrows(
+        ServiceException.class,
+        () -> service.removeRestrictedUserCode(USER_CODE, RESTRICTION_TYPE));
   }
 
   @Test
@@ -232,11 +240,11 @@ public class ServiceServletStubTest {
     assertEquals(ImmutableSet.of(USER_CODE), service.getRestrictedUserCodes(RESTRICTION_TYPE));
   }
 
-  @Test(expected = ServiceException.class)
+  @Test
   public void getRestrictedUserCodesShouldThrowExceptionOnError() throws Exception {
     when(mockDatabase.getRestrictedUserCodes(RESTRICTION_TYPE)).thenThrow(new DatabaseException());
 
-    service.getRestrictedUserCodes(RESTRICTION_TYPE);
+    assertThrows(ServiceException.class, () -> service.getRestrictedUserCodes(RESTRICTION_TYPE));
   }
 
   @Test
@@ -246,11 +254,11 @@ public class ServiceServletStubTest {
     verify(mockDatabase).clearRestrictedUserCodes(RESTRICTION_TYPE);
   }
 
-  @Test(expected = ServiceException.class)
+  @Test
   public void clearRestrictedUserCodesShouldThrowExceptionOnError() throws Exception {
     doThrow(new DatabaseException()).when(mockDatabase).clearRestrictedUserCodes(RESTRICTION_TYPE);
 
-    service.clearRestrictedUserCodes(RESTRICTION_TYPE);
+    assertThrows(ServiceException.class, () -> service.clearRestrictedUserCodes(RESTRICTION_TYPE));
   }
 
   @Test
@@ -260,12 +268,14 @@ public class ServiceServletStubTest {
     verify(mockDatabase).addRestrictedRemoteAddress(REMOTE_ADDRESS, RESTRICTION_TYPE);
   }
 
-  @Test(expected = ServiceException.class)
+  @Test
   public void addRestrictedRemoteAddressShouldThrowExceptionOnError() throws Exception {
     doThrow(new DatabaseException()).when(mockDatabase).addRestrictedRemoteAddress(REMOTE_ADDRESS,
         RESTRICTION_TYPE);
 
-    service.addRestrictedRemoteAddress(REMOTE_ADDRESS, RESTRICTION_TYPE);
+    assertThrows(
+        ServiceException.class,
+        () -> service.addRestrictedRemoteAddress(REMOTE_ADDRESS, RESTRICTION_TYPE));
   }
 
   @Test
@@ -275,12 +285,14 @@ public class ServiceServletStubTest {
     verify(mockDatabase).removeRestrictedRemoteAddress(REMOTE_ADDRESS, RESTRICTION_TYPE);
   }
 
-  @Test(expected = ServiceException.class)
+  @Test
   public void removeRestrictedRemoteAddressShouldThrowExceptionOnError() throws Exception {
     doThrow(new DatabaseException()).when(mockDatabase).removeRestrictedRemoteAddress(
         REMOTE_ADDRESS, RESTRICTION_TYPE);
 
-    service.removeRestrictedRemoteAddress(REMOTE_ADDRESS, RESTRICTION_TYPE);
+    assertThrows(
+        ServiceException.class,
+        () -> service.removeRestrictedRemoteAddress(REMOTE_ADDRESS, RESTRICTION_TYPE));
   }
 
   @Test
@@ -292,12 +304,14 @@ public class ServiceServletStubTest {
         service.getRestrictedRemoteAddresses(RESTRICTION_TYPE));
   }
 
-  @Test(expected = ServiceException.class)
+  @Test
   public void getRestrictedRemoteAddressesShouldThrowExceptionOnError() throws Exception {
     when(mockDatabase.getRestrictedRemoteAddresses(RESTRICTION_TYPE)).thenThrow(
         new DatabaseException());
 
-    service.getRestrictedRemoteAddresses(RESTRICTION_TYPE);
+    assertThrows(
+        ServiceException.class,
+        () -> service.getRestrictedRemoteAddresses(RESTRICTION_TYPE));
   }
 
   @Test
@@ -307,12 +321,14 @@ public class ServiceServletStubTest {
     verify(mockDatabase).clearRestrictedRemoteAddresses(RESTRICTION_TYPE);
   }
 
-  @Test(expected = ServiceException.class)
+  @Test
   public void clearRestrictedRemoteAddressesShouldThrowExceptionOnError() throws Exception {
     doThrow(new DatabaseException()).when(mockDatabase).clearRestrictedRemoteAddresses(
         RESTRICTION_TYPE);
 
-    service.clearRestrictedRemoteAddresses(RESTRICTION_TYPE);
+    assertThrows(
+        ServiceException.class,
+        () -> service.clearRestrictedRemoteAddresses(RESTRICTION_TYPE));
   }
 
   @Test
@@ -325,12 +341,14 @@ public class ServiceServletStubTest {
         service.lookupUserDataByExternalAccount(AUTH_PROVIDER, AUTH_SUBJECT));
   }
 
-  @Test(expected = ServiceException.class)
+  @Test
   public void lookupUserDataByExternalAccountShouldThrowExceptionOnError() throws Exception {
     when(mockDatabase.lookupUserDataByExternalAccount(AUTH_PROVIDER, AUTH_SUBJECT)).thenThrow(
         new DatabaseException());
 
-    service.lookupUserDataByExternalAccount(AUTH_PROVIDER, AUTH_SUBJECT);
+    assertThrows(
+        ServiceException.class,
+        () -> service.lookupUserDataByExternalAccount(AUTH_PROVIDER, AUTH_SUBJECT));
   }
 
   @Test
@@ -340,11 +358,11 @@ public class ServiceServletStubTest {
     verify(mockDatabase).disconnectExternalAccount(USER_CODE);
   }
 
-  @Test(expected = ServiceException.class)
+  @Test
   public void disconnectExternalAccountShouldThrowExceptionOnError() throws Exception {
     doThrow(new DatabaseException()).when(mockDatabase).disconnectExternalAccount(USER_CODE);
 
-    service.disconnectExternalAccount(USER_CODE);
+    assertThrows(ServiceException.class, () -> service.disconnectExternalAccount(USER_CODE));
   }
 
   @Test

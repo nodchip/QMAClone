@@ -8,11 +8,13 @@ import java.net.InetSocketAddress;
 
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.servlet.WebSocketServletFactory;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -24,7 +26,8 @@ import tv.dyndns.kishibe.qmaclone.server.GameManager;
 import tv.dyndns.kishibe.qmaclone.server.exception.GameNotFoundException;
 import tv.dyndns.kishibe.qmaclone.server.websocket.GameStatusWebSocketServlet.GameStatusWebSocket;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class GameStatusWebSocketServletTest {
   @Mock
   private GameManager mockGameManager;
@@ -40,7 +43,7 @@ public class GameStatusWebSocketServletTest {
   private GameStatusWebSocketServlet servlet;
   private GameStatusWebSocket webSocket;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     servlet = new GameStatusWebSocketServlet(mockGameManager);
     webSocket = new GameStatusWebSocket();

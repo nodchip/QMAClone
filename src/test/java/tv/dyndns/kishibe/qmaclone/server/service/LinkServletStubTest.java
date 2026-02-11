@@ -1,16 +1,19 @@
 package tv.dyndns.kishibe.qmaclone.server.service;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static tv.dyndns.kishibe.qmaclone.client.testing.TestDataProvider.getLinkData;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import tv.dyndns.kishibe.qmaclone.client.service.ServiceException;
 import tv.dyndns.kishibe.qmaclone.server.database.Database;
@@ -18,7 +21,8 @@ import tv.dyndns.kishibe.qmaclone.server.database.DatabaseException;
 
 import com.google.common.collect.ImmutableList;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class LinkServletStubTest {
 
 	private static final int FAKE_START = 123;
@@ -30,7 +34,7 @@ public class LinkServletStubTest {
 	private Database mockDatabase;
 	private LinkServletStub service;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		service = new LinkServletStub(mockDatabase);
 	}
@@ -43,11 +47,11 @@ public class LinkServletStubTest {
 		assertEquals(ImmutableList.of(getLinkData()), service.get(FAKE_START, FAKE_COUNT));
 	}
 
-	@Test(expected = ServiceException.class)
+	@Test
 	public void getShouldThrowServiceExceptionOnDatabaseException() throws Exception {
 		when(mockDatabase.getLinkDatas(FAKE_START, FAKE_COUNT)).thenThrow(new DatabaseException());
 
-		service.get(FAKE_START, FAKE_COUNT);
+		assertThrows(ServiceException.class, () -> service.get(FAKE_START, FAKE_COUNT));
 	}
 
 	@Test
@@ -57,11 +61,11 @@ public class LinkServletStubTest {
 		assertEquals(FAKE_NUMBER_OF_LINK_DATA, service.getNumberOfLinkData());
 	}
 
-	@Test(expected = ServiceException.class)
+	@Test
 	public void getNumberOfLinkDataShouldServiceExceptionOnDatabaseException() throws Exception {
 		when(mockDatabase.getNumberOfLinkDatas()).thenThrow(new DatabaseException());
 
-		service.getNumberOfLinkData();
+		assertThrows(ServiceException.class, () -> service.getNumberOfLinkData());
 	}
 
 	@Test
@@ -71,11 +75,11 @@ public class LinkServletStubTest {
 		verify(mockDatabase).addLinkData(getLinkData());
 	}
 
-	@Test(expected = ServiceException.class)
+	@Test
 	public void addShouldServiceExceptionOnDatabaseException() throws Exception {
 		doThrow(new DatabaseException()).when(mockDatabase).addLinkData(getLinkData());
 
-		service.add(getLinkData());
+		assertThrows(ServiceException.class, () -> service.add(getLinkData()));
 	}
 
 	@Test
@@ -85,11 +89,11 @@ public class LinkServletStubTest {
 		verify(mockDatabase).updateLinkData(getLinkData());
 	}
 
-	@Test(expected = ServiceException.class)
+	@Test
 	public void updateShouldServiceExceptionOnDatabaseException() throws Exception {
 		doThrow(new DatabaseException()).when(mockDatabase).updateLinkData(getLinkData());
 
-		service.update(getLinkData());
+		assertThrows(ServiceException.class, () -> service.update(getLinkData()));
 	}
 
 	@Test
@@ -99,11 +103,11 @@ public class LinkServletStubTest {
 		verify(mockDatabase).removeLinkData(FAKE_LINK_DATA_ID);
 	}
 
-	@Test(expected = ServiceException.class)
+	@Test
 	public void removeShouldServiceExceptionOnDatabaseException() throws Exception {
 		doThrow(new DatabaseException()).when(mockDatabase).removeLinkData(FAKE_LINK_DATA_ID);
 
-		service.remove(FAKE_LINK_DATA_ID);
+		assertThrows(ServiceException.class, () -> service.remove(FAKE_LINK_DATA_ID));
 	}
 
 }

@@ -6,11 +6,13 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import tv.dyndns.kishibe.qmaclone.client.packet.RestrictionType;
 import tv.dyndns.kishibe.qmaclone.server.database.Database;
@@ -18,7 +20,8 @@ import tv.dyndns.kishibe.qmaclone.server.database.Database;
 import com.google.common.collect.ImmutableSet;
 import com.google.gwt.thirdparty.guava.common.collect.Sets;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class RestrictedUserUtilsTest {
 
   private static final int FAKE_USER_CODE = 12345678;
@@ -28,7 +31,7 @@ public class RestrictedUserUtilsTest {
   private Database mockDatabase;
   private RestrictedUserUtils restrictedUserUtils;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     restrictedUserUtils = new RestrictedUserUtils(mockDatabase);
   }

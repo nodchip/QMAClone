@@ -1,25 +1,28 @@
 package tv.dyndns.kishibe.qmaclone.server.relevance;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class PatternMatchingAutomatonTest {
 
 	@Mock
 	private Dictionary mockDictionary;
 	private PatternMatchingAutomaton patternMatchingAutomaton;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		patternMatchingAutomaton = new PatternMatchingAutomaton(ImmutableSet.of(mockDictionary));
 	}
