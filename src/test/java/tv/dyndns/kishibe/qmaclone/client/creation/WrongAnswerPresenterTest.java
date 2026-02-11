@@ -1,6 +1,6 @@
 package tv.dyndns.kishibe.qmaclone.client.creation;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -9,11 +9,11 @@ import static tv.dyndns.kishibe.qmaclone.client.constant.Constant.DELIMITER_KUMI
 
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.MockitoAnnotations;
 
 import tv.dyndns.kishibe.qmaclone.client.game.ProblemType;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblem;
@@ -23,21 +23,27 @@ import tv.dyndns.kishibe.qmaclone.client.testing.TestDataProvider;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 
-@RunWith(MockitoJUnitRunner.class)
 public class WrongAnswerPresenterTest {
 
 	private static final String FAKE_ANSWER = "aaa";
 	private static final int FAKE_COUNT = 123;
 	@Mock
 	private WrongAnswerView mockView;
+	private AutoCloseable closeableMocks;
 	private WrongAnswerPresenter presenter;
 	private PacketProblem problem;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
+		closeableMocks = MockitoAnnotations.openMocks(this);
 		presenter = new WrongAnswerPresenter(mockView);
 		problem = TestDataProvider.getProblem();
 		problem.type = ProblemType.YonTaku;
+	}
+
+	@AfterEach
+	public void tearDown() throws Exception {
+		closeableMocks.close();
 	}
 
 	@Test
