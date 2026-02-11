@@ -1,17 +1,14 @@
 package tv.dyndns.kishibe.qmaclone.client.game.shuffler;
 
-import static org.junit.Assert.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-@RunWith(JUnit4.class)
 public class ShufflerDefaultTest extends ShufflerTestBase {
 	private ShufflerDefault shuffler;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		super.setUp();
 		shuffler = new ShufflerDefault();

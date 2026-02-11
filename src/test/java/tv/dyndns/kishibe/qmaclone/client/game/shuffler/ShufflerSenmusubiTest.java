@@ -1,19 +1,16 @@
 package tv.dyndns.kishibe.qmaclone.client.game.shuffler;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Arrays;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-@RunWith(JUnit4.class)
 public class ShufflerSenmusubiTest extends ShufflerTestBase {
 	private ShufflerSenmusubi shuffler;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		super.setUp();
 		shuffler = new ShufflerSenmusubi(4);
