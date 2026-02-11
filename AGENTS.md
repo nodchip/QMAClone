@@ -44,6 +44,9 @@
 - Tomcat 再配備時は、必要に応じて旧展開物削除とサービス再起動で静的状態を確実に破棄する。
 - Eclipse で不整合が疑われる場合は、`target` と `gwt-unitCache` のクリーンを実施する。
 
+### Git / worktree 運用
+- worktree ブランチを `master` に取り込むときは、必ず fast-forward merge（`git merge --ff-only`）を使用する。
+
 ## 禁止事項
 - 依存スコープ変更を、影響評価と実機検証なしで反映しない。
 - WebSocket エラーを、サーバーログ未確認のままクライアント側だけで断定しない。
