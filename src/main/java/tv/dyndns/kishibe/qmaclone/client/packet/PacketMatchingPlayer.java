@@ -21,25 +21,27 @@
 //THE SOFTWARE.
 package tv.dyndns.kishibe.qmaclone.client.packet;
 
-import name.pehl.piriti.json.client.JsonReader;
-
 import com.google.common.base.MoreObjects;
-import com.google.gwt.core.client.GWT;
+import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class PacketMatchingPlayer implements IsSerializable {
-  public static class Json {
-    public interface PacketMatchingPlayerReader extends JsonReader<PacketMatchingPlayer> {
-    }
-
-    public static final PacketMatchingPlayerReader READER = GWT
-        .create(PacketMatchingPlayerReader.class);
-  }
-
   public PacketPlayerSummary playerSummary;
   public boolean isRequestSkip;
   public String greeting;
   public String imageFileName;
+
+  public static PacketMatchingPlayer fromJsonObject(JSONObject object) {
+    PacketMatchingPlayer player = new PacketMatchingPlayer();
+    JSONObject summaryObject = PacketJsonParser.getObject(object, "playerSummary");
+    if (summaryObject != null) {
+      player.playerSummary = PacketPlayerSummary.fromJsonObject(summaryObject);
+    }
+    player.isRequestSkip = PacketJsonParser.getBoolean(object, "isRequestSkip");
+    player.greeting = PacketJsonParser.getString(object, "greeting");
+    player.imageFileName = PacketJsonParser.getString(object, "imageFileName");
+    return player;
+  }
 
   @Override
   public String toString() {

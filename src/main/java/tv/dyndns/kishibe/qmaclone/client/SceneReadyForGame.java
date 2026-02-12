@@ -65,7 +65,7 @@ public class SceneReadyForGame extends SceneBase {
 
     @Override
     protected PacketReadyForGame parse(String json) {
-      return PacketReadyForGame.Json.READER.read(json);
+      return PacketReadyForGame.fromJson(json);
     }
 
   }

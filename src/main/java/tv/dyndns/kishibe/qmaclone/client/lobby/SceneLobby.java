@@ -61,7 +61,7 @@ public class SceneLobby extends SceneBase {
 
 		@Override
 		protected PacketServerStatus parse(String json) {
-			return PacketServerStatus.Json.READER.read(json);
+			return PacketServerStatus.fromJson(json);
 		}
 
 		@Override

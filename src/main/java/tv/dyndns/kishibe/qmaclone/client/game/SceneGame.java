@@ -82,7 +82,7 @@ public class SceneGame extends SceneBase implements ClosingHandler, CloseHandler
 
 		@Override
 		protected PacketGameStatus parse(String json) {
-			return PacketGameStatus.Json.READER.read(json);
+			return PacketGameStatus.fromJson(json);
 		}
 	}
 

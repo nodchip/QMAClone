@@ -21,19 +21,10 @@
 //THE SOFTWARE.
 package tv.dyndns.kishibe.qmaclone.client.packet;
 
-import name.pehl.piriti.json.client.JsonReader;
-
-import com.google.gwt.core.client.GWT;
+import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class PacketChatMessage implements IsSerializable {
-	public static class Json {
-		public interface PacketChatDataReader extends JsonReader<PacketChatMessage> {
-		}
-
-		public static final PacketChatDataReader READER = GWT.create(PacketChatDataReader.class);
-	}
-
 	public int resId;
 	public long date;
 	public String name;
@@ -43,4 +34,18 @@ public class PacketChatMessage implements IsSerializable {
 	public String remoteAddress;
 	public String imageFileName;
 	public boolean restricted;
+
+	public static PacketChatMessage fromJsonObject(JSONObject object) {
+		PacketChatMessage message = new PacketChatMessage();
+		message.resId = PacketJsonParser.getInt(object, "resId");
+		message.date = PacketJsonParser.getLong(object, "date");
+		message.name = PacketJsonParser.getString(object, "name");
+		message.body = PacketJsonParser.getString(object, "body");
+		message.classLevel = PacketJsonParser.getInt(object, "classLevel");
+		message.userCode = PacketJsonParser.getInt(object, "userCode");
+		message.remoteAddress = PacketJsonParser.getString(object, "remoteAddress");
+		message.imageFileName = PacketJsonParser.getString(object, "imageFileName");
+		message.restricted = PacketJsonParser.getBoolean(object, "restricted");
+		return message;
+	}
 }

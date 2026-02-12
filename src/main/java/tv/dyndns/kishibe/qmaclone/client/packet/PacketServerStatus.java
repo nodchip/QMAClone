@@ -23,21 +23,14 @@ package tv.dyndns.kishibe.qmaclone.client.packet;
 
 import java.util.List;
 
-import name.pehl.piriti.json.client.JsonReader;
-
 import com.google.common.base.Objects;
-import com.google.gwt.core.client.GWT;
+import com.google.common.collect.Lists;
+import com.google.gwt.json.client.JSONArray;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class PacketServerStatus implements IsSerializable, Cloneable {
-	public static class Json {
-		public interface PacketServerStatusReader extends JsonReader<PacketServerStatus> {
-		}
-
-		public static final PacketServerStatusReader READER = GWT
-				.create(PacketServerStatusReader.class);
-	}
-
 	public int numberOfCurrentPlayers;
 	public int numberOfTotalPlayers;
 	public int numberOfCurrentSessions;
@@ -48,6 +41,32 @@ public class PacketServerStatus implements IsSerializable, Cloneable {
 	public int numberOfActivePlayers;
 	public List<PacketPlayerSummary> lastestPlayers;
 	public int numberOfPlayersInWhole;
+
+	public static PacketServerStatus fromJson(String json) {
+		JSONObject object = PacketJsonParser.parseObject(json);
+		PacketServerStatus status = new PacketServerStatus();
+		status.numberOfCurrentPlayers = PacketJsonParser.getInt(object, "numberOfCurrentPlayers");
+		status.numberOfTotalPlayers = PacketJsonParser.getInt(object, "numberOfTotalPlayers");
+		status.numberOfCurrentSessions = PacketJsonParser.getInt(object, "numberOfCurrentSessions");
+		status.numberOfTotalSessions = PacketJsonParser.getInt(object, "numberOfTotalSessions");
+		status.numberOfPageView = PacketJsonParser.getInt(object, "numberOfPageView");
+		status.numberOfProblems = PacketJsonParser.getInt(object, "numberOfProblems");
+		status.numberOfLoginPlayers = PacketJsonParser.getInt(object, "numberOfLoginPlayers");
+		status.numberOfActivePlayers = PacketJsonParser.getInt(object, "numberOfActivePlayers");
+		status.numberOfPlayersInWhole = PacketJsonParser.getInt(object, "numberOfPlayersInWhole");
+		JSONArray players = PacketJsonParser.getArray(object, "lastestPlayers");
+		if (players != null) {
+			status.lastestPlayers = Lists.newArrayList();
+			for (int i = 0; i < players.size(); ++i) {
+				JSONValue value = players.get(i);
+				JSONObject playerObject = value == null ? null : value.isObject();
+				if (playerObject != null) {
+					status.lastestPlayers.add(PacketPlayerSummary.fromJsonObject(playerObject));
+				}
+			}
+		}
+		return status;
+	}
 
 	@Override
 	public boolean equals(Object obj) {

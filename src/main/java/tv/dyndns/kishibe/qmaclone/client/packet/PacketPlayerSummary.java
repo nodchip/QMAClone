@@ -1,22 +1,12 @@
 package tv.dyndns.kishibe.qmaclone.client.packet;
 
-import name.pehl.piriti.json.client.JsonReader;
-
-import com.google.gwt.core.client.GWT;
+import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class PacketPlayerSummary implements IsSerializable {
-	public static class Json {
-		public interface PacketPlayerSummaryReader extends JsonReader<PacketPlayerSummary> {
-		}
-
-		public static final PacketPlayerSummaryReader READER = GWT
-				.create(PacketPlayerSummaryReader.class);
-	}
-
 	public String level;
 	public String name;
 	public String prefecture;
@@ -65,6 +55,15 @@ public class PacketPlayerSummary implements IsSerializable {
 
 	public static PacketPlayerSummary getDefaultPlayerSummary() {
 		return DEFAULT_PLAYER_SUMMARY;
+	}
+
+	public static PacketPlayerSummary fromJsonObject(JSONObject object) {
+		PacketPlayerSummary summary = new PacketPlayerSummary();
+		summary.level = PacketJsonParser.getString(object, "level");
+		summary.name = PacketJsonParser.getString(object, "name");
+		summary.prefecture = PacketJsonParser.getString(object, "prefecture");
+		summary.rating = PacketJsonParser.getInt(object, "rating");
+		return summary;
 	}
 
 	@Override

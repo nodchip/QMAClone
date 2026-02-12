@@ -68,7 +68,7 @@ public class PanelRealtime extends Composite implements KeyDownHandler {
 
     @Override
     protected PacketChatMessages parse(String json) {
-      return PacketChatMessages.Json.READER.read(json);
+      return PacketChatMessages.fromJson(json);
     }
 
     @Override

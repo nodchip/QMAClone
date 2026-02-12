@@ -62,7 +62,7 @@ public class SceneMatching extends SceneBase {
     @Override
     protected PacketMatchingStatus parse(String json) {
       logger.log(Level.INFO, "json=" + json);
-      return PacketMatchingStatus.Json.READER.read(json);
+      return PacketMatchingStatus.fromJson(json);
     }
 
   }

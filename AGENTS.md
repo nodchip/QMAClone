@@ -27,7 +27,8 @@
 - 基盤クラス（例: `StatusUpdater`）変更時は、`@Override` エラー連鎖を関連画面まで確認する。
 - `cache.js` を更新した場合、配備先が最新成果物を参照していることを確認する。
 - 依存関係は安定版のみ使用し、RC / alpha / milestone 版は採用しない。
-- `name.pehl:piriti-user` と `name.pehl:piriti-dev` は `0.8` に固定し、GWT 再コンパイル検証なしで更新しない。
+- `piriti` 依存は再導入せず、クライアントの JSON デコードは明示実装を維持する。
+- `gin` は `de.knightsoft-net:gin:4.0.0` を基準とし、Guice 更新時は GWT rebind 成否を先に確認する。
 - `gwt:compile` が失敗した場合はデプロイを中断し、`-SkipBuild` による回避配備を行わない。
 
 ### Jetty / Tomcat / クラスローダ
@@ -68,7 +69,7 @@
 - ミス: 移行可否判定に、ネイティブ依存（`zinnia.dll` 必須）を持つテストを混在させ、失敗要因の切り分けが遅れた。
 - 改善: 移行検証の基準テストは、ネイティブ依存の有無で先に分離してから実行する。
 - ミス: `piriti` 変更時に `gwt:compile` の失敗要因（JAXB / rebind 例外）が揺れ、原因切り分けに時間を要した。
-- 改善: `piriti` は `0.8` 固定を維持し、変更検証時は `mvn "-Dgwt.skipCompilation=false" gwt:compile` を単独実行して成否を先に確定する。
+- 改善: `piriti` 依存は撤去し、JSON デコード処理をアプリ側で保持する。依存更新時は `mvn "-Dgwt.skipCompilation=false" gwt:compile` を単独実行して成否を先に確定する。
 
 ## 追加の振り返り（2026-02-12, QMAClone）
 - ミス: WebSocket 系の一括置換で対象パスを広く取りすぎ、`src/main/java/net/zschech/gwt/websockets/*` まで編集対象に含めてしまった。
