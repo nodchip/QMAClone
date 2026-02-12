@@ -9,11 +9,10 @@ import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
-import org.junit.Rule;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.google.common.collect.ImmutableList;
 
@@ -22,10 +21,8 @@ import tv.dyndns.kishibe.qmaclone.client.packet.PacketServerStatus;
 import tv.dyndns.kishibe.qmaclone.server.database.Database;
 import tv.dyndns.kishibe.qmaclone.server.websocket.MessageSender;
 
+@ExtendWith(MockitoExtension.class)
 public class ServerStatusManagerTest {
-
-  @Rule
-  public final MockitoRule mocks = MockitoJUnit.rule();
 
   @Mock
   private Database mockDatabase;

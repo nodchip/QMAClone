@@ -5,29 +5,29 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 import javax.imageio.ImageIO;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+
+import com.google.common.io.Files;
+import com.google.inject.Inject;
 
 import tv.dyndns.kishibe.qmaclone.client.constant.Constant;
 import tv.dyndns.kishibe.qmaclone.server.image.ImageUtils.Parameter;
 import tv.dyndns.kishibe.qmaclone.server.testing.GuiceInjectionExtension;
 
-import com.google.common.io.Files;
-import com.google.inject.Inject;
-
-@ExtendWith(MockitoExtension.class)
 @ExtendWith(GuiceInjectionExtension.class)
 public class ImageUtilsTest {
   @Inject
@@ -57,10 +57,11 @@ public class ImageUtilsTest {
 
   @Test
   public void testResizeImage() throws IOException {
-    File file = File.createTempFile("QMAClone", null);
+    File input = createInputImage("jpg", 200, 100, false);
+    File file = File.createTempFile("QMAClone", ".jpg");
     file.deleteOnExit();
     try (OutputStream stream = new BufferedOutputStream(new FileOutputStream(file))) {
-      imageUtils.resizeImage(new File("testdata/1394387_2204778689.jpg"), 32, 16, true, stream);
+      imageUtils.resizeImage(input, 32, 16, true, stream);
     }
     BufferedImage image = ImageIO.read(file);
     assertEquals(32, image.getWidth());
@@ -69,10 +70,11 @@ public class ImageUtilsTest {
 
   @Test
   public void resizeImageShouldFillTransparencyWithWhiteForGif() throws IOException {
-    File file = File.createTempFile("QMAClone", null);
+    File input = createInputImage("gif", 64, 64, true);
+    File file = File.createTempFile("QMAClone", ".gif");
     file.deleteOnExit();
     try (OutputStream stream = new BufferedOutputStream(new FileOutputStream(file))) {
-      imageUtils.resizeImage(new File("testdata/img378.gif"), 512, 384, true, stream);
+      imageUtils.resizeImage(input, 512, 384, true, stream);
     }
     BufferedImage image = ImageIO.read(file);
     int rgb = image.getRGB(0, 0);
@@ -88,11 +90,11 @@ public class ImageUtilsTest {
 
   @Test
   public void resizeImageShouldFillTransparencyWithWhiteForPng() throws IOException {
-    File file = File.createTempFile("QMAClone", null);
+    File input = createInputImage("png", 64, 64, true);
+    File file = File.createTempFile("QMAClone", ".png");
     file.deleteOnExit();
     try (OutputStream stream = new BufferedOutputStream(new FileOutputStream(file))) {
-      imageUtils.resizeImage(new File("testdata/160px-Japanese_Map_symbol_(Police_station).svg.png"), 512, 384, true,
-          stream);
+      imageUtils.resizeImage(input, 512, 384, true, stream);
     }
     BufferedImage image = ImageIO.read(file);
     int rgb = image.getRGB(0, 0);
@@ -108,10 +110,11 @@ public class ImageUtilsTest {
 
   @Test
   public void testResizeImageShouldFillCanvasIfKeepAspectRatioIsFalse() throws IOException {
-    File file = File.createTempFile("QMAClone", null);
+    File input = createInputImage("jpg", 200, 100, false);
+    File file = File.createTempFile("QMAClone", ".jpg");
     file.deleteOnExit();
     try (OutputStream stream = new BufferedOutputStream(new FileOutputStream(file))) {
-      imageUtils.resizeImage(new File("testdata/1394387_2204778689.jpg"), 32, 16, false, stream);
+      imageUtils.resizeImage(input, 32, 16, false, stream);
     }
     BufferedImage image = ImageIO.read(file);
     int rgb = image.getRGB(0, 0);
@@ -142,10 +145,32 @@ public class ImageUtilsTest {
   public void testGetLastModified() throws IOException {
     File file = new File(Constant.FILE_PATH_BASE + "image/output/a9/fd962cc05723ab44db1bbb75a33ba655b3d51f");
     Files.createParentDirs(file);
-    Files.write("test", file, Charset.forName("utf-8"));
+    Files.write("test", file, StandardCharsets.UTF_8);
     file.deleteOnExit();
 
     assertEquals(file.lastModified(), imageUtils.getLastModified(new Parameter("QMAClone", 512, 384, true)));
   }
-}
 
+  private static File createInputImage(String format, int width, int height, boolean transparent) throws IOException {
+    File file = File.createTempFile("QMACloneInput", "." + format);
+    file.deleteOnExit();
+    BufferedImage image;
+    if ("jpg".equals(format) || "jpeg".equals(format)) {
+      image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+    } else {
+      image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+    }
+    Graphics2D g = image.createGraphics();
+    if (transparent) {
+      g.setBackground(new Color(255, 255, 255, 0));
+      g.clearRect(0, 0, width, height);
+      g.setColor(new Color(0, 0, 0, 255));
+    } else {
+      g.setColor(new Color(0, 0, 0));
+      g.fillRect(0, 0, width, height);
+    }
+    g.dispose();
+    ImageIO.write(image, format, file);
+    return file;
+  }
+}

@@ -52,6 +52,10 @@ public class ValidatorTegaki extends Validator {
 			initialize();
 		}
 
+		AvailableCharacters(Set<String> availableCharacters) {
+			this.availableCharacters = availableCharacters;
+		}
+
 		public void initialize() {
 			Service.Util.getInstance().getAvailableChalactersForHandwriting(
 					callbackGetAvailableChalacters);
@@ -78,6 +82,11 @@ public class ValidatorTegaki extends Validator {
 			Preconditions.checkState(isInitialized());
 			return availableCharacters.contains(ch);
 		}
+	}
+
+	// テスト時にRPC呼び出しを避けるため、利用可能文字を直接注入する。
+	static void installAvailableCharactersForTest(Set<String> availableCharacters) {
+		AvailableCharacters.INSTANCE = new AvailableCharacters(availableCharacters);
 	}
 
 	public Evaluation check(PacketProblem problem) {

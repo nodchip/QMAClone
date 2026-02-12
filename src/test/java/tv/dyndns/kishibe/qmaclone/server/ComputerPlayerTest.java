@@ -9,11 +9,10 @@ import java.util.Arrays;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
-import org.junit.Rule;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import tv.dyndns.kishibe.qmaclone.client.constant.Constant;
 import tv.dyndns.kishibe.qmaclone.client.game.ProblemType;
@@ -25,10 +24,8 @@ import tv.dyndns.kishibe.qmaclone.client.testing.TestDataProvider;
  * 
  * @author nodchip
  */
+@ExtendWith(MockitoExtension.class)
 public class ComputerPlayerTest {
-
-  @Rule
-  public final MockitoRule mocks = MockitoJUnit.rule();
 
   private static final int FAKE_PROBLEM_ID = 12345;
   @Mock

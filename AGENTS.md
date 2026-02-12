@@ -70,8 +70,24 @@
 - ミス: `piriti` 変更時に `gwt:compile` の失敗要因（JAXB / rebind 例外）が揺れ、原因切り分けに時間を要した。
 - 改善: `piriti` は `0.8` 固定を維持し、変更検証時は `mvn "-Dgwt.skipCompilation=false" gwt:compile` を単独実行して成否を先に確定する。
 
+## 追加の振り返り（2026-02-12, QMAClone）
+- ミス: WebSocket 系の一括置換で対象パスを広く取りすぎ、`src/main/java/net/zschech/gwt/websockets/*` まで編集対象に含めてしまった。
+- 改善: WebSocket サーバー移行の一括置換は `src/main/java/tv/dyndns/kishibe/qmaclone/server/websocket` と対応テスト配下に限定し、`net/zschech/gwt/websockets` は除外する。
+- ミス: 全量 `mvn test` が長時間化する状況で、完了判定に必要な検証範囲の定義が曖昧になった。
+- 改善: 変更範囲が限定される場合は、先に対象パッケージのテストを明示実行し、全量テスト未完了時は未検証範囲を完了報告へ明記する。
+- ミス: GWT クライアントテストで `ValidatorTegaki` が手書き利用可能文字取得 RPC を直接呼び、ネイティブ依存（zinnia）経由で forked JVM が異常終了した。
+- 改善: GWT クライアント単体テストでは、RPC/ネイティブ依存を直接呼ばずテスト用注入ポイントまたはスタブで切り離す。
+
 ### JUnit移行（QMAClone）
 - JUnit5移行前に `@Rule` の有無でテストを分類し、`@Rule` 依存テストは別タスクとして扱う。
 - GuiceBerry を利用するテストは、Jupiter Extension が未整備なら JUnit4/Vintage のまま維持する。
 - 部分実行で `mvn -Dtest=... test` を使う場合、必要に応じて `-DfailIfNoTests=false` を付与し、GWT側の「0件失敗」で誤判定しない。
 - `ServicesTest` のようなネイティブライブラリ依存テストは、JUnit移行の正常性判定から分離して扱う。
+
+### WebSocket置換範囲（QMAClone）
+- WebSocket サーバー移行の自動置換は、`tv/.../server/websocket` 配下と `src/test/java/tv/.../server/websocket` 配下のみに適用する。
+- `src/main/java/net/zschech/gwt/websockets` 配下は GWT クライアント基盤として扱い、サーバー側移行作業の一括置換対象に含めない。
+
+### GWTテストと手書き依存（QMAClone）
+- `ValidatorTegaki` 系のテストでは `AvailableCharacters` をテスト用に固定化し、`Service.getAvailableChalactersForHandwriting` を直接呼ばない。
+- `forked VM terminated` が発生した場合は、`surefire-reports` の実行済みテストとの差分から停止クラスを特定し、対象テストの外部依存（RPC / ネイティブ / ファイル）を優先的に切り離す。

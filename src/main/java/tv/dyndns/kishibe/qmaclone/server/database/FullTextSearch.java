@@ -32,6 +32,7 @@ import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.index.IndexFormatTooOldException;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
@@ -163,8 +164,41 @@ public class FullTextSearch {
   }
 
   private IndexWriter newIndexWriter() throws CorruptIndexException, LockObtainFailedException, IOException {
-    return new IndexWriter(FSDirectory.open(indexFileDirectory),
-        new IndexWriterConfig(new NGramAnalyzer()).setOpenMode(OpenMode.APPEND));
+    try {
+      return new IndexWriter(FSDirectory.open(indexFileDirectory),
+          new IndexWriterConfig(new NGramAnalyzer()).setOpenMode(OpenMode.APPEND));
+    } catch (IndexFormatTooOldException e) {
+      recreateIndexOnOldFormat(e);
+      return new IndexWriter(FSDirectory.open(indexFileDirectory),
+          new IndexWriterConfig(new NGramAnalyzer()).setOpenMode(OpenMode.APPEND));
+    }
+  }
+
+  private IndexReader newIndexReader() throws IOException {
+    ensureIndexReadable();
+    try {
+      return DirectoryReader.open(FSDirectory.open(indexFileDirectory));
+    } catch (IndexFormatTooOldException e) {
+      recreateIndexOnOldFormat(e);
+      return DirectoryReader.open(FSDirectory.open(indexFileDirectory));
+    }
+  }
+
+  private void ensureIndexReadable() throws IOException {
+    try {
+      DirectoryReader.open(FSDirectory.open(indexFileDirectory)).close();
+    } catch (IndexFormatTooOldException e) {
+      recreateIndexOnOldFormat(e);
+    }
+  }
+
+  private void recreateIndexOnOldFormat(IndexFormatTooOldException e) throws IOException {
+    logger.log(Level.WARNING, "古いLuceneインデクス形式を検出したため再作成します", e);
+    try {
+      generateIndex();
+    } catch (DatabaseException databaseException) {
+      throw new IOException("インデクス再作成に失敗しました", databaseException);
+    }
   }
 
   private Document convertProblemToDocument(PacketProblem problem) {
@@ -375,7 +409,7 @@ public class FullTextSearch {
   IntArray searchProblemsForThemeMode(List<String> queryStrings) throws CorruptIndexException, IOException {
     Stopwatch stopwatch = Stopwatch.createStarted();
 
-    try (IndexReader reader = DirectoryReader.open(FSDirectory.open(indexFileDirectory))) {
+    try (IndexReader reader = newIndexReader()) {
 
       // クエリ生成 加法標準形
       BooleanQuery.Builder query = new BooleanQuery.Builder();
@@ -532,7 +566,7 @@ public class FullTextSearch {
         // ランダムフラグ
         query.add(toRangeQuery(FIELD_RANDOM_FLAG, randomFlags), Occur.MUST);
 
-        try (IndexReader reader = DirectoryReader.open(FSDirectory.open(indexFileDirectory))) {
+        try (IndexReader reader = newIndexReader()) {
           IndexSearcher searcher = new IndexSearcher(reader);
           TopDocs docs = searcher.search(query.build(), MAX_NUMBER_OF_SEARCH_REUSLTS);
           List<Integer> problemIds = new ArrayList<Integer>(docs.scoreDocs.length);
@@ -575,7 +609,7 @@ public class FullTextSearch {
     Future<List<Integer>> future = threadPool.submit(new Callable<List<Integer>>() {
       @Override
       public List<Integer> call() throws Exception {
-        try (IndexReader reader = DirectoryReader.open(FSDirectory.open(indexFileDirectory))) {
+        try (IndexReader reader = newIndexReader()) {
           String[] fields = new String[] { FIELD_SIMILAR };
           String searchQuery = problem.getSearchDocument();
           IndexSearcher searcher = new IndexSearcher(reader);
@@ -616,7 +650,7 @@ public class FullTextSearch {
     Future<List<Integer>> future = threadPool.submit(new Callable<List<Integer>>() {
       @Override
       public List<Integer> call() throws Exception {
-        try (IndexReader reader = DirectoryReader.open(FSDirectory.open(indexFileDirectory))) {
+        try (IndexReader reader = newIndexReader()) {
           IndexSearcher searcher = new IndexSearcher(reader);
 
           Query query = stringToQuery(FIELD_SENTENCE, queryString);

@@ -1,6 +1,7 @@
 package tv.dyndns.kishibe.qmaclone.client.creation.validater;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import org.junit.Test;
 
@@ -17,14 +18,13 @@ public class ValidatorTegakiTest extends QMACloneGWTTestCaseBase {
 	@Override
 	protected void gwtSetUp() throws Exception {
 		super.gwtSetUp();
+		ValidatorTegaki.installAvailableCharactersForTest(Collections.singleton("春"));
 		validator = new ValidatorTegaki();
 		problem = new PacketProblem();
 		problem.type = ProblemType.Tegaki;
 		problem.answers = new String[] { "春", null, null, null, null, null, null, null };
 		problem.sentence = "a";
 		problem.creator = "a";
-
-		ValidatorTegaki.AvailableCharacters.get();
 	}
 
 	@Test

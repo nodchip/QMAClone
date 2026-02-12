@@ -8,7 +8,7 @@ import com.google.gwt.junit.client.GWTTestCase;
 public class QMACloneGWTTestCaseBase extends GWTTestCase {
 	@Override
 	public String getModuleName() {
-		return "tv.dyndns.kishibe.qmaclone.QMAClone";
+		return "tv.dyndns.kishibe.qmaclone.QMACloneTest";
 	}
 
 	@Ignore

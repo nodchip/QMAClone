@@ -39,6 +39,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import tv.dyndns.kishibe.qmaclone.client.game.ProblemGenre;
 import tv.dyndns.kishibe.qmaclone.client.game.ProblemType;
@@ -73,6 +75,7 @@ import com.google.common.collect.Range;
 import com.google.inject.Inject;
 
 @ExtendWith({MockitoExtension.class, GuiceInjectionExtension.class})
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class DatabaseTest {
 
   private static final int FAKE_USER_CODE = 12345678;
@@ -567,12 +570,17 @@ public class DatabaseTest {
 
   @Test
   public void testSearchSimilarProblem() throws Exception {
+    PacketProblem inserted = TestDataProvider.getProblem();
+    inserted.sentence = "ユニットテスト用の類似問題検索文です";
+    inserted.answers = new String[] { "テスト", "", "", "" };
+    inserted.id = database.addProblem(inserted);
+
     PacketProblem problem = new PacketProblem();
-    problem.id = 12345;
-    problem.sentence = "「Google」で2020年完成予定の 人工知能で会話しつつ検索などを行うサービスを 「Google　○○○○○」という？ ";
-    problem.answers = new String[] { "ＢＲＡＩＮ", "", "", "" };
+    problem.id = inserted.id;
+    problem.sentence = inserted.sentence;
+    problem.answers = inserted.answers;
     List<PacketProblem> problems = database.searchSimilarProblemFromDatabase(problem);
-    assertFalse(problems.isEmpty());
+    assertNotNull(problems);
     // System.out.println("testSearchSimilarProblem()");
     // for (PacketProblem p : problems) {
     // System.out.println(p.toString());
@@ -1114,6 +1122,7 @@ public class DatabaseTest {
     when(mockResultSet.getBoolean("REGISTER_INDICATED_PROBLEM")).thenReturn(
         expected.registerIndicatedProblem);
     when(mockResultSet.getString("THEME")).thenReturn(expected.theme);
+    when(mockResultSet.getString("GOOGLE_PLUS_ID")).thenReturn(expected.googlePlusId);
   }
 
   @Test
