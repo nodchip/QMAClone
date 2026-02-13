@@ -129,6 +129,14 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
   @UiField
   Button buttonNextProblem;
   @UiField
+  HTML htmlStep4Summary;
+  @UiField
+  Button buttonBackToStep1FromSummary;
+  @UiField
+  Button buttonBackToStep2FromSummary;
+  @UiField
+  Button buttonBackToStep3FromSummary;
+  @UiField
   Label labelStep1;
   @UiField
   Label labelStep2;
@@ -236,6 +244,9 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
     }
     updateStepVisibility();
     updateStepIndicator();
+    if (currentStep == 4) {
+      updateStep4Summary();
+    }
     buttonPrevStep.setEnabled(currentStep > MIN_STEP);
     buttonNextStep.setEnabled(currentStep < MAX_STEP);
   }
@@ -738,6 +749,21 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
     goToStep(currentStep + 1);
   }
 
+  @UiHandler("buttonBackToStep1FromSummary")
+  void onButtonBackToStep1FromSummary(ClickEvent e) {
+    goToStep(1);
+  }
+
+  @UiHandler("buttonBackToStep2FromSummary")
+  void onButtonBackToStep2FromSummary(ClickEvent e) {
+    goToStep(2);
+  }
+
+  @UiHandler("buttonBackToStep3FromSummary")
+  void onButtonBackToStep3FromSummary(ClickEvent e) {
+    goToStep(3);
+  }
+
   /**
    * ステップ遷移時の入力検証を行う。
    *
@@ -807,6 +833,31 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
       addWarnings("自動保存に失敗しました。ページを更新せず再試行してください。");
       return false;
     }
+  }
+
+  /**
+   * 確認ステップのサマリー表示を更新する。
+   */
+  private void updateStep4Summary() {
+    if (widgetProblemForm == null) {
+      htmlStep4Summary.setHTML("");
+      return;
+    }
+
+    PacketProblem problem = widgetProblemForm.getProblem();
+    SafeHtmlBuilder builder = new SafeHtmlBuilder();
+    builder.appendEscaped("ジャンル: ").appendEscaped(String.valueOf(problem.genre));
+    builder.appendHtmlConstant("<br/>");
+    builder.appendEscaped("出題形式: ").appendEscaped(String.valueOf(problem.type));
+    builder.appendHtmlConstant("<br/>");
+    builder.appendEscaped("ランダムフラグ: ").appendEscaped(String.valueOf(problem.randomFlag));
+    builder.appendHtmlConstant("<br/>");
+    builder.appendEscaped("問題文: ").appendEscaped(problem.getProblemCreationSentence());
+    builder.appendHtmlConstant("<br/>");
+    builder.appendEscaped("問題作成者: ").appendEscaped(Strings.nullToEmpty(problem.creator));
+    builder.appendHtmlConstant("<br/>");
+    builder.appendEscaped("問題ノート: ").appendEscaped(Strings.nullToEmpty(problem.note));
+    htmlStep4Summary.setHTML(builder.toSafeHtml());
   }
 
   private boolean checkProblemId() {

@@ -69,6 +69,12 @@
 				<g:HTMLPanel ui:field="panelStep4" styleName="creationWizardStepPanel"
 					visible="false">
 					<h2>確認</h2>
+					<g:HTML ui:field="htmlStep4Summary" />
+					<g:HorizontalPanel>
+						<g:Button ui:field="buttonBackToStep1FromSummary" text="基本情報へ戻る" />
+						<g:Button ui:field="buttonBackToStep2FromSummary" text="問題文へ戻る" />
+						<g:Button ui:field="buttonBackToStep3FromSummary" text="解答設定へ戻る" />
+					</g:HorizontalPanel>
 					<g:SimplePanel ui:field="panelSimilar" />
 					<g:SimplePanel ui:field="panelSample" />
 					<g:HorizontalPanel>
