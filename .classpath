@@ -43,13 +43,13 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="C:/Users/nodchip/マイドライブ/files/java/gwt-2.12.2/validation-api-1.0.0.GA-sources.jar"/>
 	<classpathentry kind="lib" path="C:/Users/nodchip/マイドライブ/files/java/gwt-2.12.2/validation-api-1.0.0.GA.jar" sourcepath="C:/Users/nodchip/マイドライブ/files/java/gwt-2.12.2/validation-api-1.0.0.GA-sources.jar"/>
-	<classpathentry kind="src" output="target/QMAClone-1.0-SNAPSHOT/WEB-INF/classes" path="src/main/java">
+	<classpathentry including="**/*.java" kind="src" output="target/QMAClone-1.0-SNAPSHOT/WEB-INF/classes" path="src/main/java">
 		<attributes>
 			<attribute name="optional" value="true"/>
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="src" output="target/test-classes" path="src/test/java">
+	<classpathentry including="**/*.java" kind="src" output="target/test-classes" path="src/test/java">
 		<attributes>
 			<attribute name="optional" value="true"/>
 			<attribute name="maven.pomderived" value="true"/>
