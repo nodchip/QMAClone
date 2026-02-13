@@ -52,6 +52,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
+import com.google.gwt.storage.client.Storage;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -154,7 +155,9 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
   int currentStep = 1;
   private static final int MIN_STEP = 1;
   private static final int MAX_STEP = 4;
+  private static final String CREATION_WIZARD_DRAFT_KEY = "qmaclone.creationWizardDraft";
   private boolean sendingProblem = false;
+  private String lastSavedSnapshot = "";
   private final RepeatingCommand commandCheckProblem = new RepeatingCommand() {
     @Override
     public boolean execute() {
@@ -218,6 +221,7 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
     widgetProblemForm = new WidgetProblemForm(this);
     panelProblemForm.setWidget(widgetProblemForm);
     widgetProblemForm.setWizardStep(currentStep);
+    lastSavedSnapshot = createProblemSnapshot();
     textBoxGetProblem.setText(null);
     // previousProblemNote = null;
   }
@@ -470,6 +474,7 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
         // previousProblemNote = problem.note;
       }
 
+      lastSavedSnapshot = createProblemSnapshot();
       setEnable(true);
     }
 
@@ -724,6 +729,9 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
     if (!validateStep(currentStep)) {
       return;
     }
+    if (!autoSaveIfDirty()) {
+      return;
+    }
     goToStep(currentStep + 1);
   }
 
@@ -753,6 +761,49 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
     }
 
     return true;
+  }
+
+  /**
+   * 現在の入力内容が保存済みスナップショットから変更されているかを返す。
+   *
+   * @return 変更があればtrue
+   */
+  @VisibleForTesting
+  boolean isDirty() {
+    return !createProblemSnapshot().equals(lastSavedSnapshot);
+  }
+
+  private String createProblemSnapshot() {
+    if (widgetProblemForm == null) {
+      return "";
+    }
+    return widgetProblemForm.getProblem().toChangeSummary();
+  }
+
+  /**
+   * 変更がある場合のみ入力内容を自動保存する。
+   *
+   * @return 保存成功ならtrue
+   */
+  @VisibleForTesting
+  boolean autoSaveIfDirty() {
+    if (!isDirty()) {
+      return true;
+    }
+
+    String snapshot = createProblemSnapshot();
+    try {
+      Storage localStorage = Storage.getLocalStorageIfSupported();
+      if (localStorage != null) {
+        localStorage.setItem(CREATION_WIZARD_DRAFT_KEY, snapshot);
+      }
+      lastSavedSnapshot = snapshot;
+      return true;
+    } catch (Exception ex) {
+      logger.log(Level.WARNING, "問題作成ウィザードの自動保存に失敗しました", ex);
+      addWarnings("自動保存に失敗しました。ページを更新せず再試行してください。");
+      return false;
+    }
   }
 
   private boolean checkProblemId() {
