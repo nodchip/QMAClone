@@ -127,9 +127,33 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
   Label labelProblemId;
   @UiField
   Button buttonNextProblem;
+  @UiField
+  Label labelStep1;
+  @UiField
+  Label labelStep2;
+  @UiField
+  Label labelStep3;
+  @UiField
+  Label labelStep4;
+  @UiField
+  HTMLPanel panelStep1;
+  @UiField
+  HTMLPanel panelStep2;
+  @UiField
+  HTMLPanel panelStep3;
+  @UiField
+  HTMLPanel panelStep4;
+  @UiField
+  Button buttonPrevStep;
+  @UiField
+  Button buttonNextStep;
 
   @VisibleForTesting
   WidgetProblemForm widgetProblemForm;
+  @VisibleForTesting
+  int currentStep = 1;
+  private static final int MIN_STEP = 1;
+  private static final int MAX_STEP = 4;
   private boolean sendingProblem = false;
   private final RepeatingCommand commandCheckProblem = new RepeatingCommand() {
     @Override
@@ -160,7 +184,9 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
   }
 
   public void reset() {
+    goToStep(1);
     buttonSendProblem.setVisible(false);
+    buttonPrevStep.setEnabled(false);
 
     htmlPanelSorry.setVisible(false);
     htmlRequireGooglePlusLogin.setVisible(false);
@@ -188,6 +214,42 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
     panelProblemForm.setWidget(widgetProblemForm);
     textBoxGetProblem.setText(null);
     // previousProblemNote = null;
+  }
+
+  @VisibleForTesting
+  void goToStep(int step) {
+    currentStep = Math.max(MIN_STEP, Math.min(MAX_STEP, step));
+    updateStepVisibility();
+    updateStepIndicator();
+    buttonPrevStep.setEnabled(currentStep > MIN_STEP);
+    buttonNextStep.setEnabled(currentStep < MAX_STEP);
+  }
+
+  private void updateStepVisibility() {
+    panelStep1.setVisible(currentStep == 1);
+    panelStep2.setVisible(currentStep == 2);
+    panelStep3.setVisible(currentStep == 3);
+    panelStep4.setVisible(currentStep == 4);
+  }
+
+  @VisibleForTesting
+  void updateStepIndicator() {
+    updateStepLabelStyle(labelStep1, 1);
+    updateStepLabelStyle(labelStep2, 2);
+    updateStepLabelStyle(labelStep3, 3);
+    updateStepLabelStyle(labelStep4, 4);
+  }
+
+  private void updateStepLabelStyle(Label label, int step) {
+    label.removeStyleName("creationWizardStepCurrent");
+    label.removeStyleName("creationWizardStepDone");
+    if (step == currentStep) {
+      label.addStyleName("creationWizardStepCurrent");
+      return;
+    }
+    if (step < currentStep) {
+      label.addStyleName("creationWizardStepDone");
+    }
   }
 
   /**
@@ -641,6 +703,16 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
     // 連続投稿制限のチェック
     int userCode = UserData.get().getUserCode();
     Service.Util.getInstance().canUploadProblem(userCode, null, callbackCanUploadProblemOnLoad);
+  }
+
+  @UiHandler("buttonPrevStep")
+  void onButtonPrevStep(ClickEvent e) {
+    goToStep(currentStep - 1);
+  }
+
+  @UiHandler("buttonNextStep")
+  void onButtonNextStep(ClickEvent e) {
+    goToStep(currentStep + 1);
   }
 
   private boolean checkProblemId() {

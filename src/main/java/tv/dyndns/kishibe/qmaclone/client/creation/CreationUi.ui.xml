@@ -22,33 +22,62 @@
 			定期的に正解率統計画面から自作問題の状況を確認し、指摘フラグが付いた場合はすぐに確認し修正してください。
 			<g:HorizontalPanel>
 				<g:Button ui:field="buttonNewProblem" text="入力内容をリセットする" />
-				<g:Button ui:field="buttonMoveToVerification"
-					text="送信確認画面に移動する" />
-				<g:Button ui:field="buttonSendProblem" text="問題を送信する"
-					visible="false" title="似たような問題が無い事を確認しましたか？" />
 			</g:HorizontalPanel>
-			<g:SimplePanel ui:field="panelSimilar" />
-			<g:SimplePanel ui:field="panelSample" />
-			問題を修正する場合は以下に問題番号を入力してボタンし、問題を取得してからにしてください
-			<g:HorizontalPanel>
-				<g:TextBox ui:field="textBoxGetProblem" width="200px" />
-				<g:Button ui:field="buttonGetProblem" text="問題を修正する"
-					title="投稿された問題を修正するときは、このボタンを押して問題を表示したあと、内容を変更して送信してください。" />
-				<g:Button ui:field="buttonCopyProblem" text="問題をコピーする"
-					title="投稿された問題に似た問題を作るときは、このボタンを押して問題を表示したあと、内容を変更して問題を送信してください。" />
-			</g:HorizontalPanel>
-			<g:SimplePanel ui:field="panelProblemForm" />
-			<g:VerticalPanel ui:field="panelWarning" />
-			<g:HTML ui:field="htmlTypeCaution" />
-			<g:SimplePanel ui:field="panelChangeHistory" />
-			<g:HTMLPanel ui:field="htmlPanelWrongAnswer"
-				visible="false">
-				<h1>誤答例</h1>
-				<g:SimplePanel ui:field="panelWrongAnswer" />
-			</g:HTMLPanel>
-			<g:HTMLPanel ui:field="htmlPanelBbs" visible="false">
-				<h1>問題掲示板</h1>
-				<g:SimplePanel ui:field="panelBbs" />
+			<g:HTMLPanel styleName="creationWizard">
+				<g:HorizontalPanel styleName="creationWizardSteps">
+					<g:Label ui:field="labelStep1" text="1. 基本情報" />
+					<g:Label ui:field="labelStep2" text="2. 問題文" />
+					<g:Label ui:field="labelStep3" text="3. 解答設定" />
+					<g:Label ui:field="labelStep4" text="4. 確認" />
+				</g:HorizontalPanel>
+				<g:HTMLPanel ui:field="panelStep1" styleName="creationWizardStepPanel">
+					<h2>基本情報</h2>
+					問題を修正する場合は以下に問題番号を入力してボタンし、問題を取得してからにしてください
+					<g:HorizontalPanel>
+						<g:TextBox ui:field="textBoxGetProblem" width="200px" />
+						<g:Button ui:field="buttonGetProblem" text="問題を修正する"
+							title="投稿された問題を修正するときは、このボタンを押して問題を表示したあと、内容を変更して送信してください。" />
+						<g:Button ui:field="buttonCopyProblem" text="問題をコピーする"
+							title="投稿された問題に似た問題を作るときは、このボタンを押して問題を表示したあと、内容を変更して問題を送信してください。" />
+					</g:HorizontalPanel>
+				</g:HTMLPanel>
+				<g:HTMLPanel ui:field="panelStep2" styleName="creationWizardStepPanel"
+					visible="false">
+					<h2>問題文</h2>
+					<g:SimplePanel ui:field="panelProblemForm" />
+				</g:HTMLPanel>
+				<g:HTMLPanel ui:field="panelStep3" styleName="creationWizardStepPanel"
+					visible="false">
+					<h2>解答設定</h2>
+					<g:VerticalPanel ui:field="panelWarning" />
+					<g:HTML ui:field="htmlTypeCaution" />
+					<g:SimplePanel ui:field="panelChangeHistory" />
+					<g:HTMLPanel ui:field="htmlPanelWrongAnswer"
+						visible="false">
+						<h1>誤答例</h1>
+						<g:SimplePanel ui:field="panelWrongAnswer" />
+					</g:HTMLPanel>
+					<g:HTMLPanel ui:field="htmlPanelBbs" visible="false">
+						<h1>問題掲示板</h1>
+						<g:SimplePanel ui:field="panelBbs" />
+					</g:HTMLPanel>
+				</g:HTMLPanel>
+				<g:HTMLPanel ui:field="panelStep4" styleName="creationWizardStepPanel"
+					visible="false">
+					<h2>確認</h2>
+					<g:SimplePanel ui:field="panelSimilar" />
+					<g:SimplePanel ui:field="panelSample" />
+					<g:HorizontalPanel>
+						<g:Button ui:field="buttonMoveToVerification"
+							text="送信確認画面に移動する" />
+						<g:Button ui:field="buttonSendProblem" text="問題を送信する"
+							visible="false" title="似たような問題が無い事を確認しましたか？" />
+					</g:HorizontalPanel>
+				</g:HTMLPanel>
+				<g:HorizontalPanel styleName="creationWizardFooter">
+					<g:Button ui:field="buttonPrevStep" text="戻る" />
+					<g:Button ui:field="buttonNextStep" text="次へ" />
+				</g:HorizontalPanel>
 			</g:HTMLPanel>
 		</g:HTMLPanel>
 		<g:HTMLPanel ui:field="htmlPanelDone" visible="false">
