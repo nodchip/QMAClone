@@ -30,6 +30,10 @@
 					<g:Label ui:field="labelStep3" text="3. 解答設定" />
 					<g:Label ui:field="labelStep4" text="4. 確認" />
 				</g:HorizontalPanel>
+				<g:HTMLPanel ui:field="panelWizardFormHost"
+					styleName="creationWizardStepPanel">
+					<g:SimplePanel ui:field="panelProblemForm" />
+				</g:HTMLPanel>
 				<g:HTMLPanel ui:field="panelStep1" styleName="creationWizardStepPanel">
 					<h2>基本情報</h2>
 					問題を修正する場合は以下に問題番号を入力してボタンし、問題を取得してからにしてください
@@ -44,7 +48,7 @@
 				<g:HTMLPanel ui:field="panelStep2" styleName="creationWizardStepPanel"
 					visible="false">
 					<h2>問題文</h2>
-					<g:SimplePanel ui:field="panelProblemForm" />
+					問題文を入力してください。
 				</g:HTMLPanel>
 				<g:HTMLPanel ui:field="panelStep3" styleName="creationWizardStepPanel"
 					visible="false">

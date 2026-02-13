@@ -139,6 +139,8 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
   @UiField
   HTMLPanel panelStep1;
   @UiField
+  HTMLPanel panelWizardFormHost;
+  @UiField
   HTMLPanel panelStep2;
   @UiField
   HTMLPanel panelStep3;
@@ -239,6 +241,7 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
   }
 
   private void updateStepVisibility() {
+    panelWizardFormHost.setVisible(currentStep < MAX_STEP);
     panelStep1.setVisible(currentStep == 1);
     panelStep2.setVisible(currentStep == 2);
     panelStep3.setVisible(currentStep == 3);
