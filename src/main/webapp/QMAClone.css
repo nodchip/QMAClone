@@ -1102,3 +1102,93 @@ tr.accuracyRate100 td {
 tr.newProblem td {
 	background: #FFFFFF;
 }
+/* lobby modernization overrides */
+:root {
+	--lobby-bg-0: #07152b;
+	--lobby-bg-1: #0e2745;
+	--lobby-surface: #112a4a;
+	--lobby-accent: #54d8ff;
+	--lobby-text: #eaf4ff;
+	--lobby-text-subtle: #b7c9df;
+	--lobby-border: #2f537a;
+	--lobby-shadow: 0 16px 34px rgba(0, 0, 0, 0.35);
+}
+
+html,
+body {
+	min-height: 100%;
+	background: radial-gradient(circle at 12% 0%, #24486f 0%, var(--lobby-bg-1) 42%, var(--lobby-bg-0) 100%);
+	color: var(--lobby-text);
+}
+
+.app-shell {
+	display: block;
+	min-height: 100vh;
+}
+
+.app-root-panel {
+	position: relative;
+	padding: 8px 352px 24px 16px;
+	box-sizing: border-box;
+}
+
+.app-root-panel h1 {
+	margin: 12px 0 14px 0;
+	font-size: 44px;
+	letter-spacing: 1px;
+	color: #f2f8ff;
+	text-shadow: 0 0 14px rgba(84, 216, 255, 0.2);
+}
+
+.app-tab-panel {
+	max-width: 1080px;
+	margin: 0 auto;
+}
+
+.app-chat-panel {
+	position: fixed;
+	top: 104px;
+	right: 16px;
+	width: 320px;
+	max-height: calc(100vh - 120px);
+	overflow: hidden;
+	border: 1px solid #355e88;
+	border-radius: 12px;
+	background: linear-gradient(180deg, #0c2441 0%, #081a31 100%);
+	box-shadow: var(--lobby-shadow);
+	z-index: 40;
+}
+
+.app-chat-panel .gwt-TabLayoutPanelTabs,
+.app-chat-panel .gwt-TabBar {
+	background: #0a1e37;
+}
+
+.app-error-panel {
+	max-width: 1080px;
+	margin: 8px auto 0 auto;
+}
+
+@media (max-width: 1380px) {
+	.app-root-panel {
+		padding-right: 330px;
+	}
+
+	.app-chat-panel {
+		width: 300px;
+	}
+}
+
+@media (max-width: 1160px) {
+	.app-root-panel {
+		padding-right: 16px;
+	}
+
+	.app-chat-panel {
+		position: static;
+		width: auto;
+		max-width: 1080px;
+		max-height: none;
+		margin: 10px auto 0 auto;
+	}
+}

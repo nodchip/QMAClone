@@ -2,7 +2,9 @@ param(
   [string]$ServiceName = "Tomcat9",
   [string]$TomcatBase = "",
   [string]$SourceWar = "",
-  [switch]$SkipBuild
+  [switch]$SkipBuild,
+  [int]$GwtLocalWorkers = 0,
+  [bool]$GwtDraftCompile = $true
 )
 
 Set-StrictMode -Version Latest
@@ -88,6 +90,35 @@ function Invoke-ExternalCommand {
   }
 }
 
+function Test-IsAdministrator {
+  $currentIdentity = [Security.Principal.WindowsIdentity]::GetCurrent()
+  $principal = New-Object Security.Principal.WindowsPrincipal($currentIdentity)
+  return $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+}
+
+function Restart-ServiceWithElevation {
+  param([string]$Name)
+
+  $escapedName = $Name.Replace("'", "''")
+  [string[]]$elevatedArguments = @(
+    "-NoProfile",
+    "-ExecutionPolicy",
+    "Bypass",
+    "-Command",
+    "Restart-Service -Name '$escapedName' -Force"
+  )
+
+  try {
+    $process = Start-Process -FilePath "powershell.exe" -ArgumentList $elevatedArguments -Verb RunAs -WindowStyle Minimized -Wait -PassThru
+  } catch {
+    throw "Failed to restart service with UAC elevation. Elevation may have been canceled."
+  }
+
+  if ($process.ExitCode -ne 0) {
+    throw "Failed to restart service with UAC elevation. Exit code: $($process.ExitCode)"
+  }
+}
+
 function Sync-GwtArtifacts {
   param(
     [string]$SourceDir,
@@ -109,13 +140,36 @@ function Sync-GwtArtifacts {
   }
 }
 
+function Resolve-GwtLocalWorkers {
+  param([int]$RequestedWorkers)
+
+  if ($RequestedWorkers -gt 0) {
+    return $RequestedWorkers
+  }
+
+  $cpuCount = [Environment]::ProcessorCount
+  if ($cpuCount -le 1) {
+    return 1
+  }
+
+  return $cpuCount - 1
+}
+
 $workspaceRoot = $PSScriptRoot
 Set-Location -LiteralPath $workspaceRoot
 
 if (-not $SkipBuild) {
   $maven = Resolve-MavenCommand
+  $resolvedGwtLocalWorkers = Resolve-GwtLocalWorkers -RequestedWorkers $GwtLocalWorkers
+  $draftCompileValue = $GwtDraftCompile.ToString().ToLowerInvariant()
+
   Invoke-ExternalCommand -FilePath $maven -Arguments @("compile")
-  Invoke-ExternalCommand -FilePath $maven -Arguments @("-Dgwt.skipCompilation=false", "gwt:compile")
+  Invoke-ExternalCommand -FilePath $maven -Arguments @(
+    "-Dgwt.skipCompilation=false",
+    "-Dgwt.localWorkers=$resolvedGwtLocalWorkers",
+    "-Dgwt.draftCompile=$draftCompileValue",
+    "gwt:compile"
+  )
 
   $gwtOutputDir = Join-Path -Path $workspaceRoot -ChildPath "target\QMAClone-1.0-SNAPSHOT\tv.dyndns.kishibe.qmaclone.QMAClone"
   $gwtWebappDir = Join-Path -Path $workspaceRoot -ChildPath "src\main\webapp\tv.dyndns.kishibe.qmaclone.QMAClone"
@@ -151,7 +205,12 @@ if (Test-Path -LiteralPath $deployedDirPath) {
 }
 
 Write-Host "Restart service: $ServiceName"
-Restart-Service -Name $ServiceName -Force
+if (Test-IsAdministrator) {
+  Restart-Service -Name $ServiceName -Force
+} else {
+  Write-Host "Run as non-admin user. Restart service with UAC elevation."
+  Restart-ServiceWithElevation -Name $ServiceName
+}
 
 $deadline = (Get-Date).AddSeconds(60)
 while ($true) {

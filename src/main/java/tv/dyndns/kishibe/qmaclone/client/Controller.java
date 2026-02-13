@@ -136,10 +136,16 @@ public class Controller extends SimplePanel {
 		Logger.getLogger("").addHandler(new DetailRemoteLogger());
 
 		// setAlwaysShowScrollBars(false);
+		addStyleName("app-shell");
 		setWidth("100%");
 		setHeight("99%");
 		add(rootPanel);
 		rootPanel.setWidth("100%");
+		rootPanel.addStyleName("app-root-panel");
+		tabPanel.addStyleName("app-tab-panel");
+		panelChat.addStyleName("app-chat-panel");
+		panelGame.addStyleName("app-game-panel");
+		panelErrorMessage.addStyleName("app-error-panel");
 
 		rootPanel.setHorizontalAlignment(VerticalPanel.ALIGN_RIGHT);
 		rootPanel.add(new HTML("<h1>QMAClone by nodchip</h1>"));

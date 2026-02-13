@@ -31,7 +31,6 @@ import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -41,7 +40,6 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusWidget;
-import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -99,22 +97,6 @@ public class LobbyUi extends Composite {
   @UiField
   ListBox listBoxTheme;
   @UiField
-  SpanElement spanTopPageCount;
-  @UiField
-  SpanElement spanProblems;
-  @UiField
-  SpanElement spanTotalSessions;
-  @UiField
-  SpanElement spanCurrentSessions;
-  @UiField
-  SpanElement spanTotalPlayers;
-  @UiField
-  SpanElement spanCurrentPlayers;
-  @UiField
-  SpanElement spanLoginPlayers;
-  @UiField
-  SpanElement spanActivePlayers;
-  @UiField
   SpanElement spanWaiting;
   @UiField
   SpanElement spanPlayCount;
@@ -126,14 +108,6 @@ public class LobbyUi extends Composite {
   SpanElement spanRating;
   @UiField
   SpanElement spanAverageRank;
-  @UiField
-  SpanElement spanClass;
-  @UiField
-  SpanElement spanUserCode;
-  @UiField
-  Button buttonShowUserCode;
-  @UiField
-  HTMLPanel panelInformation;
   @UiField
   SpanElement spanPlayerHistory;
   @VisibleForTesting
@@ -352,11 +326,6 @@ public class LobbyUi extends Composite {
     int averageScore = record.getAverageScore();
     int rating = record.getRating();
     double averageRank = record.getAverageRank();
-    int classLevel = record.getClassLevel();
-    int classNameIndex = classLevel / Constant.STEP_PER_CLASS_LEVEL;
-    if (classNameIndex >= Constant.MAX_CLASS_LEVEL) {
-      classNameIndex = Constant.MAX_CLASS_LEVEL;
-    }
 
     if (record.getPlayCount() == Integer.MAX_VALUE) {
       record.setPlayCount(0);
@@ -385,7 +354,6 @@ public class LobbyUi extends Composite {
     spanAverageScore.setInnerText(valueOf(averageScore));
     spanRating.setInnerText(valueOf(rating));
     spanAverageRank.setInnerText(averageRankString);
-    spanClass.setInnerText("(" + classLevel + ")" + Constant.getClassName(classNameIndex) + "組");
   }
 
   @UiHandler("buttonGameVsCom")
@@ -413,21 +381,15 @@ public class LobbyUi extends Composite {
     showEventRooms();
   }
 
-  @UiHandler("buttonShowUserCode")
-  void onButtonShowUserCode(ClickEvent e) {
-    spanUserCode.setInnerText(valueOf(UserData.get().getUserCode()));
-    buttonShowUserCode.setVisible(false);
-  }
-
   public void updateInfomationPanel() {
-    panelInformation.setVisible(UserData.get().isShowInfo());
+    // ロビー刷新後は情報パネルを表示しない。
   }
 
   private void setEnabled(boolean enabled) {
     FocusWidget[] widgets = { listBoxLevelNumber, listBoxLevelName, listBoxPrefecture,
         textBoxPlayerName, textBoxGreeting, listBoxDifficultSelect, listBoxNewProblem,
         buttonGameVsCom, buttonGameAllClass, buttonGameEvent, buttonGameTheme, textBoxEventName,
-        buttonShowEventRooms, checkBoxPublicEvent, listBoxTheme, buttonShowUserCode, };
+        buttonShowEventRooms, checkBoxPublicEvent, listBoxTheme, };
     for (FocusWidget widget : widgets) {
       widget.setEnabled(enabled);
     }
@@ -436,15 +398,8 @@ public class LobbyUi extends Composite {
   }
 
   public void setLastestPlayers(List<PacketPlayerSummary> playerSummaries) {
-    StringBuilder sb = new StringBuilder();
-    for (PacketPlayerSummary playerSummary : playerSummaries) {
-      if (sb.length() != 0) {
-        sb.append('\n');
-      }
-      sb.append(playerSummary.level).append(' ').append(playerSummary.name);
-    }
-    spanPlayerHistory.setInnerHTML(new SafeHtmlBuilder().appendEscapedLines(sb.toString())
-        .toSafeHtml().asString());
+    // ロビー刷新後はプレイヤー履歴を表示しない。
+    spanPlayerHistory.setInnerText("");
   }
 
   private boolean checkContents() {
@@ -468,14 +423,6 @@ public class LobbyUi extends Composite {
   }
 
   public void setServerStatus(PacketServerStatus serverStatus) {
-    spanTotalSessions.setInnerText(valueOf(serverStatus.numberOfTotalSessions));
-    spanCurrentSessions.setInnerText(valueOf(serverStatus.numberOfCurrentSessions));
-    spanTotalPlayers.setInnerText(valueOf(serverStatus.numberOfTotalPlayers));
-    spanCurrentPlayers.setInnerText(valueOf(serverStatus.numberOfCurrentPlayers));
-    spanLoginPlayers.setInnerText(valueOf(serverStatus.numberOfLoginPlayers));
-    spanTopPageCount.setInnerText(valueOf(serverStatus.numberOfPageView));
-    spanProblems.setInnerText(valueOf(serverStatus.numberOfProblems));
-    spanActivePlayers.setInnerText(valueOf(serverStatus.numberOfActivePlayers));
     spanWaiting.setInnerText(valueOf(serverStatus.numberOfPlayersInWhole));
 
     setPlayerRecord();
