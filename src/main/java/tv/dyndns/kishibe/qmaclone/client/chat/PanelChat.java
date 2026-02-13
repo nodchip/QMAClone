@@ -23,7 +23,6 @@ package tv.dyndns.kishibe.qmaclone.client.chat;
 
 import tv.dyndns.kishibe.qmaclone.client.SharedData;
 
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LazyPanel;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -31,9 +30,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class PanelChat extends VerticalPanel {
 	public PanelChat() {
-		setWidth("800px");
-
-		add(new Label("簡易チャット(設定画面から表示をON/OFFできます)"));
+		setWidth("100%");
 
 		if (SharedData.get().isAdministoratorMode()) {
 			final TabPanel panel = new TabPanel();

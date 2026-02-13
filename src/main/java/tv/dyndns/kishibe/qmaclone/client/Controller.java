@@ -46,30 +46,45 @@ import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DecoratedTabPanel;
 import com.google.gwt.user.client.ui.DecoratorPanel;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.LazyPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.storage.client.Storage;
 
 public class Controller extends SimplePanel {
 	private static final Logger logger = Logger.getLogger(Controller.class.getName());
 	private static final Controller INSTANCE = new Controller();
 	private static final String HISTORY_TOKEN_PREFIX_PROBLEM = "problem";
+	private static final String LOCAL_STORAGE_KEY_CHAT_COLLAPSED = "qmaclone.chat.collapsed";
 
 	public static Controller getInstance() {
 		return INSTANCE;
 	}
 
 	private final VerticalPanel rootPanel = new VerticalPanel();
+	private final HorizontalPanel panelMain = new HorizontalPanel();
 	private final VerticalPanel panelErrorMessage = new VerticalPanel();
 	private final DecoratedTabPanel tabPanel = new DecoratedTabPanel(); // 中のコンテンツのサイズによって自動的にリサイズされるのでTabPanelを使用する
 	private final SimplePanel panelGame = new SimplePanel();
 	private final DecoratorPanel panelChat = new DecoratorPanel();
+	private final VerticalPanel panelChatContainer = new VerticalPanel();
+	private final HorizontalPanel panelChatHeader = new HorizontalPanel();
+	private final Label labelChatHeader = new Label("簡易チャット");
+	private final Button buttonToggleChat = new Button();
+	private final SimplePanel panelChatBody = new SimplePanel();
+	private final Button buttonShowChatPanel = new Button("チャットを開く");
+	private final Storage localStorage = Storage.getLocalStorageIfSupported();
 	private final LoginReporter loginReporter = new LoginReporter();
 	private final QMACloneGinjector qmaCloneGinjector = GWT.create(QMACloneGinjector.class);
+	private boolean chatEnabled = false;
+	private boolean chatCollapsed = false;
 	private SceneBase scene = null;
 
 	private final LazyPanel creationUi = new LazyPanel() {
@@ -142,14 +157,39 @@ public class Controller extends SimplePanel {
 		add(rootPanel);
 		rootPanel.setWidth("100%");
 		rootPanel.addStyleName("app-root-panel");
+		panelMain.setWidth("100%");
+		panelMain.setSpacing(16);
+		panelMain.addStyleName("app-main-panel");
 		tabPanel.addStyleName("app-tab-panel");
 		panelChat.addStyleName("app-chat-panel");
+		panelChatContainer.addStyleName("app-chat-container");
+		panelChatHeader.addStyleName("app-chat-header");
+		labelChatHeader.addStyleName("app-chat-title");
+		buttonToggleChat.addStyleName("app-chat-toggle");
+		panelChatBody.addStyleName("app-chat-body");
 		panelGame.addStyleName("app-game-panel");
 		panelErrorMessage.addStyleName("app-error-panel");
+		buttonShowChatPanel.addStyleName("app-chat-reopen");
+		buttonShowChatPanel.setVisible(false);
+		buttonToggleChat.addClickHandler(event -> toggleChatCollapsed());
+		buttonShowChatPanel.addClickHandler(event -> {
+			chatCollapsed = false;
+			saveChatCollapsedPreference(chatCollapsed);
+			applyChatCollapsed(chatCollapsed);
+		});
+		panelChatHeader.setWidth("100%");
+		panelChatHeader.add(labelChatHeader);
+		panelChatHeader.add(buttonToggleChat);
+		panelChatHeader.setCellWidth(labelChatHeader, "100%");
+		panelChatContainer.setWidth("100%");
+		panelChatContainer.add(panelChatHeader);
+		panelChatContainer.add(panelChatBody);
+		panelChat.setWidget(panelChatContainer);
 
 		rootPanel.setHorizontalAlignment(VerticalPanel.ALIGN_RIGHT);
 		rootPanel.add(new HTML("<h1>QMAClone by nodchip</h1>"));
 		rootPanel.setHorizontalAlignment(VerticalPanel.ALIGN_CENTER);
+		rootPanel.add(buttonShowChatPanel);
 		// rootPanel.add(new PanelAdvertisement());
 		UserData.get().addLoadListener(loadListener);
 	}
@@ -202,10 +242,13 @@ public class Controller extends SimplePanel {
 
 			tabPanel.selectTab(0);
 
-			rootPanel.add(tabPanel);
+			panelMain.add(tabPanel);
+			panelMain.add(panelChat);
+			panelMain.setCellWidth(tabPanel, "100%");
+			panelMain.setCellWidth(panelChat, "320px");
+			rootPanel.add(panelMain);
 			rootPanel.add(panelErrorMessage);
-			// rootPanel.add(new PanelAdvertisement());
-			rootPanel.add(panelChat);
+			chatCollapsed = loadChatCollapsedPreference();
 
 			try {
 				setScene(new SceneLobby());
@@ -294,10 +337,56 @@ public class Controller extends SimplePanel {
 	}
 
 	public void setChatEnabled(boolean chatEnabled) {
+		this.chatEnabled = chatEnabled;
 		if (chatEnabled) {
-			panelChat.setWidget(new PanelChat());
+			panelChatBody.setWidget(new PanelChat());
 		} else {
-			panelChat.clear();
+			panelChatBody.clear();
+		}
+		applyChatCollapsed(chatCollapsed);
+	}
+
+	private boolean loadChatCollapsedPreference() {
+		if (localStorage == null) {
+			return false;
+		}
+		return "1".equals(localStorage.getItem(LOCAL_STORAGE_KEY_CHAT_COLLAPSED));
+	}
+
+	private void saveChatCollapsedPreference(boolean collapsed) {
+		if (localStorage == null) {
+			return;
+		}
+		localStorage.setItem(LOCAL_STORAGE_KEY_CHAT_COLLAPSED, collapsed ? "1" : "0");
+	}
+
+	private void toggleChatCollapsed() {
+		chatCollapsed = !chatCollapsed;
+		saveChatCollapsedPreference(chatCollapsed);
+		applyChatCollapsed(chatCollapsed);
+	}
+
+	private void applyChatCollapsed(boolean collapsed) {
+		if (!chatEnabled) {
+			panelChat.setVisible(false);
+			buttonShowChatPanel.setVisible(false);
+			rootPanel.removeStyleName("chat-collapsed");
+			buttonToggleChat.setText("+");
+			buttonToggleChat.setTitle("チャットを開く");
+			return;
+		}
+
+		panelChat.setVisible(!collapsed);
+		if (collapsed) {
+			rootPanel.addStyleName("chat-collapsed");
+			buttonShowChatPanel.setVisible(true);
+			buttonToggleChat.setText("+");
+			buttonToggleChat.setTitle("チャットを開く");
+		} else {
+			rootPanel.removeStyleName("chat-collapsed");
+			buttonShowChatPanel.setVisible(false);
+			buttonToggleChat.setText("-");
+			buttonToggleChat.setTitle("チャットを閉じる");
 		}
 	}
 
