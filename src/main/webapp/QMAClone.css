@@ -1288,3 +1288,59 @@ body {
 	color: #eaf7ff;
 	cursor: pointer;
 }
+/* 問題作成ウィザード */
+.creationWizard {
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px solid #7eb7ea;
+  border-radius: 10px;
+  background: #f7fbff;
+}
+
+.creationWizardSteps {
+  width: 100%;
+  margin-bottom: 12px;
+  border-spacing: 8px;
+}
+
+.creationWizardSteps .gwt-Label {
+  padding: 6px 10px;
+  border: 1px solid #9ec4e6;
+  border-radius: 999px;
+  background: #eaf4ff;
+  color: #2d4d70;
+  font-weight: bold;
+}
+
+.creationWizardStepCurrent {
+  background: #0f3f71 !important;
+  color: #ffffff !important;
+  border-color: #0f3f71 !important;
+}
+
+.creationWizardStepDone {
+  background: #cde6ff !important;
+  color: #153450 !important;
+  border-color: #7fb0df !important;
+}
+
+.creationWizardStepPanel {
+  margin: 10px 0;
+}
+
+.creationWizardFooter {
+  margin-top: 14px;
+  border-spacing: 8px;
+}
+
+@media (max-width: 1100px) {
+  .creationWizardSteps,
+  .creationWizardFooter {
+    display: block;
+  }
+
+  .creationWizardSteps .gwt-Label {
+    display: inline-block;
+    margin: 4px 6px 0 0;
+  }
+}
