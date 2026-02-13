@@ -74,6 +74,24 @@ import com.google.gwt.user.client.ui.Widget;
 public class WidgetProblemForm extends VerticalPanel implements ClickHandler, ChangeHandler {
   private static final Logger logger = Logger.getLogger(WidgetProblemForm.class.getName());
   private static final int MAX_PROBLEM_NOTE_LENGTH = 1024;
+  private static final int STEP_BASIC_INFORMATION = 1;
+  private static final int STEP_SENTENCE = 2;
+  private static final int STEP_ANSWER = 3;
+  private static final int ROW_GENRE = 0;
+  private static final int ROW_TYPE = 1;
+  private static final int ROW_RANDOM_FLAG = 2;
+  private static final int ROW_SENTENCE = 3;
+  private static final int ROW_CHOICES = 4;
+  private static final int ROW_ANSWERS = 5;
+  private static final int ROW_NUMBER_OF_DISPLAYED_CHOICES = 6;
+  private static final int ROW_EXTERNAL_CONTENT = 7;
+  private static final int ROW_CREATOR = 8;
+  private static final int ROW_ANSWER_COUNT = 9;
+  private static final int ROW_PLUS_ONE = 10;
+  private static final int ROW_GOOD = 11;
+  private static final int ROW_INDICATION = 12;
+  private static final int ROW_NOTE = 13;
+  private static final int ROW_PROBLEM_FEEDBACK = 14;
   private final Label labelProblemNumber = new Label("新規問題を作成中");
   private final ListBox listBoxGenre = new ListBox();
   @VisibleForTesting
@@ -106,6 +124,7 @@ public class WidgetProblemForm extends VerticalPanel implements ClickHandler, Ch
   private final Button buttonClearProblemFeedback = new Button("クリア", this);
   private Date indication;
   private Date indicationResolved;
+  private final Grid grid = new Grid(15, 2);
   private final Button buttonIndicate = new Button("問題の不備を指摘する");
   @VisibleForTesting
   final CheckBox checkBoxUnindicate = new CheckBox("指摘マークを消す (ページ下の掲示板の指摘内容を確認して下さい)");
@@ -117,7 +136,6 @@ public class WidgetProblemForm extends VerticalPanel implements ClickHandler, Ch
     // 問題番号
     add(labelProblemNumber);
 
-    Grid grid = new Grid(15, 2);
     grid.addStyleName("gridFrame");
     grid.addStyleName("gridFontNormal");
 
@@ -285,6 +303,54 @@ public class WidgetProblemForm extends VerticalPanel implements ClickHandler, Ch
     add(grid);
 
     updateForm();
+  }
+
+  /**
+   * ウィザードのステップに応じて問題フォーム内の表示項目を切り替える。
+   *
+   * @param step 現在のステップ
+   */
+  public void setWizardStep(int step) {
+    setAllRowsInvisible();
+
+    if (step == STEP_BASIC_INFORMATION) {
+      setRowVisible(ROW_GENRE, true);
+      setRowVisible(ROW_TYPE, true);
+      setRowVisible(ROW_RANDOM_FLAG, true);
+      setRowVisible(ROW_CREATOR, true);
+      return;
+    }
+
+    if (step == STEP_SENTENCE) {
+      setRowVisible(ROW_SENTENCE, true);
+      return;
+    }
+
+    if (step == STEP_ANSWER) {
+      setRowVisible(ROW_CHOICES, true);
+      setRowVisible(ROW_ANSWERS, true);
+      setRowVisible(ROW_NUMBER_OF_DISPLAYED_CHOICES, true);
+      setRowVisible(ROW_EXTERNAL_CONTENT, true);
+      setRowVisible(ROW_ANSWER_COUNT, true);
+      setRowVisible(ROW_PLUS_ONE, true);
+      setRowVisible(ROW_GOOD, true);
+      setRowVisible(ROW_INDICATION, true);
+      setRowVisible(ROW_NOTE, true);
+      setRowVisible(ROW_PROBLEM_FEEDBACK, true);
+      return;
+    }
+
+    // 確認ステップではフォーム項目を隠してサマリー表示に集中させる。
+  }
+
+  private void setAllRowsInvisible() {
+    for (int row = 0; row < grid.getRowCount(); ++row) {
+      setRowVisible(row, false);
+    }
+  }
+
+  private void setRowVisible(int row, boolean visible) {
+    grid.getRowFormatter().setVisible(row, visible);
   }
 
   /**

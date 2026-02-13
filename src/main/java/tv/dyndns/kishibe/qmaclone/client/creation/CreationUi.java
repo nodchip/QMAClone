@@ -158,6 +158,11 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
   private final RepeatingCommand commandCheckProblem = new RepeatingCommand() {
     @Override
     public boolean execute() {
+      if (currentStep < MAX_STEP) {
+        buttonMoveToVerification.setEnabled(false);
+        buttonSendProblem.setEnabled(false);
+        return isAttached();
+      }
       boolean enabled = validateProblem();
       buttonMoveToVerification.setEnabled(enabled && !sendingProblem);
       buttonSendProblem.setEnabled(enabled && !sendingProblem);
@@ -212,6 +217,7 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
 
     widgetProblemForm = new WidgetProblemForm(this);
     panelProblemForm.setWidget(widgetProblemForm);
+    widgetProblemForm.setWizardStep(currentStep);
     textBoxGetProblem.setText(null);
     // previousProblemNote = null;
   }
@@ -219,6 +225,9 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
   @VisibleForTesting
   void goToStep(int step) {
     currentStep = Math.max(MIN_STEP, Math.min(MAX_STEP, step));
+    if (widgetProblemForm != null) {
+      widgetProblemForm.setWizardStep(currentStep);
+    }
     updateStepVisibility();
     updateStepIndicator();
     buttonPrevStep.setEnabled(currentStep > MIN_STEP);
@@ -712,7 +721,38 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
 
   @UiHandler("buttonNextStep")
   void onButtonNextStep(ClickEvent e) {
+    if (!validateStep(currentStep)) {
+      return;
+    }
     goToStep(currentStep + 1);
+  }
+
+  /**
+   * ステップ遷移時の入力検証を行う。
+   *
+   * @param step 現在のステップ
+   * @return 検証成功ならtrue
+   */
+  @VisibleForTesting
+  boolean validateStep(int step) {
+    if (widgetProblemForm == null) {
+      return false;
+    }
+
+    if (step == 2) {
+      PacketProblem problem = widgetProblemForm.getProblem();
+      if (Strings.isNullOrEmpty(problem.sentence)) {
+        Window.alert("問題文を入力してください");
+        return false;
+      }
+      return true;
+    }
+
+    if (step == 3) {
+      return validateProblem();
+    }
+
+    return true;
   }
 
   private boolean checkProblemId() {
