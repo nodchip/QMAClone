@@ -74,6 +74,15 @@ public class CreationUiStep4SummaryTest extends QMACloneGWTTestCaseBase {
     assertTrue(ui.panelStep4CardAnswer.getStyleName().contains("creationSummaryError"));
   }
 
+  @Test
+  public void step5SummaryShouldUseFormPreviewStyles() {
+    ui.widgetProblemForm.setProblem(createProblem("問題文", "解答"));
+    ui.goToStep(5);
+
+    assertTrue(ui.htmlStep4SummaryBasic.getStyleName().contains("creationFormPreviewField"));
+    assertTrue(ui.htmlStep4DetailBasic.getStyleName().contains("creationFormPreviewDetail"));
+  }
+
   /**
    * テスト用の問題データを生成する。
    *

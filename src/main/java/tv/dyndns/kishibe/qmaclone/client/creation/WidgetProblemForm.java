@@ -143,12 +143,15 @@ public class WidgetProblemForm extends VerticalPanel implements ClickHandler, Ch
 
   public WidgetProblemForm(CreationUi creationUi) {
     this.creationUi = creationUi;
+    addStyleName("creationFormRoot");
 
     // 問題番号
+    labelProblemNumber.addStyleName("creationFormTitle");
     add(labelProblemNumber);
 
     grid.addStyleName("gridFrame");
     grid.addStyleName("gridFontNormal");
+    grid.addStyleName("creationFormGrid");
 
     int row = 0;
 
@@ -158,6 +161,7 @@ public class WidgetProblemForm extends VerticalPanel implements ClickHandler, Ch
       listBoxGenre.addItem(name, Integer.toString(genre.getIndex()));
     }
     listBoxGenre.setWidth("200px");
+    addCreationInputStyle(listBoxGenre);
     grid.setText(row, 0, "ジャンル");
     grid.setWidget(row, 1, createFieldWithError(FIELD_GENRE, listBoxGenre));
     errorRows.put(FIELD_GENRE, row);
@@ -173,6 +177,7 @@ public class WidgetProblemForm extends VerticalPanel implements ClickHandler, Ch
       listBoxType.addItem(item, type.name());
     }
     listBoxType.setWidth("200px");
+    addCreationInputStyle(listBoxType);
     listBoxType.addChangeHandler(this);
     grid.setText(row, 0, "出題形式");
     grid.setWidget(row, 1, createFieldWithError(FIELD_TYPE, listBoxType));
@@ -187,6 +192,7 @@ public class WidgetProblemForm extends VerticalPanel implements ClickHandler, Ch
     }
     listBoxRandomFlag.setSelectedIndex(4);
     listBoxRandomFlag.setWidth("100px");
+    addCreationInputStyle(listBoxRandomFlag);
     grid.setText(row, 0, "ランダムフラグ");
     grid.setWidget(row, 1, createFieldWithError(FIELD_RANDOM_FLAG, listBoxRandomFlag));
     errorRows.put(FIELD_RANDOM_FLAG, row);
@@ -196,6 +202,7 @@ public class WidgetProblemForm extends VerticalPanel implements ClickHandler, Ch
     // 問題文
     textAreaSentence.setCharacterWidth(60);
     textAreaSentence.setVisibleLines(5);
+    addCreationInputStyle(textAreaSentence);
     grid.setText(row, 0, "問題文");
     grid.setWidget(row, 1, createFieldWithError(FIELD_SENTENCE, textAreaSentence));
     errorRows.put(FIELD_SENTENCE, row);
@@ -206,9 +213,11 @@ public class WidgetProblemForm extends VerticalPanel implements ClickHandler, Ch
     VerticalPanel choicePanel = new VerticalPanel();
     choicePanel.setStyleName("gridNoFrame");
     choicePanel.addStyleName("gridFontNormal");
+    choicePanel.addStyleName("creationFormGroup");
     for (int i = 0; i < MAX_NUMBER_OF_CHOICES; ++i) {
       textBoxChoice[i] = new TextBox();
       textBoxChoice[i].setWidth("400px");
+      addCreationInputStyle(textBoxChoice[i]);
       choicePanel.add(textBoxChoice[i]);
     }
     choicePanel.add(checkBoxImageChoice);
@@ -219,13 +228,16 @@ public class WidgetProblemForm extends VerticalPanel implements ClickHandler, Ch
     VerticalPanel answerPanel = new VerticalPanel();
     answerPanel.setStyleName("gridNoFrame");
     answerPanel.addStyleName("gridFontNormal");
+    answerPanel.addStyleName("creationFormGroup");
     for (int i = 0; i < MAX_NUMBER_OF_ANSWERS; ++i) {
       HorizontalPanel panel = new HorizontalPanel();
       panel.setVerticalAlignment(ALIGN_MIDDLE);
+      panel.addStyleName("creationFormInlineRow");
       answerPanel.add(panel);
 
       textBoxAnswer[i] = new TextBox();
       textBoxAnswer[i].setWidth("400px");
+      addCreationInputStyle(textBoxAnswer[i]);
       panel.add(textBoxAnswer[i]);
 
       Button button = new Button("領域作成", this);
@@ -243,6 +255,7 @@ public class WidgetProblemForm extends VerticalPanel implements ClickHandler, Ch
     grid.setText(row, 0, "表示する選択肢の数");
     grid.setWidget(row++, 1, listBoxNumberOfDisplayedChoices);
     listBoxNumberOfDisplayedChoices.setWidth("50px");
+    addCreationInputStyle(listBoxNumberOfDisplayedChoices);
     listBoxNumberOfDisplayedChoices.addItem("3");
     listBoxNumberOfDisplayedChoices.addItem("4");
     listBoxNumberOfDisplayedChoices.setSelectedIndex(1);
@@ -253,6 +266,7 @@ public class WidgetProblemForm extends VerticalPanel implements ClickHandler, Ch
       VerticalPanel panel = new VerticalPanel();
       panel.setStyleName("gridNoFrame");
       panel.addStyleName("gridFontNormal");
+      panel.addStyleName("creationFormGroup");
       {
         radioButtonNone.setValue(true);
         radioButtonNone.addClickHandler(this);
@@ -260,6 +274,7 @@ public class WidgetProblemForm extends VerticalPanel implements ClickHandler, Ch
         radioButtonYouTube.addClickHandler(this);
 
         HorizontalPanel panel2 = new HorizontalPanel();
+        panel2.addStyleName("creationFormInlineRow");
         panel2.add(radioButtonNone);
         panel2.add(radioButtonImage);
         panel2.add(radioButtonYouTube);
@@ -267,7 +282,9 @@ public class WidgetProblemForm extends VerticalPanel implements ClickHandler, Ch
       }
       {
         textBoxExternalUrl.setWidth("400px");
+        addCreationInputStyle(textBoxExternalUrl);
 
+        panelExternalUrl.addStyleName("creationFormInlineRow");
         panelExternalUrl.add(new Label("URL"));
         panelExternalUrl.add(textBoxExternalUrl);
         panel.add(panelExternalUrl);
@@ -279,6 +296,7 @@ public class WidgetProblemForm extends VerticalPanel implements ClickHandler, Ch
     textBoxCreator.setWidth("200px");
     textBoxCreator.setMaxLength(MAX_PLAYER_NAME_LENGTH);
     textBoxCreator.setText(UserData.get().getPlayerName());
+    addCreationInputStyle(textBoxCreator);
     grid.setText(row, 0, "問題作成者");
     grid.setWidget(row, 1, createFieldWithError(FIELD_CREATOR, textBoxCreator));
     errorRows.put(FIELD_CREATOR, row);
@@ -288,6 +306,7 @@ public class WidgetProblemForm extends VerticalPanel implements ClickHandler, Ch
     // 回答数
     grid.setText(row, 0, "回答数");
     HorizontalPanel panelAnswerCount = new HorizontalPanel();
+    panelAnswerCount.addStyleName("creationFormInlineRow");
     panelAnswerCount.add(labelAnswerCounter);
     panelAnswerCount.add(checkBoxResetAnswerCount);
     panelAnswerCount.add(checkBoxRemovePlayerAnswers);
@@ -298,12 +317,14 @@ public class WidgetProblemForm extends VerticalPanel implements ClickHandler, Ch
     // 回答数
     grid.setText(row, 0, "+1");
     HorizontalPanel panelVoteCount = new HorizontalPanel();
+    panelVoteCount.addStyleName("creationFormInlineRow");
     panelVoteCount.add(new Label("廃止済み"));
     grid.setWidget(row++, 1, panelVoteCount);
 
     // 評価
     grid.setText(row, 0, "良問");
     HorizontalPanel panelGood = new HorizontalPanel();
+    panelGood.addStyleName("creationFormInlineRow");
     panelGood.add(labelGood);
     panelGood.add(checkBoxResetVote);
     checkBoxResetVote.setVisible(false);
@@ -312,6 +333,7 @@ public class WidgetProblemForm extends VerticalPanel implements ClickHandler, Ch
     // 指摘
     grid.setText(row, 0, "指摘");
     HorizontalPanel panelIndicate = new HorizontalPanel();
+    panelIndicate.addStyleName("creationFormInlineRow");
     buttonIndicate.setVisible(false);
     checkBoxUnindicate.setVisible(false);
     panelIndicate.add(buttonIndicate);
@@ -323,11 +345,18 @@ public class WidgetProblemForm extends VerticalPanel implements ClickHandler, Ch
     grid.setText(row, 0, "問題ノート");
     textAreaNote.setCharacterWidth(60);
     textAreaNote.setVisibleLines(5);
+    addCreationInputStyle(textAreaNote);
     grid.setWidget(row++, 1, textAreaNote);
 
     // 問題評価
     grid.setText(row, 0, "問題評価");
+    panelProblemFeedback.addStyleName("creationFormGroup");
     grid.setWidget(row++, 1, panelProblemFeedback);
+
+    for (int rowIndex = 0; rowIndex < grid.getRowCount(); ++rowIndex) {
+      grid.getCellFormatter().addStyleName(rowIndex, 0, "creationFormLabelCell");
+      grid.getCellFormatter().addStyleName(rowIndex, 1, "creationFormValueCell");
+    }
 
     add(grid);
 
@@ -337,6 +366,7 @@ public class WidgetProblemForm extends VerticalPanel implements ClickHandler, Ch
   private Widget createFieldWithError(String fieldId, Widget field) {
     VerticalPanel panel = new VerticalPanel();
     panel.setStyleName("gridNoFrame");
+    panel.addStyleName("creationFormField");
     panel.add(field);
 
     Label errorLabel = new Label();
@@ -345,6 +375,15 @@ public class WidgetProblemForm extends VerticalPanel implements ClickHandler, Ch
     panel.add(errorLabel);
     fieldErrorLabels.put(fieldId, errorLabel);
     return panel;
+  }
+
+  /**
+   * 入力系ウィジェットへ問題作成フォーム共通スタイルを付与する。
+   *
+   * @param widget 対象ウィジェット
+   */
+  private void addCreationInputStyle(Widget widget) {
+    widget.addStyleName("creationFormInput");
   }
 
   /**

@@ -185,4 +185,11 @@ public class WidgetProblemFormTest extends QMACloneGWTTestCaseBase {
 
     assertFalse(form.getElement().getInnerText().contains("問題文を入力してください"));
   }
+
+  @Test
+  public void testFormShouldHaveModernizedStyleHooks() {
+    assertTrue(form.getStyleName().contains("creationFormRoot"));
+    assertTrue(form.textBoxAnswer[0].getStyleName().contains("creationFormInput"));
+    assertTrue(form.listBoxType.getStyleName().contains("creationFormInput"));
+  }
 }

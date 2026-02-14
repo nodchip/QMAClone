@@ -1424,6 +1424,115 @@ body {
   font-weight: bold;
   margin: 8px 0;
 }
+
+/* 問題作成フォーム（Step2〜5） */
+.creationFormRoot {
+  width: 100%;
+  margin-top: 6px;
+}
+
+.creationFormTitle {
+  display: block;
+  margin-bottom: 8px;
+  color: #0f3f71;
+  font-weight: 700;
+}
+
+.creationFormGrid {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 8px;
+}
+
+.creationFormGrid td {
+  border-right: 0;
+  border-bottom: 0;
+}
+
+.creationFormLabelCell {
+  width: 190px;
+  padding: 8px 10px 0 0;
+  color: #103557;
+  font-weight: 700;
+  vertical-align: top;
+}
+
+.creationFormValueCell {
+  padding: 0;
+}
+
+.creationFormField {
+  width: 100%;
+}
+
+.creationFormGroup {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #c2dbf2;
+  border-radius: 8px;
+  background: #f7fbff;
+}
+
+.creationFormInlineRow {
+  gap: 8px;
+  margin-bottom: 4px;
+  align-items: center;
+}
+
+.creationFormInput {
+  border: 1px solid #96b8d8;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #142a40;
+  padding: 4px 8px;
+  min-height: 30px;
+  line-height: 1.35;
+  transition: border-color 140ms ease, box-shadow 140ms ease, background-color 140ms ease;
+}
+
+.creationFormInput:hover {
+  border-color: #5d93c1;
+  background: #fafdff;
+}
+
+.creationFormInput:focus,
+.creationFormInput:focus-visible {
+  outline: none;
+  border-color: #2978b8;
+  box-shadow: 0 0 0 3px rgba(41, 120, 184, 0.18);
+  background: #ffffff;
+}
+
+.creationFormInput:disabled {
+  background: #edf3f9;
+  color: #6d8297;
+  border-color: #c0cddd;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.creationFormRoot .gwt-TextArea.creationFormInput {
+  min-height: 96px;
+  resize: vertical;
+  font-family: 'Noto Sans Japanese', sans-serif;
+}
+
+.creationFormPreviewField {
+  margin-top: 8px;
+  padding: 8px 10px;
+  border: 1px solid #c2dbf2;
+  border-radius: 8px;
+  background: #f7fbff;
+}
+
+.creationFormPreviewDetail {
+  margin-top: 8px;
+  padding: 8px 10px;
+  border: 1px dashed #9fc2e4;
+  border-radius: 8px;
+  background: #fafdff;
+}
+
 .creationSummaryCards {
   margin: 8px 0;
 }
