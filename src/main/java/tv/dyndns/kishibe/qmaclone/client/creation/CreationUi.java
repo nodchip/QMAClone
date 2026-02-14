@@ -244,6 +244,7 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
   private boolean step4BasicDetailOpened = false;
   private boolean step4QuestionDetailOpened = false;
   private boolean step4AnswerDetailOpened = false;
+  private boolean step5VerificationReady = false;
   private boolean wizardNavigationEnabled = true;
   private final RepeatingCommand commandCheckProblem = new RepeatingCommand() {
     @Override
@@ -316,6 +317,7 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
     panelSimilar.clear();
     panelWrongAnswer.clear();
     panelSample.clear();
+    step5VerificationReady = false;
     panelWarning.clear();
     panelChangeHistory.clear();
 
@@ -344,7 +346,11 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
     validateCurrentStepLive();
     if (currentStep == STEP_CONFIRMATION) {
       updateStep4Summary();
-      updateStep5RelatedPanels();
+      if (step5VerificationReady) {
+        updateStep5RelatedPanels();
+      } else {
+        clearStep5RelatedPanels();
+      }
     }
     updateWizardNavigationButtons();
   }
@@ -396,7 +402,9 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
   void applyCreationMode(CreationMode mode) {
     creationMode = Preconditions.checkNotNull(mode);
     loadedProblemInCurrentMode = mode == CreationMode.NEW;
+    step5VerificationReady = false;
     labelCurrentCreationMode.setText(mode.label);
+    clearStep5RelatedPanels();
 
     panelCreationModeNew.removeStyleName("creationModeCardSelected");
     panelCreationModeEdit.removeStyleName("creationModeCardSelected");
@@ -515,6 +523,14 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
     setProblemSample(problem);
     panelSimilar.setWidget(createEmptyProblemReportUi());
     getSimilarProblems(problem);
+  }
+
+  /**
+   * Step5 の類似問題・問題表示サンプルをクリアする。
+   */
+  private void clearStep5RelatedPanels() {
+    panelSimilar.clear();
+    panelSample.clear();
   }
 
   /**
@@ -833,6 +849,7 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
     buttonSendProblem.removeStyleName("creationButtonSecondary");
     buttonSendProblem.addStyleName("creationButtonPrimary");
 
+    step5VerificationReady = true;
     updateStep5RelatedPanels();
   }
 

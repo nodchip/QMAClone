@@ -3,7 +3,10 @@ package tv.dyndns.kishibe.qmaclone.client.creation;
 import org.junit.Test;
 
 import tv.dyndns.kishibe.qmaclone.client.QMACloneGWTTestCaseBase;
+import tv.dyndns.kishibe.qmaclone.client.game.ProblemGenre;
 import tv.dyndns.kishibe.qmaclone.client.game.ProblemType;
+import tv.dyndns.kishibe.qmaclone.client.game.RandomFlag;
+import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblem;
 
 import com.google.gwt.user.client.ui.HTML;
 
@@ -125,6 +128,26 @@ public class CreationUiTest extends QMACloneGWTTestCaseBase {
 		assertTrue(ui.buttonNewProblem.getParent().getStyleName().contains("creationWizardUtilityBar"));
 	}
 
+	@Test
+	public void testStep5ShouldHideSimilarAndSampleBeforeVerification() {
+		ui.widgetProblemForm.setProblem(createValidProblem());
+		ui.goToStep(5);
+
+		assertNull(ui.panelSimilar.getWidget());
+		assertNull(ui.panelSample.getWidget());
+	}
+
+	@Test
+	public void testStep5ShouldShowSimilarAndSampleAfterVerification() {
+		ui.widgetProblemForm.setProblem(createValidProblem());
+		ui.goToStep(5);
+
+		ui.onButtonMoveToVerification(null);
+
+		assertNotNull(ui.panelSimilar.getWidget());
+		assertNotNull(ui.panelSample.getWidget());
+	}
+
 	private boolean doesPanelWarningHaveUpdateNoteMessage() {
 		for (int i = 0; i < ui.panelWarning.getWidgetCount(); ++i) {
 			HTML html = (HTML) ui.panelWarning.getWidget(i);
@@ -133,6 +156,26 @@ public class CreationUiTest extends QMACloneGWTTestCaseBase {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * テストで利用する最小限の有効な問題データを生成する。
+	 *
+	 * @return 有効な問題データ
+	 */
+	private PacketProblem createValidProblem() {
+		PacketProblem problem = new PacketProblem();
+		problem.id = PacketProblem.CREATING_PROBLEM_ID;
+		problem.genre = ProblemGenre.Anige;
+		problem.type = ProblemType.Marubatsu;
+		problem.randomFlag = RandomFlag.Random1;
+		problem.sentence = "確認用の問題文です";
+		problem.answers = new String[] { "○", null, null, null };
+		problem.choices = new String[] { "○", "×", null, null };
+		problem.creator = "tester";
+		problem.note = "note";
+		problem.numberOfDisplayedChoices = 3;
+		return problem;
 	}
 
 	@Test
