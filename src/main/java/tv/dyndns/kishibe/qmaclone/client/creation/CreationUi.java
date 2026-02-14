@@ -45,12 +45,13 @@ import tv.dyndns.kishibe.qmaclone.client.util.StringUtils;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.storage.client.Storage;
@@ -112,6 +113,24 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
   @UiField
   SimplePanel panelSample;
   @UiField
+  HTMLPanel panelCreationModeCards;
+  @UiField
+  HTMLPanel panelCreationModeNew;
+  @UiField
+  HTMLPanel panelCreationModeEdit;
+  @UiField
+  HTMLPanel panelCreationModeClone;
+  @UiField
+  Label labelCurrentCreationMode;
+  @UiField
+  HTMLPanel panelProblemLoader;
+  @UiField
+  Button buttonSelectNewMode;
+  @UiField
+  Button buttonSelectEditMode;
+  @UiField
+  Button buttonSelectCloneMode;
+  @UiField
   TextBox textBoxGetProblem;
   @UiField
   Button buttonGetProblem;
@@ -170,6 +189,8 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
   @UiField
   Label labelStep4;
   @UiField
+  Label labelStep5;
+  @UiField
   HTMLPanel panelStep1;
   @UiField
   HTMLPanel panelWizardFormHost;
@@ -180,6 +201,8 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
   @UiField
   HTMLPanel panelStep4;
   @UiField
+  HTMLPanel panelStep5;
+  @UiField
   Button buttonPrevStep;
   @UiField
   Button buttonNextStep;
@@ -188,8 +211,13 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
   WidgetProblemForm widgetProblemForm;
   @VisibleForTesting
   int currentStep = 1;
-  private static final int MIN_STEP = 1;
-  private static final int MAX_STEP = 4;
+  private static final int STEP_MODE_SELECTION = 1;
+  private static final int STEP_BASIC_INFORMATION = 2;
+  private static final int STEP_SENTENCE = 3;
+  private static final int STEP_ANSWER_SETTING = 4;
+  private static final int STEP_CONFIRMATION = 5;
+  private static final int MIN_STEP = STEP_MODE_SELECTION;
+  private static final int MAX_STEP = STEP_CONFIRMATION;
   private static final String CREATION_WIZARD_DRAFT_KEY = "qmaclone.creationWizardDraft";
   private static final String ERROR_SELECT_GENRE = "ジャンルを選択してください";
   private static final String ERROR_SELECT_TYPE = "出題形式を選択してください";
@@ -197,11 +225,22 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
   private static final String ERROR_INPUT_NON_BLANK_SENTENCE = "問題文は空白のみでは登録できません";
   private static final String ERROR_INPUT_ANSWER1 = "解答1を入力してください";
   private static final String ERROR_CONFIRM_ANSWER_SETTING = "解答設定の入力内容を確認してください";
+  private static final String ERROR_SELECT_RANDOM_FLAG = "ランダムフラグを1～4の中から選択してください";
+  private static final String FIELD_MODE_SELECTION = "modeSelection";
+  private static final String ERROR_LOAD_PROBLEM_BEFORE_NEXT = "問題番号を読み込んでから次へ進んでください";
   private static final int STEP4_SENTENCE_SUMMARY_MAX_LENGTH = 40;
   private static final String STEP4_DETAIL_OPEN_TEXT = "詳細を開く";
   private static final String STEP4_DETAIL_CLOSE_TEXT = "詳細を閉じる";
   private boolean sendingProblem = false;
   private String lastSavedSnapshot = "";
+  @VisibleForTesting
+  CreationMode creationMode = CreationMode.NEW;
+  @VisibleForTesting
+  boolean loadedProblemInCurrentMode = true;
+  @VisibleForTesting
+  int loadingProblemId = -1;
+  @VisibleForTesting
+  boolean retriedProblemLoad = false;
   private boolean step4BasicDetailOpened = false;
   private boolean step4QuestionDetailOpened = false;
   private boolean step4AnswerDetailOpened = false;
@@ -233,6 +272,19 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
   };
 
   private final WrongAnswerPresenter wrongAnswerPresenter;
+
+  /**
+   * 問題作成モード。
+   */
+  enum CreationMode {
+    NEW("新規作成"), EDIT("既存を修正"), CLONE("コピーして新規作成");
+
+    private final String label;
+
+    CreationMode(String label) {
+      this.label = label;
+    }
+  }
 
   public CreationUi(WrongAnswerPresenter wrongAnswerPresenter) {
     this.wrongAnswerPresenter = Preconditions.checkNotNull(wrongAnswerPresenter);
@@ -274,7 +326,8 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
     resetStep4DetailState();
     lastSavedSnapshot = createProblemSnapshot();
     textBoxGetProblem.setText(null);
-    goToStep(1);
+    applyCreationMode(CreationMode.NEW);
+    goToStep(STEP_MODE_SELECTION);
     // previousProblemNote = null;
   }
 
@@ -287,7 +340,7 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
     updateStepVisibility();
     updateStepIndicator();
     validateCurrentStepLive();
-    if (currentStep == 4) {
+    if (currentStep == STEP_CONFIRMATION) {
       updateStep4Summary();
     }
     buttonPrevStep.setEnabled(currentStep > MIN_STEP);
@@ -295,11 +348,12 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
   }
 
   private void updateStepVisibility() {
-    panelWizardFormHost.setVisible(currentStep < MAX_STEP);
-    panelStep1.setVisible(currentStep == 1);
-    panelStep2.setVisible(currentStep == 2);
-    panelStep3.setVisible(currentStep == 3);
-    panelStep4.setVisible(currentStep == 4);
+    panelWizardFormHost.setVisible(currentStep >= STEP_BASIC_INFORMATION && currentStep <= STEP_ANSWER_SETTING);
+    panelStep1.setVisible(currentStep == STEP_MODE_SELECTION);
+    panelStep2.setVisible(currentStep == STEP_BASIC_INFORMATION);
+    panelStep3.setVisible(currentStep == STEP_SENTENCE);
+    panelStep4.setVisible(currentStep == STEP_ANSWER_SETTING);
+    panelStep5.setVisible(currentStep == STEP_CONFIRMATION);
   }
 
   @VisibleForTesting
@@ -308,6 +362,7 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
     updateStepLabelStyle(labelStep2, 2);
     updateStepLabelStyle(labelStep3, 3);
     updateStepLabelStyle(labelStep4, 4);
+    updateStepLabelStyle(labelStep5, 5);
   }
 
   private void updateStepLabelStyle(Label label, int step) {
@@ -320,6 +375,49 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
     if (step < currentStep) {
       label.addStyleName("creationWizardStepDone");
     }
+  }
+
+  /**
+   * 問題作成モードを画面に反映する。
+   *
+   * @param mode 問題作成モード
+   */
+  @VisibleForTesting
+  void applyCreationMode(CreationMode mode) {
+    creationMode = Preconditions.checkNotNull(mode);
+    loadedProblemInCurrentMode = mode == CreationMode.NEW;
+    labelCurrentCreationMode.setText(mode.label);
+
+    panelCreationModeNew.removeStyleName("creationModeCardSelected");
+    panelCreationModeEdit.removeStyleName("creationModeCardSelected");
+    panelCreationModeClone.removeStyleName("creationModeCardSelected");
+
+    panelProblemLoader.setVisible(mode != CreationMode.NEW);
+    buttonGetProblem.setVisible(mode == CreationMode.EDIT);
+    buttonCopyProblem.setVisible(mode == CreationMode.CLONE);
+
+    buttonMoveToVerification.setVisible(true);
+    buttonSendProblem.setVisible(false);
+    buttonMoveToVerification.removeStyleName("creationButtonSecondary");
+    buttonMoveToVerification.addStyleName("creationButtonPrimary");
+    buttonSendProblem.removeStyleName("creationButtonPrimary");
+    buttonSendProblem.addStyleName("creationButtonSecondary");
+
+    if (mode == CreationMode.NEW) {
+      textBoxGetProblem.setText("");
+      panelCreationModeNew.addStyleName("creationModeCardSelected");
+      buttonMoveToVerification.setText("送信確認画面に移動する");
+      return;
+    }
+
+    if (mode == CreationMode.EDIT) {
+      panelCreationModeEdit.addStyleName("creationModeCardSelected");
+      buttonMoveToVerification.setText("修正内容を確認する");
+      return;
+    }
+
+    panelCreationModeClone.addStyleName("creationModeCardSelected");
+    buttonMoveToVerification.setText("コピー内容を確認する");
   }
 
   /**
@@ -424,7 +522,7 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
       labelProblemId.setText(Integer.toString(result));
 
       if (UserData.get().isRegisterCreatedProblem()) {
-        Service.Util.getInstance().addProblemIdsToReport(userCode, ImmutableList.of(result),
+        Service.Util.getInstance().addProblemIdsToReport(userCode, createRpcIntegerList(result),
             callbackAddProblemIdsToReport);
       }
 
@@ -460,7 +558,8 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
 
   private void setEnable(boolean enabled) {
     FocusWidget[] widgets = { buttonNewProblem, buttonMoveToVerification, buttonSendProblem, textBoxGetProblem,
-        buttonGetProblem, buttonCopyProblem, buttonNextProblem };
+        buttonGetProblem, buttonCopyProblem, buttonNextProblem, buttonSelectNewMode, buttonSelectEditMode,
+        buttonSelectCloneMode, buttonPrevStep, buttonNextStep };
     for (FocusWidget widget : widgets) {
       widget.setEnabled(enabled);
     }
@@ -480,8 +579,10 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
     }
 
     setEnable(false);
+    loadingProblemId = problemId;
+    retriedProblemLoad = false;
 
-    Service.Util.getInstance().getProblemList(ImmutableList.of(problemId), callbackGetProblemList);
+    Service.Util.getInstance().getProblemList(createRpcIntegerList(problemId), callbackGetProblemList);
 
     if (copy) {
       panelChangeHistory.clear();
@@ -503,12 +604,18 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
       String message = "無効な問題番号が指定されました";
       if (result == null || result.isEmpty()) {
         logger.log(Level.WARNING, message);
+        loadedProblemInCurrentMode = false;
+        setEnable(true);
+        Window.alert("問題が見つかりませんでした。問題番号を確認してください。");
         return;
       }
 
       PacketProblem problem = result.get(0);
       if (problem == null) {
         logger.log(Level.WARNING, message);
+        loadedProblemInCurrentMode = false;
+        setEnable(true);
+        Window.alert("問題が見つかりませんでした。問題番号を確認してください。");
         return;
       }
 
@@ -516,6 +623,8 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
         problem = problem.cloneForCopyingProblem();
       }
       widgetProblemForm.setProblem(problem);
+      loadedProblemInCurrentMode = true;
+      retriedProblemLoad = false;
 
       if (copyProblem) {
         panelSimilar.clear();
@@ -536,10 +645,42 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
     }
 
     public void onFailure(Throwable caught) {
-      logger.log(Level.WARNING, "問題の取得中にエラーが発生しました", caught);
+      String failureDetail = summarizeProblemLoadFailure(caught);
+      logger.log(Level.WARNING, "問題の取得中にエラーが発生しました: " + failureDetail, caught);
+      if (!retriedProblemLoad && loadingProblemId >= 0) {
+        retriedProblemLoad = true;
+        Service.Util.getInstance().getProblemList(createRpcIntegerList(loadingProblemId), callbackGetProblemList);
+        return;
+      }
+      loadedProblemInCurrentMode = false;
+      String occurredAt = DateTimeFormat.getFormat("yyyy-MM-dd HH:mm:ss").format(new java.util.Date());
+      Window.alert("問題の読み込みに失敗しました。問題番号と通信状態を確認してください。\n発生時刻: " + occurredAt
+          + "\n詳細: " + failureDetail);
       setEnable(true);
     }
   };
+
+  /**
+   * 問題読み込み失敗時に、調査へ必要な最小限の情報を文字列化して返す。
+   */
+  private static String summarizeProblemLoadFailure(Throwable caught) {
+    if (caught == null) {
+      return "unknown";
+    }
+    String message = caught.getMessage();
+    if (Strings.isNullOrEmpty(message)) {
+      return caught.getClass().getName();
+    }
+    return caught.getClass().getName() + ": " + message;
+  }
+
+  /**
+   * GWT RPC の引数に ImmutableList を渡さないためのヘルパー。
+   */
+  @VisibleForTesting
+  static List<Integer> createRpcIntegerList(int value) {
+    return Lists.newArrayList(value);
+  }
   private final AsyncCallback<List<PacketProblemCreationLog>> callbackGetProblemCreationLog = new AsyncCallback<List<PacketProblemCreationLog>>() {
     @Override
     public void onSuccess(List<PacketProblemCreationLog> result) {
@@ -631,14 +772,33 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
     reset();
   }
 
+  @UiHandler("buttonSelectNewMode")
+  void onButtonSelectNewMode(ClickEvent e) {
+    applyCreationMode(CreationMode.NEW);
+  }
+
+  @UiHandler("buttonSelectEditMode")
+  void onButtonSelectEditMode(ClickEvent e) {
+    applyCreationMode(CreationMode.EDIT);
+  }
+
+  @UiHandler("buttonSelectCloneMode")
+  void onButtonSelectCloneMode(ClickEvent e) {
+    applyCreationMode(CreationMode.CLONE);
+  }
+
   @UiHandler("buttonMoveToVerification")
   void onButtonMoveToVerification(ClickEvent e) {
     if (!validateProblem()) {
       return;
     }
 
-    buttonMoveToVerification.setText("問題を修正して再度送信確認画面に移動する");
+    buttonMoveToVerification.setText("入力内容を再確認する");
     buttonSendProblem.setVisible(true);
+    buttonMoveToVerification.removeStyleName("creationButtonPrimary");
+    buttonMoveToVerification.addStyleName("creationButtonSecondary");
+    buttonSendProblem.removeStyleName("creationButtonSecondary");
+    buttonSendProblem.addStyleName("creationButtonPrimary");
 
     PacketProblem problem = widgetProblemForm.getProblem();
     setProblemSample(problem);
@@ -759,11 +919,13 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
 
   @UiHandler("buttonGetProblem")
   void onButtonGetProblem(ClickEvent e) {
+    applyCreationMode(CreationMode.EDIT);
     getProblemFromServer(false);
   }
 
   @UiHandler("buttonCopyProblem")
   void onButtonCopyProblem(ClickEvent e) {
+    applyCreationMode(CreationMode.CLONE);
     getProblemFromServer(true);
   }
 
@@ -797,7 +959,7 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
 
   @UiHandler("buttonBackToStep1FromSummary")
   void onButtonBackToStep1FromSummary(ClickEvent e) {
-    goToStep(1);
+    goToStep(STEP_BASIC_INFORMATION);
   }
 
   @UiHandler("buttonToggleStep1Detail")
@@ -808,7 +970,7 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
 
   @UiHandler("buttonBackToStep2FromSummary")
   void onButtonBackToStep2FromSummary(ClickEvent e) {
-    goToStep(2);
+    goToStep(STEP_SENTENCE);
   }
 
   @UiHandler("buttonToggleStep2Detail")
@@ -819,7 +981,7 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
 
   @UiHandler("buttonBackToStep3FromSummary")
   void onButtonBackToStep3FromSummary(ClickEvent e) {
-    goToStep(3);
+    goToStep(STEP_ANSWER_SETTING);
   }
 
   @UiHandler("buttonToggleStep3Detail")
@@ -852,7 +1014,14 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
       return result;
     }
 
-    if (step == 1) {
+    if (step == STEP_MODE_SELECTION) {
+      if (includeDeepValidation && creationMode != CreationMode.NEW && !loadedProblemInCurrentMode) {
+        result.addError(FIELD_MODE_SELECTION, ERROR_LOAD_PROBLEM_BEFORE_NEXT);
+      }
+      return result;
+    }
+
+    if (step == STEP_BASIC_INFORMATION) {
       PacketProblem problem = widgetProblemForm.getProblem();
       if (problem.genre == ProblemGenre.Random) {
         result.addError(WidgetProblemForm.FIELD_GENRE, ERROR_SELECT_GENRE);
@@ -860,10 +1029,16 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
       if (problem.type == ProblemType.Random) {
         result.addError(WidgetProblemForm.FIELD_TYPE, ERROR_SELECT_TYPE);
       }
+      if (problem.randomFlag == tv.dyndns.kishibe.qmaclone.client.game.RandomFlag.Random5) {
+        result.addError(WidgetProblemForm.FIELD_RANDOM_FLAG, ERROR_SELECT_RANDOM_FLAG);
+      }
+      if (Strings.isNullOrEmpty(problem.creator) || Strings.isNullOrEmpty(problem.creator.trim())) {
+        result.addError(WidgetProblemForm.FIELD_CREATOR, "問題作成者を入力してください");
+      }
       return result;
     }
 
-    if (step == 2) {
+    if (step == STEP_SENTENCE) {
       PacketProblem problem = widgetProblemForm.getProblem();
       if (Strings.isNullOrEmpty(problem.sentence)) {
         result.addError(WidgetProblemForm.FIELD_SENTENCE, ERROR_INPUT_SENTENCE);
@@ -875,7 +1050,7 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
       return result;
     }
 
-    if (step == 3) {
+    if (step == STEP_ANSWER_SETTING) {
       PacketProblem problem = widgetProblemForm.getProblem();
       if (Strings.isNullOrEmpty(problem.answers[0])) {
         result.addError(WidgetProblemForm.FIELD_ANSWER1, ERROR_INPUT_ANSWER1);
@@ -969,9 +1144,9 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
     }
 
     PacketProblem problem = widgetProblemForm.getProblem();
-    StepValidationResult basicValidation = validateStep(1, false);
-    StepValidationResult questionValidation = validateStep(2, false);
-    StepValidationResult answerValidation = validateStep(3, false);
+    StepValidationResult basicValidation = validateStep(STEP_BASIC_INFORMATION, false);
+    StepValidationResult questionValidation = validateStep(STEP_SENTENCE, false);
+    StepValidationResult answerValidation = validateStep(STEP_ANSWER_SETTING, false);
 
     htmlStep4SummaryBasic.setHTML(buildBasicSummaryHtml(problem, basicValidation).toSafeHtml());
     htmlStep4SummaryQuestion.setHTML(buildQuestionSummaryHtml(problem, questionValidation).toSafeHtml());

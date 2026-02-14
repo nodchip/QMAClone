@@ -50,7 +50,7 @@ import tv.dyndns.kishibe.qmaclone.client.util.StringUtils;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Lists;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -76,9 +76,9 @@ import com.google.gwt.user.client.ui.Widget;
 public class WidgetProblemForm extends VerticalPanel implements ClickHandler, ChangeHandler {
   private static final Logger logger = Logger.getLogger(WidgetProblemForm.class.getName());
   private static final int MAX_PROBLEM_NOTE_LENGTH = 1024;
-  private static final int STEP_BASIC_INFORMATION = 1;
-  private static final int STEP_SENTENCE = 2;
-  private static final int STEP_ANSWER = 3;
+  private static final int STEP_BASIC_INFORMATION = 2;
+  private static final int STEP_SENTENCE = 3;
+  private static final int STEP_ANSWER = 4;
   private static final int ROW_GENRE = 0;
   private static final int ROW_TYPE = 1;
   private static final int ROW_RANDOM_FLAG = 2;
@@ -96,8 +96,10 @@ public class WidgetProblemForm extends VerticalPanel implements ClickHandler, Ch
   private static final int ROW_PROBLEM_FEEDBACK = 14;
   public static final String FIELD_GENRE = "genre";
   public static final String FIELD_TYPE = "type";
+  public static final String FIELD_RANDOM_FLAG = "randomFlag";
   public static final String FIELD_SENTENCE = "sentence";
   public static final String FIELD_ANSWER1 = "answer1";
+  public static final String FIELD_CREATOR = "creator";
   private final Label labelProblemNumber = new Label("新規問題を作成中");
   private final ListBox listBoxGenre = new ListBox();
   @VisibleForTesting
@@ -186,7 +188,10 @@ public class WidgetProblemForm extends VerticalPanel implements ClickHandler, Ch
     listBoxRandomFlag.setSelectedIndex(4);
     listBoxRandomFlag.setWidth("100px");
     grid.setText(row, 0, "ランダムフラグ");
-    grid.setWidget(row++, 1, listBoxRandomFlag);
+    grid.setWidget(row, 1, createFieldWithError(FIELD_RANDOM_FLAG, listBoxRandomFlag));
+    errorRows.put(FIELD_RANDOM_FLAG, row);
+    focusFields.put(FIELD_RANDOM_FLAG, listBoxRandomFlag);
+    row++;
 
     // 問題文
     textAreaSentence.setCharacterWidth(60);
@@ -275,7 +280,10 @@ public class WidgetProblemForm extends VerticalPanel implements ClickHandler, Ch
     textBoxCreator.setMaxLength(MAX_PLAYER_NAME_LENGTH);
     textBoxCreator.setText(UserData.get().getPlayerName());
     grid.setText(row, 0, "問題作成者");
-    grid.setWidget(row++, 1, textBoxCreator);
+    grid.setWidget(row, 1, createFieldWithError(FIELD_CREATOR, textBoxCreator));
+    errorRows.put(FIELD_CREATOR, row);
+    focusFields.put(FIELD_CREATOR, textBoxCreator);
+    row++;
 
     // 回答数
     grid.setText(row, 0, "回答数");
@@ -892,7 +900,7 @@ textAreaNote.setText(problem.note.trim());
 
       if (UserData.get().isRegisterIndicatedProblem()) {
         Service.Util.getInstance().addProblemIdsToReport(UserData.get().getUserCode(),
-            ImmutableList.of(problemId), callbackAddProblemIdsToReport);
+            Lists.newArrayList(problemId), callbackAddProblemIdsToReport);
       }
 
       Window.alert("ご指摘ありがとうございました");
