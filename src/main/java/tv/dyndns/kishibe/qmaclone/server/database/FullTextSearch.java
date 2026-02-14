@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -46,6 +47,7 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.search.MatchNoDocsQuery;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.LockObtainFailedException;
 
@@ -615,13 +617,33 @@ public class FullTextSearch {
           IndexSearcher searcher = new IndexSearcher(reader);
           MoreLikeThisQuery query = new MoreLikeThisQuery(searchQuery, fields, viterbiAnalyzerFactory.create(),
               "similar_problem_search_field");
+          // 既存データの語彙分布でも類似候補が返るよう、閾値を緩和する。
+          query.setMinTermFrequency(1);
+          query.setMinDocFreq(1);
+          query.setMaxQueryTerms(50);
+          query.setPercentTermsToMatch(0.2f);
 
           TopDocs docs = searcher.search(query, 10);
+          if (docs.scoreDocs.length == 0) {
+            Query fallbackQuery = buildFallbackSimilarQuery(problem);
+            docs = searcher.search(fallbackQuery, 10);
+          }
+
           List<Integer> problemIds = new ArrayList<Integer>(docs.scoreDocs.length);
+          Set<Integer> visitedProblemIds = new LinkedHashSet<>();
           for (ScoreDoc doc : docs.scoreDocs) {
             Document document = reader.storedFields().document(doc.doc);
             int problemId = Integer.parseInt(document.get(FIELD_PROBLEM_ID));
+            if (problemId == problem.id) {
+              continue;
+            }
+            if (!visitedProblemIds.add(problemId)) {
+              continue;
+            }
             problemIds.add(problemId);
+            if (problemIds.size() >= 10) {
+              break;
+            }
           }
 
           return problemIds;
@@ -639,6 +661,46 @@ public class FullTextSearch {
       logger.log(Level.WARNING, "類似問題検索でタイムアウトが発生しました " + problem.toString(), e);
       return Lists.newArrayList();
     }
+  }
+
+  /**
+   * MoreLikeThis で0件の場合に利用する、語彙ベースのフォールバック類似検索クエリを生成する。
+   *
+   * @param problem 類似検索対象問題
+   * @return フォールバック検索クエリ
+   */
+  private Query buildFallbackSimilarQuery(PacketProblem problem) throws IOException {
+    String searchQuery = problem.getSearchDocument();
+    if (Strings.isNullOrEmpty(searchQuery)) {
+      return new MatchNoDocsQuery();
+    }
+
+    BooleanQuery.Builder query = new BooleanQuery.Builder();
+    Set<String> terms = new LinkedHashSet<>();
+
+    try (TokenStream tokenStream = viterbiAnalyzerFactory.create().tokenStream(FIELD_SIMILAR,
+        new StringReader(searchQuery))) {
+      tokenStream.reset();
+      CharTermAttribute termAttribute = tokenStream.getAttribute(CharTermAttribute.class);
+      while (tokenStream.incrementToken()) {
+        String term = termAttribute.toString();
+        if (Strings.isNullOrEmpty(term)) {
+          continue;
+        }
+        if (terms.add(term)) {
+          query.add(new TermQuery(new Term(FIELD_SIMILAR, term)), Occur.SHOULD);
+        }
+      }
+      tokenStream.end();
+    }
+
+    if (terms.isEmpty()) {
+      return new MatchNoDocsQuery();
+    }
+
+    // 1語以上一致を類似候補として扱う。
+    query.setMinimumNumberShouldMatch(1);
+    return query.build();
   }
 
   private int getTimeOutSec() {

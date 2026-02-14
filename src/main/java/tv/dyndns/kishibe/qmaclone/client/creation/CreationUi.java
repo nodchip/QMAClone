@@ -342,6 +342,7 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
     validateCurrentStepLive();
     if (currentStep == STEP_CONFIRMATION) {
       updateStep4Summary();
+      updateStep5RelatedPanels();
     }
     buttonPrevStep.setEnabled(currentStep > MIN_STEP);
     buttonNextStep.setEnabled(currentStep < MAX_STEP);
@@ -488,13 +489,33 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
 
   private final AsyncCallback<List<PacketProblem>> callbackSearchSimilarProblem = new AsyncCallback<List<PacketProblem>>() {
     public void onSuccess(List<PacketProblem> result) {
-      panelSimilar.setWidget(new ProblemReportUi(result, true, true, MAX_SIMILER_PROBLEMS_PER_PAGE));
+      panelSimilar.setWidget(new ProblemReportUi(result, true, false, MAX_SIMILER_PROBLEMS_PER_PAGE));
     }
 
     public void onFailure(Throwable caught) {
       logger.log(Level.WARNING, "類似問題の検索に失敗しました", caught);
+      panelSimilar.setWidget(createEmptyProblemReportUi());
     }
   };
+
+  /**
+   * Step5 表示用の関連パネル（類似問題・出題プレビュー）を更新する。
+   */
+  private void updateStep5RelatedPanels() {
+    PacketProblem problem = widgetProblemForm.getProblem();
+    setProblemSample(problem);
+    panelSimilar.setWidget(createEmptyProblemReportUi());
+    getSimilarProblems(problem);
+  }
+
+  /**
+   * 類似問題パネルの空状態表示を生成する。
+   *
+   * @return 空状態の問題レポートUI
+   */
+  private ProblemReportUi createEmptyProblemReportUi() {
+    return new ProblemReportUi(Lists.<PacketProblem>newArrayList(), true, false, MAX_SIMILER_PROBLEMS_PER_PAGE);
+  }
 
   public void getWrongAnswers(int problemID) {
     Service.Util.getInstance().getWrongAnswers(problemID, callbackGetWrongAnswers);
@@ -800,10 +821,7 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
     buttonSendProblem.removeStyleName("creationButtonSecondary");
     buttonSendProblem.addStyleName("creationButtonPrimary");
 
-    PacketProblem problem = widgetProblemForm.getProblem();
-    setProblemSample(problem);
-    panelSimilar.clear();
-    getSimilarProblems(problem);
+    updateStep5RelatedPanels();
   }
 
   @UiHandler("buttonSendProblem")

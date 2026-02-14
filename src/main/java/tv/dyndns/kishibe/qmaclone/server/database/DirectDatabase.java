@@ -592,7 +592,24 @@ public class DirectDatabase implements Database {
 	@Override
 	public List<PacketProblem> searchSimilarProblemFromDatabase(PacketProblem problem) throws DatabaseException {
 		List<Integer> problemIds = fullTextSearch.searchSimilarProblemFromDatabase(problem);
-		return getProblem(problemIds);
+		if (problemIds.isEmpty()) {
+			return Collections.emptyList();
+		}
+
+		List<PacketProblem> unorderedProblems = getProblem(problemIds);
+		Map<Integer, PacketProblem> idToProblem = Maps.newHashMap();
+		for (PacketProblem packetProblem : unorderedProblems) {
+			idToProblem.put(packetProblem.id, packetProblem);
+		}
+
+		List<PacketProblem> orderedProblems = Lists.newArrayList();
+		for (int problemId : problemIds) {
+			PacketProblem packetProblem = idToProblem.get(problemId);
+			if (packetProblem != null) {
+				orderedProblems.add(packetProblem);
+			}
+		}
+		return orderedProblems;
 	}
 
 	@Override

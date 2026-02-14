@@ -581,6 +581,7 @@ public class DatabaseTest {
     problem.answers = inserted.answers;
     List<PacketProblem> problems = database.searchSimilarProblemFromDatabase(problem);
     assertNotNull(problems);
+    assertFalse(problems.isEmpty());
     // System.out.println("testSearchSimilarProblem()");
     // for (PacketProblem p : problems) {
     // System.out.println(p.toString());
