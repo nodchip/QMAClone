@@ -1360,3 +1360,43 @@ body {
   font-weight: bold;
   margin: 8px 0;
 }
+.creationSummaryCards {
+  margin: 8px 0;
+}
+
+.creationSummaryCard {
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid #9ec4e6;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.creationSummaryCardHeader {
+  width: 100%;
+  border-spacing: 8px;
+  margin-bottom: 6px;
+}
+
+.creationSummaryCardTitle {
+  font-size: 18px;
+  font-weight: bold;
+  color: #153450;
+}
+
+.creationSummaryText {
+  margin: 4px 0;
+  color: #1f2e3d;
+}
+
+.creationSummaryDetail {
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px dashed #9ec4e6;
+  color: #2f4358;
+}
+
+.creationSummaryError {
+  border-color: #d32f2f;
+  box-shadow: inset 0 0 0 1px #f7b2b2;
+}

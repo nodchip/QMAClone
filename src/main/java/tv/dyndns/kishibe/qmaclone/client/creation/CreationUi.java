@@ -132,7 +132,29 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
   @UiField
   HTML htmlStepErrorSummary;
   @UiField
-  HTML htmlStep4Summary;
+  HTMLPanel panelStep4CardBasic;
+  @UiField
+  HTMLPanel panelStep4CardQuestion;
+  @UiField
+  HTMLPanel panelStep4CardAnswer;
+  @UiField
+  HTML htmlStep4SummaryBasic;
+  @UiField
+  HTML htmlStep4SummaryQuestion;
+  @UiField
+  HTML htmlStep4SummaryAnswer;
+  @UiField
+  HTML htmlStep4DetailBasic;
+  @UiField
+  HTML htmlStep4DetailQuestion;
+  @UiField
+  HTML htmlStep4DetailAnswer;
+  @UiField
+  Button buttonToggleStep1Detail;
+  @UiField
+  Button buttonToggleStep2Detail;
+  @UiField
+  Button buttonToggleStep3Detail;
   @UiField
   Button buttonBackToStep1FromSummary;
   @UiField
@@ -175,8 +197,14 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
   private static final String ERROR_INPUT_NON_BLANK_SENTENCE = "問題文は空白のみでは登録できません";
   private static final String ERROR_INPUT_ANSWER1 = "解答1を入力してください";
   private static final String ERROR_CONFIRM_ANSWER_SETTING = "解答設定の入力内容を確認してください";
+  private static final int STEP4_SENTENCE_SUMMARY_MAX_LENGTH = 40;
+  private static final String STEP4_DETAIL_OPEN_TEXT = "詳細を開く";
+  private static final String STEP4_DETAIL_CLOSE_TEXT = "詳細を閉じる";
   private boolean sendingProblem = false;
   private String lastSavedSnapshot = "";
+  private boolean step4BasicDetailOpened = false;
+  private boolean step4QuestionDetailOpened = false;
+  private boolean step4AnswerDetailOpened = false;
   private final RepeatingCommand commandCheckProblem = new RepeatingCommand() {
     @Override
     public boolean execute() {
@@ -243,6 +271,7 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
     widgetProblemForm.setWizardStep(currentStep);
     widgetProblemForm.clearStepErrors();
     htmlStepErrorSummary.setHTML("");
+    resetStep4DetailState();
     lastSavedSnapshot = createProblemSnapshot();
     textBoxGetProblem.setText(null);
     goToStep(1);
@@ -771,14 +800,32 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
     goToStep(1);
   }
 
+  @UiHandler("buttonToggleStep1Detail")
+  void onButtonToggleStep1Detail(ClickEvent e) {
+    step4BasicDetailOpened = !step4BasicDetailOpened;
+    updateStep4DetailState();
+  }
+
   @UiHandler("buttonBackToStep2FromSummary")
   void onButtonBackToStep2FromSummary(ClickEvent e) {
     goToStep(2);
   }
 
+  @UiHandler("buttonToggleStep2Detail")
+  void onButtonToggleStep2Detail(ClickEvent e) {
+    step4QuestionDetailOpened = !step4QuestionDetailOpened;
+    updateStep4DetailState();
+  }
+
   @UiHandler("buttonBackToStep3FromSummary")
   void onButtonBackToStep3FromSummary(ClickEvent e) {
     goToStep(3);
+  }
+
+  @UiHandler("buttonToggleStep3Detail")
+  void onButtonToggleStep3Detail(ClickEvent e) {
+    step4AnswerDetailOpened = !step4AnswerDetailOpened;
+    updateStep4DetailState();
   }
 
   /**
@@ -912,24 +959,188 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
    */
   private void updateStep4Summary() {
     if (widgetProblemForm == null) {
-      htmlStep4Summary.setHTML("");
+      htmlStep4SummaryBasic.setHTML("");
+      htmlStep4SummaryQuestion.setHTML("");
+      htmlStep4SummaryAnswer.setHTML("");
+      htmlStep4DetailBasic.setHTML("");
+      htmlStep4DetailQuestion.setHTML("");
+      htmlStep4DetailAnswer.setHTML("");
       return;
     }
 
     PacketProblem problem = widgetProblemForm.getProblem();
+    StepValidationResult basicValidation = validateStep(1, false);
+    StepValidationResult questionValidation = validateStep(2, false);
+    StepValidationResult answerValidation = validateStep(3, false);
+
+    htmlStep4SummaryBasic.setHTML(buildBasicSummaryHtml(problem, basicValidation).toSafeHtml());
+    htmlStep4SummaryQuestion.setHTML(buildQuestionSummaryHtml(problem, questionValidation).toSafeHtml());
+    htmlStep4SummaryAnswer.setHTML(buildAnswerSummaryHtml(problem, answerValidation).toSafeHtml());
+    htmlStep4DetailBasic.setHTML(buildBasicDetailHtml(problem).toSafeHtml());
+    htmlStep4DetailQuestion.setHTML(buildQuestionDetailHtml(problem).toSafeHtml());
+    htmlStep4DetailAnswer.setHTML(buildAnswerDetailHtml(problem).toSafeHtml());
+
+    updateSummaryCardErrorState(panelStep4CardBasic, basicValidation);
+    updateSummaryCardErrorState(panelStep4CardQuestion, questionValidation);
+    updateSummaryCardErrorState(panelStep4CardAnswer, answerValidation);
+    updateStep4DetailState();
+  }
+
+  /**
+   * Step4 の詳細開閉状態を初期化する。
+   */
+  private void resetStep4DetailState() {
+    step4BasicDetailOpened = false;
+    step4QuestionDetailOpened = false;
+    step4AnswerDetailOpened = false;
+    updateStep4DetailState();
+  }
+
+  /**
+   * Step4 の詳細開閉状態を画面に反映する。
+   */
+  private void updateStep4DetailState() {
+    htmlStep4DetailBasic.setVisible(step4BasicDetailOpened);
+    htmlStep4DetailQuestion.setVisible(step4QuestionDetailOpened);
+    htmlStep4DetailAnswer.setVisible(step4AnswerDetailOpened);
+    buttonToggleStep1Detail.setText(step4BasicDetailOpened ? STEP4_DETAIL_CLOSE_TEXT : STEP4_DETAIL_OPEN_TEXT);
+    buttonToggleStep2Detail.setText(step4QuestionDetailOpened ? STEP4_DETAIL_CLOSE_TEXT : STEP4_DETAIL_OPEN_TEXT);
+    buttonToggleStep3Detail.setText(step4AnswerDetailOpened ? STEP4_DETAIL_CLOSE_TEXT : STEP4_DETAIL_OPEN_TEXT);
+  }
+
+  /**
+   * 基本情報カードのサマリーHTMLを生成する。
+   *
+   * @param problem 問題
+   * @param validation 検証結果
+   * @return サマリーHTML
+   */
+  private SafeHtmlBuilder buildBasicSummaryHtml(PacketProblem problem, StepValidationResult validation) {
+    SafeHtmlBuilder builder = new SafeHtmlBuilder();
+    appendValidationSummary(builder, validation);
+    builder.appendEscaped("ジャンル: ").appendEscaped(String.valueOf(problem.genre));
+    builder.appendHtmlConstant(" / ");
+    builder.appendEscaped("出題形式: ").appendEscaped(String.valueOf(problem.type));
+    builder.appendHtmlConstant(" / ");
+    builder.appendEscaped("ランダムフラグ: ").appendEscaped(String.valueOf(problem.randomFlag));
+    return builder;
+  }
+
+  /**
+   * 問題文カードのサマリーHTMLを生成する。
+   *
+   * @param problem 問題
+   * @param validation 検証結果
+   * @return サマリーHTML
+   */
+  private SafeHtmlBuilder buildQuestionSummaryHtml(PacketProblem problem, StepValidationResult validation) {
+    SafeHtmlBuilder builder = new SafeHtmlBuilder();
+    appendValidationSummary(builder, validation);
+    builder.appendEscaped("問題文: ").appendEscaped(buildSentenceSummary(problem.getProblemCreationSentence()));
+    return builder;
+  }
+
+  /**
+   * 解答設定カードのサマリーHTMLを生成する。
+   *
+   * @param problem 問題
+   * @param validation 検証結果
+   * @return サマリーHTML
+   */
+  private SafeHtmlBuilder buildAnswerSummaryHtml(PacketProblem problem, StepValidationResult validation) {
+    SafeHtmlBuilder builder = new SafeHtmlBuilder();
+    appendValidationSummary(builder, validation);
+    builder.appendEscaped("解答1: ").appendEscaped(Strings.nullToEmpty(problem.answers[0]));
+    builder.appendHtmlConstant(" / ");
+    builder.appendEscaped("問題作成者: ").appendEscaped(Strings.nullToEmpty(problem.creator));
+    return builder;
+  }
+
+  /**
+   * 基本情報カードの詳細HTMLを生成する。
+   *
+   * @param problem 問題
+   * @return 詳細HTML
+   */
+  private SafeHtmlBuilder buildBasicDetailHtml(PacketProblem problem) {
     SafeHtmlBuilder builder = new SafeHtmlBuilder();
     builder.appendEscaped("ジャンル: ").appendEscaped(String.valueOf(problem.genre));
     builder.appendHtmlConstant("<br/>");
     builder.appendEscaped("出題形式: ").appendEscaped(String.valueOf(problem.type));
     builder.appendHtmlConstant("<br/>");
     builder.appendEscaped("ランダムフラグ: ").appendEscaped(String.valueOf(problem.randomFlag));
-    builder.appendHtmlConstant("<br/>");
-    builder.appendEscaped("問題文: ").appendEscaped(problem.getProblemCreationSentence());
+    return builder;
+  }
+
+  /**
+   * 問題文カードの詳細HTMLを生成する。
+   *
+   * @param problem 問題
+   * @return 詳細HTML
+   */
+  private SafeHtmlBuilder buildQuestionDetailHtml(PacketProblem problem) {
+    SafeHtmlBuilder builder = new SafeHtmlBuilder();
+    builder.appendEscaped("問題文: ").appendEscaped(Strings.nullToEmpty(problem.getProblemCreationSentence()));
+    return builder;
+  }
+
+  /**
+   * 解答設定カードの詳細HTMLを生成する。
+   *
+   * @param problem 問題
+   * @return 詳細HTML
+   */
+  private SafeHtmlBuilder buildAnswerDetailHtml(PacketProblem problem) {
+    SafeHtmlBuilder builder = new SafeHtmlBuilder();
+    builder.appendEscaped("解答1: ").appendEscaped(Strings.nullToEmpty(problem.answers[0]));
     builder.appendHtmlConstant("<br/>");
     builder.appendEscaped("問題作成者: ").appendEscaped(Strings.nullToEmpty(problem.creator));
     builder.appendHtmlConstant("<br/>");
     builder.appendEscaped("問題ノート: ").appendEscaped(Strings.nullToEmpty(problem.note));
-    htmlStep4Summary.setHTML(builder.toSafeHtml());
+    return builder;
+  }
+
+  /**
+   * 問題文の要約文字列を生成する。
+   *
+   * @param sentence 問題文
+   * @return 要約済み文字列
+   */
+  @VisibleForTesting
+  String buildSentenceSummary(String sentence) {
+    String normalized = Strings.nullToEmpty(sentence).replace('\n', ' ').replace('\r', ' ');
+    if (normalized.length() <= STEP4_SENTENCE_SUMMARY_MAX_LENGTH) {
+      return normalized;
+    }
+    return normalized.substring(0, STEP4_SENTENCE_SUMMARY_MAX_LENGTH) + "...";
+  }
+
+  /**
+   * カードのエラー表示を更新する。
+   *
+   * @param panel 対象カード
+   * @param validation 検証結果
+   */
+  private void updateSummaryCardErrorState(HTMLPanel panel, StepValidationResult validation) {
+    panel.removeStyleName("creationSummaryError");
+    if (validation != null && validation.hasErrors()) {
+      panel.addStyleName("creationSummaryError");
+    }
+  }
+
+  /**
+   * 検証結果サマリーを追加する。
+   *
+   * @param builder HTMLビルダー
+   * @param validation 検証結果
+   */
+  private void appendValidationSummary(SafeHtmlBuilder builder, StepValidationResult validation) {
+    if (validation == null || !validation.hasErrors()) {
+      return;
+    }
+    builder.appendEscaped("入力エラー").appendEscaped(String.valueOf(validation.getFieldErrors().size()))
+        .appendEscaped("件");
+    builder.appendHtmlConstant("<br/>");
   }
 
   private boolean checkProblemId() {

@@ -71,12 +71,42 @@
 				<g:HTMLPanel ui:field="panelStep4" styleName="creationWizardStepPanel"
 					visible="false">
 					<h2>確認</h2>
-					<g:HTML ui:field="htmlStep4Summary" />
-					<g:HorizontalPanel>
-						<g:Button ui:field="buttonBackToStep1FromSummary" text="基本情報へ戻る" />
-						<g:Button ui:field="buttonBackToStep2FromSummary" text="問題文へ戻る" />
-						<g:Button ui:field="buttonBackToStep3FromSummary" text="解答設定へ戻る" />
-					</g:HorizontalPanel>
+					<g:HTMLPanel styleName="creationSummaryCards">
+						<g:HTMLPanel ui:field="panelStep4CardBasic"
+							styleName="creationSummaryCard">
+							<g:HorizontalPanel styleName="creationSummaryCardHeader">
+								<g:Label styleName="creationSummaryCardTitle" text="基本情報" />
+								<g:Button ui:field="buttonToggleStep1Detail" text="詳細を開く" />
+								<g:Button ui:field="buttonBackToStep1FromSummary" text="編集へ戻る" />
+							</g:HorizontalPanel>
+							<g:HTML ui:field="htmlStep4SummaryBasic" styleName="creationSummaryText" />
+							<g:HTML ui:field="htmlStep4DetailBasic" styleName="creationSummaryDetail"
+								visible="false" />
+						</g:HTMLPanel>
+						<g:HTMLPanel ui:field="panelStep4CardQuestion"
+							styleName="creationSummaryCard">
+							<g:HorizontalPanel styleName="creationSummaryCardHeader">
+								<g:Label styleName="creationSummaryCardTitle" text="問題文" />
+								<g:Button ui:field="buttonToggleStep2Detail" text="詳細を開く" />
+								<g:Button ui:field="buttonBackToStep2FromSummary" text="編集へ戻る" />
+							</g:HorizontalPanel>
+							<g:HTML ui:field="htmlStep4SummaryQuestion"
+								styleName="creationSummaryText" />
+							<g:HTML ui:field="htmlStep4DetailQuestion" styleName="creationSummaryDetail"
+								visible="false" />
+						</g:HTMLPanel>
+						<g:HTMLPanel ui:field="panelStep4CardAnswer"
+							styleName="creationSummaryCard">
+							<g:HorizontalPanel styleName="creationSummaryCardHeader">
+								<g:Label styleName="creationSummaryCardTitle" text="解答設定" />
+								<g:Button ui:field="buttonToggleStep3Detail" text="詳細を開く" />
+								<g:Button ui:field="buttonBackToStep3FromSummary" text="編集へ戻る" />
+							</g:HorizontalPanel>
+							<g:HTML ui:field="htmlStep4SummaryAnswer" styleName="creationSummaryText" />
+							<g:HTML ui:field="htmlStep4DetailAnswer" styleName="creationSummaryDetail"
+								visible="false" />
+						</g:HTMLPanel>
+					</g:HTMLPanel>
 					<g:SimplePanel ui:field="panelSimilar" />
 					<g:SimplePanel ui:field="panelSample" />
 					<g:HorizontalPanel>
