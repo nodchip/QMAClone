@@ -21,14 +21,16 @@
 			<br />
 			定期的に正解率統計画面から自作問題の状況を確認し、指摘フラグが付いた場合はすぐに確認し修正してください。
 			<g:HorizontalPanel>
-				<g:Button ui:field="buttonNewProblem" text="入力内容をリセットする" />
+				<g:Button ui:field="buttonNewProblem" text="入力内容をリセットする"
+					styleName="creationButtonSecondary" />
 			</g:HorizontalPanel>
 			<g:HTMLPanel styleName="creationWizard">
 				<g:HorizontalPanel styleName="creationWizardSteps">
-					<g:Label ui:field="labelStep1" text="1. 基本情報" />
-					<g:Label ui:field="labelStep2" text="2. 問題文" />
-					<g:Label ui:field="labelStep3" text="3. 解答設定" />
-					<g:Label ui:field="labelStep4" text="4. 確認" />
+					<g:Label ui:field="labelStep1" text="1. モード選択" />
+					<g:Label ui:field="labelStep2" text="2. 基本情報" />
+					<g:Label ui:field="labelStep3" text="3. 問題文" />
+					<g:Label ui:field="labelStep4" text="4. 解答設定" />
+					<g:Label ui:field="labelStep5" text="5. 確認" />
 				</g:HorizontalPanel>
 				<g:HTML ui:field="htmlStepErrorSummary"
 					styleName="creationStepErrorSummary" />
@@ -37,22 +39,59 @@
 					<g:SimplePanel ui:field="panelProblemForm" />
 				</g:HTMLPanel>
 				<g:HTMLPanel ui:field="panelStep1" styleName="creationWizardStepPanel">
-					<h2>基本情報</h2>
-					問題を修正する場合は以下に問題番号を入力してボタンし、問題を取得してからにしてください
-					<g:HorizontalPanel>
-						<g:TextBox ui:field="textBoxGetProblem" width="200px" />
-						<g:Button ui:field="buttonGetProblem" text="問題を修正する"
-							title="投稿された問題を修正するときは、このボタンを押して問題を表示したあと、内容を変更して送信してください。" />
-						<g:Button ui:field="buttonCopyProblem" text="問題をコピーする"
-							title="投稿された問題に似た問題を作るときは、このボタンを押して問題を表示したあと、内容を変更して問題を送信してください。" />
-					</g:HorizontalPanel>
+					<h2>モード選択</h2>
+					<g:HTMLPanel ui:field="panelCreationModeCards" styleName="creationModeCards">
+						<g:HTMLPanel ui:field="panelCreationModeNew" styleName="creationModeCard">
+							<g:Label styleName="creationModeCardTitle" text="新規作成" />
+							<g:Label styleName="creationModeCardDescription"
+								text="まっさらな状態から新しい問題を作成します。" />
+							<g:Button ui:field="buttonSelectNewMode" text="このモードで開始"
+								styleName="creationButtonSecondary" />
+						</g:HTMLPanel>
+						<g:HTMLPanel ui:field="panelCreationModeEdit" styleName="creationModeCard">
+							<g:Label styleName="creationModeCardTitle" text="既存を修正" />
+							<g:Label styleName="creationModeCardDescription"
+								text="問題番号を読み込み、同じ問題番号で更新します。" />
+							<g:Button ui:field="buttonSelectEditMode" text="このモードで開始"
+								styleName="creationButtonSecondary" />
+						</g:HTMLPanel>
+						<g:HTMLPanel ui:field="panelCreationModeClone" styleName="creationModeCard">
+							<g:Label styleName="creationModeCardTitle" text="コピーして新規作成" />
+							<g:Label styleName="creationModeCardDescription"
+								text="既存問題を読み込み、新規問題として投稿します。" />
+							<g:Button ui:field="buttonSelectCloneMode" text="このモードで開始"
+								styleName="creationButtonSecondary" />
+						</g:HTMLPanel>
+					</g:HTMLPanel>
+					<g:Label ui:field="labelCurrentCreationMode"
+						styleName="creationModeCurrentLabel" />
+					<g:HTMLPanel ui:field="panelProblemLoader"
+						styleName="creationProblemLoaderPanel">
+						<g:Label text="既存問題を読み込む" styleName="creationProblemLoaderTitle" />
+						<g:Label text="問題番号を入力して読み込んでください。修正・コピー操作は読み込み後に利用できます。"
+							styleName="creationProblemLoaderDescription" />
+						<g:HorizontalPanel>
+							<g:TextBox ui:field="textBoxGetProblem" width="200px" />
+							<g:Button ui:field="buttonGetProblem" text="問題を読み込む"
+								styleName="creationButtonPrimary"
+								title="投稿済みの問題を読み込み、修正して更新できます。" />
+							<g:Button ui:field="buttonCopyProblem" text="問題をコピーして読み込む"
+								styleName="creationButtonPrimary"
+								title="投稿済みの問題を読み込み、複製して新規問題として投稿できます。" />
+						</g:HorizontalPanel>
+					</g:HTMLPanel>
 				</g:HTMLPanel>
 				<g:HTMLPanel ui:field="panelStep2" styleName="creationWizardStepPanel"
+					visible="false">
+					<h2>基本情報</h2>
+					ジャンル・出題形式・ランダムフラグ・問題作成者を入力してください。
+				</g:HTMLPanel>
+				<g:HTMLPanel ui:field="panelStep3" styleName="creationWizardStepPanel"
 					visible="false">
 					<h2>問題文</h2>
 					問題文を入力してください。
 				</g:HTMLPanel>
-				<g:HTMLPanel ui:field="panelStep3" styleName="creationWizardStepPanel"
+				<g:HTMLPanel ui:field="panelStep4" styleName="creationWizardStepPanel"
 					visible="false">
 					<h2>解答設定</h2>
 					<g:VerticalPanel ui:field="panelWarning" />
@@ -68,7 +107,7 @@
 						<g:SimplePanel ui:field="panelBbs" />
 					</g:HTMLPanel>
 				</g:HTMLPanel>
-				<g:HTMLPanel ui:field="panelStep4" styleName="creationWizardStepPanel"
+				<g:HTMLPanel ui:field="panelStep5" styleName="creationWizardStepPanel"
 					visible="false">
 					<h2>確認</h2>
 					<g:HTMLPanel styleName="creationSummaryCards">
@@ -111,9 +150,10 @@
 					<g:SimplePanel ui:field="panelSample" />
 					<g:HorizontalPanel>
 						<g:Button ui:field="buttonMoveToVerification"
-							text="送信確認画面に移動する" />
+							text="送信確認画面に移動する" styleName="creationButtonPrimary" />
 						<g:Button ui:field="buttonSendProblem" text="問題を送信する"
-							visible="false" title="似たような問題が無い事を確認しましたか？" />
+							visible="false" styleName="creationButtonSecondary"
+							title="似たような問題が無い事を確認しましたか？" />
 					</g:HorizontalPanel>
 				</g:HTMLPanel>
 				<g:HorizontalPanel styleName="creationWizardFooter">

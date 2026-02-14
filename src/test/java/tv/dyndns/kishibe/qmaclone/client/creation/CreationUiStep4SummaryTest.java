@@ -28,10 +28,10 @@ public class CreationUiStep4SummaryTest extends QMACloneGWTTestCaseBase {
   }
 
   @Test
-  public void step4ShouldShowThreeSectionSummary() {
+  public void step5ShouldShowThreeSectionSummary() {
     ui.widgetProblemForm.setProblem(createProblem("これは確認画面の表示を確認するための問題文です。", "テスト解答"));
 
-    ui.goToStep(4);
+    ui.goToStep(5);
 
     assertTrue(ui.htmlStep4SummaryBasic.getText().contains("ジャンル"));
     assertTrue(ui.htmlStep4SummaryQuestion.getText().contains("問題文"));
@@ -39,11 +39,11 @@ public class CreationUiStep4SummaryTest extends QMACloneGWTTestCaseBase {
   }
 
   @Test
-  public void step4QuestionSummaryShouldBeTruncatedAt40Characters() {
+  public void step5QuestionSummaryShouldBeTruncatedAt40Characters() {
     String sentence = "1234567890123456789012345678901234567890ABCDE";
     ui.widgetProblemForm.setProblem(createProblem(sentence, "テスト解答"));
 
-    ui.goToStep(4);
+    ui.goToStep(5);
 
     assertTrue(ui.htmlStep4SummaryQuestion.getText().contains("1234567890123456789012345678901234567890..."));
   }
@@ -51,7 +51,7 @@ public class CreationUiStep4SummaryTest extends QMACloneGWTTestCaseBase {
   @Test
   public void toggleDetailButtonShouldOpenAndCloseQuestionDetail() {
     ui.widgetProblemForm.setProblem(createProblem("問題文", "解答"));
-    ui.goToStep(4);
+    ui.goToStep(5);
 
     assertFalse(ui.htmlStep4DetailQuestion.isVisible());
     ui.onButtonToggleStep2Detail(null);
@@ -67,7 +67,7 @@ public class CreationUiStep4SummaryTest extends QMACloneGWTTestCaseBase {
     problem.type = ProblemType.Random;
     ui.widgetProblemForm.setProblem(problem);
 
-    ui.goToStep(4);
+    ui.goToStep(5);
 
     assertTrue(ui.panelStep4CardBasic.getStyleName().contains("creationSummaryError"));
     assertTrue(ui.panelStep4CardQuestion.getStyleName().contains("creationSummaryError"));

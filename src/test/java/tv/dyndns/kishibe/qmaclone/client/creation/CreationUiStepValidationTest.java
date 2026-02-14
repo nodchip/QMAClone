@@ -25,26 +25,36 @@ public class CreationUiStepValidationTest extends QMACloneGWTTestCaseBase {
   }
 
   @Test
-  public void validateStep1ShouldFailWhenGenreAndTypeAreNotSelected() {
-    StepValidationResult result = ui.validateStepForTransition(1);
-    assertTrue(result.hasErrors());
-  }
-
-  @Test
-  public void validateStep2ShouldFailWhenSentenceIsEmpty() {
-    PacketProblem problem = createProblem("", "解答");
-    ui.widgetProblemForm.setProblem(problem);
-
+  public void validateStep2ShouldFailWhenGenreAndTypeAreNotSelected() {
     StepValidationResult result = ui.validateStepForTransition(2);
     assertTrue(result.hasErrors());
   }
 
   @Test
-  public void validateStep3ShouldFailWhenAnswer1IsEmpty() {
-    PacketProblem problem = createProblem("問題文", "");
+  public void validateStep3ShouldFailWhenSentenceIsEmpty() {
+    PacketProblem problem = createProblem("", "解答");
     ui.widgetProblemForm.setProblem(problem);
 
     StepValidationResult result = ui.validateStepForTransition(3);
+    assertTrue(result.hasErrors());
+  }
+
+  @Test
+  public void validateStep4ShouldFailWhenAnswer1IsEmpty() {
+    PacketProblem problem = createProblem("問題文", "");
+    ui.widgetProblemForm.setProblem(problem);
+
+    StepValidationResult result = ui.validateStepForTransition(4);
+    assertTrue(result.hasErrors());
+  }
+
+  @Test
+  public void validateStep2ShouldFailWhenRandomFlagIsRandom5() {
+    PacketProblem problem = createProblem("問題文", "解答");
+    problem.randomFlag = RandomFlag.Random5;
+    ui.widgetProblemForm.setProblem(problem);
+
+    StepValidationResult result = ui.validateStepForTransition(2);
     assertTrue(result.hasErrors());
   }
 

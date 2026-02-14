@@ -34,6 +34,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -1388,7 +1389,7 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
     return wrap("制限ユーザーコードの取得に失敗しました", new DatabaseAccessible<Set<Integer>>() {
       @Override
       public Set<Integer> access() throws DatabaseException {
-        return database.getRestrictedUserCodes(restrictionType);
+        return new LinkedHashSet<>(database.getRestrictedUserCodes(restrictionType));
       }
     });
   }
@@ -1433,7 +1434,7 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
     return wrap("制限リモートアドレスの取得に失敗しました", new DatabaseAccessible<Set<String>>() {
       @Override
       public Set<String> access() throws DatabaseException {
-        return database.getRestrictedRemoteAddresses(restrictionType);
+        return new LinkedHashSet<>(database.getRestrictedRemoteAddresses(restrictionType));
       }
     });
   }

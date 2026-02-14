@@ -241,6 +241,17 @@ public class ServiceServletStubTest {
   }
 
   @Test
+  public void getRestrictedUserCodesShouldReturnJavaUtilSetForRpcSerialization() throws Exception {
+    when(mockDatabase.getRestrictedUserCodes(RESTRICTION_TYPE)).thenReturn(
+        ImmutableSet.of(USER_CODE));
+
+    Set<Integer> result = service.getRestrictedUserCodes(RESTRICTION_TYPE);
+
+    assertThat(result).containsExactly(USER_CODE);
+    assertThat(result.getClass().getName()).doesNotContain("com.google.common.collect");
+  }
+
+  @Test
   public void getRestrictedUserCodesShouldThrowExceptionOnError() throws Exception {
     when(mockDatabase.getRestrictedUserCodes(RESTRICTION_TYPE)).thenThrow(new DatabaseException());
 
@@ -302,6 +313,17 @@ public class ServiceServletStubTest {
 
     assertEquals(ImmutableSet.of(REMOTE_ADDRESS),
         service.getRestrictedRemoteAddresses(RESTRICTION_TYPE));
+  }
+
+  @Test
+  public void getRestrictedRemoteAddressesShouldReturnJavaUtilSetForRpcSerialization() throws Exception {
+    when(mockDatabase.getRestrictedRemoteAddresses(RESTRICTION_TYPE)).thenReturn(
+        ImmutableSet.of(REMOTE_ADDRESS));
+
+    Set<String> result = service.getRestrictedRemoteAddresses(RESTRICTION_TYPE);
+
+    assertThat(result).containsExactly(REMOTE_ADDRESS);
+    assertThat(result.getClass().getName()).doesNotContain("com.google.common.collect");
   }
 
   @Test
