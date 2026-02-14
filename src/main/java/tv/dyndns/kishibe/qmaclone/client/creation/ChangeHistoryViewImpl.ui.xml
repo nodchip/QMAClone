@@ -1,9 +1,15 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
-	<g:HTMLPanel>
+	<g:HTMLPanel styleName="creationHistoryRoot">
 		<h1>問題変更履歴</h1>
-		<g:Grid ui:field="gridHistory"></g:Grid>
-		<g:HTML ui:field="htmlDiff">問題変更履歴を読み込み中です</g:HTML>
+		<g:Label
+			text="最新の履歴を上に表示します。比較したい2件の「変更前」「変更後」を選ぶと差分を表示します。"
+			styleName="creationHistoryLead" />
+		<g:VerticalPanel ui:field="panelHistoryList" styleName="creationHistoryList"></g:VerticalPanel>
+		<g:HTMLPanel styleName="creationHistoryDiffCard">
+			<h3>変更差分プレビュー</h3>
+			<g:HTML ui:field="htmlDiff">履歴を選択すると、ここに差分を表示します。</g:HTML>
+		</g:HTMLPanel>
 	</g:HTMLPanel>
 </ui:UiBinder>

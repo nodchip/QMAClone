@@ -1742,6 +1742,67 @@ body {
   font-weight: 700;
 }
 
+.creationHistoryRoot {
+  margin-top: 12px;
+}
+
+.creationHistoryLead {
+  color: #274869;
+  margin-bottom: 8px;
+}
+
+.creationHistoryList {
+  width: 100%;
+  gap: 8px;
+}
+
+.creationHistoryItem {
+  width: 100%;
+  margin-bottom: 8px;
+  padding: 10px;
+  border: 1px solid #9ec4e6;
+  border-radius: 8px;
+  background: #f9fcff;
+}
+
+.creationHistoryMeta {
+  width: 100%;
+  border-spacing: 8px;
+  margin-bottom: 6px;
+  color: #173b5d;
+  font-weight: 700;
+}
+
+.creationHistoryPreview {
+  display: block;
+  margin: 4px 0 8px 0;
+  color: #314f6b;
+}
+
+.creationHistoryControls {
+  width: 100%;
+  border-spacing: 8px;
+  margin-bottom: 6px;
+}
+
+.creationHistoryDetail {
+  padding: 8px;
+  border: 1px dashed #a7c5e2;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #17324d;
+  white-space: pre-wrap;
+  line-height: 1.5;
+}
+
+.creationHistoryDiffCard {
+  margin-top: 10px;
+  padding: 10px;
+  border: 1px solid #9ec4e6;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
 .guidelinePage {
   min-height: 100vh;
   background: #e8f1fb;
