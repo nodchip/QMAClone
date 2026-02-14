@@ -56,39 +56,32 @@
 ## 禁止事項
 - 依存スコープ変更を、影響評価と実機検証なしで反映しない。
 - WebSocket エラーを、サーバーログ未確認のままクライアント側だけで断定しない。
-## 追加の振り返り（2026-02-10, QMAClone）
-- ミス: Google連携設定画面で、初期ロード時の一覧表示と「Googleログインして紐づけ済みユーザーコードを表示する」押下後の一覧表示を同一状態として扱い、選択したユーザーコードに切り替える の表示条件が揺れた。
-- 改善: 設定画面の一覧表示は「初期ロード由来」と「ユーザー操作由来」で分岐を分け、Presenterのコールバックも分離して実装する。
+## 再発防止ルール（QMACloneカテゴリ別）
 
 ### 設定画面UX（Google連携）
-- onLoad 由来の表示と、showUserCodeList 押下由来の表示は別フローとして扱う。
-- 1件表示時の切り替えボタンは、初期ロードでは非表示、ユーザー操作由来では表示を基本とする。
-## 追加の振り返り（2026-02-11, QMAClone）
-- ミス: JUnit5移行時に `@Rule` / GuiceBerry 依存テストを一括で Jupiter 化し、DI 初期化が動かず `null` 参照を大量発生させた。
-- 改善: JUnit移行は `@Rule` 有無で対象を分離し、GuiceBerry 依存テストは Extension 実装完了まで Vintage 実行を維持する。
-- ミス: 移行可否判定に、ネイティブ依存（`zinnia.dll` 必須）を持つテストを混在させ、失敗要因の切り分けが遅れた。
-- 改善: 移行検証の基準テストは、ネイティブ依存の有無で先に分離してから実行する。
-- ミス: `piriti` 変更時に `gwt:compile` の失敗要因（JAXB / rebind 例外）が揺れ、原因切り分けに時間を要した。
-- 改善: `piriti` 依存は撤去し、JSON デコード処理をアプリ側で保持する。依存更新時は `mvn "-Dgwt.skipCompilation=false" gwt:compile` を単独実行して成否を先に確定する。
+- onLoad 由来と `showUserCodeList` 押下由来を別フローで扱い、Presenter のコールバックを分離する。
+- 「選択したユーザーコードに切り替える」ボタンは、1件表示でも起点で制御する（初期ロードは非表示、ユーザー操作由来は表示）。
 
-## 追加の振り返り（2026-02-12, QMAClone）
-- ミス: WebSocket 系の一括置換で対象パスを広く取りすぎ、`src/main/java/net/zschech/gwt/websockets/*` まで編集対象に含めてしまった。
-- 改善: WebSocket サーバー移行の一括置換は `src/main/java/tv/dyndns/kishibe/qmaclone/server/websocket` と対応テスト配下に限定し、`net/zschech/gwt/websockets` は除外する。
-- ミス: 全量 `mvn test` が長時間化する状況で、完了判定に必要な検証範囲の定義が曖昧になった。
-- 改善: 変更範囲が限定される場合は、先に対象パッケージのテストを明示実行し、全量テスト未完了時は未検証範囲を完了報告へ明記する。
-- ミス: GWT クライアントテストで `ValidatorTegaki` が手書き利用可能文字取得 RPC を直接呼び、ネイティブ依存（zinnia）経由で forked JVM が異常終了した。
-- 改善: GWT クライアント単体テストでは、RPC/ネイティブ依存を直接呼ばずテスト用注入ポイントまたはスタブで切り離す。
-
-### JUnit移行（QMAClone）
+### JUnit移行とテスト分離
 - JUnit5移行前に `@Rule` の有無でテストを分類し、`@Rule` 依存テストは別タスクとして扱う。
-- GuiceBerry を利用するテストは、Jupiter Extension が未整備なら JUnit4/Vintage のまま維持する。
-- 部分実行で `mvn -Dtest=... test` を使う場合、必要に応じて `-DfailIfNoTests=false` を付与し、GWT側の「0件失敗」で誤判定しない。
-- `ServicesTest` のようなネイティブライブラリ依存テストは、JUnit移行の正常性判定から分離して扱う。
+- GuiceBerry 利用テストは Jupiter Extension 未整備なら JUnit4/Vintage のまま維持する。
+- 移行可否判定はネイティブ依存有無で分離し、`ServicesTest` のようなネイティブ依存テストは正常性判定から分離する。
+- 部分実行で `mvn -Dtest=... test` を使う場合は、必要に応じて `-DfailIfNoTests=false` を付与する。
 
-### WebSocket置換範囲（QMAClone）
-- WebSocket サーバー移行の自動置換は、`tv/.../server/websocket` 配下と `src/test/java/tv/.../server/websocket` 配下のみに適用する。
-- `src/main/java/net/zschech/gwt/websockets` 配下は GWT クライアント基盤として扱い、サーバー側移行作業の一括置換対象に含めない。
+### WebSocket移行時の置換範囲
+- 自動置換は `src/main/java/tv/dyndns/kishibe/qmaclone/server/websocket` と `src/test/java/tv/dyndns/kishibe/qmaclone/server/websocket` のみに適用する。
+- `src/main/java/net/zschech/gwt/websockets` は GWT クライアント基盤として扱い、置換対象に含めない。
 
-### GWTテストと手書き依存（QMAClone）
-- `ValidatorTegaki` 系のテストでは `AvailableCharacters` をテスト用に固定化し、`Service.getAvailableChalactersForHandwriting` を直接呼ばない。
-- `forked VM terminated` が発生した場合は、`surefire-reports` の実行済みテストとの差分から停止クラスを特定し、対象テストの外部依存（RPC / ネイティブ / ファイル）を優先的に切り離す。
+### GWTコンパイル・テストの安定化
+- `piriti` 依存は再導入せず、JSON デコードはアプリ側実装を維持する。
+- 依存更新時は `mvn "-Dgwt.skipCompilation=false" gwt:compile` を単独実行して成否を先に確定する。
+- 変更範囲が限定される場合は対象パッケージのテストを先に実行し、全量テスト未完了時は未検証範囲を完了報告に明記する。
+- `ValidatorTegaki` 系テストは `AvailableCharacters` を固定化し、`Service.getAvailableChalactersForHandwriting` を直接呼ばない。
+- `forked VM terminated` 発生時は `surefire-reports` の実行済み差分から停止クラスを特定し、外部依存（RPC / ネイティブ / ファイル）を優先的に切り離す。
+
+### チャット折りたたみ運用
+- 表示切替UIは CSS 固定非表示と Java 表示制御を重ねず、非表示条件を一方へ統一する。
+- 右チャットの折りたたみ状態は `Controller` と `localStorage` キーで管理する。
+- `PanelChat` にヘッダー文言を重複配置しない。ヘッダーとトグルは `Controller` 側に集約する。
+- 折りたたみ時は再表示トリガ（例: 「チャットを開く」ボタン）を常時視認可能にする。
+- レイアウト変更時は「通常表示」「折りたたみ表示」「折りたたみ解除」の3状態をスクリーンショットで確認する。
