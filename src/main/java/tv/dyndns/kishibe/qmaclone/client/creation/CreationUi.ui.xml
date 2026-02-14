@@ -30,6 +30,8 @@
 					<g:Label ui:field="labelStep3" text="3. 解答設定" />
 					<g:Label ui:field="labelStep4" text="4. 確認" />
 				</g:HorizontalPanel>
+				<g:HTML ui:field="htmlStepErrorSummary"
+					styleName="creationStepErrorSummary" />
 				<g:HTMLPanel ui:field="panelWizardFormHost"
 					styleName="creationWizardStepPanel">
 					<g:SimplePanel ui:field="panelProblemForm" />

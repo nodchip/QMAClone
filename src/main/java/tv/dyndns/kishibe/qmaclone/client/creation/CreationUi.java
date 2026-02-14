@@ -31,6 +31,7 @@ import tv.dyndns.kishibe.qmaclone.client.bbs.PanelBbs;
 import tv.dyndns.kishibe.qmaclone.client.creation.ChangeHistoryView.ChangeHistoryPresenter;
 import tv.dyndns.kishibe.qmaclone.client.creation.validater.Evaluation;
 import tv.dyndns.kishibe.qmaclone.client.game.ProblemGenre;
+import tv.dyndns.kishibe.qmaclone.client.game.ProblemType;
 import tv.dyndns.kishibe.qmaclone.client.game.SessionData;
 import tv.dyndns.kishibe.qmaclone.client.game.WidgetTimeProgressBar;
 import tv.dyndns.kishibe.qmaclone.client.game.panel.QuestionPanel;
@@ -129,6 +130,8 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
   @UiField
   Button buttonNextProblem;
   @UiField
+  HTML htmlStepErrorSummary;
+  @UiField
   HTML htmlStep4Summary;
   @UiField
   Button buttonBackToStep1FromSummary;
@@ -166,12 +169,20 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
   private static final int MIN_STEP = 1;
   private static final int MAX_STEP = 4;
   private static final String CREATION_WIZARD_DRAFT_KEY = "qmaclone.creationWizardDraft";
+  private static final String ERROR_SELECT_GENRE = "ジャンルを選択してください";
+  private static final String ERROR_SELECT_TYPE = "出題形式を選択してください";
+  private static final String ERROR_INPUT_SENTENCE = "問題文を入力してください";
+  private static final String ERROR_INPUT_NON_BLANK_SENTENCE = "問題文は空白のみでは登録できません";
+  private static final String ERROR_INPUT_ANSWER1 = "解答1を入力してください";
+  private static final String ERROR_CONFIRM_ANSWER_SETTING = "解答設定の入力内容を確認してください";
   private boolean sendingProblem = false;
   private String lastSavedSnapshot = "";
   private final RepeatingCommand commandCheckProblem = new RepeatingCommand() {
     @Override
     public boolean execute() {
       if (currentStep < MAX_STEP) {
+        boolean valid = validateCurrentStepLive();
+        buttonNextStep.setEnabled(valid);
         buttonMoveToVerification.setEnabled(false);
         buttonSendProblem.setEnabled(false);
         return isAttached();
@@ -202,9 +213,8 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
   }
 
   public void reset() {
-    goToStep(1);
+    currentStep = 1;
     buttonSendProblem.setVisible(false);
-    buttonPrevStep.setEnabled(false);
 
     htmlPanelSorry.setVisible(false);
     htmlRequireGooglePlusLogin.setVisible(false);
@@ -231,8 +241,11 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
     widgetProblemForm = new WidgetProblemForm(this);
     panelProblemForm.setWidget(widgetProblemForm);
     widgetProblemForm.setWizardStep(currentStep);
+    widgetProblemForm.clearStepErrors();
+    htmlStepErrorSummary.setHTML("");
     lastSavedSnapshot = createProblemSnapshot();
     textBoxGetProblem.setText(null);
+    goToStep(1);
     // previousProblemNote = null;
   }
 
@@ -244,6 +257,7 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
     }
     updateStepVisibility();
     updateStepIndicator();
+    validateCurrentStepLive();
     if (currentStep == 4) {
       updateStep4Summary();
     }
@@ -740,7 +754,10 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
 
   @UiHandler("buttonNextStep")
   void onButtonNextStep(ClickEvent e) {
-    if (!validateStep(currentStep)) {
+    StepValidationResult result = validateStepForTransition(currentStep);
+    applyStepValidationResult(result);
+    if (result.hasErrors()) {
+      widgetProblemForm.focusField(result.getFirstErrorFieldId());
       return;
     }
     if (!autoSaveIfDirty()) {
@@ -771,25 +788,80 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
    * @return 検証成功ならtrue
    */
   @VisibleForTesting
-  boolean validateStep(int step) {
+  boolean validateCurrentStepLive() {
+    StepValidationResult result = validateStep(currentStep, false);
+    applyStepValidationResult(result);
+    return !result.hasErrors();
+  }
+
+  StepValidationResult validateStepForTransition(int step) {
+    return validateStep(step, true);
+  }
+
+  private StepValidationResult validateStep(int step, boolean includeDeepValidation) {
+    StepValidationResult result = new StepValidationResult();
     if (widgetProblemForm == null) {
-      return false;
+      result.addError(WidgetProblemForm.FIELD_SENTENCE, ERROR_INPUT_SENTENCE);
+      return result;
+    }
+
+    if (step == 1) {
+      PacketProblem problem = widgetProblemForm.getProblem();
+      if (problem.genre == ProblemGenre.Random) {
+        result.addError(WidgetProblemForm.FIELD_GENRE, ERROR_SELECT_GENRE);
+      }
+      if (problem.type == ProblemType.Random) {
+        result.addError(WidgetProblemForm.FIELD_TYPE, ERROR_SELECT_TYPE);
+      }
+      return result;
     }
 
     if (step == 2) {
       PacketProblem problem = widgetProblemForm.getProblem();
       if (Strings.isNullOrEmpty(problem.sentence)) {
-        Window.alert("問題文を入力してください");
-        return false;
+        result.addError(WidgetProblemForm.FIELD_SENTENCE, ERROR_INPUT_SENTENCE);
+        return result;
       }
-      return true;
+      if (Strings.isNullOrEmpty(problem.getProblemCreationSentence().trim())) {
+        result.addError(WidgetProblemForm.FIELD_SENTENCE, ERROR_INPUT_NON_BLANK_SENTENCE);
+      }
+      return result;
     }
 
     if (step == 3) {
-      return validateProblem();
+      PacketProblem problem = widgetProblemForm.getProblem();
+      if (Strings.isNullOrEmpty(problem.answers[0])) {
+        result.addError(WidgetProblemForm.FIELD_ANSWER1, ERROR_INPUT_ANSWER1);
+      }
+      if (includeDeepValidation && !validateProblem()) {
+        if (!result.hasErrors()) {
+          result.addError(WidgetProblemForm.FIELD_ANSWER1, ERROR_CONFIRM_ANSWER_SETTING);
+        }
+      }
+      return result;
     }
 
-    return true;
+    return result;
+  }
+
+  private void applyStepValidationResult(StepValidationResult result) {
+    if (widgetProblemForm == null) {
+      htmlStepErrorSummary.setHTML("");
+      return;
+    }
+
+    if (result == null) {
+      widgetProblemForm.clearStepErrors();
+      htmlStepErrorSummary.setHTML("");
+      return;
+    }
+
+    widgetProblemForm.applyStepErrors(result.getFieldErrors());
+    if (result.hasErrors()) {
+      htmlStepErrorSummary.setHTML("入力エラーが" + result.getFieldErrors().size() + "件あります。");
+      return;
+    }
+    htmlStepErrorSummary.setHTML("");
   }
 
   /**
