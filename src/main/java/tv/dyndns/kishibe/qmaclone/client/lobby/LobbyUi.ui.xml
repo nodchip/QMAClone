@@ -71,9 +71,52 @@
     transform: translateY(-1px);
   }
 
+  .lobbyStartButton:active {
+    transform: translateY(1px);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.35);
+  }
+
+  .lobbyStartButton:disabled {
+    border-color: #6f8ca7;
+    background: linear-gradient(180deg, #57708a 0%, #445c73 100%);
+    color: #d9e7f4;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+  }
+
   .lobbyStartButton:focus {
     outline: 2px solid #77e4ff;
     outline-offset: 2px;
+  }
+
+  .lobbySubButton {
+    border: 1px solid #7fb0df;
+    border-radius: 6px;
+    background: #ffffff;
+    color: #0f3f71;
+    transition: background-color 140ms ease, border-color 140ms ease, box-shadow 140ms ease,
+      transform 90ms ease;
+  }
+
+  .lobbySubButton:hover {
+    background: #f0f7ff;
+    border-color: #4f8dc8;
+    box-shadow: 0 0 0 2px rgba(79, 141, 200, 0.2);
+  }
+
+  .lobbySubButton:active {
+    transform: translateY(1px);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.15);
+  }
+
+  .lobbySubButton:disabled {
+    background: #edf2f7;
+    border-color: #c7d4e0;
+    color: #7e91a5;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
   }
 
   .lobbyConditionCard {
@@ -209,7 +252,8 @@
             <td class="{style.lobbyLabelCell}">イベント名</td>
             <td class="{style.lobbyValueCell}">
               <g:TextBox ui:field="textBoxEventName" maxLength="16" />
-              <g:Button ui:field="buttonShowEventRooms" text="参照" />
+              <g:Button ui:field="buttonShowEventRooms" text="参照"
+                styleName="{style.lobbySubButton}" />
               <g:CheckBox ui:field="checkBoxPublicEvent" text="イベント戦を公開する" />
             </td>
             <td class="{style.lobbyLabelCell}">テーマ</td>

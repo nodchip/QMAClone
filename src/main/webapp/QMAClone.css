@@ -1249,6 +1249,33 @@ body {
 	color: #eaf7ff;
 	cursor: pointer;
 	font-weight: bold;
+	transition: background-color 140ms ease, border-color 140ms ease, box-shadow 140ms ease,
+		transform 90ms ease;
+}
+
+.app-chat-toggle:hover {
+	border-color: #74cbff;
+	background: #1a4a76;
+	box-shadow: 0 0 0 2px rgba(63, 155, 214, 0.28);
+}
+
+.app-chat-toggle:active {
+	transform: translateY(1px);
+	box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.app-chat-toggle:focus-visible {
+	outline: 2px solid #79d7ff;
+	outline-offset: 1px;
+}
+
+.app-chat-toggle:disabled {
+	background: #6f859b;
+	border-color: #5e7489;
+	color: #d7e2ee;
+	cursor: not-allowed;
+	box-shadow: none;
+	transform: none;
 }
 
 .app-chat-body {
@@ -1287,6 +1314,33 @@ body {
 	background: #133457;
 	color: #eaf7ff;
 	cursor: pointer;
+	transition: background-color 140ms ease, border-color 140ms ease, box-shadow 140ms ease,
+		transform 90ms ease;
+}
+
+.app-chat-reopen:hover {
+	border-color: #74cbff;
+	background: #1a4a76;
+	box-shadow: 0 0 0 2px rgba(63, 155, 214, 0.28);
+}
+
+.app-chat-reopen:active {
+	transform: translateY(1px);
+	box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.app-chat-reopen:focus-visible {
+	outline: 2px solid #79d7ff;
+	outline-offset: 2px;
+}
+
+.app-chat-reopen:disabled {
+	background: #6f859b;
+	border-color: #5e7489;
+	color: #d7e2ee;
+	cursor: not-allowed;
+	box-shadow: none;
+	transform: none;
 }
 /* 蝠城｡御ｽ懈・繧ｦ繧｣繧ｶ繝ｼ繝・*/
 .creationWizard {
@@ -1475,6 +1529,33 @@ body {
   color: #ffffff;
   border: 1px solid #0f3f71;
   border-radius: 6px;
+  transition: background-color 140ms ease, border-color 140ms ease, box-shadow 140ms ease,
+    transform 90ms ease;
+}
+
+.creationButtonPrimary:hover {
+  background: #1a568f;
+  border-color: #1a568f;
+  box-shadow: 0 0 0 2px rgba(22, 95, 160, 0.25);
+}
+
+.creationButtonPrimary:active {
+  transform: translateY(1px);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25);
+}
+
+.creationButtonPrimary:focus-visible {
+  outline: 2px solid #73b7ff;
+  outline-offset: 2px;
+}
+
+.creationButtonPrimary:disabled {
+  background: #9baabc;
+  border-color: #8f9fb1;
+  color: #f2f5f8;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
 }
 
 .creationButtonSecondary {
@@ -1482,6 +1563,67 @@ body {
   color: #0f3f71;
   border: 1px solid #7fb0df;
   border-radius: 6px;
+  transition: background-color 140ms ease, border-color 140ms ease, box-shadow 140ms ease,
+    transform 90ms ease;
+}
+
+.creationButtonSecondary:hover {
+  background: #f0f7ff;
+  border-color: #4f8dc8;
+  box-shadow: 0 0 0 2px rgba(79, 141, 200, 0.2);
+}
+
+.creationButtonSecondary:active {
+  transform: translateY(1px);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.15);
+}
+
+.creationButtonSecondary:focus-visible {
+  outline: 2px solid #73b7ff;
+  outline-offset: 2px;
+}
+
+.creationButtonSecondary:disabled {
+  background: #edf2f7;
+  border-color: #c7d4e0;
+  color: #7e91a5;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+.app-setting-panel .gwt-Button {
+  border: 1px solid #7fb0df;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #0f3f71;
+  transition: background-color 140ms ease, border-color 140ms ease, box-shadow 140ms ease,
+    transform 90ms ease;
+}
+
+.app-setting-panel .gwt-Button:hover {
+  background: #f0f7ff;
+  border-color: #4f8dc8;
+  box-shadow: 0 0 0 2px rgba(79, 141, 200, 0.2);
+}
+
+.app-setting-panel .gwt-Button:active {
+  transform: translateY(1px);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.15);
+}
+
+.app-setting-panel .gwt-Button:focus-visible {
+  outline: 2px solid #73b7ff;
+  outline-offset: 2px;
+}
+
+.app-setting-panel .gwt-Button:disabled {
+  background: #edf2f7;
+  border-color: #c7d4e0;
+  color: #7e91a5;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
 }
 
 .creationGuidelineLink {

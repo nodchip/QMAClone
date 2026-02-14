@@ -35,6 +35,7 @@ public class PanelSetting extends TwoColumnSelectionPanel {
 	@Inject
 	public PanelSetting(final PanelSettingUserCodePresenter.View.Factory userCodeFactory) {
 		super(120);
+		addStyleName("app-setting-panel");
 		setWidth("800px");
 		add("設定トップ", new LazyPanel() {
 			@Override
