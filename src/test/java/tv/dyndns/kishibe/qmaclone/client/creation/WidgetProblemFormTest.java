@@ -1,6 +1,8 @@
 package tv.dyndns.kishibe.qmaclone.client.creation;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.Test;
 
@@ -161,5 +163,26 @@ public class WidgetProblemFormTest extends QMACloneGWTTestCaseBase {
 
     PacketProblem p = form.getProblem();
     assertEquals(date, p.indicationResolved);
+  }
+
+  @Test
+  public void testApplyStepErrorsShouldShowGenreError() {
+    Map<String, String> errors = new HashMap<String, String>();
+    errors.put(WidgetProblemForm.FIELD_GENRE, "ジャンルを選択してください");
+
+    form.applyStepErrors(errors);
+
+    assertTrue(form.getElement().getInnerText().contains("ジャンルを選択してください"));
+  }
+
+  @Test
+  public void testClearStepErrorsShouldRemoveMessage() {
+    Map<String, String> errors = new HashMap<String, String>();
+    errors.put(WidgetProblemForm.FIELD_SENTENCE, "問題文を入力してください");
+
+    form.applyStepErrors(errors);
+    form.clearStepErrors();
+
+    assertFalse(form.getElement().getInnerText().contains("問題文を入力してください"));
   }
 }

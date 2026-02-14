@@ -1344,3 +1344,19 @@ body {
     margin: 4px 6px 0 0;
   }
 }
+.creationFieldError {
+  color: #c62828;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.creationFieldErrorLabel {
+  color: #c62828;
+  font-weight: bold;
+}
+
+.creationStepErrorSummary {
+  color: #b71c1c;
+  font-weight: bold;
+  margin: 8px 0;
+}

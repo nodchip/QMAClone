@@ -29,7 +29,9 @@ import static tv.dyndns.kishibe.qmaclone.client.constant.Constant.MAX_PLAYER_NAM
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -92,6 +94,10 @@ public class WidgetProblemForm extends VerticalPanel implements ClickHandler, Ch
   private static final int ROW_INDICATION = 12;
   private static final int ROW_NOTE = 13;
   private static final int ROW_PROBLEM_FEEDBACK = 14;
+  public static final String FIELD_GENRE = "genre";
+  public static final String FIELD_TYPE = "type";
+  public static final String FIELD_SENTENCE = "sentence";
+  public static final String FIELD_ANSWER1 = "answer1";
   private final Label labelProblemNumber = new Label("新規問題を作成中");
   private final ListBox listBoxGenre = new ListBox();
   @VisibleForTesting
@@ -125,6 +131,9 @@ public class WidgetProblemForm extends VerticalPanel implements ClickHandler, Ch
   private Date indication;
   private Date indicationResolved;
   private final Grid grid = new Grid(15, 2);
+  private final Map<String, Label> fieldErrorLabels = new HashMap<String, Label>();
+  private final Map<String, FocusWidget> focusFields = new HashMap<String, FocusWidget>();
+  private final Map<String, Integer> errorRows = new HashMap<String, Integer>();
   private final Button buttonIndicate = new Button("問題の不備を指摘する");
   @VisibleForTesting
   final CheckBox checkBoxUnindicate = new CheckBox("指摘マークを消す (ページ下の掲示板の指摘内容を確認して下さい)");
@@ -148,7 +157,10 @@ public class WidgetProblemForm extends VerticalPanel implements ClickHandler, Ch
     }
     listBoxGenre.setWidth("200px");
     grid.setText(row, 0, "ジャンル");
-    grid.setWidget(row++, 1, listBoxGenre);
+    grid.setWidget(row, 1, createFieldWithError(FIELD_GENRE, listBoxGenre));
+    errorRows.put(FIELD_GENRE, row);
+    focusFields.put(FIELD_GENRE, listBoxGenre);
+    row++;
 
     // 出題形式
     for (ProblemType type : ProblemType.values()) {
@@ -161,7 +173,10 @@ public class WidgetProblemForm extends VerticalPanel implements ClickHandler, Ch
     listBoxType.setWidth("200px");
     listBoxType.addChangeHandler(this);
     grid.setText(row, 0, "出題形式");
-    grid.setWidget(row++, 1, listBoxType);
+    grid.setWidget(row, 1, createFieldWithError(FIELD_TYPE, listBoxType));
+    errorRows.put(FIELD_TYPE, row);
+    focusFields.put(FIELD_TYPE, listBoxType);
+    row++;
 
     // ランダムフラグ
     for (int i = 1; i <= 5; ++i) {
@@ -177,7 +192,10 @@ public class WidgetProblemForm extends VerticalPanel implements ClickHandler, Ch
     textAreaSentence.setCharacterWidth(60);
     textAreaSentence.setVisibleLines(5);
     grid.setText(row, 0, "問題文");
-    grid.setWidget(row++, 1, textAreaSentence);
+    grid.setWidget(row, 1, createFieldWithError(FIELD_SENTENCE, textAreaSentence));
+    errorRows.put(FIELD_SENTENCE, row);
+    focusFields.put(FIELD_SENTENCE, textAreaSentence);
+    row++;
 
     // 選択肢
     VerticalPanel choicePanel = new VerticalPanel();
@@ -211,7 +229,10 @@ public class WidgetProblemForm extends VerticalPanel implements ClickHandler, Ch
     }
     answerPanel.add(checkBoxImageAnswer);
     grid.setText(row, 0, "解答");
-    grid.setWidget(row++, 1, answerPanel);
+    grid.setWidget(row, 1, createFieldWithError(FIELD_ANSWER1, answerPanel));
+    errorRows.put(FIELD_ANSWER1, row);
+    focusFields.put(FIELD_ANSWER1, textBoxAnswer[0]);
+    row++;
 
     // 表示する選択肢の数
     grid.setText(row, 0, "表示する選択肢の数");
@@ -305,6 +326,19 @@ public class WidgetProblemForm extends VerticalPanel implements ClickHandler, Ch
     updateForm();
   }
 
+  private Widget createFieldWithError(String fieldId, Widget field) {
+    VerticalPanel panel = new VerticalPanel();
+    panel.setStyleName("gridNoFrame");
+    panel.add(field);
+
+    Label errorLabel = new Label();
+    errorLabel.setVisible(false);
+    errorLabel.addStyleName("creationFieldError");
+    panel.add(errorLabel);
+    fieldErrorLabels.put(fieldId, errorLabel);
+    return panel;
+  }
+
   /**
    * ウィザードのステップに応じて問題フォーム内の表示項目を切り替える。
    *
@@ -351,6 +385,57 @@ public class WidgetProblemForm extends VerticalPanel implements ClickHandler, Ch
 
   private void setRowVisible(int row, boolean visible) {
     grid.getRowFormatter().setVisible(row, visible);
+  }
+
+  /**
+   * 項目エラー表示を反映する。
+   *
+   * @param fieldErrors 項目エラー
+   */
+  public void applyStepErrors(Map<String, String> fieldErrors) {
+    clearStepErrors();
+    if (fieldErrors == null) {
+      return;
+    }
+
+    for (Map.Entry<String, String> entry : fieldErrors.entrySet()) {
+      String fieldId = entry.getKey();
+      Label errorLabel = fieldErrorLabels.get(fieldId);
+      Integer row = errorRows.get(fieldId);
+      if (errorLabel == null || row == null) {
+        continue;
+      }
+
+      errorLabel.setText(entry.getValue());
+      errorLabel.setVisible(true);
+      grid.getCellFormatter().addStyleName(row, 0, "creationFieldErrorLabel");
+    }
+  }
+
+  /**
+   * 項目エラー表示をクリアする。
+   */
+  public void clearStepErrors() {
+    for (Label label : fieldErrorLabels.values()) {
+      label.setText("");
+      label.setVisible(false);
+    }
+    for (Integer row : errorRows.values()) {
+      grid.getCellFormatter().removeStyleName(row, 0, "creationFieldErrorLabel");
+    }
+  }
+
+  /**
+   * 指定項目へフォーカスを移動する。
+   *
+   * @param fieldId 項目ID
+   */
+  public void focusField(String fieldId) {
+    FocusWidget widget = focusFields.get(fieldId);
+    if (widget == null) {
+      return;
+    }
+    widget.setFocus(true);
   }
 
   /**
