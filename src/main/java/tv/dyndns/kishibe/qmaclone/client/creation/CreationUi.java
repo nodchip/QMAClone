@@ -244,6 +244,7 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
   private boolean step4BasicDetailOpened = false;
   private boolean step4QuestionDetailOpened = false;
   private boolean step4AnswerDetailOpened = false;
+  private boolean wizardNavigationEnabled = true;
   private final RepeatingCommand commandCheckProblem = new RepeatingCommand() {
     @Override
     public boolean execute() {
@@ -324,6 +325,7 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
     widgetProblemForm.clearStepErrors();
     htmlStepErrorSummary.setHTML("");
     resetStep4DetailState();
+    wizardNavigationEnabled = true;
     lastSavedSnapshot = createProblemSnapshot();
     textBoxGetProblem.setText(null);
     applyCreationMode(CreationMode.NEW);
@@ -344,8 +346,15 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
       updateStep4Summary();
       updateStep5RelatedPanels();
     }
-    buttonPrevStep.setEnabled(currentStep > MIN_STEP);
-    buttonNextStep.setEnabled(currentStep < MAX_STEP);
+    updateWizardNavigationButtons();
+  }
+
+  /**
+   * ステップと有効状態に応じて、ウィザードの戻る/次へボタン状態を更新する。
+   */
+  private void updateWizardNavigationButtons() {
+    buttonPrevStep.setEnabled(wizardNavigationEnabled && currentStep > MIN_STEP);
+    buttonNextStep.setEnabled(wizardNavigationEnabled && currentStep < MAX_STEP);
   }
 
   private void updateStepVisibility() {
@@ -577,13 +586,16 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
     }
   };
 
-  private void setEnable(boolean enabled) {
+  @VisibleForTesting
+  void setEnable(boolean enabled) {
     FocusWidget[] widgets = { buttonNewProblem, buttonMoveToVerification, buttonSendProblem, textBoxGetProblem,
         buttonGetProblem, buttonCopyProblem, buttonNextProblem, buttonSelectNewMode, buttonSelectEditMode,
-        buttonSelectCloneMode, buttonPrevStep, buttonNextStep };
+        buttonSelectCloneMode };
     for (FocusWidget widget : widgets) {
       widget.setEnabled(enabled);
     }
+    wizardNavigationEnabled = enabled;
+    updateWizardNavigationButtons();
     widgetProblemForm.setEnable(enabled);
   }
 

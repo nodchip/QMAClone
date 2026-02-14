@@ -23,11 +23,11 @@
 			<br />
 			<a href="creation-guideline.html" target="_blank" rel="noopener noreferrer"
 				class="creationGuidelineLink">問題作成ガイドラインを見る（新規タブ）</a>
-			<g:HorizontalPanel>
-				<g:Button ui:field="buttonNewProblem" text="入力内容をリセットする"
-					styleName="creationButtonSecondary" />
-			</g:HorizontalPanel>
 			<g:HTMLPanel styleName="creationWizard">
+				<g:HTMLPanel styleName="creationWizardUtilityBar">
+					<g:Button ui:field="buttonNewProblem" text="入力内容をリセットする"
+						styleName="creationButtonSecondary" />
+				</g:HTMLPanel>
 				<g:HorizontalPanel styleName="creationWizardSteps">
 					<g:Label ui:field="labelStep1" text="1. モード選択" />
 					<g:Label ui:field="labelStep2" text="2. 基本情報" />
@@ -160,8 +160,10 @@
 					</g:HorizontalPanel>
 				</g:HTMLPanel>
 				<g:HorizontalPanel styleName="creationWizardFooter">
-					<g:Button ui:field="buttonPrevStep" text="戻る" />
-					<g:Button ui:field="buttonNextStep" text="次へ" />
+					<g:Button ui:field="buttonPrevStep" text="戻る"
+						styleName="creationButtonSecondary creationWizardBackButton" />
+					<g:Button ui:field="buttonNextStep" text="次へ"
+						styleName="creationButtonPrimary creationWizardNextButton" />
 				</g:HorizontalPanel>
 			</g:HTMLPanel>
 		</g:HTMLPanel>

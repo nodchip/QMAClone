@@ -1297,6 +1297,11 @@ body {
   background: #f7fbff;
 }
 
+.creationWizardUtilityBar {
+  text-align: right;
+  margin-bottom: 8px;
+}
+
 .creationWizardSteps {
   width: 100%;
   margin-bottom: 12px;
@@ -1331,6 +1336,11 @@ body {
 .creationWizardFooter {
   margin-top: 14px;
   border-spacing: 8px;
+}
+
+.creationWizardBackButton,
+.creationWizardNextButton {
+  min-width: 92px;
 }
 
 @media (max-width: 1100px) {

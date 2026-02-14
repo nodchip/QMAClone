@@ -94,6 +94,37 @@ public class CreationUiTest extends QMACloneGWTTestCaseBase {
 		assertFalse(ui.validateProblem());
 	}
 
+	@Test
+	public void testStep1ShouldDisablePrevButton() {
+		ui.goToStep(1);
+		assertFalse(ui.buttonPrevStep.isEnabled());
+	}
+
+	@Test
+	public void testStep2ShouldEnablePrevButton() {
+		ui.goToStep(2);
+		assertTrue(ui.buttonPrevStep.isEnabled());
+	}
+
+	@Test
+	public void testStep1ShouldKeepPrevButtonDisabledAfterEnable() {
+		ui.goToStep(1);
+		ui.setEnable(true);
+
+		assertFalse(ui.buttonPrevStep.isEnabled());
+	}
+
+	@Test
+	public void testWizardButtonsShouldUsePrimarySecondaryStyles() {
+		assertTrue(ui.buttonPrevStep.getStyleName().contains("creationButtonSecondary"));
+		assertTrue(ui.buttonNextStep.getStyleName().contains("creationButtonPrimary"));
+	}
+
+	@Test
+	public void testResetButtonShouldBeInWizardUtilityBar() {
+		assertTrue(ui.buttonNewProblem.getParent().getStyleName().contains("creationWizardUtilityBar"));
+	}
+
 	private boolean doesPanelWarningHaveUpdateNoteMessage() {
 		for (int i = 0; i < ui.panelWarning.getWidgetCount(); ++i) {
 			HTML html = (HTML) ui.panelWarning.getWidget(i);
