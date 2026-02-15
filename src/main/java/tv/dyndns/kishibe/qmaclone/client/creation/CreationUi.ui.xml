@@ -183,7 +183,8 @@
 			問題を送信しました。問題番号は
 			<g:Label ui:field="labelProblemId" />
 			です。
-			<g:Button ui:field="buttonNextProblem" text="続けて問題を作成する" />
+			<g:Button ui:field="buttonNextProblem" text="続けて問題を作成する"
+				styleName="creationButtonPrimary" />
 		</g:HTMLPanel>
 	</g:HTMLPanel>
 </ui:UiBinder>
