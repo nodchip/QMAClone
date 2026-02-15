@@ -126,6 +126,26 @@
     background: rgba(8, 20, 38, 0.42);
   }
 
+  .lobbyPrimaryConditionCard {
+    border-color: #4f78a5;
+    background: rgba(12, 30, 52, 0.58);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.2);
+  }
+
+  .lobbySettingsSection {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .lobbySectionTitle {
+    font-size: 15px;
+    font-weight: bold;
+    color: #d9ecff;
+    letter-spacing: 0.06em;
+    padding: 2px 4px;
+  }
+
   .lobbyConditionGrid {
     width: 100%;
     border-collapse: separate;
@@ -201,7 +221,37 @@
         </tr>
       </table>
 
-      <g:HTMLPanel styleName="{style.lobbyConditionCard}">
+      <g:HTMLPanel styleName="{style.lobbySettingsSection}">
+        <g:HTMLPanel styleName="{style.lobbySectionTitle}">主要設定</g:HTMLPanel>
+        <g:HTMLPanel styleName="{style.lobbyConditionCard} {style.lobbyPrimaryConditionCard}">
+          <table class="{style.lobbyConditionGrid}">
+            <tr>
+              <td class="{style.lobbyLabelCell}">ジャンル</td>
+              <td class="{style.lobbyValueCell}">
+                <k:WidgetMultiItemSelector ui:field="multiItemSelectorGenre" />
+              </td>
+              <td class="{style.lobbyLabelCell}">出題形式</td>
+              <td class="{style.lobbyValueCell}">
+                <k:WidgetMultiItemSelector ui:field="multiItemSelectorType" />
+              </td>
+            </tr>
+            <tr>
+              <td class="{style.lobbyLabelCell}">難易度</td>
+              <td class="{style.lobbyValueCell}">
+                <g:ListBox ui:field="listBoxDifficultSelect" />
+              </td>
+              <td class="{style.lobbyLabelCell}">プレイヤー名</td>
+              <td class="{style.lobbyValueCell}">
+                <g:TextBox ui:field="textBoxPlayerName" maxLength="8" />
+              </td>
+            </tr>
+          </table>
+        </g:HTMLPanel>
+      </g:HTMLPanel>
+
+      <g:HTMLPanel styleName="{style.lobbySettingsSection}">
+        <g:HTMLPanel styleName="{style.lobbySectionTitle}">詳細設定</g:HTMLPanel>
+        <g:HTMLPanel styleName="{style.lobbyConditionCard}">
         <table class="{style.lobbyConditionGrid}">
           <tr>
             <td class="{style.lobbyLabelCell}">階級(自己申告)</td>
@@ -209,29 +259,9 @@
               <g:ListBox ui:field="listBoxLevelName" />
               <g:ListBox ui:field="listBoxLevelNumber" />
             </td>
-            <td class="{style.lobbyLabelCell}">ジャンル</td>
-            <td class="{style.lobbyValueCell}">
-              <k:WidgetMultiItemSelector ui:field="multiItemSelectorGenre" />
-            </td>
-          </tr>
-          <tr>
             <td class="{style.lobbyLabelCell}">地域</td>
             <td class="{style.lobbyValueCell}">
               <g:ListBox ui:field="listBoxPrefecture" />
-            </td>
-            <td class="{style.lobbyLabelCell}">出題形式</td>
-            <td class="{style.lobbyValueCell}">
-              <k:WidgetMultiItemSelector ui:field="multiItemSelectorType" />
-            </td>
-          </tr>
-          <tr>
-            <td class="{style.lobbyLabelCell}">プレイヤー名</td>
-            <td class="{style.lobbyValueCell}">
-              <g:TextBox ui:field="textBoxPlayerName" maxLength="8" />
-            </td>
-            <td class="{style.lobbyLabelCell}">難易度</td>
-            <td class="{style.lobbyValueCell}">
-              <g:ListBox ui:field="listBoxDifficultSelect" />
             </td>
           </tr>
           <tr>
@@ -262,6 +292,7 @@
             </td>
           </tr>
         </table>
+        </g:HTMLPanel>
       </g:HTMLPanel>
     </g:HTMLPanel>
 
