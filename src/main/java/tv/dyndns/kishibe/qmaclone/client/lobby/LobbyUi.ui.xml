@@ -217,6 +217,14 @@
     color: #d5ebff;
     font-size: 22px;
     font-weight: bold;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 4px 14px;
+  }
+
+  .lobbySummaryMetric {
+    white-space: nowrap;
   }
 
   .lobbyPlayerHistory {
@@ -353,20 +361,30 @@
     </g:HTMLPanel>
 
     <g:HTMLPanel styleName="{style.lobbySummaryBottom}">
-      レーティング:
-      <span ui:field="spanRating">0</span>
-      /
-      平均順位:
-      <span ui:field="spanAverageRank">未プレイ</span>
-      /
-      プレイ回数:
-      <span ui:field="spanPlayCount">0</span>
-      /
-      直近スコア:
-      <span ui:field="spanHighScore">0</span>
-      /
-      平均スコア:
-      <span ui:field="spanAverageScore">0</span>
+      <span class="{style.lobbySummaryMetric}">
+        レーティング:
+        <span ui:field="spanRating">0</span>
+        /
+      </span>
+      <span class="{style.lobbySummaryMetric}">
+        平均順位:
+        <span ui:field="spanAverageRank">未プレイ</span>
+        /
+      </span>
+      <span class="{style.lobbySummaryMetric}">
+        プレイ回数:
+        <span ui:field="spanPlayCount">0</span>
+        /
+      </span>
+      <span class="{style.lobbySummaryMetric}">
+        直近スコア:
+        <span ui:field="spanHighScore">0</span>
+        /
+      </span>
+      <span class="{style.lobbySummaryMetric}">
+        平均スコア:
+        <span ui:field="spanAverageScore">0</span>
+      </span>
     </g:HTMLPanel>
 
     <g:HTMLPanel styleName="{style.lobbyPlayerHistory}">
