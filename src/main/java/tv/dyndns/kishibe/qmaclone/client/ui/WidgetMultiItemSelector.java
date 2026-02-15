@@ -71,6 +71,10 @@ public class WidgetMultiItemSelector<T extends Enum<T> & HasIndex> extends Verti
 			}
 
 			checkBoxMultiSelect.addClickHandler(this);
+			// 「複数選択」ラベルが狭い画面幅で折り返されないようにする。
+			checkBoxMultiSelect.getElement().getStyle().setProperty("whiteSpace", "nowrap");
+			// ロビー設定カードの配色に合わせてラベル色を明示する。
+			checkBoxMultiSelect.getElement().getStyle().setColor("#d7e9ff");
 
 			final HorizontalPanel panel = new HorizontalPanel();
 			panel.setVerticalAlignment(ALIGN_MIDDLE);

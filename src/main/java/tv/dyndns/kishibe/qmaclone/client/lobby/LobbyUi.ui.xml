@@ -91,18 +91,18 @@
   }
 
   .lobbySubButton {
-    border: 1px solid #7fb0df;
+    border: 1px solid #4f78a5;
     border-radius: 6px;
-    background: #ffffff;
-    color: #0f3f71;
+    background: #0e2746;
+    color: #dff1ff;
     transition: background-color 140ms ease, border-color 140ms ease, box-shadow 140ms ease,
       transform 90ms ease;
   }
 
   .lobbySubButton:hover {
-    background: #f0f7ff;
-    border-color: #4f8dc8;
-    box-shadow: 0 0 0 2px rgba(79, 141, 200, 0.2);
+    background: #13345d;
+    border-color: #69deff;
+    box-shadow: 0 0 0 2px rgba(105, 222, 255, 0.18);
   }
 
   .lobbySubButton:active {
@@ -163,8 +163,12 @@
     text-align: left;
   }
 
-  .lobbyValueCell .gwt-ListBox,
-  .lobbyValueCell .gwt-TextBox {
+  .lobbyValueCell > .lobbySubButton {
+    margin-right: 6px;
+  }
+
+  .lobbyValueCell select,
+  .lobbyValueCell input[type="text"] {
     width: 100%;
     max-width: 300px;
     min-height: 30px;
@@ -176,25 +180,30 @@
     padding: 4px 8px;
   }
 
-  .lobbyValueCell .gwt-ListBox:focus,
-  .lobbyValueCell .gwt-TextBox:focus {
+  .lobbyValueCell select:focus,
+  .lobbyValueCell input[type="text"]:focus {
     outline: 2px solid #77e4ff;
     outline-offset: 1px;
     border-color: #77e4ff;
   }
 
-  .lobbyValueCell .gwt-CheckBox {
+  .lobbyPublicEventCheck {
     display: inline-flex;
     align-items: center;
-    gap: 4px;
+    gap: 6px;
     margin-top: 6px;
     color: #d7e9ff;
     white-space: nowrap;
     line-height: 1.2;
   }
 
-  .lobbyValueCell .gwt-CheckBox input {
+  .lobbyPublicEventCheck label {
+    white-space: nowrap;
+  }
+
+  .lobbyPublicEventCheck input[type="checkbox"] {
     margin: 0;
+    accent-color: #5db3ff;
   }
 
   .lobbySummaryBottom {
@@ -212,6 +221,18 @@
 
   .lobbyPlayerHistory {
     display: none;
+  }
+
+  .lobbyDetailSettingsGrid {
+    table-layout: fixed;
+  }
+
+  .lobbyDetailSettingsGrid col.lobbyDetailLabelCol {
+    width: 18%;
+  }
+
+  .lobbyDetailSettingsGrid col.lobbyDetailValueCol {
+    width: 32%;
   }
   </ui:style>
   <g:HTMLPanel styleName="{style.lobbyRoot}">
@@ -280,7 +301,13 @@
       <g:HTMLPanel styleName="{style.lobbySettingsSection}">
         <g:HTMLPanel styleName="{style.lobbySectionTitle}">詳細設定</g:HTMLPanel>
         <g:HTMLPanel styleName="{style.lobbyConditionCard}">
-        <table class="{style.lobbyConditionGrid}">
+        <table class="{style.lobbyConditionGrid} {style.lobbyDetailSettingsGrid}">
+          <colgroup>
+            <col class="{style.lobbyDetailLabelCol}" />
+            <col class="{style.lobbyDetailValueCol}" />
+            <col class="{style.lobbyDetailLabelCol}" />
+            <col class="{style.lobbyDetailValueCol}" />
+          </colgroup>
           <tr>
             <td class="{style.lobbyLabelCell}">階級(自己申告)</td>
             <td class="{style.lobbyValueCell}">
@@ -312,7 +339,8 @@
               <g:TextBox ui:field="textBoxEventName" maxLength="16" />
               <g:Button ui:field="buttonShowEventRooms" text="参照"
                 styleName="{style.lobbySubButton}" />
-              <g:CheckBox ui:field="checkBoxPublicEvent" text="イベント戦を公開する" />
+              <g:CheckBox ui:field="checkBoxPublicEvent" text="イベント戦を公開する"
+                styleName="{style.lobbyPublicEventCheck}" />
             </td>
             <td class="{style.lobbyLabelCell}">テーマ</td>
             <td class="{style.lobbyValueCell}">
