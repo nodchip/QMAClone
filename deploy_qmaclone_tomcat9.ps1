@@ -4,7 +4,9 @@ param(
   [string]$SourceWar = "",
   [switch]$SkipBuild,
   [int]$GwtLocalWorkers = 0,
-  [bool]$GwtDraftCompile = $true
+  [bool]$GwtDraftCompile = $true,
+  [string]$HostName = "localhost",
+  [int]$StartupWaitTimeoutSeconds = 300
 )
 
 Set-StrictMode -Version Latest
@@ -155,6 +157,94 @@ function Resolve-GwtLocalWorkers {
   return $cpuCount - 1
 }
 
+function Resolve-TomcatHttpPort {
+  param([string]$TomcatBasePath)
+
+  $serverXmlPath = Join-Path -Path $TomcatBasePath -ChildPath "conf\server.xml"
+  if (-not (Test-Path -LiteralPath $serverXmlPath)) {
+    return 8080
+  }
+
+  try {
+    [xml]$serverXml = Get-Content -LiteralPath $serverXmlPath -Raw
+    $connectorNodes = $serverXml.SelectNodes("//Connector")
+    foreach ($connector in $connectorNodes) {
+      $protocol = [string]$connector.protocol
+      $port = [string]$connector.port
+      if ([string]::IsNullOrWhiteSpace($port)) {
+        continue
+      }
+      if ($protocol -match "AJP") {
+        continue
+      }
+      return [int]$port
+    }
+  } catch {
+    Write-Warning "Failed to parse server.xml. Use default HTTP port 8080."
+  }
+
+  return 8080
+}
+
+function Get-HttpStatusCode {
+  param(
+    [string]$Uri,
+    [string]$Method = "GET"
+  )
+
+  try {
+    $response = Invoke-WebRequest -Uri $Uri -Method $Method -UseBasicParsing -TimeoutSec 10
+    return [int]$response.StatusCode
+  } catch {
+    if ($_.Exception.Response -and $_.Exception.Response.StatusCode) {
+      return [int]$_.Exception.Response.StatusCode.value__
+    }
+    return -1
+  }
+}
+
+function Wait-ForHttpStatusNot404 {
+  param(
+    [string]$Uri,
+    [int]$TimeoutSeconds
+  )
+
+  $deadline = (Get-Date).AddSeconds($TimeoutSeconds)
+  while ($true) {
+    $statusCode = Get-HttpStatusCode -Uri $Uri
+    if ($statusCode -ne 404 -and $statusCode -gt 0) {
+      Write-Host "Page became available: $Uri (HTTP $statusCode)"
+      return
+    }
+
+    if ((Get-Date) -ge $deadline) {
+      throw "Timed out waiting for non-404 response: $Uri"
+    }
+    Start-Sleep -Seconds 1
+  }
+}
+
+function Wait-ForRpcServletReady {
+  param(
+    [string]$Uri,
+    [int]$TimeoutSeconds
+  )
+
+  $deadline = (Get-Date).AddSeconds($TimeoutSeconds)
+  while ($true) {
+    $statusCode = Get-HttpStatusCode -Uri $Uri
+    if ($statusCode -in @(200, 204, 302, 401, 403, 405)) {
+      Write-Host "RPC endpoint is ready: $Uri (HTTP $statusCode)"
+      return
+    }
+
+    if ((Get-Date) -ge $deadline) {
+      throw "Timed out waiting for RPC endpoint readiness: $Uri (last status: $statusCode)"
+    }
+    Start-Sleep -Seconds 1
+  }
+}
+
 $workspaceRoot = $PSScriptRoot
 Set-Location -LiteralPath $workspaceRoot
 
@@ -180,6 +270,7 @@ if (-not $SkipBuild) {
 
 $resolvedTomcatBase = Resolve-TomcatBasePath -InputPath $TomcatBase
 $resolvedSourceWar = Resolve-SourceWarPath -InputPath $SourceWar
+$resolvedTomcatHttpPort = Resolve-TomcatHttpPort -TomcatBasePath $resolvedTomcatBase
 $webappsPath = Join-Path -Path $resolvedTomcatBase -ChildPath "webapps"
 
 if (-not (Test-Path -LiteralPath $webappsPath)) {
@@ -193,6 +284,8 @@ Write-Host "TomcatBase: $resolvedTomcatBase"
 Write-Host "Webapps:    $webappsPath"
 Write-Host "Source WAR: $resolvedSourceWar"
 Write-Host "Service:    $ServiceName"
+Write-Host "Host:       $HostName"
+Write-Host "HTTP Port:  $resolvedTomcatHttpPort"
 
 if (Test-Path -LiteralPath $deployedWarPath) {
   Write-Host "Remove existing WAR: $deployedWarPath"
@@ -227,4 +320,14 @@ while ($true) {
 Write-Host "Deploy WAR to: $deployedWarPath"
 Copy-Item -LiteralPath $resolvedSourceWar -Destination $deployedWarPath -Force
 
-Write-Host "Done."
+$contextPath = "/QMAClone-1.0-SNAPSHOT"
+$baseUri = "http://$($HostName):$resolvedTomcatHttpPort$contextPath/"
+$rpcUri = "http://$($HostName):$resolvedTomcatHttpPort$contextPath/tv.dyndns.kishibe.qmaclone.QMAClone/service"
+
+Write-Host "Wait until page stops returning 404: $baseUri"
+Wait-ForHttpStatusNot404 -Uri $baseUri -TimeoutSeconds $StartupWaitTimeoutSeconds
+
+Write-Host "Wait until RPC servlet is ready: $rpcUri"
+Wait-ForRpcServletReady -Uri $rpcUri -TimeoutSeconds $StartupWaitTimeoutSeconds
+
+Write-Host "Done. Deployment is complete."

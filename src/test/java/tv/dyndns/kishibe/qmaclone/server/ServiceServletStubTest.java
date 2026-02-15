@@ -444,4 +444,70 @@ public class ServiceServletStubTest {
     problem.genre = genre;
     return problem;
   }
+
+  @Test
+  public void generateDiffHtmlShouldIncludeSummaryDiffAndFullDiff() throws Exception {
+    String before = String.join("\n",
+        "ジャンル: ノンジャンル",
+        "出題形式: Click",
+        "ランダム: 1",
+        "問題文:",
+        "A",
+        "選択肢:",
+        "a",
+        "b",
+        "解答:",
+        "a",
+        "問題作成者: creator1",
+        "問題ノート:",
+        "note1",
+        "表示選択肢数: 4");
+    String after = String.join("\n",
+        "ジャンル: ノンジャンル",
+        "出題形式: Click",
+        "ランダム: 2",
+        "問題文:",
+        "A+",
+        "選択肢:",
+        "a",
+        "b",
+        "c",
+        "解答:",
+        "a",
+        "問題作成者: creator1",
+        "問題ノート:",
+        "note2",
+        "表示選択肢数: 4");
+
+    String html = service.generateDiffHtml(before, after);
+
+    assertThat(html).contains("項目差分");
+    assertThat(html).contains("全文差分");
+    assertThat(html).contains("ランダムフラグ");
+    assertThat(html).contains("note1");
+    assertThat(html).contains("note2");
+  }
+
+  @Test
+  public void generateDiffHtmlShouldReturnNoSummaryChangeMessageWhenSummaryEquals() throws Exception {
+    String summary = String.join("\n",
+        "ジャンル: ノンジャンル",
+        "出題形式: Click",
+        "ランダム: 1",
+        "問題文:",
+        "A",
+        "選択肢:",
+        "a",
+        "b",
+        "解答:",
+        "a",
+        "問題作成者: creator1",
+        "問題ノート:",
+        "note1",
+        "表示選択肢数: 4");
+
+    String html = service.generateDiffHtml(summary, summary);
+
+    assertThat(html).contains("変更はありません。");
+  }
 }

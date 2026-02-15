@@ -34,6 +34,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -1356,9 +1357,180 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
     diff_match_patch differ = new diff_match_patch();
     LinkedList<Diff> diffs = differ.diff_main(before, after);
     differ.diff_cleanupSemantic(diffs);
-    String html = differ.diff_prettyHtml(diffs);
-    html = html.replaceAll("&para;", "");
-    return html;
+    String fullDiffHtml = differ.diff_prettyHtml(diffs).replaceAll("&para;", "");
+    String summaryDiffHtml = generateSummaryDiff(before, after);
+    StringBuilder builder = new StringBuilder();
+    builder.append("<style>");
+    builder.append(
+        ".problemChangeHistoryDiffRoot{margin-top:8px;}.problemChangeHistoryDiffSummary{background-color:#f7f9ff;border:1px solid #cfd9f2;padding:8px;margin-bottom:12px;}.problemChangeHistoryDiffSummaryItem{display:table;width:100%;margin-bottom:8px;}.problemChangeHistoryDiffSummaryLabel{font-weight:bold;margin-bottom:2px;}.problemChangeHistoryDiffSummaryValue{display:table-row;}.problemChangeHistoryDiffSummaryBefore,.problemChangeHistoryDiffSummaryAfter{display:table-cell;width:50%;padding:4px 8px;border:1px solid #dde3f7;background-color:white;vertical-align:top;white-space:pre-wrap;}.problemChangeHistoryDiffNoChange{color:#666;font-style:italic;}.problemChangeHistoryDiffFull{background-color:#fffdf4;border:1px solid #f3e7aa;padding:8px;}");
+    builder.append("</style>");
+    builder.append("<div class='problemChangeHistoryDiffRoot'>");
+    builder.append("<div class='problemChangeHistoryDiffSummary'>");
+    builder.append("<h3>項目差分</h3>");
+    builder.append(summaryDiffHtml);
+    builder.append("</div>");
+    builder.append("<div class='problemChangeHistoryDiffFull'>");
+    builder.append("<h3>全文差分</h3>");
+    builder.append(fullDiffHtml);
+    builder.append("</div>");
+    builder.append("</div>");
+    return builder.toString();
+  }
+
+  private String generateSummaryDiff(String before, String after) {
+    Map<String, String> beforeSections = parseSummary(before);
+    Map<String, String> afterSections = parseSummary(after);
+    StringBuilder html = new StringBuilder();
+
+    String[] sectionIds = { "ジャンル", "出題形式", "ランダムフラグ", "問題文", "選択肢", "解答", "問題作成者", "問題ノート", "表示選択肢数" };
+    boolean hasDiff = false;
+
+    for (String sectionId : sectionIds) {
+      String beforeValue = Strings.nullToEmpty(beforeSections.get(sectionId));
+      String afterValue = Strings.nullToEmpty(afterSections.get(sectionId));
+      if (beforeValue.equals(afterValue)) {
+        continue;
+      }
+
+      hasDiff = true;
+      html.append("<div class='problemChangeHistoryDiffSummaryItem'>");
+      html.append("<div class='problemChangeHistoryDiffSummaryLabel'>")
+          .append(escapeHtml(sectionId)).append("</div>");
+      html.append("<div class='problemChangeHistoryDiffSummaryValue'>");
+      html.append("<div class='problemChangeHistoryDiffSummaryBefore'>")
+          .append(escapeSummary(beforeValue)).append("</div>");
+      html.append("<div class='problemChangeHistoryDiffSummaryAfter'>")
+          .append(escapeSummary(afterValue)).append("</div>");
+      html.append("</div></div>");
+    }
+
+    if (!hasDiff) {
+      html.append("<div class='problemChangeHistoryDiffNoChange'>変更はありません。</div>");
+    }
+
+    return html.toString();
+  }
+
+  private Map<String, String> parseSummary(String summary) {
+    Map<String, String> sections = Maps.newLinkedHashMap();
+    if (summary == null) {
+      return sections;
+    }
+
+    LinkedHashMap<String, StringBuilder> sectionBuilders = Maps.newLinkedHashMap();
+    String currentSection = null;
+    String[] lines = summary.replace("\r", "").split("\n", -1);
+    for (String line : lines) {
+      String sectionId = parseSectionId(line);
+      if (sectionId != null) {
+        if (currentSection != null && sectionBuilders.containsKey(currentSection)) {
+          sections.put(currentSection, sectionBuilders.remove(currentSection).toString().trim());
+        }
+
+        currentSection = sectionId;
+        if (isSingleLineSection(sectionId)) {
+          String value = line.replaceFirst("^" + java.util.regex.Pattern.quote(sectionId + "[:：]"), "").trim();
+          sections.put(sectionId, value);
+          currentSection = null;
+        } else {
+          int index = line.indexOf(':');
+          if (index < 0) {
+            index = line.indexOf('：');
+          }
+          sectionBuilders.put(sectionId, new StringBuilder());
+          if (index + 1 < line.length()) {
+            String value = line.substring(index + 1).trim();
+            sectionBuilders.get(sectionId).append(value);
+          }
+        }
+        continue;
+      }
+
+      if (currentSection != null && sectionBuilders.containsKey(currentSection)) {
+        if (sectionBuilders.get(currentSection).length() > 0) {
+          sectionBuilders.get(currentSection).append('\n');
+        }
+        sectionBuilders.get(currentSection).append(line);
+      }
+    }
+
+    if (currentSection != null && sectionBuilders.containsKey(currentSection)) {
+      sections.put(currentSection, sectionBuilders.remove(currentSection).toString().trim());
+    }
+
+    return sections;
+  }
+
+  private String parseSectionId(String line) {
+    if (line == null) {
+      return null;
+    }
+    if (line.startsWith("ジャンル:") || line.startsWith("ジャンル：")) {
+      return "ジャンル";
+    }
+    if (line.startsWith("出題形式:") || line.startsWith("出題形式：")) {
+      return "出題形式";
+    }
+    if (line.startsWith("ランダム:") || line.startsWith("ランダム：")
+        || line.startsWith("ランダムフラグ:") || line.startsWith("ランダムフラグ：")) {
+      return "ランダムフラグ";
+    }
+    if (line.startsWith("問題文:") || line.startsWith("問題文：")) {
+      return "問題文";
+    }
+    if (line.startsWith("選択肢:") || line.startsWith("選択肢：")) {
+      return "選択肢";
+    }
+    if (line.startsWith("解答:") || line.startsWith("解答：")) {
+      return "解答";
+    }
+    if (line.startsWith("問題作成者:") || line.startsWith("問題作成者：")) {
+      return "問題作成者";
+    }
+    if (line.startsWith("問題ノート:") || line.startsWith("問題ノート：")) {
+      return "問題ノート";
+    }
+    if (line.startsWith("表示選択肢数:") || line.startsWith("表示選択肢数：")) {
+      return "表示選択肢数";
+    }
+    return null;
+  }
+
+  private boolean isSingleLineSection(String sectionId) {
+    return "ジャンル".equals(sectionId) || "出題形式".equals(sectionId) || "ランダムフラグ".equals(sectionId)
+        || "問題作成者".equals(sectionId) || "表示選択肢数".equals(sectionId);
+  }
+
+  private String escapeSummary(String value) {
+    return replaceLineBreak(value);
+  }
+
+  private String replaceLineBreak(String value) {
+    return escapeHtml(value).replace("\r", "").replace("\n", "<br/>");
+  }
+
+  private String escapeHtml(String value) {
+    if (value == null) {
+      return "";
+    }
+    StringBuilder escaped = new StringBuilder();
+    for (int i = 0; i < value.length(); ++i) {
+      char c = value.charAt(i);
+      if (c == '&') {
+        escaped.append("&amp;");
+      } else if (c == '<') {
+        escaped.append("&lt;");
+      } else if (c == '>') {
+        escaped.append("&gt;");
+      } else if (c == '\"') {
+        escaped.append("&quot;");
+      } else if (c == '\'') {
+        escaped.append("&#39;");
+      } else {
+        escaped.append(c);
+      }
+    }
+    return escaped.toString();
   }
 
   @Override
