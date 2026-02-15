@@ -15,14 +15,11 @@
 - `ops/scripts/` は再現性のため原則として追跡対象です。
 
 ## 段階移行
-- 既存のルート直下ファイル（`log.txt`、`memo.txt` など）は今回移動しません。
-- 今後の新規/更新分から `ops/` 配下へ配置します。
-- 既存のルート直下スクリプト（例: `filter_log.py`）は当面維持し、新規/更新スクリプトから `ops/scripts/` 配下へ配置します。
+- ルート直下の `memo.txt` は `ops/notes/memo.txt` へ移行済みです。
+- ルート直下の `filter_log.py` は `ops/scripts/filter_log.py` へ移行済みです。
 - `qmaclone_`（Muninプラグイン）は `ops/scripts/monitoring/qmaclone_` へ移動済みです。
+- 今後の新規/更新分は、必ず `ops/` 配下へ配置します。
 
 ## レガシー運用ファイル
-- ルート直下の以下ファイルはレガシー扱いです。
-  - `log.txt`
-  - `memo.txt`
-  - `filter_log.py`
-- これらは互換維持のため当面残しますが、新規作成・更新時は `ops/` 配下の同用途ディレクトリへ移行してください。
+- ルート直下に残る運用スクリプトは `deploy_qmaclone_tomcat9.ps1` のみです。
+- `deploy_qmaclone_tomcat9.ps1` は参照箇所が多いため、参照更新計画を確定してから移行します。
