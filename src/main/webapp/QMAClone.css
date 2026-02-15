@@ -1672,6 +1672,12 @@ body {
   font-weight: 700;
 }
 
+.creationPreviewLead {
+  margin: 12px 0 8px 0;
+  color: #1f4668;
+  line-height: 1.45;
+}
+
 .creationSummaryCardHeader {
   display: flex;
   align-items: center;

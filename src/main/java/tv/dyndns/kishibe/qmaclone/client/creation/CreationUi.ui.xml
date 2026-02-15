@@ -168,6 +168,9 @@
 						</g:HTML>
 						<g:SimplePanel ui:field="panelSimilar" />
 					</g:HTMLPanel>
+					<g:HTML ui:field="htmlSampleLead" styleName="creationPreviewLead" visible="false">
+						以下は、実際の出題画面に近い表示です。
+					</g:HTML>
 					<g:SimplePanel ui:field="panelSample" />
 					<g:HorizontalPanel>
 						<g:Button ui:field="buttonMoveToVerification"

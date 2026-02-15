@@ -119,6 +119,8 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
   @UiField
   HTML htmlSimilarLead;
   @UiField
+  HTML htmlSampleLead;
+  @UiField
   HTMLPanel panelCreationModeCards;
   @UiField
   HTMLPanel panelCreationModeNew;
@@ -538,6 +540,7 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
     PacketProblem problem = widgetProblemForm.getProblem();
     panelSimilarSection.setVisible(true);
     htmlSimilarLead.setVisible(true);
+    htmlSampleLead.setVisible(true);
     setProblemSample(problem);
     panelSimilar.setWidget(createEmptyProblemReportUi());
     getSimilarProblems(problem);
@@ -549,6 +552,7 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
   private void clearStep5RelatedPanels() {
     panelSimilarSection.setVisible(false);
     htmlSimilarLead.setVisible(false);
+    htmlSampleLead.setVisible(false);
     panelSimilar.clear();
     panelSample.clear();
   }
