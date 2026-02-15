@@ -50,3 +50,15 @@
 ### 補足
 - `\\bwar\\b` は `pom.xml` の `<packaging>war</packaging>` や、WAR成果物を扱う配備スクリプト記述にも一致するため、文字列ゼロ化は適用対象を分離して扱う。
 
+## ゲート最終確認結果（2026-02-16）
+- 通常デプロイ手順（`deploy_qmaclone_tomcat9.ps1`）を実行し、配備完了を確認した。
+- `/QMAClone-1.0-SNAPSHOT/` は HTTP 200 を確認した。
+- `/QMAClone-1.0-SNAPSHOT/tv.dyndns.kishibe.qmaclone.QMAClone/service` は HTTP 405 を確認した。
+- 再読み込み確認を 5 回実施し、すべて HTTP 200（404 なし）を確認した。
+
+### 実行コマンド
+- `mvn compile`
+- `powershell -NoProfile -ExecutionPolicy Bypass -File .\\deploy_qmaclone_tomcat9.ps1`
+- `curl.exe -s -o NUL -w "%{http_code}" http://localhost:8080/QMAClone-1.0-SNAPSHOT/`
+- `curl.exe -s -o NUL -w "%{http_code}" http://localhost:8080/QMAClone-1.0-SNAPSHOT/tv.dyndns.kishibe.qmaclone.QMAClone/service`
+
