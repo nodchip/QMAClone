@@ -138,6 +138,9 @@ public class Controller extends SimplePanel {
 			@Override
 			public void publish(LogRecord record) {
 				log(record.getMessage());
+				if (record.getLevel().intValue() >= Level.WARNING.intValue()) {
+					ClientReloadPrompter.maybePrompt(record.getThrown());
+				}
 			}
 
 			@Override

@@ -72,6 +72,11 @@ public abstract class StatusUpdater<T> {
 
 		@Override
 		public void onFailure(Throwable caught) {
+			if (ClientReloadPrompter.maybePrompt(caught)) {
+				logger.log(Level.SEVERE, "旧GWTキャッシュ由来の通信失敗を検知したため、通信を停止します。", caught);
+				stop();
+				return;
+			}
 			if (++responseRecieveFailedCount < MAX_RESPONSE_RECIEVE_FAILED_COUNT) {
 				logger.log(Level.WARNING, "レスポンス取得中にエラーが発生しました", caught);
 			} else {

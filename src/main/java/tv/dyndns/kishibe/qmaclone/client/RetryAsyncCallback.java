@@ -42,6 +42,10 @@ public abstract class RetryAsyncCallback<T> implements AsyncCallback<T> {
 
 	@Override
 	public void onFailure(Throwable caught) {
+		if (ClientReloadPrompter.maybePrompt(caught)) {
+			onHeavyFailure(caught);
+			return;
+		}
 		retry(caught);
 	}
 

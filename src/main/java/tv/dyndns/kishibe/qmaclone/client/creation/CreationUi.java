@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import tv.dyndns.kishibe.qmaclone.client.ClientReloadPrompter;
 import tv.dyndns.kishibe.qmaclone.client.Service;
 import tv.dyndns.kishibe.qmaclone.client.UserData;
 import tv.dyndns.kishibe.qmaclone.client.bbs.PanelBbs;
@@ -713,6 +714,11 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
     public void onFailure(Throwable caught) {
       String failureDetail = summarizeProblemLoadFailure(caught);
       logger.log(Level.WARNING, "問題の取得中にエラーが発生しました: " + failureDetail, caught);
+      if (ClientReloadPrompter.maybePrompt(caught)) {
+        loadedProblemInCurrentMode = false;
+        setEnable(true);
+        return;
+      }
       if (!retriedProblemLoad && loadingProblemId >= 0) {
         retriedProblemLoad = true;
         Service.Util.getInstance().getProblemList(createRpcIntegerList(loadingProblemId), callbackGetProblemList);
