@@ -24,7 +24,6 @@ import com.google.gwt.safehtml.shared.UriUtils;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
-import com.google.gwt.user.cellview.client.RowStyles;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HTML;
@@ -38,8 +37,13 @@ public class CellTableProblem extends CellTable<ProblemReportRow> {
   private static final long RESOLVED_CHECK_PERIOD = 7L * 24 * 60 * 60 * 1000;
   private static final long INDICATION_PERIOD = 30L * 24 * 60 * 60 * 1000;
   private static final Logger logger = Logger.getLogger(CellTableProblem.class.getName());
-  private static final String STYLE_ACCURACY_RATE = "accuracyRate";
-  private static final String STYLE_NEW_PROBLEM = "newProblem";
+  private static final String STYLE_RATE_BADGE_BASE = "problemRateBadge";
+  private static final String STYLE_RATE_BADGE_NEW = "problemRateBadge--new";
+  private static final String STYLE_RATE_BADGE_L1 = "problemRateBadge--l1";
+  private static final String STYLE_RATE_BADGE_L2 = "problemRateBadge--l2";
+  private static final String STYLE_RATE_BADGE_L3 = "problemRateBadge--l3";
+  private static final String STYLE_RATE_BADGE_L4 = "problemRateBadge--l4";
+  private static final String STYLE_RATE_BADGE_L5 = "problemRateBadge--l5";
   private static final String SAFE_VALUE_NA = "-";
   private final ListDataProvider<ProblemReportRow> dataProvider = new ListDataProvider<ProblemReportRow>();
   private final ListHandler<ProblemReportRow> columnSortHandler;
@@ -50,6 +54,9 @@ public class CellTableProblem extends CellTable<ProblemReportRow> {
 
     @Template("<div class='problemReportSentenceText'>{0}</div>")
     SafeHtml sentenceFont(String text);
+
+    @Template("<span class='{0} {1}'>{2}</span>")
+    SafeHtml rateBadge(String baseClass, String levelClass, String text);
 
     @Template("")
     SafeHtml empty();
@@ -190,8 +197,11 @@ public class CellTableProblem extends CellTable<ProblemReportRow> {
       @Override
       public SafeHtml getValue(ProblemReportRow row) {
         int ratio = safeProblem(row).getAccuracyRate();
-        String ratioText = ratio == -1 ? "-%" : ratio + "%";
-        return TEMPLATES.smallFont(ratioText);
+        if (ratio < 0) {
+          return TEMPLATES.rateBadge(STYLE_RATE_BADGE_BASE, STYLE_RATE_BADGE_NEW, "NEW");
+        }
+        String ratioText = ratio + "%";
+        return TEMPLATES.rateBadge(STYLE_RATE_BADGE_BASE, getAccuracyBadgeLevelClass(ratio), ratioText);
       }
     }, null);
 
@@ -260,20 +270,6 @@ public class CellTableProblem extends CellTable<ProblemReportRow> {
       }
     });
 
-    final RowStyles<ProblemReportRow> rowStyles = new RowStyles<ProblemReportRow>() {
-      @Override
-      public String getStyleNames(ProblemReportRow row, int rowIndex) {
-        if (row == null || row.problem == null) {
-          return null;
-        }
-        PacketProblem problem = row.problem;
-        if (problem.isNew()) {
-          return STYLE_NEW_PROBLEM;
-        }
-        return STYLE_ACCURACY_RATE + problem.getAccuracyRate();
-      }
-    };
-    setRowStyles(rowStyles);
   }
 
   private final AsyncCallback<Void> callbackReport =
@@ -383,6 +379,29 @@ public class CellTableProblem extends CellTable<ProblemReportRow> {
 
   private static String safeCreator(ProblemReportRow row) {
     return row == null || row.problem == null ? SAFE_VALUE_NA : blankToNa(row.problem.creator);
+  }
+
+  /**
+   * 正答率からバッジ色クラスを決定する。
+   *
+   * @param ratio 正答率（0-100想定）
+   * @return バッジ色クラス
+   */
+  private static String getAccuracyBadgeLevelClass(int ratio) {
+    int safeRatio = Math.max(0, Math.min(100, ratio));
+    if (safeRatio < 20) {
+      return STYLE_RATE_BADGE_L1;
+    }
+    if (safeRatio < 40) {
+      return STYLE_RATE_BADGE_L2;
+    }
+    if (safeRatio < 60) {
+      return STYLE_RATE_BADGE_L3;
+    }
+    if (safeRatio < 80) {
+      return STYLE_RATE_BADGE_L4;
+    }
+    return STYLE_RATE_BADGE_L5;
   }
 
   private <S> void addColumn(String header, Comparator<ProblemReportRow> comparator,

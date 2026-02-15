@@ -730,6 +730,54 @@ a:active {
 	line-height: 1.45;
 }
 
+.problemRateBadge {
+	display: inline-block;
+	min-width: 44px;
+	padding: 2px 8px;
+	border-radius: 999px;
+	font-size: 12px;
+	font-weight: 700;
+	line-height: 1.25;
+	text-align: center;
+	border: 1px solid transparent;
+}
+
+.problemRateBadge--new {
+	background: #eef2f7;
+	border-color: #c7d0da;
+	color: #485867;
+}
+
+.problemRateBadge--l1 {
+	background: #fde9e9;
+	border-color: #f3b5b5;
+	color: #8b1f1f;
+}
+
+.problemRateBadge--l2 {
+	background: #fff0dd;
+	border-color: #f1c995;
+	color: #80541a;
+}
+
+.problemRateBadge--l3 {
+	background: #f7f0c8;
+	border-color: #dfd28b;
+	color: #6e6117;
+}
+
+.problemRateBadge--l4 {
+	background: #e2f4df;
+	border-color: #b4ddb0;
+	color: #1f5f2a;
+}
+
+.problemRateBadge--l5 {
+	background: #dff0ff;
+	border-color: #afd3f3;
+	color: #1e4f7b;
+}
+
 .problemReportRegisterAll {
 	margin-top: 10px;
 }
