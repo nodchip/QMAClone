@@ -20,7 +20,6 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -40,8 +39,6 @@ public class ChangeHistoryViewImpl extends Composite implements ChangeHistoryVie
 			.create(PanelProblemChangeHistoryUiBinder.class);
 	private static final String GROUP_BEFORE = "before";
 	private static final String GROUP_AFTER = "after";
-  private static final String TOGGLE_OPEN = "詳細を開く";
-  private static final String TOGGLE_CLOSE = "詳細を閉じる";
   private static final int PREVIEW_MAX_LENGTH = 72;
   private static final String DIFF_EMPTY_MESSAGE = "比較したい履歴を「変更前」「変更後」で1件ずつ選択してください。";
   private static final String DIFF_NEED_MORE_HISTORY_MESSAGE = "比較対象が不足しています。履歴が2件以上あると差分を表示できます。";
@@ -57,10 +54,7 @@ public class ChangeHistoryViewImpl extends Composite implements ChangeHistoryVie
 	private final ChangeHistoryPresenter presenter;
 	private final Map<RadioButton, PacketProblemCreationLog> buttonToLogBefore = Maps.newHashMap();
 	private final Map<RadioButton, PacketProblemCreationLog> buttonToLogAfter = Maps.newHashMap();
-  private final Map<Button, PacketProblemCreationLog> detailButtonToLog = Maps.newHashMap();
-  private final Map<PacketProblemCreationLog, SafeHtml> detailHtmlByLog = Maps.newHashMap();
   private boolean synchronizingSelection;
-  private PacketProblemCreationLog openedDetail;
   private SafeHtml currentDiffHtml = SafeHtmlUtils.fromString(DIFF_EMPTY_MESSAGE);
 
 	public ChangeHistoryViewImpl(ChangeHistoryPresenter presenter) {
@@ -73,9 +67,6 @@ public class ChangeHistoryViewImpl extends Composite implements ChangeHistoryVie
 		panelHistoryList.clear();
     buttonToLogBefore.clear();
     buttonToLogAfter.clear();
-    detailButtonToLog.clear();
-    detailHtmlByLog.clear();
-    openedDetail = null;
     currentDiffHtml = SafeHtmlUtils.fromString(DIFF_EMPTY_MESSAGE);
     renderRightPane();
 
@@ -103,10 +94,8 @@ public class ChangeHistoryViewImpl extends Composite implements ChangeHistoryVie
     List<RadioButton> beforeButtons = Lists.newArrayList();
     List<RadioButton> afterButtons = Lists.newArrayList();
     int index = 0;
-    PacketProblemCreationLog previous = null;
     for (PacketProblemCreationLog change : sortedLog) {
-      panelHistoryList.add(createHistoryItem(change, previous, false, beforeButtons, afterButtons));
-      previous = change;
+      panelHistoryList.add(createHistoryItem(change, beforeButtons, afterButtons));
       ++index;
     }
 
@@ -129,11 +118,10 @@ public class ChangeHistoryViewImpl extends Composite implements ChangeHistoryVie
    * 変更履歴1件分のカードUIを生成する。
    *
    * @param change 履歴データ
-   * @param expanded 初期展開状態
    * @return 履歴カード
    */
-  private Widget createHistoryItem(final PacketProblemCreationLog change, PacketProblemCreationLog previous,
-      boolean expanded, List<RadioButton> beforeButtons, List<RadioButton> afterButtons) {
+  private Widget createHistoryItem(final PacketProblemCreationLog change, List<RadioButton> beforeButtons,
+      List<RadioButton> afterButtons) {
     final VerticalPanel item = new VerticalPanel();
     item.setStyleName("creationHistoryItem");
 
@@ -166,22 +154,7 @@ public class ChangeHistoryViewImpl extends Composite implements ChangeHistoryVie
     buttonToLogAfter.put(buttonAfter, change);
     afterButtons.add(buttonAfter);
 
-    detailHtmlByLog.put(change, buildDetailDiffHtml(previous == null ? "" : previous.summary, change.summary));
-
-    final Button toggleDetail = new Button(expanded ? TOGGLE_CLOSE : TOGGLE_OPEN);
-    toggleDetail.setStyleName("creationButtonSecondary");
-    toggleDetail.addClickHandler(new ClickHandler() {
-      @Override
-      public void onClick(ClickEvent event) {
-        toggleDetailTarget(change);
-      }
-    });
-    toggleDetail.setEnabled(!Strings.isNullOrEmpty(change.summary));
-    detailButtonToLog.put(toggleDetail, change);
-    controls.add(toggleDetail);
-
     item.add(controls);
-    refreshDetailButtonLabels();
     return item;
   }
 
@@ -201,154 +174,6 @@ public class ChangeHistoryViewImpl extends Composite implements ChangeHistoryVie
       return compact;
     }
     return compact.substring(0, PREVIEW_MAX_LENGTH) + "...";
-  }
-
-  private SafeHtml buildDetailDiffHtml(String previousSummary, String currentSummary) {
-    Map<String, String> beforeSections = parseSummarySections(previousSummary);
-    Map<String, String> afterSections = parseSummarySections(currentSummary);
-    SafeHtmlBuilder builder = new SafeHtmlBuilder();
-    String[] sectionIds = { "ジャンル", "出題形式", "ランダムフラグ", "問題文", "選択肢", "解答", "問題作成者",
-        "問題ノート", "表示選択肢数" };
-    boolean hasDiff = false;
-
-    builder.appendHtmlConstant("<div class='creationHistoryDiffPreview'>");
-    builder.appendHtmlConstant("<div class='creationHistoryDiffSummary'>");
-    if (previousSummary == null || previousSummary.isEmpty()) {
-      builder.appendEscaped("基準となる前回版がありません。");
-      builder.appendHtmlConstant("</div></div>");
-      return builder.toSafeHtml();
-    }
-
-    for (String section : sectionIds) {
-      String before = Strings.nullToEmpty(beforeSections.get(section));
-      String after = Strings.nullToEmpty(afterSections.get(section));
-      if (before.equals(after)) {
-        continue;
-      }
-
-      hasDiff = true;
-      builder.appendHtmlConstant("<div class='creationHistoryDiffItem'>");
-      builder.appendEscaped(section).appendHtmlConstant(":");
-      builder.appendHtmlConstant("<div class='creationHistoryDiffRow'>");
-      builder.appendHtmlConstant("<div class='creationHistoryDiffBefore'>");
-      builder.appendEscaped("変更前: ");
-      builder.appendHtmlConstant(escapeSummaryToHtml(before));
-      builder.appendHtmlConstant("</div>");
-      builder.appendHtmlConstant("<div class='creationHistoryDiffAfter'>");
-      builder.appendEscaped("変更後: ");
-      builder.appendHtmlConstant(escapeSummaryToHtml(after));
-      builder.appendHtmlConstant("</div>");
-      builder.appendHtmlConstant("</div>");
-      builder.appendHtmlConstant("</div>");
-    }
-
-    if (!hasDiff) {
-      builder.appendHtmlConstant("<div class='creationHistoryDiffNoChange'>");
-      builder.appendEscaped("変更点はありません。");
-      builder.appendHtmlConstant("</div>");
-    }
-    builder.appendHtmlConstant("</div></div>");
-    return builder.toSafeHtml();
-  }
-
-  private Map<String, String> parseSummarySections(String summary) {
-    Map<String, String> sections = Maps.newLinkedHashMap();
-    if (summary == null) {
-      return sections;
-    }
-
-    Map<String, StringBuilder> sectionBuilders = Maps.newLinkedHashMap();
-    String currentSection = null;
-    String[] lines = summary.replace("\r", "").split("\n", -1);
-    for (String line : lines) {
-      String section = parseSectionId(line);
-      if (section != null) {
-        if (currentSection != null && sectionBuilders.containsKey(currentSection)) {
-          sections.put(currentSection, sectionBuilders.remove(currentSection).toString().trim());
-        }
-
-        if (isSingleLineSection(section)) {
-          int index = line.indexOf(':');
-          if (index < 0) {
-            index = line.indexOf('：');
-          }
-          String value = "";
-          if (index + 1 < line.length()) {
-            value = line.substring(index + 1).trim();
-          }
-          sections.put(section, value);
-          currentSection = null;
-        } else {
-          currentSection = section;
-          sectionBuilders.put(section, new StringBuilder());
-          int index = line.indexOf(':');
-          if (index < 0) {
-            index = line.indexOf('：');
-          }
-          if (index + 1 < line.length()) {
-            sectionBuilders.get(section).append(line.substring(index + 1).trim());
-          }
-        }
-        continue;
-      }
-
-      if (currentSection != null && sectionBuilders.containsKey(currentSection)) {
-        if (sectionBuilders.get(currentSection).length() > 0) {
-          sectionBuilders.get(currentSection).append('\n');
-        }
-        sectionBuilders.get(currentSection).append(line);
-      }
-    }
-
-    if (currentSection != null && sectionBuilders.containsKey(currentSection)) {
-      sections.put(currentSection, sectionBuilders.remove(currentSection).toString().trim());
-    }
-    return sections;
-  }
-
-  private String parseSectionId(String line) {
-    if (line == null) {
-      return null;
-    }
-    if (line.startsWith("ジャンル:") || line.startsWith("ジャンル：")) {
-      return "ジャンル";
-    }
-    if (line.startsWith("出題形式:") || line.startsWith("出題形式：")) {
-      return "出題形式";
-    }
-    if (line.startsWith("ランダム:") || line.startsWith("ランダム：") || line.startsWith("ランダムフラグ:")
-        || line.startsWith("ランダムフラグ：")) {
-      return "ランダムフラグ";
-    }
-    if (line.startsWith("問題文:") || line.startsWith("問題文：")) {
-      return "問題文";
-    }
-    if (line.startsWith("選択肢:") || line.startsWith("選択肢：")) {
-      return "選択肢";
-    }
-    if (line.startsWith("解答:") || line.startsWith("解答：")) {
-      return "解答";
-    }
-    if (line.startsWith("問題作成者:") || line.startsWith("問題作成者：")) {
-      return "問題作成者";
-    }
-    if (line.startsWith("問題ノート:") || line.startsWith("問題ノート：")) {
-      return "問題ノート";
-    }
-    if (line.startsWith("表示選択肢数:") || line.startsWith("表示選択肢数：")) {
-      return "表示選択肢数";
-    }
-    return null;
-  }
-
-  private boolean isSingleLineSection(String sectionId) {
-    return "ジャンル".equals(sectionId) || "出題形式".equals(sectionId) || "ランダムフラグ".equals(sectionId)
-        || "問題作成者".equals(sectionId) || "表示選択肢数".equals(sectionId);
-  }
-
-  private String escapeSummaryToHtml(String value) {
-    return Strings.nullToEmpty(value).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\n",
-        "<br/>");
   }
 
 	private PacketProblemCreationLog selectedLog(
@@ -411,36 +236,8 @@ public class ChangeHistoryViewImpl extends Composite implements ChangeHistoryVie
     renderRightPane();
 	}
 
-  private void toggleDetailTarget(PacketProblemCreationLog target) {
-    if (openedDetail == target) {
-      openedDetail = null;
-    } else {
-      openedDetail = target;
-    }
-    refreshDetailButtonLabels();
-    renderRightPane();
-  }
-
-  private void refreshDetailButtonLabels() {
-    for (Entry<Button, PacketProblemCreationLog> entry : detailButtonToLog.entrySet()) {
-      if (entry.getValue() == openedDetail) {
-        entry.getKey().setText(TOGGLE_CLOSE);
-      } else {
-        entry.getKey().setText(TOGGLE_OPEN);
-      }
-    }
-  }
-
   private void renderRightPane() {
-    SafeHtmlBuilder builder = new SafeHtmlBuilder();
-    if (openedDetail != null && detailHtmlByLog.containsKey(openedDetail)) {
-      builder.appendHtmlConstant("<div class='creationHistoryDiffCard creationHistoryDetailTopCard'>");
-      builder.appendHtmlConstant("<h3>選択中の履歴詳細</h3>");
-      builder.append(detailHtmlByLog.get(openedDetail));
-      builder.appendHtmlConstant("</div>");
-    }
-    builder.append(currentDiffHtml);
-    htmlDiff.setHTML(builder.toSafeHtml());
+    htmlDiff.setHTML(currentDiffHtml);
   }
 
 }

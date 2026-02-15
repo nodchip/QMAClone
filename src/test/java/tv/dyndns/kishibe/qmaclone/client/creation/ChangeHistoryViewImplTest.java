@@ -43,35 +43,10 @@ public class ChangeHistoryViewImplTest extends QMACloneGWTTestCaseBase {
     String text = view.getElement().getInnerText();
 
     assertTrue(text.indexOf("newer") < text.indexOf("older"));
-    assertTrue(text.contains("詳細を閉じる"));
-    assertTrue(text.contains("詳細を開く"));
+    assertFalse(text.contains("詳細を開く"));
+    assertFalse(text.contains("詳細を閉じる"));
     assertEquals(older, selectedBefore[0]);
     assertEquals(newer, selectedAfter[0]);
-  }
-
-  @Test
-  public void shouldShowDiffInDetailForHistoricalItems() {
-    ChangeHistoryViewImpl view = new ChangeHistoryViewImpl(new ChangeHistoryView.ChangeHistoryPresenter() {
-      @Override
-      public void onUpdateDiffTarget(PacketProblemCreationLog before, PacketProblemCreationLog after) {
-      }
-    });
-
-    PacketProblemCreationLog older = new PacketProblemCreationLog();
-    older.summary = "ジャンル: ノンジャンル\n問題文: 古い本文";
-
-    PacketProblemCreationLog newer = new PacketProblemCreationLog();
-    newer.summary = "ジャンル: ノンジャンル\n問題文: 新しい本文";
-    newer.date = new java.util.Date(2000L);
-    older.date = new java.util.Date(1000L);
-
-    view.setCreationLog(java.util.Arrays.asList(older, newer));
-    String text = view.getElement().getInnerText();
-
-    assertTrue(text.contains("基準となる前回版がありません。"));
-    assertTrue(text.contains("変更前:"));
-    assertTrue(text.contains("変更後:"));
-    assertTrue(text.contains("問題文"));
   }
 
   @Test
