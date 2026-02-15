@@ -7,6 +7,7 @@
 - `ops/log/`: ローカル検証ログや一時ログ
 - `ops/notes/`: 作業メモや運用メモ
 - `ops/scripts/`: 運用補助スクリプト
+- `ops/scripts/monitoring/`: 監視プラグイン（例: Munin）
 
 ## Git 方針
 - `ops/log/` と `ops/notes/` の実データは `.gitignore` で除外します。
@@ -17,6 +18,7 @@
 - 既存のルート直下ファイル（`log.txt`、`memo.txt` など）は今回移動しません。
 - 今後の新規/更新分から `ops/` 配下へ配置します。
 - 既存のルート直下スクリプト（例: `filter_log.py`）は当面維持し、新規/更新スクリプトから `ops/scripts/` 配下へ配置します。
+- `qmaclone_`（Muninプラグイン）は `ops/scripts/monitoring/qmaclone_` へ移動済みです。
 
 ## レガシー運用ファイル
 - ルート直下の以下ファイルはレガシー扱いです。
