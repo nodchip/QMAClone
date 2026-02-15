@@ -6,6 +6,7 @@
 /src/main/webapp/tv.dyndns.kishibe.qmaclone.QMAClone/
 /.worktrees/
 /gwt-unitCache/
+/war/
 /ops/log/*
 /ops/notes/*
 !/ops/log/.gitkeep
