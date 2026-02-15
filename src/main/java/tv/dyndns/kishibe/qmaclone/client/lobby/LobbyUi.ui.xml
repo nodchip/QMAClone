@@ -167,6 +167,34 @@
   .lobbyValueCell .gwt-TextBox {
     width: 100%;
     max-width: 300px;
+    min-height: 30px;
+    box-sizing: border-box;
+    border: 1px solid #4f78a5;
+    border-radius: 6px;
+    background: #0e2746;
+    color: #e8f2ff;
+    padding: 4px 8px;
+  }
+
+  .lobbyValueCell .gwt-ListBox:focus,
+  .lobbyValueCell .gwt-TextBox:focus {
+    outline: 2px solid #77e4ff;
+    outline-offset: 1px;
+    border-color: #77e4ff;
+  }
+
+  .lobbyValueCell .gwt-CheckBox {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 6px;
+    color: #d7e9ff;
+    white-space: nowrap;
+    line-height: 1.2;
+  }
+
+  .lobbyValueCell .gwt-CheckBox input {
+    margin: 0;
   }
 
   .lobbySummaryBottom {
