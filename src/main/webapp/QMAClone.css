@@ -723,11 +723,11 @@ a:active {
 .problemReportTable {
 	width: 100%;
 	margin: 0;
-	font-size: 14px;
 }
 
-.problemReportTable td {
-	font-size: 13px;
+.problemReportSentenceText {
+	font-size: 14px;
+	line-height: 1.45;
 }
 
 .problemReportRegisterAll {

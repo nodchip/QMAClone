@@ -50,6 +50,7 @@
   padding: 8px 10px;
   text-align: left;
   color: #173b5d;
+  font-size: 13px;
   font-weight: 700;
   overflow: hidden;
 }
@@ -58,6 +59,7 @@
   padding: 8px 10px;
   overflow: hidden;
   border-bottom: 1px solid #e4eef8;
+  font-size: 12px;
   line-height: 1.35;
 }
 

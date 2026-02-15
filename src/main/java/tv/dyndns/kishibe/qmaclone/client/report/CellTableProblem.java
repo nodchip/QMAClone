@@ -25,7 +25,6 @@ import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
 import com.google.gwt.user.cellview.client.RowStyles;
-import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HTML;
@@ -48,6 +47,9 @@ public class CellTableProblem extends CellTable<ProblemReportRow> {
   interface CellTableProblemTemplates extends SafeHtmlTemplates {
     @Template("<div class='gridFontSmall'>{0}</div>")
     SafeHtml smallFont(String text);
+
+    @Template("<div class='problemReportSentenceText'>{0}</div>")
+    SafeHtml sentenceFont(String text);
 
     @Template("")
     SafeHtml empty();
@@ -112,13 +114,13 @@ public class CellTableProblem extends CellTable<ProblemReportRow> {
       public int compare(ProblemReportRow left, ProblemReportRow right) {
         return Float.compare(safeSimilarity(left), safeSimilarity(right));
       }
-    }, new TextColumn<ProblemReportRow>() {
+    }, new SafeHtmlColumn<ProblemReportRow>() {
       @Override
-      public String getValue(ProblemReportRow row) {
+      public SafeHtml getValue(ProblemReportRow row) {
         if (row.similarityScore == null) {
-          return SAFE_VALUE_NA;
+          return TEMPLATES.smallFont(SAFE_VALUE_NA);
         }
-        return formatSimilarity(row.similarityScore);
+        return TEMPLATES.smallFont(formatSimilarity(row.similarityScore));
       }
     }, null);
 
@@ -157,7 +159,7 @@ public class CellTableProblem extends CellTable<ProblemReportRow> {
     }, new SafeHtmlColumn<ProblemReportRow>() {
       @Override
       public SafeHtml getValue(ProblemReportRow row) {
-        return TEMPLATES.smallFont(row.problem.getProblemReportSentence());
+        return TEMPLATES.sentenceFont(row.problem.getProblemReportSentence());
       }
     }, null);
 
@@ -184,11 +186,12 @@ public class CellTableProblem extends CellTable<ProblemReportRow> {
       public int compare(ProblemReportRow left, ProblemReportRow right) {
         return safeProblem(left).getAccuracyRate() - safeProblem(right).getAccuracyRate();
       }
-    }, new TextColumn<ProblemReportRow>() {
+    }, new SafeHtmlColumn<ProblemReportRow>() {
       @Override
-      public String getValue(ProblemReportRow row) {
+      public SafeHtml getValue(ProblemReportRow row) {
         int ratio = safeProblem(row).getAccuracyRate();
-        return ratio == -1 ? "-%" : ratio + "%";
+        String ratioText = ratio == -1 ? "-%" : ratio + "%";
+        return TEMPLATES.smallFont(ratioText);
       }
     }, null);
 
