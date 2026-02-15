@@ -52,6 +52,7 @@
 - 検証（`build` / `test` / `gwt:compile`）が1つでも失敗した場合はデプロイを中断し、修正と再検証完了まで配備しない。
 - 変更を反映した場合は、完了報告前に `deploy_qmaclone_tomcat9.ps1` を実行して配備まで完了させる。
 - 配備完了判定は、`/QMAClone-1.0-SNAPSHOT/` が `HTTP 200`、`/tv.dyndns.kishibe.qmaclone.QMAClone/service` が `HTTP 405` を返すことを確認して行う。
+- 新規の運用ログ/メモはルート直下へ置かず、`ops/log/` と `ops/notes/` 配下へ配置する。
 
 ### Git / worktree 運用
 - worktree ブランチを `master` に取り込むときは、必ず fast-forward merge（`git merge --ff-only`）を使用する。

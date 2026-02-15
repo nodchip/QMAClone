@@ -1,0 +1,5 @@
+# 例: ログテンプレート
+# 実運用ログは追跡対象外です。
+# date: 2026-02-15
+# context: local deploy verification
+# summary: HTTP 200 / RPC 405 confirmed

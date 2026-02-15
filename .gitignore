@@ -8,3 +8,9 @@
 /gwt-unitCache/
 /war/WEB-INF/deploy/
 /war/tv.dyndns.kishibe.qmaclone.QMAClone.JUnit/
+/ops/log/*
+/ops/notes/*
+!/ops/log/.gitkeep
+!/ops/notes/.gitkeep
+!/ops/log/*.example
+!/ops/notes/*.example
