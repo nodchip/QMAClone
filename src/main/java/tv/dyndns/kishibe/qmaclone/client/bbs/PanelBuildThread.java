@@ -95,7 +95,7 @@ public class PanelBuildThread extends VerticalPanel implements ClickHandler {
         callbackBuildBbsThread);
   }
 
-  private final AsyncCallback<Void> callbackBuildBbsThread = new AsyncCallback<Void>() {
+  private final AsyncCallback<Void> callbackBuildBbsThread = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Void>() {
     public void onSuccess(Void result) {
       setEnabled(true);
       displayFirstState();
@@ -103,7 +103,7 @@ public class PanelBuildThread extends VerticalPanel implements ClickHandler {
       panelBbs.reload();
     }
 
-    public void onFailure(Throwable caught) {
+    public void onFailureRpc(Throwable caught) {
       logger.log(Level.WARNING, "スレッドの設置に失敗しました", caught);
     }
   };
@@ -129,3 +129,4 @@ public class PanelBuildThread extends VerticalPanel implements ClickHandler {
     }
   }
 }
+

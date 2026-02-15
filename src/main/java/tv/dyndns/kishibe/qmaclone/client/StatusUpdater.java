@@ -60,7 +60,7 @@ public abstract class StatusUpdater<T> {
 		}
 	};
 	@VisibleForTesting
-	final AsyncCallback<T> callback = new AsyncCallback<T>() {
+	final AsyncCallback<T> callback = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<T>() {
 		@Override
 		public void onSuccess(T result) {
 			try {
@@ -71,7 +71,7 @@ public abstract class StatusUpdater<T> {
 		};
 
 		@Override
-		public void onFailure(Throwable caught) {
+		public void onFailureRpc(Throwable caught) {
 			if (ClientReloadPrompter.maybePrompt(caught)) {
 				logger.log(Level.SEVERE, "旧GWTキャッシュ由来の通信失敗を検知したため、通信を停止します。", caught);
 				stop();
@@ -224,3 +224,4 @@ public abstract class StatusUpdater<T> {
 	protected abstract T parse(String json);
 
 }
+

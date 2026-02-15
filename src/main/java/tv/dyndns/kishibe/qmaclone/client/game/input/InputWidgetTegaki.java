@@ -120,7 +120,7 @@ public class InputWidgetTegaki extends InputWidget implements ClickHandler, Stro
 				callbackRecognizeHandwriting);
 	}
 
-	private final AsyncCallback<String[]> callbackRecognizeHandwriting = new AsyncCallback<String[]>() {
+	private final AsyncCallback<String[]> callbackRecognizeHandwriting = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<String[]>() {
 		public void onSuccess(String[] result) {
 			clearButtons();
 
@@ -132,7 +132,7 @@ public class InputWidgetTegaki extends InputWidget implements ClickHandler, Stro
 			}
 		}
 
-		public void onFailure(Throwable caught) {
+		public void onFailureRpc(Throwable caught) {
 			logger.log(Level.WARNING, "文字認識結果の取得に失敗しました", caught);
 		}
 	};
@@ -168,3 +168,4 @@ public class InputWidgetTegaki extends InputWidget implements ClickHandler, Stro
 		}
 	}
 }
+

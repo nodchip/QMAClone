@@ -14,7 +14,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class DetailRemoteLogger extends RemoteLogHandlerBase {
-  private final AsyncCallback<String> callback = new AsyncCallback<String>() {
+  private final AsyncCallback<String> callback = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<String>() {
     @Override
     public void onSuccess(String result) {
       if (result != null) {
@@ -25,7 +25,7 @@ public class DetailRemoteLogger extends RemoteLogHandlerBase {
     }
 
     @Override
-    public void onFailure(Throwable caught) {
+    public void onFailureRpc(Throwable caught) {
       wireLogger.log(Level.SEVERE, "Remote logging failed: ", caught);
     }
   };
@@ -42,3 +42,4 @@ public class DetailRemoteLogger extends RemoteLogHandlerBase {
     }
   }
 }
+

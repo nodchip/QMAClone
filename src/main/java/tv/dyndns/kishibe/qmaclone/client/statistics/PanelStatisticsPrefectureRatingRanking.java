@@ -39,7 +39,7 @@ public class PanelStatisticsPrefectureRatingRanking extends VerticalPanel {
 			+ "平均レーティングの計算式は<a href='http://www.topcoder.com/tc?module=Static&d1=statistics&d2=info&d3=topSchools' target='_blank'>TopCoder Info</a>";
 	private final GridPrefectureRanking gridPrefectureRanking = new GridPrefectureRanking();
 	private boolean first = true;
-	private final AsyncCallback<int[][]> callbackGetPrefectureRanking = new AsyncCallback<int[][]>() {
+	private final AsyncCallback<int[][]> callbackGetPrefectureRanking = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<int[][]>() {
 		public void onSuccess(int[][] result) {
 			add(new ChartPrefectureRatingRanking(result));
 			add(new HTML(new SafeHtmlBuilder().appendHtmlConstant(DESCRIPTION_HTML).toSafeHtml()));
@@ -47,7 +47,7 @@ public class PanelStatisticsPrefectureRatingRanking extends VerticalPanel {
 			add(gridPrefectureRanking);
 		}
 
-		public void onFailure(Throwable caught) {
+		public void onFailureRpc(Throwable caught) {
 			logger.log(Level.WARNING, "県別平均レーティングの取得に失敗しました", caught);
 		}
 	};
@@ -67,3 +67,4 @@ public class PanelStatisticsPrefectureRatingRanking extends VerticalPanel {
 		Service.Util.getInstance().getPrefectureRanking(callbackGetPrefectureRanking);
 	}
 }
+

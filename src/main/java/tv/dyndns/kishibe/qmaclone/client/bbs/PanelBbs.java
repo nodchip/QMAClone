@@ -67,7 +67,7 @@ public class PanelBbs extends VerticalPanel implements PageSelectable, ClickHand
 		Service.Util.getInstance().getNumberOfBbsThreads(bbsId, callbackGetNumberOfBbsThreads);
 	}
 
-	private final AsyncCallback<Integer> callbackGetNumberOfBbsThreads = new AsyncCallback<Integer>() {
+	private final AsyncCallback<Integer> callbackGetNumberOfBbsThreads = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Integer>() {
 		public void onSuccess(Integer result) {
 			clear();
 
@@ -89,7 +89,7 @@ public class PanelBbs extends VerticalPanel implements PageSelectable, ClickHand
 			add(buildThread);
 		}
 
-		public void onFailure(Throwable caught) {
+		public void onFailureRpc(Throwable caught) {
 			logger.log(Level.WARNING, "BBSスレッド数の取得に失敗しました", caught);
 		}
 	};
@@ -100,7 +100,7 @@ public class PanelBbs extends VerticalPanel implements PageSelectable, ClickHand
 				Constant.BBS_THREADS_PER_PAGE, callbackGetBbsThread);
 	}
 
-	private final AsyncCallback<List<PacketBbsThread>> callbackGetBbsThread = new AsyncCallback<List<PacketBbsThread>>() {
+	private final AsyncCallback<List<PacketBbsThread>> callbackGetBbsThread = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<List<PacketBbsThread>>() {
 		public void onSuccess(List<PacketBbsThread> result) {
 			displayPanel.clear();
 
@@ -111,7 +111,7 @@ public class PanelBbs extends VerticalPanel implements PageSelectable, ClickHand
 			}
 		}
 
-		public void onFailure(Throwable caught) {
+		public void onFailureRpc(Throwable caught) {
 			logger.log(Level.WARNING, "BBSスレッドの取得に失敗しました", caught);
 		}
 	};
@@ -131,3 +131,4 @@ public class PanelBbs extends VerticalPanel implements PageSelectable, ClickHand
 		return bbsId;
 	}
 }
+

@@ -39,14 +39,14 @@ public class CellTableImageLink extends CellTable<PacketImageLink> {
 
 	public CellTableImageLink() {
 		super(100, GWT.<CellTable.BasicResources> create(CellTable.BasicResources.class));
-		Service.Util.getInstance().getWrongImageLinks(new AsyncCallback<List<PacketImageLink>>() {
+		Service.Util.getInstance().getWrongImageLinks(new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<List<PacketImageLink>>() {
 			@Override
 			public void onSuccess(List<PacketImageLink> result) {
 				dataProvider.setList(result);
 			}
 
 			@Override
-			public void onFailure(Throwable caught) {
+			public void onFailureRpc(Throwable caught) {
 				logger.log(Level.WARNING, "画像リンク一覧の取得に失敗しました", caught);
 			}
 		});
@@ -95,3 +95,4 @@ public class CellTableImageLink extends CellTable<PacketImageLink> {
 		addColumn(column, header);
 	}
 }
+

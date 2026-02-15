@@ -43,14 +43,15 @@ public class LoginReporter {
 			return true;
 		}
 	};
-	private final AsyncCallback<Void> callbackKeepAlive = new AsyncCallback<Void>() {
+	private final AsyncCallback<Void> callbackKeepAlive = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Void>() {
 		@Override
 		public void onSuccess(Void result) {
 		}
 
 		@Override
-		public void onFailure(Throwable caught) {
+		public void onFailureRpc(Throwable caught) {
 			logger.log(Level.WARNING, "ログイン状態の送信に失敗しました", caught);
 		}
 	};
 }
+

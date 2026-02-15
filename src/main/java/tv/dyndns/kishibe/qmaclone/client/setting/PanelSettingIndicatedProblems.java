@@ -44,15 +44,16 @@ public class PanelSettingIndicatedProblems extends VerticalPanel {
 		Service.Util.getInstance().getIndicatedProblems(callbackGetIndicatedProblems);
 	}
 
-	private AsyncCallback<List<PacketProblem>> callbackGetIndicatedProblems = new AsyncCallback<List<PacketProblem>>() {
+	private AsyncCallback<List<PacketProblem>> callbackGetIndicatedProblems = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<List<PacketProblem>>() {
 		@Override
 		public void onSuccess(List<PacketProblem> result) {
 			update(result);
 		}
 
 		@Override
-		public void onFailure(Throwable caught) {
+		public void onFailureRpc(Throwable caught) {
 			logger.log(Level.WARNING, "指摘された問題の取得に失敗しました", caught);
 		}
 	};
 }
+

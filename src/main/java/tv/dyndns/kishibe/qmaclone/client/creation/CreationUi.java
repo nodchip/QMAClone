@@ -25,8 +25,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import tv.dyndns.kishibe.qmaclone.client.ClientReloadPrompter;
 import tv.dyndns.kishibe.qmaclone.client.Service;
+import tv.dyndns.kishibe.qmaclone.client.StaleRpcFailureDetector;
 import tv.dyndns.kishibe.qmaclone.client.UserData;
 import tv.dyndns.kishibe.qmaclone.client.bbs.PanelBbs;
 import tv.dyndns.kishibe.qmaclone.client.creation.ChangeHistoryView.ChangeHistoryPresenter;
@@ -515,7 +515,7 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
     Service.Util.getInstance().searchSimilarProblem(problem, callbackSearchSimilarProblem);
   }
 
-  private final AsyncCallback<List<PacketSimilarProblem>> callbackSearchSimilarProblem = new AsyncCallback<List<PacketSimilarProblem>>() {
+  private final AsyncCallback<List<PacketSimilarProblem>> callbackSearchSimilarProblem = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<List<PacketSimilarProblem>>() {
     public void onSuccess(List<PacketSimilarProblem> result) {
       List<PacketProblem> problems = Lists.newArrayList();
       for (PacketSimilarProblem similarProblem : result) {
@@ -527,7 +527,7 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
       panelSimilar.setWidget(new ProblemReportUi(problems, true, false, MAX_SIMILER_PROBLEMS_PER_PAGE));
     }
 
-    public void onFailure(Throwable caught) {
+    public void onFailureRpc(Throwable caught) {
       logger.log(Level.WARNING, "類似問題の検索に失敗しました", caught);
       panelSimilar.setWidget(createEmptyProblemReportUi());
     }
@@ -565,19 +565,19 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
   }
 
   @VisibleForTesting
-  final AsyncCallback<List<PacketWrongAnswer>> callbackGetWrongAnswers = new AsyncCallback<List<PacketWrongAnswer>>() {
+  final AsyncCallback<List<PacketWrongAnswer>> callbackGetWrongAnswers = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<List<PacketWrongAnswer>>() {
 
     public void onSuccess(List<PacketWrongAnswer> result) {
       panelWrongAnswer.setWidget(wrongAnswerPresenter.asWidget());
       wrongAnswerPresenter.setWrongAnswers(result, widgetProblemForm.getProblem());
     }
 
-    public void onFailure(Throwable caught) {
+    public void onFailureRpc(Throwable caught) {
       logger.log(Level.WARNING, "誤回答の取得に失敗しました", caught);
     }
   };
 
-  private final AsyncCallback<Integer> callbackUploadProblem = new AsyncCallback<Integer>() {
+  private final AsyncCallback<Integer> callbackUploadProblem = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Integer>() {
     public void onSuccess(Integer result) {
       int userCode = UserData.get().getUserCode();
 
@@ -602,20 +602,20 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
 
     }
 
-    public void onFailure(Throwable caught) {
+    public void onFailureRpc(Throwable caught) {
       sendingProblem = false;
       setEnable(true);
 
       logger.log(Level.WARNING, "問題の送信中にエラーが発生しました", caught);
     }
   };
-  private final AsyncCallback<Void> callbackAddProblemIdsToReport = new AsyncCallback<Void>() {
+  private final AsyncCallback<Void> callbackAddProblemIdsToReport = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Void>() {
     @Override
     public void onSuccess(Void result) {
     }
 
     @Override
-    public void onFailure(Throwable caught) {
+    public void onFailureRpc(Throwable caught) {
       logger.log(Level.WARNING, "問題の登録に失敗しました", caught);
     }
   };
@@ -666,7 +666,7 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
     }
   }
 
-  private final AsyncCallback<List<PacketProblem>> callbackGetProblemList = new AsyncCallback<List<PacketProblem>>() {
+  private final AsyncCallback<List<PacketProblem>> callbackGetProblemList = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<List<PacketProblem>>() {
     public void onSuccess(List<PacketProblem> result) {
       String message = "無効な問題番号が指定されました";
       if (result == null || result.isEmpty()) {
@@ -711,10 +711,10 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
       setEnable(true);
     }
 
-    public void onFailure(Throwable caught) {
+    public void onFailureRpc(Throwable caught) {
       String failureDetail = summarizeProblemLoadFailure(caught);
       logger.log(Level.WARNING, "問題の取得中にエラーが発生しました: " + failureDetail, caught);
-      if (ClientReloadPrompter.maybePrompt(caught)) {
+      if (StaleRpcFailureDetector.isStaleRpcFailure(caught)) {
         loadedProblemInCurrentMode = false;
         setEnable(true);
         return;
@@ -753,7 +753,7 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
   static List<Integer> createRpcIntegerList(int value) {
     return Lists.newArrayList(value);
   }
-  private final AsyncCallback<List<PacketProblemCreationLog>> callbackGetProblemCreationLog = new AsyncCallback<List<PacketProblemCreationLog>>() {
+  private final AsyncCallback<List<PacketProblemCreationLog>> callbackGetProblemCreationLog = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<List<PacketProblemCreationLog>>() {
     @Override
     public void onSuccess(List<PacketProblemCreationLog> result) {
       ChangeHistoryView view = (ChangeHistoryView) panelChangeHistory.getWidget();
@@ -761,7 +761,7 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
     }
 
     @Override
-    public void onFailure(Throwable caught) {
+    public void onFailureRpc(Throwable caught) {
       logger.log(Level.WARNING, "問題変更ログの取得に失敗しました", caught);
     }
   };
@@ -798,7 +798,7 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
     Service.Util.getInstance().canUploadProblem(userCode, null, callbackCanUploadProblemOnLoad);
   }
 
-  private final AsyncCallback<Boolean> callbackCanUploadProblemOnLoad = new AsyncCallback<Boolean>() {
+  private final AsyncCallback<Boolean> callbackCanUploadProblemOnLoad = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Boolean>() {
     @Override
     public void onSuccess(Boolean result) {
       if (result) {
@@ -809,7 +809,7 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
     }
 
     @Override
-    public void onFailure(Throwable caught) {
+    public void onFailureRpc(Throwable caught) {
       logger.log(Level.WARNING, "連続投稿制限のチェックに失敗しました", caught);
 
       sendingProblem = false;
@@ -898,7 +898,7 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
     }
   }
 
-  private final AsyncCallback<Boolean> callbackCanUploadProblem = new AsyncCallback<Boolean>() {
+  private final AsyncCallback<Boolean> callbackCanUploadProblem = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Boolean>() {
     @Override
     public void onSuccess(Boolean result) {
       if (!result) {
@@ -914,7 +914,7 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
     }
 
     @Override
-    public void onFailure(Throwable caught) {
+    public void onFailureRpc(Throwable caught) {
       logger.log(Level.WARNING, "連続投稿制限のチェックに失敗しました", caught);
 
       sendingProblem = false;
@@ -953,17 +953,17 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
     Service.Util.getInstance().uploadProblem(problem, userCode, resetAnswerCount, callbackUploadProblem);
   }
 
-  private final AsyncCallback<Void> callbackRemovePlayerAnswers = new AsyncCallback<Void>() {
+  private final AsyncCallback<Void> callbackRemovePlayerAnswers = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Void>() {
     @Override
     public void onSuccess(Void result) {
     }
 
     @Override
-    public void onFailure(Throwable caught) {
+    public void onFailureRpc(Throwable caught) {
       logger.log(Level.WARNING, "誤解答の削除に失敗しました", caught);
     }
   };
-  private final AsyncCallback<Boolean> callbackResetProblemCorrectCounter = new AsyncCallback<Boolean>() {
+  private final AsyncCallback<Boolean> callbackResetProblemCorrectCounter = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Boolean>() {
     @Override
     public void onSuccess(Boolean result) {
       if (!result) {
@@ -972,17 +972,17 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
     }
 
     @Override
-    public void onFailure(Throwable caught) {
+    public void onFailureRpc(Throwable caught) {
       logger.log(Level.WARNING, "問題正答数リセット権限のチェックに失敗しました");
     }
   };
-  private final AsyncCallback<Void> callbackResetVote = new AsyncCallback<Void>() {
+  private final AsyncCallback<Void> callbackResetVote = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Void>() {
     @Override
     public void onSuccess(Void result) {
     }
 
     @Override
-    public void onFailure(Throwable caught) {
+    public void onFailureRpc(Throwable caught) {
       logger.log(Level.WARNING, "投票のリセットに失敗しました", caught);
     }
   };
@@ -1417,7 +1417,7 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
     Service.Util.getInstance().generateDiffHtml(before.summary, after.summary, callbackGenerateDiffHtml);
   }
 
-  private final AsyncCallback<String> callbackGenerateDiffHtml = new AsyncCallback<String>() {
+  private final AsyncCallback<String> callbackGenerateDiffHtml = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<String>() {
     @Override
     public void onSuccess(String result) {
       ChangeHistoryView view = (ChangeHistoryView) panelChangeHistory.getWidget();
@@ -1425,10 +1425,11 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
     }
 
     @Override
-    public void onFailure(Throwable caught) {
+    public void onFailureRpc(Throwable caught) {
       logger.log(Level.WARNING, "差分htmlの生成に失敗しました", caught);
       ChangeHistoryView view = (ChangeHistoryView) panelChangeHistory.getWidget();
       view.setDiffHtml(SafeHtmlUtils.fromString("差分の取得に失敗しました。履歴を再選択すると再試行できます。"));
     }
   };
 }
+

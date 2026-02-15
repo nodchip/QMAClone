@@ -91,16 +91,17 @@ public class ThemeRankingPresenter {
 	}
 
 	@VisibleForTesting
-	final AsyncCallback<List<PacketRankingData>> callbackGetThemeRanking = new AsyncCallback<List<PacketRankingData>>() {
+	final AsyncCallback<List<PacketRankingData>> callbackGetThemeRanking = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<List<PacketRankingData>>() {
 		@Override
 		public void onSuccess(List<PacketRankingData> result) {
 			view.setRanking(result);
 		}
 
 		@Override
-		public void onFailure(Throwable caught) {
+		public void onFailureRpc(Throwable caught) {
 			logger.log(Level.WARNING, "テーマランキングの取得に失敗しました", caught);
 		}
 	};
 
 }
+

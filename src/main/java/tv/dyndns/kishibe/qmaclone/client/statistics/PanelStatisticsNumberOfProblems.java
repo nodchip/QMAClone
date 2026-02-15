@@ -35,12 +35,12 @@ public class PanelStatisticsNumberOfProblems extends VerticalPanel {
 			.getName());
 	private final GridNumberOfProblems gridNumberOfProblem = new GridNumberOfProblems();
 	private boolean first = true;
-	private final AsyncCallback<int[][]> callbackGetStatisticsOfProblemCount = new AsyncCallback<int[][]>() {
+	private final AsyncCallback<int[][]> callbackGetStatisticsOfProblemCount = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<int[][]>() {
 		public void onSuccess(int[][] result) {
 			gridNumberOfProblem.setData(result);
 		}
 
-		public void onFailure(Throwable caught) {
+		public void onFailureRpc(Throwable caught) {
 			logger.log(Level.WARNING, "ジャンル・出題形式一覧の取得に失敗しました", caught);
 		}
 	};
@@ -62,3 +62,4 @@ public class PanelStatisticsNumberOfProblems extends VerticalPanel {
 		Service.Util.getInstance().getStatisticsOfProblemCount(callbackGetStatisticsOfProblemCount);
 	}
 }
+

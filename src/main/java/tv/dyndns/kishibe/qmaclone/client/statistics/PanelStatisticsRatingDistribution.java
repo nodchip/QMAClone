@@ -54,12 +54,12 @@ public class PanelStatisticsRatingDistribution extends VerticalPanel {
 
 	private static final MyTemplate TEMPLATE = GWT.create(MyTemplate.class);
 	private boolean first = true;
-	private final AsyncCallback<PacketRatingDistribution> callbackGetRatingDistribution = new AsyncCallback<PacketRatingDistribution>() {
+	private final AsyncCallback<PacketRatingDistribution> callbackGetRatingDistribution = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<PacketRatingDistribution>() {
 		public void onSuccess(PacketRatingDistribution result) {
 			show(result);
 		}
 
-		public void onFailure(Throwable caught) {
+		public void onFailureRpc(Throwable caught) {
 			logger.log(Level.WARNING, "レーティング分布の取得に失敗しました", caught);
 		}
 	};
@@ -125,3 +125,4 @@ public class PanelStatisticsRatingDistribution extends VerticalPanel {
 		}
 	}
 }
+

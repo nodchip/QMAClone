@@ -54,13 +54,13 @@ public class PanelSettingRatioReport extends VerticalPanel implements ClickHandl
 				callbackClearProblemIDFromReport);
 	}
 
-	private final AsyncCallback<Void> callbackClearProblemIDFromReport = new AsyncCallback<Void>() {
+	private final AsyncCallback<Void> callbackClearProblemIDFromReport = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Void>() {
 		@Override
 		public void onSuccess(Void result) {
 		}
 
 		@Override
-		public void onFailure(Throwable caught) {
+		public void onFailureRpc(Throwable caught) {
 			logger.log(Level.WARNING, "問題登録の一括解除に失敗しました", caught);
 		}
 	};
@@ -73,3 +73,4 @@ public class PanelSettingRatioReport extends VerticalPanel implements ClickHandl
 		}
 	}
 }
+

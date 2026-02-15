@@ -590,7 +590,7 @@ textAreaNote.setText(problem.note.trim());
     updateForm();
   }
 
-  private final AsyncCallback<List<String>> callbackGetProblemFeedback = new AsyncCallback<List<String>>() {
+  private final AsyncCallback<List<String>> callbackGetProblemFeedback = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<List<String>>() {
     public void onSuccess(List<String> result) {
       panelProblemFeedback.add(new HTML(new SafeHtmlBuilder().appendEscapedLines(
           Joiner.on('\n').join(result)).toSafeHtml()));
@@ -600,7 +600,7 @@ textAreaNote.setText(problem.note.trim());
       }
     }
 
-    public void onFailure(Throwable caught) {
+    public void onFailureRpc(Throwable caught) {
       logger.log(Level.WARNING, "問題フィードバッグの取得に失敗しました", caught);
     }
   };
@@ -778,13 +778,13 @@ textAreaNote.setText(problem.note.trim());
     Service.Util.getInstance().clearProblemFeedback(problemId, callbackClearProblemFeedback);
   }
 
-  private final AsyncCallback<Void> callbackClearProblemFeedback = new AsyncCallback<Void>() {
+  private final AsyncCallback<Void> callbackClearProblemFeedback = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Void>() {
     @Override
     public void onSuccess(Void result) {
     }
 
     @Override
-    public void onFailure(Throwable caught) {
+    public void onFailureRpc(Throwable caught) {
       logger.log(Level.WARNING, "問題フィードバックの削除に失敗しました", caught);
     }
   };
@@ -835,7 +835,7 @@ textAreaNote.setText(problem.note.trim());
         callbackGetProblemIndicationEligibility);
   }
 
-  private final AsyncCallback<ProblemIndicationEligibility> callbackGetProblemIndicationEligibility = new AsyncCallback<ProblemIndicationEligibility>() {
+  private final AsyncCallback<ProblemIndicationEligibility> callbackGetProblemIndicationEligibility = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<ProblemIndicationEligibility>() {
     @Override
     public void onSuccess(ProblemIndicationEligibility result) {
       switch (result) {
@@ -857,7 +857,7 @@ textAreaNote.setText(problem.note.trim());
     }
 
     @Override
-    public void onFailure(Throwable caught) {
+    public void onFailureRpc(Throwable caught) {
       logger.log(Level.WARNING, "");
     }
   };
@@ -876,7 +876,7 @@ textAreaNote.setText(problem.note.trim());
     if (indicationResolved != null
         && System.currentTimeMillis() < indicationResolved.getTime() + 7L * 24 * 60 * 60 * 1000) {
       // 指摘解除されてから7日以内の場合
-      AsyncCallback<List<PacketBbsThread>> callbackGetBbsThreads = new AsyncCallback<List<PacketBbsThread>>() {
+      AsyncCallback<List<PacketBbsThread>> callbackGetBbsThreads = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<List<PacketBbsThread>>() {
         @Override
         public void onSuccess(List<PacketBbsThread> result) {
           if (result == null || result.isEmpty()) {
@@ -897,7 +897,7 @@ textAreaNote.setText(problem.note.trim());
         }
 
         @Override
-        public void onFailure(Throwable caught) {
+        public void onFailureRpc(Throwable caught) {
         }
       };
       Service.Util.getInstance().getBbsThreads(problemId, 0, 1, callbackGetBbsThreads);
@@ -916,7 +916,7 @@ textAreaNote.setText(problem.note.trim());
     }
   }
 
-  private final AsyncCallback<Void> callbackBuildBbsThread = new AsyncCallback<Void>() {
+  private final AsyncCallback<Void> callbackBuildBbsThread = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Void>() {
     @Override
     public void onSuccess(Void result) {
       creationUi.reloadBbs();
@@ -926,11 +926,11 @@ textAreaNote.setText(problem.note.trim());
     }
 
     @Override
-    public void onFailure(Throwable caught) {
+    public void onFailureRpc(Throwable caught) {
       logger.log(Level.WARNING, "BBSスレッド立てに失敗しました", caught);
     }
   };
-  private final AsyncCallback<Void> callbackPointOutInProblem = new AsyncCallback<Void>() {
+  private final AsyncCallback<Void> callbackPointOutInProblem = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Void>() {
     @Override
     public void onSuccess(Void result) {
       indication = new Date();
@@ -946,17 +946,17 @@ textAreaNote.setText(problem.note.trim());
     }
 
     @Override
-    public void onFailure(Throwable caught) {
+    public void onFailureRpc(Throwable caught) {
       logger.log(Level.WARNING, "指摘フラグの更新に失敗しました", caught);
     }
   };
-  private final AsyncCallback<Void> callbackAddProblemIdsToReport = new AsyncCallback<Void>() {
+  private final AsyncCallback<Void> callbackAddProblemIdsToReport = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Void>() {
     @Override
     public void onSuccess(Void result) {
     }
 
     @Override
-    public void onFailure(Throwable caught) {
+    public void onFailureRpc(Throwable caught) {
       logger.log(Level.WARNING, "正解率統計への問題追加に失敗しました", caught);
     }
   };
@@ -973,3 +973,4 @@ textAreaNote.setText(problem.note.trim());
     return reserveResetAnswerCount;
   }
 }
+

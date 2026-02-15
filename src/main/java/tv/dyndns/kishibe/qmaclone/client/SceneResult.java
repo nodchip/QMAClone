@@ -149,23 +149,23 @@ public class SceneResult extends SceneBase {
 		}.start();
 	}
 
-	private final AsyncCallback<Void> callbackAddRatingHistory = new AsyncCallback<Void>() {
+	private final AsyncCallback<Void> callbackAddRatingHistory = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Void>() {
 		@Override
 		public void onSuccess(Void result) {
 		}
 
 		@Override
-		public void onFailure(Throwable caught) {
+		public void onFailureRpc(Throwable caught) {
 			logger.log(Level.WARNING, "レーティング履歴の登録に失敗しました", caught);
 		}
 	};
-	private final AsyncCallback<Void> callbackNotifyGameFinished = new AsyncCallback<Void>() {
+	private final AsyncCallback<Void> callbackNotifyGameFinished = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Void>() {
 		@Override
 		public void onSuccess(Void result) {
 		}
 
 		@Override
-		public void onFailure(Throwable caught) {
+		public void onFailureRpc(Throwable caught) {
 			logger.log(Level.WARNING, "ゲーム終了の通知に失敗しました", caught);
 		}
 	};
@@ -181,3 +181,4 @@ public class SceneResult extends SceneBase {
 		}.schedule(1000);
 	}
 }
+

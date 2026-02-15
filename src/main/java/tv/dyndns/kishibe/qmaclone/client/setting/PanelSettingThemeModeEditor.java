@@ -42,7 +42,7 @@ public class PanelSettingThemeModeEditor extends VerticalPanel implements ClickH
 		Service.Util.getInstance().getThemeModeEditors(callbackGetThemeModeEditors);
 	}
 
-	private final AsyncCallback<List<PacketThemeModeEditor>> callbackGetThemeModeEditors = new AsyncCallback<List<PacketThemeModeEditor>>() {
+	private final AsyncCallback<List<PacketThemeModeEditor>> callbackGetThemeModeEditors = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<List<PacketThemeModeEditor>>() {
 		@Override
 		public void onSuccess(List<PacketThemeModeEditor> result) {
 			Collections.sort(result, new Comparator<PacketThemeModeEditor>() {
@@ -113,37 +113,37 @@ public class PanelSettingThemeModeEditor extends VerticalPanel implements ClickH
 		}
 
 		@Override
-		public void onFailure(Throwable caught) {
+		public void onFailureRpc(Throwable caught) {
 			logger.log(Level.WARNING, "テーマモード編集者一覧の取得に失敗しました", caught);
 		}
 	};
-	private final AsyncCallback<Void> callbackApplyThemeModeEditor = new AsyncCallback<Void>() {
+	private final AsyncCallback<Void> callbackApplyThemeModeEditor = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Void>() {
 		@Override
 		public void onSuccess(Void result) {
 		}
 
 		@Override
-		public void onFailure(Throwable caught) {
+		public void onFailureRpc(Throwable caught) {
 			logger.log(Level.WARNING, "テーマモードの申請に失敗しました(管理者モード)", caught);
 		}
 	};
-	private final AsyncCallback<Void> callbackAcceptThemeModeEditor = new AsyncCallback<Void>() {
+	private final AsyncCallback<Void> callbackAcceptThemeModeEditor = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Void>() {
 		@Override
 		public void onSuccess(Void result) {
 		}
 
 		@Override
-		public void onFailure(Throwable caught) {
+		public void onFailureRpc(Throwable caught) {
 			logger.log(Level.WARNING, "テーマモード編集権限の承認に失敗しました", caught);
 		}
 	};
-	private final AsyncCallback<Void> callbackAddValueChangeHandler = new AsyncCallback<Void>() {
+	private final AsyncCallback<Void> callbackAddValueChangeHandler = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Void>() {
 		@Override
 		public void onSuccess(Void result) {
 		}
 
 		@Override
-		public void onFailure(Throwable caught) {
+		public void onFailureRpc(Throwable caught) {
 			logger.log(Level.WARNING, "テーマモード編集権限の却下に失敗しました", caught);
 		}
 	};
@@ -157,3 +157,4 @@ public class PanelSettingThemeModeEditor extends VerticalPanel implements ClickH
 
 	}
 }
+

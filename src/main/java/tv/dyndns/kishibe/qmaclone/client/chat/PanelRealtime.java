@@ -93,14 +93,14 @@ public class PanelRealtime extends Composite implements KeyDownHandler {
         callbackGetRestrictedUserCodes);
   }
 
-  private final AsyncCallback<Set<Integer>> callbackGetRestrictedUserCodes = new AsyncCallback<Set<Integer>>() {
+  private final AsyncCallback<Set<Integer>> callbackGetRestrictedUserCodes = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Set<Integer>>() {
     @Override
     public void onSuccess(Set<Integer> result) {
       restrictedUserCodes.addAll(result);
     }
 
     @Override
-    public void onFailure(Throwable caught) {
+    public void onFailureRpc(Throwable caught) {
       logger.log(Level.WARNING, "制限ユーザーの取得に失敗しました", caught);
     }
   };
@@ -138,7 +138,7 @@ public class PanelRealtime extends Composite implements KeyDownHandler {
     Service.Util.getInstance().sendMessageToChat(message, callbackSendMessage);
   }
 
-  private final AsyncCallback<Void> callbackSendMessage = new AsyncCallback<Void>() {
+  private final AsyncCallback<Void> callbackSendMessage = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Void>() {
     public void onSuccess(Void result) {
       textBoxBody.setText("");
       setEnabled(true);
@@ -147,7 +147,7 @@ public class PanelRealtime extends Composite implements KeyDownHandler {
       recieveMessage();
     }
 
-    public void onFailure(Throwable caught) {
+    public void onFailureRpc(Throwable caught) {
       logger.log(Level.WARNING, "チャットメッセージの送信中にエラーが発生しました", caught);
     }
   };
@@ -173,7 +173,7 @@ public class PanelRealtime extends Composite implements KeyDownHandler {
     Service.Util.getInstance().receiveMessageFromChat(nextArrayIndex, callbackRecieveMessage);
   }
 
-  private final AsyncCallback<PacketChatMessages> callbackRecieveMessage = new AsyncCallback<PacketChatMessages>() {
+  private final AsyncCallback<PacketChatMessages> callbackRecieveMessage = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<PacketChatMessages>() {
     public void onSuccess(PacketChatMessages result) {
       if (result != null && result.list != null && !result.list.isEmpty()) {
         List<PacketChatMessage> incomingMessages = result.list;
@@ -184,7 +184,7 @@ public class PanelRealtime extends Composite implements KeyDownHandler {
       isRecieving = false;
     }
 
-    public void onFailure(Throwable caught) {
+    public void onFailureRpc(Throwable caught) {
       logger.log(Level.WARNING, "チャットメッセージの取得中にエラーが発生しました", caught);
     }
   };
@@ -287,3 +287,4 @@ public class PanelRealtime extends Composite implements KeyDownHandler {
     sendMessage();
   }
 }
+

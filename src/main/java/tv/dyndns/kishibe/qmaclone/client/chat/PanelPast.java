@@ -67,7 +67,7 @@ public class PanelPast extends Composite implements ValueChangeHandler<Date>, Ha
 				callbackGetChatLogId);
 	}
 
-	private final AsyncCallback<Integer> callbackGetChatLogId = new AsyncCallback<Integer>() {
+	private final AsyncCallback<Integer> callbackGetChatLogId = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Integer>() {
 		@Override
 		public void onSuccess(Integer result) {
 			final int start = result;
@@ -75,7 +75,7 @@ public class PanelPast extends Composite implements ValueChangeHandler<Date>, Ha
 		}
 
 		@Override
-		public void onFailure(Throwable caught) {
+		public void onFailureRpc(Throwable caught) {
 			logger.log(Level.WARNING, "チャット過去ログのレス番号の取得に失敗しました", caught);
 		}
 	};
@@ -106,3 +106,4 @@ public class PanelPast extends Composite implements ValueChangeHandler<Date>, Ha
 		return simplePagerHeader;
 	}
 }
+

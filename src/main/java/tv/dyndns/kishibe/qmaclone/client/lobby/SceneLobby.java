@@ -77,12 +77,12 @@ public class SceneLobby extends SceneBase {
 		Service.Util.getInstance().getServerStatus(callbackGetServerStatus);
 	}
 
-	private final AsyncCallback<PacketServerStatus> callbackGetServerStatus = new AsyncCallback<PacketServerStatus>() {
+	private final AsyncCallback<PacketServerStatus> callbackGetServerStatus = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<PacketServerStatus>() {
 		public void onSuccess(PacketServerStatus result) {
 			setServerStatus(result);
 		}
 
-		public void onFailure(Throwable caught) {
+		public void onFailureRpc(Throwable caught) {
 			logger.log(Level.WARNING, "サーバー状態の取得中にエラーが発生しました", caught);
 		}
 	};
@@ -179,7 +179,7 @@ public class SceneLobby extends SceneBase {
 				volatility, playCount, newAndOldProblems, publicEvent, callbackRegister);
 	}
 
-	private final AsyncCallback<PacketRegistrationData> callbackRegister = new AsyncCallback<PacketRegistrationData>() {
+	private final AsyncCallback<PacketRegistrationData> callbackRegister = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<PacketRegistrationData>() {
 		public void onSuccess(PacketRegistrationData result) {
 			if (result == null) {
 				logger.log(Level.SEVERE, "登録処理中にエラーが発生しました。ゲームを中断します。頻繁に発生する場合は管理者に御連絡ください。");
@@ -199,7 +199,7 @@ public class SceneLobby extends SceneBase {
 			lobbyUi = null;
 		}
 
-		public void onFailure(Throwable caught) {
+		public void onFailureRpc(Throwable caught) {
 			logger.log(Level.SEVERE, "登録処理中にエラーが発生しました。頻繁に発生する場合は管理者に御連絡ください。", caught);
 		}
 	};
@@ -218,3 +218,4 @@ public class SceneLobby extends SceneBase {
 		super.onUnload();
 	}
 }
+

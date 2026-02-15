@@ -269,13 +269,13 @@ public class Controller extends SimplePanel {
 			}
 		}
 	};
-	private final AsyncCallback<PacketLogin> callbackLogin = new AsyncCallback<PacketLogin>() {
+	private final AsyncCallback<PacketLogin> callbackLogin = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<PacketLogin>() {
 		@Override
 		public void onSuccess(PacketLogin result) {
 		}
 
 		@Override
-		public void onFailure(Throwable caught) {
+		public void onFailureRpc(Throwable caught) {
 			logger.log(Level.WARNING, "ログインの送信に失敗しました", caught);
 		}
 	};
@@ -400,3 +400,4 @@ public class Controller extends SimplePanel {
 		}
 	};
 }
+

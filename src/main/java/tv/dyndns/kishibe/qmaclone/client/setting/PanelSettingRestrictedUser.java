@@ -60,7 +60,7 @@ public class PanelSettingRestrictedUser implements IsWidget {
 	}
 
 	@VisibleForTesting
-	final AsyncCallback<Set<Integer>> callbackGetRestrictedUserCodes = new AsyncCallback<Set<Integer>>() {
+	final AsyncCallback<Set<Integer>> callbackGetRestrictedUserCodes = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Set<Integer>>() {
 		@Override
 		public void onSuccess(Set<Integer> result) {
 			view.setUserCodes(result);
@@ -70,20 +70,20 @@ public class PanelSettingRestrictedUser implements IsWidget {
 		}
 
 		@Override
-		public void onFailure(Throwable caught) {
+		public void onFailureRpc(Throwable caught) {
 			logger.log(Level.WARNING, "制限ユーザーコードの取得に失敗しました");
 		}
 	};
 
 	@VisibleForTesting
-	final AsyncCallback<Set<String>> callbackGetRestrictedRemoteAddresses = new AsyncCallback<Set<String>>() {
+	final AsyncCallback<Set<String>> callbackGetRestrictedRemoteAddresses = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Set<String>>() {
 		@Override
 		public void onSuccess(Set<String> result) {
 			view.setRemoteAddresses(result);
 		}
 
 		@Override
-		public void onFailure(Throwable caught) {
+		public void onFailureRpc(Throwable caught) {
 			logger.log(Level.WARNING, "制限リモートアドレスの取得に失敗しました");
 		}
 	};
@@ -124,14 +124,14 @@ public class PanelSettingRestrictedUser implements IsWidget {
 	}
 
 	@VisibleForTesting
-	final AsyncCallback<Void> callbackRestrictedUser = new AsyncCallback<Void>() {
+	final AsyncCallback<Void> callbackRestrictedUser = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Void>() {
 		@Override
 		public void onSuccess(Void result) {
 			update();
 		}
 
 		@Override
-		public void onFailure(Throwable caught) {
+		public void onFailureRpc(Throwable caught) {
 			logger.log(Level.WARNING, "制限ユーザーの追加/削除/クリアに失敗しました");
 		}
 	};
@@ -142,3 +142,4 @@ public class PanelSettingRestrictedUser implements IsWidget {
 	}
 
 }
+

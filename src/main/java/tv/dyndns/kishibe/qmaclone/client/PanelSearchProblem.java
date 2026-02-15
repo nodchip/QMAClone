@@ -147,13 +147,13 @@ public class PanelSearchProblem extends VerticalPanel implements ClickHandler, K
         randomFlags, callbackSearchProblem);
   }
 
-  private final AsyncCallback<List<PacketProblem>> callbackSearchProblem = new AsyncCallback<List<PacketProblem>>() {
+  private final AsyncCallback<List<PacketProblem>> callbackSearchProblem = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<List<PacketProblem>>() {
     public void onSuccess(List<PacketProblem> result) {
       panelGrid.setWidget(new ProblemReportUi(result, true, true, maxProblemsPerPage));
       setEnabled(true);
     }
 
-    public void onFailure(Throwable caught) {
+    public void onFailureRpc(Throwable caught) {
       logger.log(Level.WARNING, "問題の検索に失敗しました", caught);
       setEnabled(true);
     }
@@ -188,3 +188,4 @@ public class PanelSearchProblem extends VerticalPanel implements ClickHandler, K
     }
   }
 }
+

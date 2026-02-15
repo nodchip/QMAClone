@@ -61,7 +61,7 @@ public class ValidatorTegaki extends Validator {
 					callbackGetAvailableChalacters);
 		}
 
-		private final AsyncCallback<String> callbackGetAvailableChalacters = new AsyncCallback<String>() {
+		private final AsyncCallback<String> callbackGetAvailableChalacters = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<String>() {
 			public void onSuccess(String result) {
 				availableCharacters = Sets.newHashSet();
 				for (int i = 0; i < result.length(); ++i) {
@@ -69,7 +69,7 @@ public class ValidatorTegaki extends Validator {
 				}
 			}
 
-			public void onFailure(Throwable caught) {
+			public void onFailureRpc(Throwable caught) {
 				logger.log(Level.WARNING, "手書きクイズで使用可能な文字の取得に失敗しました", caught);
 			}
 		};
@@ -118,3 +118,4 @@ public class ValidatorTegaki extends Validator {
 		return eval;
 	}
 }
+

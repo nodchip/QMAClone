@@ -33,14 +33,14 @@ public class PanelSettingThemeModeEditLog {
 		serviceAsync.getNumberOfThemeModeEditLog(callbackGetNumberOfThemeModeEditLog);
 	}
 
-	private final AsyncCallback<Integer> callbackGetNumberOfThemeModeEditLog = new AsyncCallback<Integer>() {
+	private final AsyncCallback<Integer> callbackGetNumberOfThemeModeEditLog = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Integer>() {
 		@Override
 		public void onSuccess(Integer result) {
 			view.setNumberOfEntries(result);
 		}
 
 		@Override
-		public void onFailure(Throwable caught) {
+		public void onFailureRpc(Throwable caught) {
 			logger.log(Level.WARNING, "テーマモード編集ログの数の取得に失敗しました", caught);
 		}
 	};
@@ -50,17 +50,18 @@ public class PanelSettingThemeModeEditLog {
 	}
 
 	public void onThemeModeEditLogRequest(final int start, int length) {
-		AsyncCallback<List<PacketThemeModeEditLog>> callbackGetThemeModeEditLog = new AsyncCallback<List<PacketThemeModeEditLog>>() {
+		AsyncCallback<List<PacketThemeModeEditLog>> callbackGetThemeModeEditLog = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<List<PacketThemeModeEditLog>>() {
 			@Override
 			public void onSuccess(List<PacketThemeModeEditLog> result) {
 				view.setLog(start, result);
 			}
 
 			@Override
-			public void onFailure(Throwable caught) {
+			public void onFailureRpc(Throwable caught) {
 				logger.log(Level.WARNING, "テーマモード編集ログの取得に失敗しました", caught);
 			}
 		};
 		serviceAsync.getThemeModeEditLog(start, length, callbackGetThemeModeEditLog);
 	}
 }
+

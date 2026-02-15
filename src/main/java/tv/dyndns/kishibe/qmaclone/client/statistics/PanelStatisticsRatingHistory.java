@@ -60,12 +60,12 @@ public class PanelStatisticsRatingHistory extends VerticalPanel {
 	}
 
 	private boolean first = true;
-	private final AsyncCallback<List<Integer>> callbackGetRatingHistory = new AsyncCallback<List<Integer>>() {
+	private final AsyncCallback<List<Integer>> callbackGetRatingHistory = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<List<Integer>>() {
 		public void onSuccess(List<Integer> result) {
 			show(result);
 		}
 
-		public void onFailure(Throwable caught) {
+		public void onFailureRpc(Throwable caught) {
 			logger.log(Level.WARNING, "レーティング履歴の取得に失敗しました", caught);
 		}
 	};
@@ -147,3 +147,4 @@ public class PanelStatisticsRatingHistory extends VerticalPanel {
 		}
 	}
 }
+

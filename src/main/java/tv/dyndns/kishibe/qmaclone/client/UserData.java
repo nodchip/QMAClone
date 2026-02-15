@@ -87,7 +87,7 @@ public class UserData implements CloseHandler<Window> {
     Service.Util.getInstance().getNewUserCode(callbackCreateUserCode);
   }
 
-  private final AsyncCallback<Integer> callbackCreateUserCode = new AsyncCallback<Integer>() {
+  private final AsyncCallback<Integer> callbackCreateUserCode = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Integer>() {
     public void onSuccess(Integer result) {
       data.userCode = result;
       Cookies.setCookie(KEY_USER_CODE, Integer.toString(data.userCode), getExpireTime());
@@ -95,7 +95,7 @@ public class UserData implements CloseHandler<Window> {
       callLoadListeners();
     }
 
-    public void onFailure(Throwable caught) {
+    public void onFailureRpc(Throwable caught) {
       logger.log(Level.WARNING, "新規ユーザーコードの取得に失敗しました", caught);
     }
   };
@@ -104,7 +104,7 @@ public class UserData implements CloseHandler<Window> {
     Service.Util.getInstance().loadUserData(data.userCode, callbackLoadFromServer);
   }
 
-  private final AsyncCallback<PacketUserData> callbackLoadFromServer = new AsyncCallback<PacketUserData>() {
+  private final AsyncCallback<PacketUserData> callbackLoadFromServer = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<PacketUserData>() {
     public void onSuccess(PacketUserData result) {
       data = result;
       Cookies.setCookie(KEY_USER_CODE, Integer.toString(data.userCode), getExpireTime());
@@ -117,7 +117,7 @@ public class UserData implements CloseHandler<Window> {
       }
     }
 
-    public void onFailure(Throwable caught) {
+    public void onFailureRpc(Throwable caught) {
       Scheduler.get().scheduleFixedDelay(commandLoadFromServer, 5000);
       logger.log(Level.WARNING, "ユーザー情報の取得中にエラーが発生しました。パケットを再送します。", caught);
     }
@@ -148,13 +148,13 @@ public class UserData implements CloseHandler<Window> {
     Service.Util.getInstance().saveUserData(data, callback == null ? callbackSaveUserData : callback);
   }
 
-  private final AsyncCallback<Void> callbackSaveUserData = new AsyncCallback<Void>() {
+  private final AsyncCallback<Void> callbackSaveUserData = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Void>() {
     @Override
     public void onSuccess(Void result) {
     }
 
     @Override
-    public void onFailure(Throwable caught) {
+    public void onFailureRpc(Throwable caught) {
       logger.log(Level.WARNING, "ユーザーデータの保存に失敗しました", caught);
     }
   };
@@ -489,3 +489,4 @@ public class UserData implements CloseHandler<Window> {
     // save();
   }
 }
+

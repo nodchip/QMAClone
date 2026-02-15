@@ -98,14 +98,15 @@ public class ProblemReportUi extends Composite {
 				callbackAddProblemIdsToReport);
 	}
 
-	private final AsyncCallback<Void> callbackAddProblemIdsToReport = new AsyncCallback<Void>() {
+	private final AsyncCallback<Void> callbackAddProblemIdsToReport = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Void>() {
 		@Override
 		public void onSuccess(Void result) {
 		}
 
 		@Override
-		public void onFailure(Throwable caught) {
+		public void onFailureRpc(Throwable caught) {
 			logger.log(Level.WARNING, "問題の登録に失敗しました", caught);
 		}
 	};
 }
+

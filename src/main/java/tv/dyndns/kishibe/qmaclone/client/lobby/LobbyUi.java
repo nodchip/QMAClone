@@ -217,7 +217,7 @@ public class LobbyUi extends Composite {
 
   private static final int[] SPECIAL_LEVEL_NAME_RANGE = { 0, 1, 5, 21, 50 };
   private static final String[] SPECIAL_LEVEL_NAMES = { "賢神", "賢帝", "賢王", "賢将" };
-  private final AsyncCallback<List<List<PacketRankingData>>> callbackGetRankingData = new AsyncCallback<List<List<PacketRankingData>>>() {
+  private final AsyncCallback<List<List<PacketRankingData>>> callbackGetRankingData = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<List<List<PacketRankingData>>>() {
     @Override
     public void onSuccess(List<List<PacketRankingData>> rankingData) {
       updateSpecialLevelName(rankingData);
@@ -225,7 +225,7 @@ public class LobbyUi extends Composite {
     }
 
     @Override
-    public void onFailure(Throwable caught) {
+    public void onFailureRpc(Throwable caught) {
       logger.log(Level.WARNING, "ランキングの取得に失敗しました", caught);
 
       initializers.run();
@@ -277,13 +277,13 @@ public class LobbyUi extends Composite {
     return instance;
   }
 
-  private final AsyncCallback<List<List<String>>> callbackGetThemeModeThemes = new AsyncCallback<List<List<String>>>() {
+  private final AsyncCallback<List<List<String>>> callbackGetThemeModeThemes = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<List<List<String>>>() {
     public void onSuccess(List<List<String>> result) {
       updateThemeMode(result);
       initializers.run();
     }
 
-    public void onFailure(Throwable caught) {
+    public void onFailureRpc(Throwable caught) {
       logger.log(Level.WARNING, "テーマモード一覧の取得に失敗しました", caught);
 
       initializers.run();
@@ -523,12 +523,12 @@ public class LobbyUi extends Composite {
     Service.Util.getInstance().getEventRooms(callbackGetEventRooms);
   }
 
-  private final AsyncCallback<List<PacketRoomKey>> callbackGetEventRooms = new AsyncCallback<List<PacketRoomKey>>() {
+  private final AsyncCallback<List<PacketRoomKey>> callbackGetEventRooms = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<List<PacketRoomKey>>() {
     public void onSuccess(List<PacketRoomKey> result) {
       showEventRooms(result);
     }
 
-    public void onFailure(Throwable caught) {
+    public void onFailureRpc(Throwable caught) {
       logger.log(Level.WARNING, "イベント部屋一覧の取得に失敗しました", caught);
     }
   };
@@ -626,3 +626,4 @@ public class LobbyUi extends Composite {
     record.save();
   }
 }
+

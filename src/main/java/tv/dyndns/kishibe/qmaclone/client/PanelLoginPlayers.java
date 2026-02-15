@@ -61,7 +61,7 @@ public class PanelLoginPlayers extends VerticalPanel {
 		Service.Util.getInstance().getLoginUsers(callbackGetLoginUsers);
 	}
 
-	private final AsyncCallback<List<PacketUserData>> callbackGetLoginUsers = new AsyncCallback<List<PacketUserData>>() {
+	private final AsyncCallback<List<PacketUserData>> callbackGetLoginUsers = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<List<PacketUserData>>() {
 		public void onSuccess(List<PacketUserData> result) {
 			clear();
 			add(html);
@@ -90,7 +90,7 @@ public class PanelLoginPlayers extends VerticalPanel {
 			}
 		}
 
-		public void onFailure(Throwable caught) {
+		public void onFailureRpc(Throwable caught) {
 			logger.log(Level.WARNING, "ログインプレイヤー一覧の取得に失敗しました", caught);
 		}
 	};
@@ -101,3 +101,4 @@ public class PanelLoginPlayers extends VerticalPanel {
 		Scheduler.get().scheduleFixedDelay(commandUpdate, UPDATE_DURATION);
 	}
 }
+

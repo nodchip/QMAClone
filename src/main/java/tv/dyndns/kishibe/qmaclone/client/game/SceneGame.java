@@ -123,7 +123,7 @@ public class SceneGame extends SceneBase implements ClosingHandler, CloseHandler
 		});
 	}
 
-	private final AsyncCallback<List<PacketPlayerSummary>> callbackGetPalyerSummaries = new AsyncCallback<List<PacketPlayerSummary>>() {
+	private final AsyncCallback<List<PacketPlayerSummary>> callbackGetPalyerSummaries = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<List<PacketPlayerSummary>>() {
 		public void onSuccess(List<PacketPlayerSummary> result) {
 			try {
 				if (result == null) {
@@ -147,7 +147,7 @@ public class SceneGame extends SceneBase implements ClosingHandler, CloseHandler
 			}
 		}
 
-		public void onFailure(Throwable caught) {
+		public void onFailureRpc(Throwable caught) {
 			logger.log(Level.WARNING, "プレイヤー情報リストの取得に失敗しました", caught);
 		}
 	};
@@ -195,14 +195,14 @@ public class SceneGame extends SceneBase implements ClosingHandler, CloseHandler
 //		Service.Util.getInstance().notifyDisconnection(userCode, sessionId, nullCallback);
 	}
 
-	private static final AsyncCallback<Void> nullCallback = new AsyncCallback<Void>() {
+	private static final AsyncCallback<Void> nullCallback = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Void>() {
 		@Override
 		public void onSuccess(Void result) {
 			// Do nothing.
 		}
 
 		@Override
-		public void onFailure(Throwable caught) {
+		public void onFailureRpc(Throwable caught) {
 			// Do nothing.
 		}
 	};
@@ -333,13 +333,13 @@ public class SceneGame extends SceneBase implements ClosingHandler, CloseHandler
 		}
 	}
 
-	private final AsyncCallback<Void> callbackNotifyTimeUp = new AsyncCallback<Void>() {
+	private final AsyncCallback<Void> callbackNotifyTimeUp = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Void>() {
 		@Override
 		public void onSuccess(Void result) {
 		}
 
 		@Override
-		public void onFailure(Throwable caught) {
+		public void onFailureRpc(Throwable caught) {
 			logger.log(Level.WARNING, "時間切れの通知に失敗しました", caught);
 		}
 	};
@@ -358,14 +358,15 @@ public class SceneGame extends SceneBase implements ClosingHandler, CloseHandler
 		});
 	}
 
-	private final AsyncCallback<Void> callbackKeepAliveGame = new AsyncCallback<Void>() {
+	private final AsyncCallback<Void> callbackKeepAliveGame = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Void>() {
 		@Override
 		public void onSuccess(Void result) {
 		}
 
 		@Override
-		public void onFailure(Throwable caught) {
+		public void onFailureRpc(Throwable caught) {
 			logger.log(Level.SEVERE, "ゲーム参加のkeepAliveに失敗しました", caught);
 		}
 	};
 }
+

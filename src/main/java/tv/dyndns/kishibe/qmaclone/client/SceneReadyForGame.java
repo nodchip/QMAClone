@@ -87,7 +87,7 @@ public class SceneReadyForGame extends SceneBase {
     SoundPlayer.getInstance().play(Constant.SOUND_URL_READY_FOR_GAME);
   }
 
-  private final AsyncCallback<PacketReadyForGame> callbackWaitForGame = new AsyncCallback<PacketReadyForGame>() {
+  private final AsyncCallback<PacketReadyForGame> callbackWaitForGame = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<PacketReadyForGame>() {
     @Override
     public void onSuccess(PacketReadyForGame result) {
       if (transited) {
@@ -123,7 +123,7 @@ public class SceneReadyForGame extends SceneBase {
     }
 
     @Override
-    public void onFailure(Throwable caught) {
+    public void onFailureRpc(Throwable caught) {
       logger.log(Level.WARNING, "待機状態の取得中にエラーが発生しました", caught);
     }
   };
@@ -222,3 +222,4 @@ public class SceneReadyForGame extends SceneBase {
     super.onUnload();
   }
 }
+

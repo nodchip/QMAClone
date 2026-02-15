@@ -34,14 +34,14 @@ public class ThemeSelectorPresenter {
 	}
 
 	@VisibleForTesting
-	final AsyncCallback<List<List<String>>> callbackGetThemeModeThemes = new AsyncCallback<List<List<String>>>() {
+	final AsyncCallback<List<List<String>>> callbackGetThemeModeThemes = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<List<List<String>>>() {
 		@Override
 		public void onSuccess(List<List<String>> result) {
 			view.setTheme(result);
 		}
 
 		@Override
-		public void onFailure(Throwable caught) {
+		public void onFailureRpc(Throwable caught) {
 			logger.log(Level.WARNING, "テーマモードの取得に失敗しました", caught);
 		}
 	};
@@ -51,3 +51,4 @@ public class ThemeSelectorPresenter {
 	}
 
 }
+

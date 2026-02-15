@@ -116,28 +116,28 @@ public class PanelSettingUserCodePresenter {
 
   @VisibleForTesting
   AsyncCallback<List<PacketUserData>> callbackLookupUserDataByGooglePlusId =
-      new AsyncCallback<List<PacketUserData>>() {
+      new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<List<PacketUserData>>() {
         @Override
         public void onSuccess(List<PacketUserData> result) {
           handleLookupUserDataSuccess(result, false);
         }
 
         @Override
-        public void onFailure(Throwable caught) {
+        public void onFailureRpc(Throwable caught) {
           handleLookupUserDataFailure(caught);
         }
       };
 
   @VisibleForTesting
   AsyncCallback<List<PacketUserData>> callbackLookupUserDataByGooglePlusIdByUserAction =
-      new AsyncCallback<List<PacketUserData>>() {
+      new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<List<PacketUserData>>() {
         @Override
         public void onSuccess(List<PacketUserData> result) {
           handleLookupUserDataSuccess(result, true);
         }
 
         @Override
-        public void onFailure(Throwable caught) {
+        public void onFailureRpc(Throwable caught) {
           handleLookupUserDataFailure(caught);
         }
       };
@@ -183,7 +183,7 @@ public class PanelSettingUserCodePresenter {
   }
 
   @VisibleForTesting
-  AsyncCallback<PacketUserData> callbackLoadUserData = new AsyncCallback<PacketUserData>() {
+  AsyncCallback<PacketUserData> callbackLoadUserData = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<PacketUserData>() {
     @Override
     public void onSuccess(PacketUserData result) {
       view.setSwitchToUserCodeButtonEnable(true);
@@ -198,7 +198,7 @@ public class PanelSettingUserCodePresenter {
     }
 
     @Override
-    public void onFailure(Throwable caught) {
+    public void onFailureRpc(Throwable caught) {
       logger.log(Level.WARNING, "ユーザーコードの読み込みに失敗しました", caught);
     }
   };
@@ -240,7 +240,7 @@ public class PanelSettingUserCodePresenter {
   };
 
   @VisibleForTesting
-  AsyncCallback<Void> callbackSaveExternalAccount = new AsyncCallback<Void>() {
+  AsyncCallback<Void> callbackSaveExternalAccount = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Void>() {
     @Override
     public void onSuccess(Void result) {
       view.hideConnectButton();
@@ -253,7 +253,7 @@ public class PanelSettingUserCodePresenter {
     }
 
     @Override
-    public void onFailure(Throwable caught) {
+    public void onFailureRpc(Throwable caught) {
       view.setConnectButtonEnable(true);
       view.setShowUserCodeListButtonEnable(true);
       logger.log(Level.WARNING, "外部アカウント設定の保存に失敗しました", caught);
@@ -288,14 +288,14 @@ public class PanelSettingUserCodePresenter {
   }
 
   @VisibleForTesting
-  AsyncCallback<Void> callbackDisconnectUserCode = new AsyncCallback<Void>() {
+  AsyncCallback<Void> callbackDisconnectUserCode = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Void>() {
     @Override
     public void onSuccess(Void result) {
       view.showRequiredReloadMessage();
     }
 
     @Override
-    public void onFailure(Throwable caught) {
+    public void onFailureRpc(Throwable caught) {
       view.setDisconnectUserCodeButtonEnabled(true);
       logger.log(Level.WARNING, "ユーザーコード切断に失敗しました", caught);
     }

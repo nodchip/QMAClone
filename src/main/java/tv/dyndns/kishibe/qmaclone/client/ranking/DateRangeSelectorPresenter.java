@@ -33,14 +33,14 @@ public class DateRangeSelectorPresenter {
 	}
 
 	@VisibleForTesting
-	final AsyncCallback<List<PacketMonth>> callbackGetThemeRankingDateRanges = new AsyncCallback<List<PacketMonth>>() {
+	final AsyncCallback<List<PacketMonth>> callbackGetThemeRankingDateRanges = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<List<PacketMonth>>() {
 		@Override
 		public void onSuccess(List<PacketMonth> result) {
 			view.setDateRange(result);
 		}
 
 		@Override
-		public void onFailure(Throwable caught) {
+		public void onFailureRpc(Throwable caught) {
 			logger.log(Level.WARNING, "テーマモードランキングの日付範囲の取得に失敗しました", caught);
 		}
 	};
@@ -66,3 +66,4 @@ public class DateRangeSelectorPresenter {
 	}
 
 }
+

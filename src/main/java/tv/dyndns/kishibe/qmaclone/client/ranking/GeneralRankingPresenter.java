@@ -54,14 +54,15 @@ public class GeneralRankingPresenter {
   }
 
   @VisibleForTesting
-  final AsyncCallback<List<List<PacketRankingData>>> callbackGetRankingData = new AsyncCallback<List<List<PacketRankingData>>>() {
+  final AsyncCallback<List<List<PacketRankingData>>> callbackGetRankingData = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<List<List<PacketRankingData>>>() {
     public void onSuccess(List<List<PacketRankingData>> result) {
       view.setRanking(result);
     }
 
-    public void onFailure(Throwable caught) {
+    public void onFailureRpc(Throwable caught) {
       logger.log(Level.WARNING, "ランキングデータの取得に失敗しました", caught);
     }
   };
 
 }
+

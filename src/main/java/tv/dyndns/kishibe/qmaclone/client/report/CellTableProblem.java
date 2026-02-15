@@ -343,7 +343,7 @@ public class CellTableProblem extends CellTable<PacketProblem> {
 		// int userCode = UserData.get().getUserCode();
 		// String playerName = UserData.get().getPlayerName();
 		// Service.Util.getInstance().voteToProblem(userCode, object.id, false, feedback,
-		// playerName, new AsyncCallback<Void>() {
+		// playerName, new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Void>() {
 		// @Override
 		// public void onSuccess(Void result) {
 		// ++object.voteBad;
@@ -351,7 +351,7 @@ public class CellTableProblem extends CellTable<PacketProblem> {
 		// }
 		//
 		// @Override
-		// public void onFailure(Throwable caught) {
+		// public void onFailureRpc(Throwable caught) {
 		// logger.log(Level.WARNING, "問題への投票に失敗しました", caught);
 		// }
 		// });
@@ -398,14 +398,14 @@ public class CellTableProblem extends CellTable<PacketProblem> {
 		setRowStyles(rowStyles);
 	}
 
-	private final AsyncCallback<Void> callbackReport = new AsyncCallback<Void>() {
+	private final AsyncCallback<Void> callbackReport = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Void>() {
 		@Override
 		public void onSuccess(Void result) {
 			dataProvider.refresh();
 		}
 
 		@Override
-		public void onFailure(Throwable caught) {
+		public void onFailureRpc(Throwable caught) {
 			logger.log(Level.WARNING, "問題の追加・削除に失敗しました", caught);
 		}
 	};
@@ -424,3 +424,4 @@ public class CellTableProblem extends CellTable<PacketProblem> {
 		addColumn(column, header);
 	}
 }
+

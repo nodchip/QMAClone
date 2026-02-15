@@ -104,7 +104,7 @@ public class PanelRatioReport extends VerticalPanel implements ClickHandler {
 		Service.Util.getInstance().getUserProblemReport(userCode, callbackGetProblemList);
 	}
 
-	private final AsyncCallback<List<PacketProblem>> callbackGetProblemList = new AsyncCallback<List<PacketProblem>>() {
+	private final AsyncCallback<List<PacketProblem>> callbackGetProblemList = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<List<PacketProblem>>() {
 		@Override
 		public void onSuccess(List<PacketProblem> result) {
 			if (result == null) {
@@ -117,7 +117,7 @@ public class PanelRatioReport extends VerticalPanel implements ClickHandler {
 		}
 
 		@Override
-		public void onFailure(Throwable caught) {
+		public void onFailureRpc(Throwable caught) {
 			logger.log(Level.WARNING, "問題データの取得に失敗しました", caught);
 		}
 	};
@@ -157,25 +157,25 @@ public class PanelRatioReport extends VerticalPanel implements ClickHandler {
 		}
 	}
 
-	private final AsyncCallback<Void> callbackAddProblemIdsToReport = new AsyncCallback<Void>() {
+	private final AsyncCallback<Void> callbackAddProblemIdsToReport = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Void>() {
 		@Override
 		public void onSuccess(Void result) {
 			textBoxProblemNumber.setText("問題番号を追加しました");
 		}
 
 		@Override
-		public void onFailure(Throwable caught) {
+		public void onFailureRpc(Throwable caught) {
 			logger.log(Level.WARNING, "問題追加中にエラーが発生しました", caught);
 		}
 	};
-	private final AsyncCallback<Void> callbackRemoveProblemIdFromReport = new AsyncCallback<Void>() {
+	private final AsyncCallback<Void> callbackRemoveProblemIdFromReport = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Void>() {
 		@Override
 		public void onSuccess(Void result) {
 			textBoxProblemNumber.setText("問題番号を削除しました");
 		}
 
 		@Override
-		public void onFailure(Throwable caught) {
+		public void onFailureRpc(Throwable caught) {
 			logger.log(Level.WARNING, "問題削除にエラーが発生しました", caught);
 		}
 	};
@@ -195,3 +195,4 @@ public class PanelRatioReport extends VerticalPanel implements ClickHandler {
 		Scheduler.get().scheduleFixedDelay(commandCheckProblemId, 1000);
 	}
 }
+

@@ -57,7 +57,7 @@ public class PanelLink extends VerticalPanel implements PageSelectable, LinkData
 		LinkService.Util.get().getNumberOfLinkData(callbackGetNumberOfLinkDatas);
 	}
 
-	private final AsyncCallback<List<PacketLinkData>> callbackGetLinkDatas = new AsyncCallback<List<PacketLinkData>>() {
+	private final AsyncCallback<List<PacketLinkData>> callbackGetLinkDatas = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<List<PacketLinkData>>() {
 		public void onSuccess(List<PacketLinkData> result) {
 			displayPanel.clear();
 
@@ -67,12 +67,12 @@ public class PanelLink extends VerticalPanel implements PageSelectable, LinkData
 			}
 		}
 
-		public void onFailure(Throwable caught) {
+		public void onFailureRpc(Throwable caught) {
 			logger.log(Level.WARNING, "リンクの取得に失敗しました", caught);
 		}
 	};
 
-	private final AsyncCallback<Integer> callbackGetNumberOfLinkDatas = new AsyncCallback<Integer>() {
+	private final AsyncCallback<Integer> callbackGetNumberOfLinkDatas = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Integer>() {
 		public void onSuccess(Integer result) {
 			clear();
 
@@ -93,7 +93,7 @@ public class PanelLink extends VerticalPanel implements PageSelectable, LinkData
 			panelAddLink.switchMode(false);
 		}
 
-		public void onFailure(Throwable caught) {
+		public void onFailureRpc(Throwable caught) {
 			logger.log(Level.WARNING, "リンク件数の取得に失敗しました", caught);
 		}
 	};
@@ -104,3 +104,4 @@ public class PanelLink extends VerticalPanel implements PageSelectable, LinkData
 		panelAddLink.switchMode(true);
 	}
 }
+

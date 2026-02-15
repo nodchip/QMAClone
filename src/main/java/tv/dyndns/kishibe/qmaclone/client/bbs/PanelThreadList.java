@@ -23,7 +23,7 @@ public class PanelThreadList extends VerticalPanel {
 		Service.Util.getInstance().getBbsThreads(bbsId, 0, Integer.MAX_VALUE, callbackGetBbsThread);
 	}
 
-	private final AsyncCallback<List<PacketBbsThread>> callbackGetBbsThread = new AsyncCallback<List<PacketBbsThread>>() {
+	private final AsyncCallback<List<PacketBbsThread>> callbackGetBbsThread = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<List<PacketBbsThread>>() {
 		public void onSuccess(List<PacketBbsThread> result) {
 			for (final PacketBbsThread thread : result) {
 				final LazyPanel lazyPanel = new LazyPanel() {
@@ -49,8 +49,9 @@ public class PanelThreadList extends VerticalPanel {
 			}
 		}
 
-		public void onFailure(Throwable caught) {
+		public void onFailureRpc(Throwable caught) {
 			logger.log(Level.WARNING, "BBSスレッドの取得に失敗しました", caught);
 		}
 	};
 }
+

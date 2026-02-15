@@ -22,7 +22,7 @@ public class PastChatDataProvider extends AsyncDataProvider<PacketChatMessage> {
 		Service.Util.getInstance().getNumberOfChatLog(callbackGetNumberOfChatLog);
 	}
 
-	private final AsyncCallback<Integer> callbackGetNumberOfChatLog = new AsyncCallback<Integer>() {
+	private final AsyncCallback<Integer> callbackGetNumberOfChatLog = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Integer>() {
 		@Override
 		public void onSuccess(Integer result) {
 			updateRowCount(result, true);
@@ -30,7 +30,7 @@ public class PastChatDataProvider extends AsyncDataProvider<PacketChatMessage> {
 		}
 
 		@Override
-		public void onFailure(Throwable caught) {
+		public void onFailureRpc(Throwable caught) {
 			logger.log(Level.WARNING, "チャット過去ログ件数の取得に失敗しました", caught);
 		}
 	};
@@ -40,7 +40,7 @@ public class PastChatDataProvider extends AsyncDataProvider<PacketChatMessage> {
 		final Range range = display.getVisibleRange();
 
 		Service.Util.getInstance().getChatLog(range.getStart(),
-				new AsyncCallback<List<PacketChatMessage>>() {
+				new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<List<PacketChatMessage>>() {
 					@Override
 					public void onSuccess(List<PacketChatMessage> result) {
 						updateRowData(range.getStart(), result);
@@ -52,9 +52,10 @@ public class PastChatDataProvider extends AsyncDataProvider<PacketChatMessage> {
 					}
 
 					@Override
-					public void onFailure(Throwable caught) {
+					public void onFailureRpc(Throwable caught) {
 						logger.log(Level.WARNING, "チャット過去ログの取得に失敗しました", caught);
 					}
 				});
 	}
 }
+

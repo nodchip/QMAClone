@@ -66,7 +66,7 @@ public class ProblemFeedback extends Composite {
 				callbackVoteToProblem);
 	}
 
-	private final AsyncCallback<Void> callbackVoteToProblem = new AsyncCallback<Void>() {
+	private final AsyncCallback<Void> callbackVoteToProblem = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Void>() {
 		@Override
 		public void onSuccess(Void result) {
 			++problem.voteGood;
@@ -74,8 +74,9 @@ public class ProblemFeedback extends Composite {
 		}
 
 		@Override
-		public void onFailure(Throwable caught) {
+		public void onFailureRpc(Throwable caught) {
 			logger.log(Level.WARNING, "問題への投票に失敗しました", caught);
 		}
 	};
 }
+

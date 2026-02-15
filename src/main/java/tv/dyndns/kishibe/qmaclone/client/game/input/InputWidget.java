@@ -136,7 +136,7 @@ public abstract class InputWidget extends VerticalPanel {
     answered = true;
   }
 
-  private final AsyncCallback<Void> callbackSendAnswer = new AsyncCallback<Void>() {
+  private final AsyncCallback<Void> callbackSendAnswer = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Void>() {
     public void onSuccess(Void result) {
       SceneBase sceneBase = Controller.getInstance().getScene();
       if (!(sceneBase instanceof SceneGame)) {
@@ -148,7 +148,7 @@ public abstract class InputWidget extends VerticalPanel {
       scene.onSendAnswer();
     }
 
-    public void onFailure(Throwable caught) {
+    public void onFailureRpc(Throwable caught) {
       logger.log(Level.WARNING, "解答の送信中にエラーが発生しました", caught);
     }
   };
@@ -186,3 +186,4 @@ public abstract class InputWidget extends VerticalPanel {
     startTime = System.currentTimeMillis();
   }
 }
+

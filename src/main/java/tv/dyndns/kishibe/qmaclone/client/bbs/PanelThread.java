@@ -78,13 +78,13 @@ public class PanelThread extends VerticalPanel implements ClickHandler {
     add(responseForm);
   }
 
-  private final AsyncCallback<List<PacketBbsResponse>> callbackGetBbsResponses = new AsyncCallback<List<PacketBbsResponse>>() {
+  private final AsyncCallback<List<PacketBbsResponse>> callbackGetBbsResponses = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<List<PacketBbsResponse>>() {
     public void onSuccess(List<PacketBbsResponse> result) {
       setResponses(result);
       setEnabled(true);
     }
 
-    public void onFailure(Throwable caught) {
+    public void onFailureRpc(Throwable caught) {
       logger.log(Level.WARNING, "BBSのレスの取得に失敗しました", caught);
     }
   };
@@ -160,14 +160,14 @@ public class PanelThread extends VerticalPanel implements ClickHandler {
     Service.Util.getInstance().writeToBbs(response.get(), age, callbackWriteToBbs);
   }
 
-  private final AsyncCallback<Void> callbackWriteToBbs = new AsyncCallback<Void>() {
+  private final AsyncCallback<Void> callbackWriteToBbs = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Void>() {
     public void onSuccess(Void result) {
       responseForm.clearForm();
       Service.Util.getInstance().getBbsResponses(threadId, Constant.BBS_INITIAL_RESPONSE_PER_THREAD,
           callbackGetBbsResponses);
     }
 
-    public void onFailure(Throwable caught) {
+    public void onFailureRpc(Throwable caught) {
       logger.log(Level.WARNING, "BBSスレッドへのレスの書き込みに失敗しました", caught);
     }
   };
@@ -188,3 +188,4 @@ public class PanelThread extends VerticalPanel implements ClickHandler {
     }
   }
 }
+

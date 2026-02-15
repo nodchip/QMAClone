@@ -34,14 +34,14 @@ public class PanelStatisticsAccuracyRate extends VerticalPanel {
 			.getName());
 	private final GridAccuracyRate gridAccuracyRate = new GridAccuracyRate();
 	private boolean first = true;
-	private final AsyncCallback<int[][]> callbackGetStatisticsOfAccuracyRate = new AsyncCallback<int[][]>() {
+	private final AsyncCallback<int[][]> callbackGetStatisticsOfAccuracyRate = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<int[][]>() {
 		public void onSuccess(int[][] result) {
 			gridAccuracyRate.setData(result);
 			add(new ChartAccuracyRate(result));
 			add(gridAccuracyRate);
 		}
 
-		public void onFailure(Throwable caught) {
+		public void onFailureRpc(Throwable caught) {
 			logger.log(Level.WARNING, "正解率一覧の取得に失敗しました", caught);
 		}
 	};
@@ -61,3 +61,4 @@ public class PanelStatisticsAccuracyRate extends VerticalPanel {
 		Service.Util.getInstance().getStatisticsOfAccuracyRate(callbackGetStatisticsOfAccuracyRate);
 	}
 }
+

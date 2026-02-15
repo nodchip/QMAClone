@@ -108,7 +108,7 @@ public class PanelSettingThemeQuery {
 	}
 
 	@VisibleForTesting
-	final AsyncCallback<Boolean> callbackIsThemeModeEditor = new AsyncCallback<Boolean>() {
+	final AsyncCallback<Boolean> callbackIsThemeModeEditor = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Boolean>() {
 		public void onSuccess(Boolean result) {
 			if (result) {
 				// テーマクエリ一覧を表示するために数を取得する
@@ -124,13 +124,13 @@ public class PanelSettingThemeQuery {
 			}
 		}
 
-		public void onFailure(Throwable caught) {
+		public void onFailureRpc(Throwable caught) {
 			logger.log(Level.WARNING, "テーマモード編集権限の取得に失敗しました", caught);
 		}
 	};
 
 	@VisibleForTesting
-	final AsyncCallback<Boolean> callbackIsApplyingThemeModeEditor = new AsyncCallback<Boolean>() {
+	final AsyncCallback<Boolean> callbackIsApplyingThemeModeEditor = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Boolean>() {
 		public void onSuccess(Boolean result) {
 			if (result) {
 				view.showApplyingRight();
@@ -139,20 +139,20 @@ public class PanelSettingThemeQuery {
 			}
 		}
 
-		public void onFailure(Throwable caught) {
+		public void onFailureRpc(Throwable caught) {
 			logger.log(Level.WARNING, "テーマモード編集権限の申請に失敗しました", caught);
 		}
 	};
 
 	@VisibleForTesting
-	final AsyncCallback<Integer> callbackGetNumberofThemeQueries = new AsyncCallback<Integer>() {
+	final AsyncCallback<Integer> callbackGetNumberofThemeQueries = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Integer>() {
 		@Override
 		public void onSuccess(Integer result) {
 			view.showEditForm(result);
 		}
 
 		@Override
-		public void onFailure(Throwable caught) {
+		public void onFailureRpc(Throwable caught) {
 			logger.log(Level.WARNING, "テーマクエリの数の取得に失敗しました", caught);
 		}
 	};
@@ -172,7 +172,7 @@ public class PanelSettingThemeQuery {
 	}
 
 	@VisibleForTesting
-	final AsyncCallback<Void> callbackUpdateThemeModeQuery = new AsyncCallback<Void>() {
+	final AsyncCallback<Void> callbackUpdateThemeModeQuery = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Void>() {
 		@Override
 		public void onSuccess(Void result) {
 			String theme = view.getTheme();
@@ -181,7 +181,7 @@ public class PanelSettingThemeQuery {
 		}
 
 		@Override
-		public void onFailure(Throwable caught) {
+		public void onFailureRpc(Throwable caught) {
 			logger.log(Level.WARNING, "テーマクエリの更新に失敗しました", caught);
 		}
 	};
@@ -197,13 +197,13 @@ public class PanelSettingThemeQuery {
 	}
 
 	@VisibleForTesting
-	final AsyncCallback<Void> callbackApplyThemeModeEditor = new AsyncCallback<Void>() {
+	final AsyncCallback<Void> callbackApplyThemeModeEditor = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Void>() {
 		@Override
 		public void onSuccess(Void result) {
 		}
 
 		@Override
-		public void onFailure(Throwable caught) {
+		public void onFailureRpc(Throwable caught) {
 			logger.log(Level.WARNING, "テーマモードの申請に失敗しました", caught);
 		}
 	};
@@ -227,7 +227,7 @@ public class PanelSettingThemeQuery {
 	}
 
 	public void onThemeRequested(final HasData<PacketTheme> display) {
-		serviceAsync.getThemes(new AsyncCallback<List<PacketTheme>>() {
+		serviceAsync.getThemes(new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<List<PacketTheme>>() {
 			@Override
 			public void onSuccess(List<PacketTheme> result) {
 				display.setRowCount(result.size(), true);
@@ -241,14 +241,14 @@ public class PanelSettingThemeQuery {
 			}
 
 			@Override
-			public void onFailure(Throwable caught) {
+			public void onFailureRpc(Throwable caught) {
 				logger.log(Level.WARNING, "テーマリストの取得に失敗しました", caught);
 			}
 		});
 	}
 
 	public void onThemeQueryRequested(String theme, final HasData<PacketThemeQuery> display) {
-		serviceAsync.getThemeQueries(theme, new AsyncCallback<List<PacketThemeQuery>>() {
+		serviceAsync.getThemeQueries(theme, new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<List<PacketThemeQuery>>() {
 			@Override
 			public void onSuccess(List<PacketThemeQuery> result) {
 				display.setRowCount(result.size(), true);
@@ -257,10 +257,11 @@ public class PanelSettingThemeQuery {
 			}
 
 			@Override
-			public void onFailure(Throwable caught) {
+			public void onFailureRpc(Throwable caught) {
 				logger.log(Level.WARNING, "テーマクエリの取得に失敗しました", caught);
 			}
 		});
 	}
 
 }
+

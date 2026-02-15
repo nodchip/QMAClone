@@ -68,7 +68,7 @@ public class PanelAddLink extends VerticalPanel implements ClickHandler {
 		switchMode(false);
 	}
 
-	private final AsyncCallback<Void> callbackAddLinkData = new AsyncCallback<Void>() {
+	private final AsyncCallback<Void> callbackAddLinkData = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Void>() {
 		public void onSuccess(Void result) {
 			setEnabled(true);
 			switchMode(false);
@@ -76,7 +76,7 @@ public class PanelAddLink extends VerticalPanel implements ClickHandler {
 			panelLink.reload();
 		}
 
-		public void onFailure(Throwable caught) {
+		public void onFailureRpc(Throwable caught) {
 			logger.log(Level.WARNING, "リンクの追加に失敗しました", caught);
 		}
 	};
@@ -125,3 +125,4 @@ public class PanelAddLink extends VerticalPanel implements ClickHandler {
 		}
 	}
 }
+

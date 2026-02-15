@@ -82,7 +82,7 @@ public class SceneMatching extends SceneBase {
     Controller.getInstance().setGamePanel(panel);
   }
 
-  final AsyncCallback<PacketMatchingStatus> callbackGetMatchingStatus = new AsyncCallback<PacketMatchingStatus>() {
+  final AsyncCallback<PacketMatchingStatus> callbackGetMatchingStatus = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<PacketMatchingStatus>() {
     @Override
     public void onSuccess(PacketMatchingStatus result) {
       if (transited) {
@@ -111,7 +111,7 @@ public class SceneMatching extends SceneBase {
     }
 
     @Override
-    public void onFailure(Throwable caught) {
+    public void onFailureRpc(Throwable caught) {
       logger.log(Level.WARNING, "マッチング情報の取得中にエラーが発生しました", caught);
     }
   };
@@ -123,11 +123,11 @@ public class SceneMatching extends SceneBase {
     Service.Util.getInstance().requestSkip(sessionId, playerListId, callbackRequestSkip);
   }
 
-  private final AsyncCallback<Integer> callbackRequestSkip = new AsyncCallback<Integer>() {
+  private final AsyncCallback<Integer> callbackRequestSkip = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Integer>() {
     public void onSuccess(Integer result) {
     }
 
-    public void onFailure(Throwable caught) {
+    public void onFailureRpc(Throwable caught) {
       Scheduler.get().scheduleFixedDelay(new RepeatingCommand() {
         @Override
         public boolean execute() {
@@ -152,3 +152,4 @@ public class SceneMatching extends SceneBase {
     super.onUnload();
   }
 }
+

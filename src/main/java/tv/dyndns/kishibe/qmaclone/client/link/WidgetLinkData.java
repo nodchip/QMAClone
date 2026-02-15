@@ -89,12 +89,12 @@ public class WidgetLinkData extends VerticalPanel implements ClickHandler {
 		}
 	}
 
-	private final AsyncCallback<Void> callbackRemoveLinkData = new AsyncCallback<Void>() {
+	private final AsyncCallback<Void> callbackRemoveLinkData = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Void>() {
 		public void onSuccess(Void result) {
 			panelLink.reload();
 		}
 
-		public void onFailure(Throwable caught) {
+		public void onFailureRpc(Throwable caught) {
 			logger.log(Level.WARNING, "リンクの削除に失敗しました", caught);
 		}
 	};
@@ -117,3 +117,4 @@ public class WidgetLinkData extends VerticalPanel implements ClickHandler {
 		}
 	}
 }
+
