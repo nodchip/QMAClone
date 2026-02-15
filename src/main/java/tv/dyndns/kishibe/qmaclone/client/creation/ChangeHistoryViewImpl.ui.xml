@@ -6,10 +6,16 @@
 		<g:Label
 			text="最新の履歴を上に表示します。比較したい2件の「変更前」「変更後」を選ぶと差分を表示します。"
 			styleName="creationHistoryLead" />
-		<g:VerticalPanel ui:field="panelHistoryList" styleName="creationHistoryList"></g:VerticalPanel>
-		<g:HTMLPanel styleName="creationHistoryDiffCard">
-			<h3>変更差分プレビュー</h3>
-			<g:HTML ui:field="htmlDiff">履歴を選択すると、ここに差分を表示します。</g:HTML>
+		<g:HTMLPanel styleName="creationHistoryShell">
+			<g:HTMLPanel styleName="creationHistoryListPane">
+				<g:VerticalPanel ui:field="panelHistoryList" styleName="creationHistoryList"></g:VerticalPanel>
+			</g:HTMLPanel>
+			<g:HTMLPanel styleName="creationHistoryDiffPane">
+				<g:HTMLPanel styleName="creationHistoryDiffCard">
+					<h3>変更差分プレビュー</h3>
+					<g:HTML ui:field="htmlDiff">履歴を選択すると、ここに差分を表示します。</g:HTML>
+				</g:HTMLPanel>
+			</g:HTMLPanel>
 		</g:HTMLPanel>
 	</g:HTMLPanel>
 </ui:UiBinder>

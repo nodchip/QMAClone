@@ -1401,6 +1401,8 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
     @Override
     public void onFailure(Throwable caught) {
       logger.log(Level.WARNING, "差分htmlの生成に失敗しました", caught);
+      ChangeHistoryView view = (ChangeHistoryView) panelChangeHistory.getWidget();
+      view.setDiffHtml(SafeHtmlUtils.fromString("差分の取得に失敗しました。履歴を再選択すると再試行できます。"));
     }
   };
 }

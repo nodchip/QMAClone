@@ -49,6 +49,7 @@
 - Tomcat 再配備時は、必要に応じて旧展開物削除とサービス再起動で静的状態を確実に破棄する。
 - Eclipse で不整合が疑われる場合は、`target` と `gwt-unitCache` のクリーンを実施する。
 - 検証（`build` / `test` / `gwt:compile`）が1つでも失敗した場合はデプロイを中断し、修正と再検証完了まで配備しない。
+- 変更を反映した場合は、完了報告前に `deploy_qmaclone_tomcat9.ps1` を実行して配備まで完了させる。
 
 ### Git / worktree 運用
 - worktree ブランチを `master` に取り込むときは、必ず fast-forward merge（`git merge --ff-only`）を使用する。

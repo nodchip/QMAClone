@@ -1751,6 +1751,28 @@ body {
   margin-bottom: 8px;
 }
 
+.creationHistoryShell {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.creationHistoryListPane {
+  flex: 0 0 400px;
+  width: 400px;
+  min-width: 400px;
+  max-height: 72vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 4px;
+}
+
+.creationHistoryDiffPane {
+  flex: 1 1 auto;
+  width: auto;
+  min-width: 0;
+}
+
 .creationHistoryList {
   width: 100%;
   gap: 8px;
@@ -1758,6 +1780,7 @@ body {
 
 .creationHistoryItem {
   width: 100%;
+  box-sizing: border-box;
   margin-bottom: 8px;
   padding: 10px;
   border: 1px solid #9ec4e6;
@@ -1767,22 +1790,50 @@ body {
 
 .creationHistoryMeta {
   width: 100%;
-  border-spacing: 8px;
+  margin: 0 0 6px 0;
   margin-bottom: 6px;
   color: #173b5d;
   font-weight: 700;
+  line-height: 1.25;
+  white-space: normal;
+}
+
+.creationHistoryMetaDate {
+  display: block;
+  white-space: nowrap;
+  margin-bottom: 2px;
+}
+
+.creationHistoryMetaPlayer {
+  display: block;
+  text-align: left;
+  white-space: normal;
+  word-break: break-word;
+  max-height: 2.6em;
+  overflow: hidden;
 }
 
 .creationHistoryPreview {
-  display: block;
+  display: -webkit-box;
   margin: 4px 0 8px 0;
   color: #314f6b;
+  line-height: 1.45;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 
 .creationHistoryControls {
   width: 100%;
-  border-spacing: 8px;
+  table-layout: auto;
   margin-bottom: 6px;
+  font-size: 12px;
+  border-spacing: 6px;
+}
+
+.creationHistoryControls td {
+  white-space: nowrap;
+  vertical-align: middle;
 }
 
 .creationHistoryDetail {
@@ -1791,16 +1842,78 @@ body {
   border-radius: 8px;
   background: #ffffff;
   color: #17324d;
-  white-space: pre-wrap;
   line-height: 1.5;
 }
 
+.creationHistoryDiffPreview {
+  display: block;
+  line-height: 1.45;
+}
+
+.creationHistoryDiffSummary {
+  margin-top: 4px;
+}
+
+.creationHistoryDiffItem {
+  margin-bottom: 8px;
+  border: 1px solid #d5e5f5;
+  border-radius: 6px;
+  background: #f5f9ff;
+}
+
+.creationHistoryDiffRow {
+  display: table;
+  width: 100%;
+  margin-top: 4px;
+}
+
+.creationHistoryDiffBefore,
+.creationHistoryDiffAfter {
+  display: table-cell;
+  width: 50%;
+  vertical-align: top;
+  padding: 6px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.creationHistoryDiffBefore {
+  border-right: 1px solid #d5e5f5;
+}
+
+.creationHistoryDiffNoChange {
+  color: #58748a;
+  font-style: italic;
+}
+
 .creationHistoryDiffCard {
-  margin-top: 10px;
+  margin-top: 0;
   padding: 10px;
   border: 1px solid #9ec4e6;
   border-radius: 8px;
   background: #ffffff;
+}
+
+.creationHistoryDetailTopCard {
+  margin-bottom: 10px;
+  background: #f8fbff;
+}
+
+@media (max-width: 960px) {
+  .creationHistoryShell {
+    display: block;
+  }
+
+  .creationHistoryListPane {
+    max-height: none;
+    overflow: visible;
+    padding-right: 0;
+  }
+
+  .creationHistoryDiffPane {
+    width: auto;
+    margin-top: 10px;
+  }
 }
 
 .guidelinePage {
