@@ -116,22 +116,30 @@
 					<g:HTMLPanel styleName="creationSummaryCards">
 						<g:HTMLPanel ui:field="panelStep4CardBasic"
 							styleName="creationSummaryCard">
-							<g:HorizontalPanel styleName="creationSummaryCardHeader">
+							<g:HTMLPanel styleName="creationSummaryCardHeader">
 								<g:Label styleName="creationSummaryCardTitle" text="基本情報" />
-								<g:Button ui:field="buttonToggleStep1Detail" text="詳細を開く" />
-								<g:Button ui:field="buttonBackToStep1FromSummary" text="編集へ戻る" />
-							</g:HorizontalPanel>
+								<g:HTMLPanel styleName="creationSummaryCardHeaderActions">
+									<g:Button ui:field="buttonToggleStep1Detail" text="詳細を開く"
+										styleName="creationButtonSecondary creationSummaryCardAction" />
+									<g:Button ui:field="buttonBackToStep1FromSummary" text="編集へ戻る"
+										styleName="creationButtonSecondary creationSummaryCardAction" />
+								</g:HTMLPanel>
+							</g:HTMLPanel>
 							<g:HTML ui:field="htmlStep4SummaryBasic" styleName="creationSummaryText creationFormPreviewField" />
 							<g:HTML ui:field="htmlStep4DetailBasic" styleName="creationSummaryDetail creationFormPreviewDetail"
 								visible="false" />
 						</g:HTMLPanel>
 						<g:HTMLPanel ui:field="panelStep4CardQuestion"
 							styleName="creationSummaryCard">
-							<g:HorizontalPanel styleName="creationSummaryCardHeader">
+							<g:HTMLPanel styleName="creationSummaryCardHeader">
 								<g:Label styleName="creationSummaryCardTitle" text="問題文" />
-								<g:Button ui:field="buttonToggleStep2Detail" text="詳細を開く" />
-								<g:Button ui:field="buttonBackToStep2FromSummary" text="編集へ戻る" />
-							</g:HorizontalPanel>
+								<g:HTMLPanel styleName="creationSummaryCardHeaderActions">
+									<g:Button ui:field="buttonToggleStep2Detail" text="詳細を開く"
+										styleName="creationButtonSecondary creationSummaryCardAction" />
+									<g:Button ui:field="buttonBackToStep2FromSummary" text="編集へ戻る"
+										styleName="creationButtonSecondary creationSummaryCardAction" />
+								</g:HTMLPanel>
+							</g:HTMLPanel>
 							<g:HTML ui:field="htmlStep4SummaryQuestion"
 								styleName="creationSummaryText creationFormPreviewField" />
 							<g:HTML ui:field="htmlStep4DetailQuestion" styleName="creationSummaryDetail creationFormPreviewDetail"
@@ -139,11 +147,15 @@
 						</g:HTMLPanel>
 						<g:HTMLPanel ui:field="panelStep4CardAnswer"
 							styleName="creationSummaryCard">
-							<g:HorizontalPanel styleName="creationSummaryCardHeader">
+							<g:HTMLPanel styleName="creationSummaryCardHeader">
 								<g:Label styleName="creationSummaryCardTitle" text="解答設定" />
-								<g:Button ui:field="buttonToggleStep3Detail" text="詳細を開く" />
-								<g:Button ui:field="buttonBackToStep3FromSummary" text="編集へ戻る" />
-							</g:HorizontalPanel>
+								<g:HTMLPanel styleName="creationSummaryCardHeaderActions">
+									<g:Button ui:field="buttonToggleStep3Detail" text="詳細を開く"
+										styleName="creationButtonSecondary creationSummaryCardAction" />
+									<g:Button ui:field="buttonBackToStep3FromSummary" text="編集へ戻る"
+										styleName="creationButtonSecondary creationSummaryCardAction" />
+								</g:HTMLPanel>
+							</g:HTMLPanel>
 							<g:HTML ui:field="htmlStep4SummaryAnswer" styleName="creationSummaryText creationFormPreviewField" />
 							<g:HTML ui:field="htmlStep4DetailAnswer" styleName="creationSummaryDetail creationFormPreviewDetail"
 								visible="false" />

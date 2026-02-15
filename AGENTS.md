@@ -80,6 +80,11 @@
 - `ValidatorTegaki` 系テストは `AvailableCharacters` を固定化し、`Service.getAvailableChalactersForHandwriting` を直接呼ばない。
 - `forked VM terminated` 発生時は `surefire-reports` の実行済み差分から停止クラスを特定し、外部依存（RPC / ネイティブ / ファイル）を優先的に切り離す。
 
+### RPC失敗ハンドリング統一
+- `client` 配下のRPCコールバック実装は `RpcAsyncCallback` を使用し、`new AsyncCallback<...>()` を直接実装しない。
+- `RpcAsyncCallback` の `onFailure` で `ClientReloadPrompter.maybePrompt` を実行するため、`onFailureRpc` 側で同処理を重複呼び出ししない。
+- 旧GWTキャッシュ判定で画面固有の早期終了が必要な場合は、`ClientReloadPrompter` ではなく `StaleRpcFailureDetector` を参照して分岐する。
+
 ### チャット折りたたみ運用
 - 表示切替UIは CSS 固定非表示と Java 表示制御を重ねず、非表示条件を一方へ統一する。
 - 右チャットの折りたたみ状態は `Controller` と `localStorage` キーで管理する。

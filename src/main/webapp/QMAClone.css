@@ -1546,8 +1546,11 @@ body {
 }
 
 .creationSummaryCardHeader {
-  width: 100%;
-  border-spacing: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
   margin-bottom: 6px;
 }
 
@@ -1555,6 +1558,20 @@ body {
   font-size: 18px;
   font-weight: bold;
   color: #153450;
+  margin-right: auto;
+}
+
+.creationSummaryCardHeaderActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.creationSummaryCardAction {
+  min-width: 96px;
+  text-align: center;
 }
 
 .creationSummaryText {
