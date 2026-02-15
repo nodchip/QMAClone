@@ -17,6 +17,7 @@ import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblem;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblemCreationLog;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblemMinimum;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketRankingData;
+import tv.dyndns.kishibe.qmaclone.client.packet.PacketSimilarProblem;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketThemeModeEditLog;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketThemeModeEditor;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketThemeModeEditor.ThemeModeEditorStatus;
@@ -83,7 +84,7 @@ public interface Database {
 			Set<ProblemGenre> genres, Set<ProblemType> types, Set<RandomFlag> randomFlags)
 			throws DatabaseException;
 
-	List<PacketProblem> searchSimilarProblemFromDatabase(PacketProblem problem)
+	List<PacketSimilarProblem> searchSimilarProblemFromDatabase(PacketProblem problem)
 			throws DatabaseException;
 
 	List<PacketProblemCreationLog> getProblemCreationHistory(int problemId)

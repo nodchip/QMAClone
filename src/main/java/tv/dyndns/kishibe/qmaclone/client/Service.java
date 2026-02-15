@@ -51,6 +51,7 @@ import tv.dyndns.kishibe.qmaclone.client.packet.PacketRegistrationData;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketResult;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketRoomKey;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketServerStatus;
+import tv.dyndns.kishibe.qmaclone.client.packet.PacketSimilarProblem;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketTheme;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketThemeModeEditLog;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketThemeModeEditor;
@@ -248,7 +249,7 @@ public interface Service extends RemoteService {
 			Set<ProblemGenre> genres, Set<ProblemType> types, Set<RandomFlag> randomFlag) throws ServiceException;
 
 	// 類似問題を検索する
-	List<PacketProblem> searchSimilarProblem(PacketProblem problem) throws ServiceException;
+	List<PacketSimilarProblem> searchSimilarProblem(PacketProblem problem) throws ServiceException;
 
 	// 問題を投稿する
 	int uploadProblem(PacketProblem problem, int userCode, boolean resetAnswerCount) throws ServiceException;

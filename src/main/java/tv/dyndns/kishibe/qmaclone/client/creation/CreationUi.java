@@ -38,6 +38,7 @@ import tv.dyndns.kishibe.qmaclone.client.game.panel.QuestionPanel;
 import tv.dyndns.kishibe.qmaclone.client.game.panel.QuestionPanelFactory;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblem;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblemCreationLog;
+import tv.dyndns.kishibe.qmaclone.client.packet.PacketSimilarProblem;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketWrongAnswer;
 import tv.dyndns.kishibe.qmaclone.client.report.ProblemReportUi;
 import tv.dyndns.kishibe.qmaclone.client.util.StringUtils;
@@ -513,9 +514,16 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
     Service.Util.getInstance().searchSimilarProblem(problem, callbackSearchSimilarProblem);
   }
 
-  private final AsyncCallback<List<PacketProblem>> callbackSearchSimilarProblem = new AsyncCallback<List<PacketProblem>>() {
-    public void onSuccess(List<PacketProblem> result) {
-      panelSimilar.setWidget(new ProblemReportUi(result, true, false, MAX_SIMILER_PROBLEMS_PER_PAGE));
+  private final AsyncCallback<List<PacketSimilarProblem>> callbackSearchSimilarProblem = new AsyncCallback<List<PacketSimilarProblem>>() {
+    public void onSuccess(List<PacketSimilarProblem> result) {
+      List<PacketProblem> problems = Lists.newArrayList();
+      for (PacketSimilarProblem similarProblem : result) {
+        if (similarProblem == null || similarProblem.problem == null) {
+          continue;
+        }
+        problems.add(similarProblem.problem);
+      }
+      panelSimilar.setWidget(new ProblemReportUi(problems, true, false, MAX_SIMILER_PROBLEMS_PER_PAGE));
     }
 
     public void onFailure(Throwable caught) {

@@ -52,6 +52,7 @@ import tv.dyndns.kishibe.qmaclone.client.packet.PacketRegistrationData;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketResult;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketRoomKey;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketServerStatus;
+import tv.dyndns.kishibe.qmaclone.client.packet.PacketSimilarProblem;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketTheme;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketThemeModeEditLog;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketThemeModeEditor;
@@ -172,7 +173,7 @@ public interface ServiceAsync {
 			Set<ProblemType> types, Set<RandomFlag> randomFlag, AsyncCallback<List<PacketProblem>> callback);
 
 	// 類似問題を検索する
-	void searchSimilarProblem(PacketProblem problem, AsyncCallback<List<PacketProblem>> callback);
+	void searchSimilarProblem(PacketProblem problem, AsyncCallback<List<PacketSimilarProblem>> callback);
 
 	// チャットにメッセージを送信する
 	void sendMessageToChat(PacketChatMessage chatData, AsyncCallback<Void> callback);

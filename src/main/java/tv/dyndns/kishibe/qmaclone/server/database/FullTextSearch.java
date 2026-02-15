@@ -55,6 +55,7 @@ import tv.dyndns.kishibe.qmaclone.client.game.ProblemGenre;
 import tv.dyndns.kishibe.qmaclone.client.game.ProblemType;
 import tv.dyndns.kishibe.qmaclone.client.game.RandomFlag;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblem;
+import tv.dyndns.kishibe.qmaclone.client.packet.PacketSimilarProblem;
 import tv.dyndns.kishibe.qmaclone.client.util.HasIndex;
 import tv.dyndns.kishibe.qmaclone.server.QMACloneModule;
 import tv.dyndns.kishibe.qmaclone.server.ThreadPool;
@@ -605,12 +606,12 @@ public class FullTextSearch {
    * @param problem 問題
    * @return
    */
-  public List<Integer> searchSimilarProblemFromDatabase(final PacketProblem problem) {
+  public List<PacketSimilarProblem> searchSimilarProblemFromDatabase(final PacketProblem problem) {
     Stopwatch stopwatch = Stopwatch.createStarted();
 
-    Future<List<Integer>> future = threadPool.submit(new Callable<List<Integer>>() {
+    Future<List<PacketSimilarProblem>> future = threadPool.submit(new Callable<List<PacketSimilarProblem>>() {
       @Override
-      public List<Integer> call() throws Exception {
+      public List<PacketSimilarProblem> call() throws Exception {
         try (IndexReader reader = newIndexReader()) {
           String[] fields = new String[] { FIELD_SIMILAR };
           String searchQuery = problem.getSearchDocument();
@@ -629,8 +630,9 @@ public class FullTextSearch {
             docs = searcher.search(fallbackQuery, 10);
           }
 
-          List<Integer> problemIds = new ArrayList<Integer>(docs.scoreDocs.length);
+          List<PacketSimilarProblem> similarProblems = new ArrayList<PacketSimilarProblem>(docs.scoreDocs.length);
           Set<Integer> visitedProblemIds = new LinkedHashSet<>();
+          int rank = 1;
           for (ScoreDoc doc : docs.scoreDocs) {
             Document document = reader.storedFields().document(doc.doc);
             int problemId = Integer.parseInt(document.get(FIELD_PROBLEM_ID));
@@ -640,23 +642,27 @@ public class FullTextSearch {
             if (!visitedProblemIds.add(problemId)) {
               continue;
             }
-            problemIds.add(problemId);
-            if (problemIds.size() >= 10) {
+            PacketSimilarProblem similarProblem = new PacketSimilarProblem();
+            similarProblem.problemId = problemId;
+            similarProblem.score = doc.score;
+            similarProblem.rank = rank++;
+            similarProblems.add(similarProblem);
+            if (similarProblems.size() >= 10) {
               break;
             }
           }
 
-          return problemIds;
+          return similarProblems;
 
         }
       }
     });
 
     try {
-      List<Integer> problemIds = future.get(getTimeOutSec(), TimeUnit.SECONDS);
+      List<PacketSimilarProblem> similarProblems = future.get(getTimeOutSec(), TimeUnit.SECONDS);
       logger.log(Level.INFO, String.format("searchSimilarProblemFromDatabase(): time=%d result=%d query=%s",
-          stopwatch.elapsed(TimeUnit.MILLISECONDS), problemIds.size(), problem.toString()));
-      return problemIds;
+          stopwatch.elapsed(TimeUnit.MILLISECONDS), similarProblems.size(), problem.toString()));
+      return similarProblems;
     } catch (Exception e) {
       logger.log(Level.WARNING, "類似問題検索でタイムアウトが発生しました " + problem.toString(), e);
       return Lists.newArrayList();

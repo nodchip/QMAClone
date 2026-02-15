@@ -45,6 +45,7 @@ import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblem;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblemCreationLog;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblemMinimum;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketRankingData;
+import tv.dyndns.kishibe.qmaclone.client.packet.PacketSimilarProblem;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketThemeModeEditLog;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketThemeModeEditor;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketThemeModeEditor.ThemeModeEditorStatus;
@@ -835,7 +836,7 @@ public class CachedDatabase implements Database {
 	}
 
 	@Override
-	public List<PacketProblem> searchSimilarProblemFromDatabase(PacketProblem problem)
+	public List<PacketSimilarProblem> searchSimilarProblemFromDatabase(PacketProblem problem)
 			throws DatabaseException {
 		return database.searchSimilarProblemFromDatabase(problem);
 	}

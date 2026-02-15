@@ -98,6 +98,7 @@ import tv.dyndns.kishibe.qmaclone.client.packet.PacketRegistrationData;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketResult;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketRoomKey;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketServerStatus;
+import tv.dyndns.kishibe.qmaclone.client.packet.PacketSimilarProblem;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketTheme;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketThemeModeEditLog;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketThemeModeEditor;
@@ -667,10 +668,10 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
   }
 
   @Override
-  public List<PacketProblem> searchSimilarProblem(final PacketProblem problem) throws ServiceException {
-    return wrap("類似問題の検索に失敗しました", new DatabaseAccessible<List<PacketProblem>>() {
+  public List<PacketSimilarProblem> searchSimilarProblem(final PacketProblem problem) throws ServiceException {
+    return wrap("類似問題の検索に失敗しました", new DatabaseAccessible<List<PacketSimilarProblem>>() {
       @Override
-      public List<PacketProblem> access() throws DatabaseException {
+      public List<PacketSimilarProblem> access() throws DatabaseException {
         return database.searchSimilarProblemFromDatabase(problem);
       }
     });

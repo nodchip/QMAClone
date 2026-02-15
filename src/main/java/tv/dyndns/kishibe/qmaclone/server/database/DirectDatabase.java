@@ -81,6 +81,7 @@ import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblem;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblemCreationLog;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblemMinimum;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketRankingData;
+import tv.dyndns.kishibe.qmaclone.client.packet.PacketSimilarProblem;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketThemeModeEditLog;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketThemeModeEditor;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketThemeModeEditor.ThemeModeEditorStatus;
@@ -590,10 +591,15 @@ public class DirectDatabase implements Database {
 	}
 
 	@Override
-	public List<PacketProblem> searchSimilarProblemFromDatabase(PacketProblem problem) throws DatabaseException {
-		List<Integer> problemIds = fullTextSearch.searchSimilarProblemFromDatabase(problem);
-		if (problemIds.isEmpty()) {
+	public List<PacketSimilarProblem> searchSimilarProblemFromDatabase(PacketProblem problem) throws DatabaseException {
+		List<PacketSimilarProblem> similarProblems = fullTextSearch.searchSimilarProblemFromDatabase(problem);
+		if (similarProblems.isEmpty()) {
 			return Collections.emptyList();
+		}
+
+		List<Integer> problemIds = Lists.newArrayList();
+		for (PacketSimilarProblem similarProblem : similarProblems) {
+			problemIds.add(similarProblem.problemId);
 		}
 
 		List<PacketProblem> unorderedProblems = getProblem(problemIds);
@@ -602,11 +608,12 @@ public class DirectDatabase implements Database {
 			idToProblem.put(packetProblem.id, packetProblem);
 		}
 
-		List<PacketProblem> orderedProblems = Lists.newArrayList();
-		for (int problemId : problemIds) {
-			PacketProblem packetProblem = idToProblem.get(problemId);
+		List<PacketSimilarProblem> orderedProblems = Lists.newArrayList();
+		for (PacketSimilarProblem similarProblem : similarProblems) {
+			PacketProblem packetProblem = idToProblem.get(similarProblem.problemId);
 			if (packetProblem != null) {
-				orderedProblems.add(packetProblem);
+				similarProblem.problem = packetProblem;
+				orderedProblems.add(similarProblem);
 			}
 		}
 		return orderedProblems;
