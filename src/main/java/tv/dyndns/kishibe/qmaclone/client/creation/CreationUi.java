@@ -425,17 +425,26 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
       textBoxGetProblem.setText("");
       panelCreationModeNew.addStyleName("creationModeCardSelected");
       buttonMoveToVerification.setText("送信確認画面に移動する");
+      if (currentStep == STEP_MODE_SELECTION) {
+        buttonNextStep.setEnabled(validateCurrentStepLive());
+      }
       return;
     }
 
     if (mode == CreationMode.EDIT) {
       panelCreationModeEdit.addStyleName("creationModeCardSelected");
       buttonMoveToVerification.setText("修正内容を確認する");
+      if (currentStep == STEP_MODE_SELECTION) {
+        buttonNextStep.setEnabled(validateCurrentStepLive());
+      }
       return;
     }
 
     panelCreationModeClone.addStyleName("creationModeCardSelected");
     buttonMoveToVerification.setText("コピー内容を確認する");
+    if (currentStep == STEP_MODE_SELECTION) {
+      buttonNextStep.setEnabled(validateCurrentStepLive());
+    }
   }
 
   /**
@@ -1047,6 +1056,9 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
   boolean validateCurrentStepLive() {
     StepValidationResult result = validateStep(currentStep, false);
     applyStepValidationResult(result);
+    if (currentStep == STEP_MODE_SELECTION && creationMode != CreationMode.NEW && !loadedProblemInCurrentMode) {
+      return false;
+    }
     return !result.hasErrors();
   }
 

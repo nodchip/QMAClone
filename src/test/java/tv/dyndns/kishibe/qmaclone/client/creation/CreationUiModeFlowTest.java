@@ -24,13 +24,13 @@ public class CreationUiModeFlowTest extends QMACloneGWTTestCaseBase {
   }
 
   @Test
-  public void initialModeShouldBeNewCreation() {
+  public void testInitialModeShouldBeNewCreation() {
     assertEquals("新規作成", ui.labelCurrentCreationMode.getText());
     assertFalse(ui.panelProblemLoader.isVisible());
   }
 
   @Test
-  public void editModeShouldShowProblemLoader() {
+  public void testEditModeShouldShowProblemLoader() {
     ui.onButtonSelectEditMode(null);
 
     assertTrue(ui.panelProblemLoader.isVisible());
@@ -39,7 +39,7 @@ public class CreationUiModeFlowTest extends QMACloneGWTTestCaseBase {
   }
 
   @Test
-  public void cloneModeShouldShowCopyLoader() {
+  public void testCloneModeShouldShowCopyLoader() {
     ui.onButtonSelectCloneMode(null);
 
     assertTrue(ui.panelProblemLoader.isVisible());
@@ -48,7 +48,7 @@ public class CreationUiModeFlowTest extends QMACloneGWTTestCaseBase {
   }
 
   @Test
-  public void editModeShouldRequireProblemLoadBeforeNextStep() {
+  public void testEditModeShouldRequireProblemLoadBeforeNextStep() {
     ui.onButtonSelectEditMode(null);
     ui.loadedProblemInCurrentMode = false;
 
@@ -57,10 +57,24 @@ public class CreationUiModeFlowTest extends QMACloneGWTTestCaseBase {
   }
 
   @Test
-  public void editModeShouldNotShowStep1ErrorDuringLiveValidation() {
+  public void testEditModeShouldDisableNextStepDuringLiveValidationUntilProblemIsLoaded() {
     ui.onButtonSelectEditMode(null);
     ui.loadedProblemInCurrentMode = false;
 
-    assertTrue(ui.validateCurrentStepLive());
+    assertFalse(ui.validateCurrentStepLive());
+  }
+
+  @Test
+  public void testEditModeShouldDisableNextButtonUntilProblemIsLoaded() {
+    ui.onButtonSelectEditMode(null);
+
+    assertFalse(ui.buttonNextStep.isEnabled());
+  }
+
+  @Test
+  public void testCloneModeShouldDisableNextButtonUntilProblemIsLoaded() {
+    ui.onButtonSelectCloneMode(null);
+
+    assertFalse(ui.buttonNextStep.isEnabled());
   }
 }
