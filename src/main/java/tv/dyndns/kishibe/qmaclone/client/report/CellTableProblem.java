@@ -293,8 +293,11 @@ public class CellTableProblem extends CellTable<ProblemReportRow> {
    */
   private void showDetailDialog(PacketProblem problem) {
     DialogBox dialog = new DialogBox(true, true);
+    dialog.setStyleName("problemReportDetailDialog");
     dialog.setText("問題詳細: " + problem.id);
-    dialog.setWidget(new HTML(buildDetailHtml(problem)));
+    HTML content = new HTML(buildDetailHtml(problem));
+    content.setStyleName("problemReportDetailBody");
+    dialog.setWidget(content);
     dialog.center();
   }
 

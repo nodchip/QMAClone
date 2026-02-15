@@ -689,6 +689,108 @@ a:active {
 	font-size: 12px;
 }
 
+.problemReportPanel {
+	text-align: left;
+	margin-top: 8px;
+	padding: 10px;
+	border: 1px solid #9ec4e6;
+	border-radius: 10px;
+	background: #f8fbff;
+	box-shadow: 0 2px 10px rgba(12, 59, 105, 0.08);
+}
+
+.problemReportHits {
+	display: inline-block;
+	margin-bottom: 8px;
+	padding: 4px 10px;
+	border-radius: 999px;
+	background: #e4f1ff;
+	color: #16486f;
+	font-weight: 700;
+}
+
+.problemReportPager {
+	margin: 0 0 8px 0;
+}
+
+.problemReportPanel .gwt-SimplePager {
+	border: 1px solid #c6dcef;
+	border-radius: 8px;
+	background: #ffffff;
+	padding: 4px 8px;
+}
+
+.problemReportTable {
+	width: 100%;
+	margin: 0;
+	font-size: 14px;
+}
+
+.problemReportTable td {
+	font-size: 13px;
+}
+
+.problemReportRegisterAll {
+	margin-top: 10px;
+}
+
+.problemReportDetailDialog {
+	border: 1px solid #8fb9dc;
+	border-radius: 12px;
+	background: #ffffff;
+	box-shadow: 0 18px 44px rgba(9, 45, 81, 0.28);
+}
+
+.problemReportDetailDialog .Caption {
+	background: linear-gradient(180deg, #dceefd 0%, #c8e2fb 100%);
+	color: #123d63;
+	font-weight: 700;
+	padding: 8px 12px;
+	border-bottom: 1px solid #9fc3e3;
+	border-top-left-radius: 12px;
+	border-top-right-radius: 12px;
+}
+
+.problemReportDetailBody {
+	padding: 10px;
+	min-width: 340px;
+}
+
+.problemReportDetailTable {
+	width: 100%;
+	border-collapse: separate;
+	border-spacing: 0;
+	border: 1px solid #c8dcef;
+	border-radius: 8px;
+	overflow: hidden;
+	background: #ffffff;
+}
+
+.problemReportDetailTable th,
+.problemReportDetailTable td {
+	padding: 8px 10px;
+	font-size: 13px;
+	border-bottom: 1px solid #e4eef8;
+}
+
+.problemReportDetailTable tr:last-child th,
+.problemReportDetailTable tr:last-child td {
+	border-bottom: 0;
+}
+
+.problemReportDetailTable th {
+	width: 36%;
+	background: #edf6ff;
+	color: #1a486f;
+	font-weight: 700;
+	text-align: left;
+}
+
+.problemReportDetailTable td {
+	background: #ffffff;
+	color: #243f59;
+}
+
 .popup-canvas-background {
 	background-color: transparent;
 	cursor: pointer;
@@ -1543,6 +1645,31 @@ body {
   border: 1px solid #9ec4e6;
   border-radius: 8px;
   background: #ffffff;
+}
+
+.creationSimilarLead {
+  margin: 10px 0 8px 0;
+  padding: 8px 10px;
+  border: 1px solid #b8d4ec;
+  border-radius: 8px;
+  background: #f2f8ff;
+  color: #1f4668;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.creationSimilarSection {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #c7dced;
+}
+
+.creationSimilarSectionTitle {
+  display: block;
+  margin-bottom: 6px;
+  color: #174467;
+  font-size: 15px;
+  font-weight: 700;
 }
 
 .creationSummaryCardHeader {

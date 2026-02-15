@@ -105,6 +105,8 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
   @UiField
   SimplePanel panelSimilar;
   @UiField
+  HTMLPanel panelSimilarSection;
+  @UiField
   HTMLPanel htmlPanelWrongAnswer;
   @UiField
   SimplePanel panelWrongAnswer;
@@ -114,6 +116,8 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
   SimplePanel panelBbs;
   @UiField
   SimplePanel panelSample;
+  @UiField
+  HTML htmlSimilarLead;
   @UiField
   HTMLPanel panelCreationModeCards;
   @UiField
@@ -532,6 +536,8 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
    */
   private void updateStep5RelatedPanels() {
     PacketProblem problem = widgetProblemForm.getProblem();
+    panelSimilarSection.setVisible(true);
+    htmlSimilarLead.setVisible(true);
     setProblemSample(problem);
     panelSimilar.setWidget(createEmptyProblemReportUi());
     getSimilarProblems(problem);
@@ -541,6 +547,8 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
    * Step5 の類似問題・問題表示サンプルをクリアする。
    */
   private void clearStep5RelatedPanels() {
+    panelSimilarSection.setVisible(false);
+    htmlSimilarLead.setVisible(false);
     panelSimilar.clear();
     panelSample.clear();
   }

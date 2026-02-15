@@ -161,7 +161,13 @@
 								visible="false" />
 						</g:HTMLPanel>
 					</g:HTMLPanel>
-					<g:SimplePanel ui:field="panelSimilar" />
+					<g:HTMLPanel ui:field="panelSimilarSection" styleName="creationSimilarSection" visible="false">
+						<g:Label styleName="creationSimilarSectionTitle" text="類似問題候補" />
+						<g:HTML ui:field="htmlSimilarLead" styleName="creationSimilarLead" visible="false">
+							入力内容に近い問題候補です。重複投稿を防ぐため、問題文・解答・形式を確認してください。
+						</g:HTML>
+						<g:SimplePanel ui:field="panelSimilar" />
+					</g:HTMLPanel>
 					<g:SimplePanel ui:field="panelSample" />
 					<g:HorizontalPanel>
 						<g:Button ui:field="buttonMoveToVerification"

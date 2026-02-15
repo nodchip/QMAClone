@@ -1,12 +1,12 @@
 /*
  * Copyright 2010 Google Inc.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -14,129 +14,135 @@
  * the License.
  */
 .cellTableWidget {
-	
+  border: 1px solid #9ec4e6;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(15, 63, 113, 0.08);
 }
 
 .cellTableFirstColumn {
-	
+
 }
 
 .cellTableLastColumn {
-	
+
 }
 
-@sprite .cellTableFooter {
-	gwt-image: 'cellTableFooterBackground';
-	background-color: #b4d0f8;
-	border-top: 1px solid #88b0f2;
-	border-left: 1px solid #88b0f2;
-	border-right: 1px solid #eef;
-	/*	padding: 0px 10px;*/
-	text-align: left;
-	color: #4b4a4a;
-	text-shadow: #ddf 1px 1px 0;
-	overflow: hidden;
+.cellTableFooter {
+  background-color: #d9ebfb;
+  background-image: none;
+  border-top: 1px solid #a8cdea;
+  border-left: 0;
+  border-right: 0;
+  padding: 8px 10px;
+  text-align: center;
+  color: #1f425f;
+  overflow: hidden;
 }
 
-@sprite .cellTableHeader {
-	gwt-image: 'cellTableHeaderBackground';
-	background-color: #b4d0f8;
-	border-bottom: 1px solid #88b0f2;
-	border-left: 1px solid #88b0f2;
-	border-right: 1px solid #eef;
-	/*	padding: 0px 10px;*/
-	text-align: left;
-	color: #4b4a4a;
-	text-shadow: #ddf 1px 1px 0;
-	overflow: hidden;
+.cellTableHeader {
+  background-color: #dceefd;
+  background-image: none;
+  border-bottom: 1px solid #a8cdea;
+  border-left: 0;
+  border-right: 0;
+  padding: 8px 10px;
+  text-align: left;
+  color: #173b5d;
+  font-weight: 700;
+  overflow: hidden;
 }
 
-.cellTableCell { /*	padding: 4px 10px;*/
-	overflow: hidden;
+.cellTableCell {
+  padding: 8px 10px;
+  overflow: hidden;
+  border-bottom: 1px solid #e4eef8;
+  line-height: 1.35;
 }
 
 .cellTableFirstColumnFooter {
-	border-left: 0px;
+  border-left: 0;
 }
 
 .cellTableFirstColumnHeader {
-	border-left: 0px;
+  border-left: 0;
 }
 
 .cellTableLastColumnFooter {
-	
+
 }
 
 .cellTableLastColumnHeader {
-	
+
 }
 
 .cellTableSortableHeader {
-	cursor: pointer;
-	cursor: hand;
+  cursor: pointer;
+  cursor: hand;
 }
 
 .cellTableSortableHeader:hover {
-	color: #6c6b6b;
+  color: #0f4b7d;
 }
 
 .cellTableSortedHeaderAscending {
-	
+
 }
 
 .cellTableSortedHeaderDescending {
-	
+
 }
 
 .cellTableEvenRow {
-	background: #ffffff;
+  background: #ffffff;
 }
 
 .cellTableEvenRowCell {
-	
+
 }
 
 .cellTableOddRow {
-	background: #eef4fb;
+  background: #f8fbff;
 }
 
 .cellTableOddRowCell {
-	
+
 }
 
 .cellTableHoveredRow {
-	background: #eee;
+  background: #eaf4ff;
 }
 
 .cellTableHoveredRowCell {
-	
+
 }
 
 .cellTableKeyboardSelectedRow {
-	background: #ffc;
+  background: #d8ecff;
 }
 
 .cellTableKeyboardSelectedRowCell {
-	
+
 }
 
 @sprite .cellTableSelectedRow {
-	gwt-image: 'cellTableSelectedBackground';
-	background-color: #628cd5;
-	color: white;
-	height: auto;
-	overflow: auto;
+  gwt-image: 'cellTableSelectedBackground';
+  background-color: #1b6aa8;
+  color: #ffffff;
+  height: auto;
+  overflow: auto;
 }
 
 .cellTableSelectedRowCell {
-	background: #628cd5;
+  background: #1b6aa8;
 }
 
 .cellTableKeyboardSelectedCell {
-	background: #d7dde8;
+  background: #d7dde8;
 }
 
 @sprite .cellTableLoading {
-	gwt-image: 'cellTableLoading';
-	margin: 30px;
+  gwt-image: 'cellTableLoading';
+  margin: 30px;
 }
