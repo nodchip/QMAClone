@@ -778,6 +778,13 @@ a:active {
 	color: #1e4f7b;
 }
 
+.problemReportIndicationIcon {
+	width: 16px;
+	height: 16px;
+	display: inline-block;
+	vertical-align: middle;
+}
+
 .problemReportRegisterAll {
 	margin-top: 10px;
 }

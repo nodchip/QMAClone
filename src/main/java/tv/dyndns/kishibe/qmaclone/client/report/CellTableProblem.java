@@ -61,7 +61,7 @@ public class CellTableProblem extends CellTable<ProblemReportRow> {
     @Template("")
     SafeHtml empty();
 
-    @Template("<img src=\"{0}\" title=\"{1}\">")
+    @Template("<img class='problemReportIndicationIcon' src=\"{0}\" title=\"{1}\">")
     SafeHtml indication(SafeUri fileName, String title);
   }
 
@@ -222,14 +222,14 @@ public class CellTableProblem extends CellTable<ProblemReportRow> {
         PacketProblem problem = safeProblem(row);
         if (problem.indication != null) {
           if (problem.indication.getTime() + INDICATION_PERIOD < System.currentTimeMillis()) {
-            return TEMPLATES.indication(UriUtils.fromString("notification_error.png"),
+            return TEMPLATES.indication(UriUtils.fromString("notification_error.svg"),
                 "指摘から30日以上経過しています。\n問題作成者以外の方も書き換えることができます。");
           }
-          return TEMPLATES.indication(UriUtils.fromString("notification_warning.png"),
+          return TEMPLATES.indication(UriUtils.fromString("notification_warning.svg"),
               "他の問題作成者により指摘がありました。\n速やかに内容を確認してください。");
         } else if (problem.indicationResolved != null
             && System.currentTimeMillis() < problem.indicationResolved.getTime() + RESOLVED_CHECK_PERIOD) {
-          return TEMPLATES.indication(UriUtils.fromString("notification_resolved.png"),
+          return TEMPLATES.indication(UriUtils.fromString("notification_resolved.svg"),
               "問題が修正されました。\n指摘した方は内容を確認して下さい。");
         }
         return TEMPLATES.empty();
