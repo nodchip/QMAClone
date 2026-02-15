@@ -26,6 +26,7 @@
 - 依存関係を更新した場合は、`mvn "-Dgwt.skipCompilation=false" gwt:compile` の成功を確認してから完了とする。
 - 基盤クラス（例: `StatusUpdater`）変更時は、`@Override` エラー連鎖を関連画面まで確認する。
 - `cache.js` を更新した場合、配備先が最新成果物を参照していることを確認する。
+- GWTの調査起点は `docs/gwt-guide/README.md` とし、該当トピックの要約ドキュメントを先に確認してから公式ページへ遷移する。
 - 依存関係は安定版のみ使用し、RC / alpha / milestone 版は採用しない。
 - `piriti` 依存は再導入せず、クライアントの JSON デコードは明示実装を維持する。
 - `gin` は `de.knightsoft-net:gin:4.0.0` を基準とし、Guice 更新時は GWT rebind 成否を先に確認する。
