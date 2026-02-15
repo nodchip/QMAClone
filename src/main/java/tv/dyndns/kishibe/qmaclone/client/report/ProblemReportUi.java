@@ -1,8 +1,6 @@
 package tv.dyndns.kishibe.qmaclone.client.report;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -10,6 +8,7 @@ import java.util.logging.Logger;
 import tv.dyndns.kishibe.qmaclone.client.Service;
 import tv.dyndns.kishibe.qmaclone.client.UserData;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblem;
+import tv.dyndns.kishibe.qmaclone.client.packet.PacketSimilarProblem;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -42,21 +41,34 @@ public class ProblemReportUi extends Composite {
 	@UiField
 	Button buttonRegisterAll;
 
-	private final List<PacketProblem> problems;
+	private final List<ProblemReportRow> rows;
 
 	public ProblemReportUi(List<PacketProblem> problems, boolean regist, boolean initialSort,
 			int maxProblemsPerPage) {
-		this.problems = problems;
-		if (initialSort) {
-			Collections.sort(problems, new Comparator<PacketProblem>() {
-				@Override
-				public int compare(PacketProblem o1, PacketProblem o2) {
-					return o1.id - o2.id;
-				}
-			});
-		}
+		this(ProblemReportRowSorter.fromProblems(problems), regist, initialSort, maxProblemsPerPage,
+				true);
+	}
 
-		cellTableProblem = new CellTableProblem(problems, regist, maxProblemsPerPage);
+	/**
+	 * 類似問題検索結果向けのUIを生成する。
+	 * 
+	 * @param similarProblems 類似問題検索結果
+	 * @param regist 問題登録有効フラグ
+	 * @param maxProblemsPerPage 1ページ当たり件数
+	 * @return 問題レポートUI
+	 */
+	public static ProblemReportUi fromSimilarProblems(List<PacketSimilarProblem> similarProblems,
+			boolean regist, int maxProblemsPerPage) {
+		return new ProblemReportUi(ProblemReportRowSorter.fromSimilarProblems(similarProblems),
+				regist, false, maxProblemsPerPage, true);
+	}
+
+	private ProblemReportUi(List<ProblemReportRow> rows, boolean regist, boolean initialSort,
+			int maxProblemsPerPage, boolean rowsModel) {
+		this.rows = rows;
+		ProblemReportRowSorter.sortForDisplay(rows, initialSort);
+
+		cellTableProblem = new CellTableProblem(rows, regist, maxProblemsPerPage);
 
 		final SimplePager.Resources pagerResources = GWT.create(SimplePager.Resources.class);
 		pager = new SimplePager(TextLocation.CENTER, pagerResources, false, 0, true);
@@ -69,13 +81,13 @@ public class ProblemReportUi extends Composite {
 				}
 			}
 		});
-		if (problems.size() < maxProblemsPerPage) {
+		if (rows.size() < maxProblemsPerPage) {
 			pager.setVisible(false);
 		}
 
 		initWidget(uiBinder.createAndBindUi(this));
 
-		final int count = problems.size();
+		final int count = rows.size();
 		htmlHits.setHTML(SafeHtmlUtils.fromString(count + "件ヒット"));
 
 		if (!regist) {
@@ -90,8 +102,11 @@ public class ProblemReportUi extends Composite {
 		final int userCode = UserData.get().getUserCode();
 
 		final List<Integer> problemIds = new ArrayList<Integer>();
-		for (PacketProblem problem : problems) {
-			problemIds.add(problem.id);
+		for (ProblemReportRow row : rows) {
+			if (row == null || row.problem == null) {
+				continue;
+			}
+			problemIds.add(row.problem.id);
 		}
 
 		Service.Util.getInstance().addProblemIdsToReport(userCode, problemIds,

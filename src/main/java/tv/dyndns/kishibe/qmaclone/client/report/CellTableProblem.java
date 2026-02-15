@@ -18,6 +18,7 @@ import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
 import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeUri;
 import com.google.gwt.safehtml.shared.UriUtils;
 import com.google.gwt.user.cellview.client.CellTable;
@@ -26,402 +27,367 @@ import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
 import com.google.gwt.user.cellview.client.RowStyles;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.ProvidesKey;
 
-public class CellTableProblem extends CellTable<PacketProblem> {
-	private static final long RESOLVED_CHECK_PERIOD = 7L * 24 * 60 * 60 * 1000;
-	private static final long INDICATION_PERIOD = 30L * 24 * 60 * 60 * 1000;
-	private static final Logger logger = Logger.getLogger(CellTableProblem.class.getName());
-	private static final String STYLE_ACCURACY_RATE = "accuracyRate";
-	private static final String STYLE_NEW_PROBLEM = "newProblem";
-	private final ListDataProvider<PacketProblem> dataProvider = new ListDataProvider<PacketProblem>();
+/**
+ * 問題一覧の共通テーブル。
+ */
+public class CellTableProblem extends CellTable<ProblemReportRow> {
+  private static final long RESOLVED_CHECK_PERIOD = 7L * 24 * 60 * 60 * 1000;
+  private static final long INDICATION_PERIOD = 30L * 24 * 60 * 60 * 1000;
+  private static final Logger logger = Logger.getLogger(CellTableProblem.class.getName());
+  private static final String STYLE_ACCURACY_RATE = "accuracyRate";
+  private static final String STYLE_NEW_PROBLEM = "newProblem";
+  private static final String SAFE_VALUE_NA = "-";
+  private final ListDataProvider<ProblemReportRow> dataProvider = new ListDataProvider<ProblemReportRow>();
+  private final ListHandler<ProblemReportRow> columnSortHandler;
 
-	public interface CellTableProblemTemplates extends SafeHtmlTemplates {
-		@Template("<div class='gridFontSmall'>{0}</div>")
-		SafeHtml smallFont(String text);
+  interface CellTableProblemTemplates extends SafeHtmlTemplates {
+    @Template("<div class='gridFontSmall'>{0}</div>")
+    SafeHtml smallFont(String text);
 
-		@Template("")
-		SafeHtml empty();
+    @Template("")
+    SafeHtml empty();
 
-		@Template("<img src=\"{0}\" title=\"{1}\">")
-		SafeHtml indication(SafeUri fileName, String title);
-	}
+    @Template("<img src=\"{0}\" title=\"{1}\">")
+    SafeHtml indication(SafeUri fileName, String title);
+  }
 
-	private static final CellTableProblemTemplates TEMPLATES = GWT
-			.create(CellTableProblemTemplates.class);
-	private static final SafeHtml SAFE_HTML_EXISTS = TEMPLATES.smallFont("有");
-	private final ListHandler<PacketProblem> columnSortHandler;
+  private static final CellTableProblemTemplates TEMPLATES =
+      GWT.create(CellTableProblemTemplates.class);
+  private static final SafeHtml SAFE_HTML_EXISTS = TEMPLATES.smallFont("有");
 
-	public CellTableProblem(List<PacketProblem> problems, final boolean regist, int pageSize) {
-		super(pageSize, CellTableProblemResources.Factory.get(), new ProvidesKey<PacketProblem>() {
-			@Override
-			public Object getKey(PacketProblem item) {
-				return item.id;
-			}
-		});
+  /**
+   * 共通問題テーブルを生成する。
+   *
+   * @param rows 問題行データ
+   * @param regist 登録列の動作（追加/削除）を切り替えるフラグ
+   * @param pageSize ページサイズ
+   */
+  public CellTableProblem(List<ProblemReportRow> rows, final boolean regist, int pageSize) {
+    super(pageSize, CellTableProblemResources.Factory.get(), new ProvidesKey<ProblemReportRow>() {
+      @Override
+      public Object getKey(ProblemReportRow item) {
+        if (item == null || item.problem == null) {
+          return null;
+        }
+        return item.problem.id;
+      }
+    });
 
-		dataProvider.setList(problems);
-		dataProvider.addDataDisplay(this);
-		columnSortHandler = new ListHandler<PacketProblem>(dataProvider.getList());
-		addColumnSortHandler(columnSortHandler);
+    dataProvider.setList(rows);
+    dataProvider.addDataDisplay(this);
+    columnSortHandler = new ListHandler<ProblemReportRow>(dataProvider.getList());
+    addColumnSortHandler(columnSortHandler);
 
-		// 問題番号
-		addColumn("問題番号", new Comparator<PacketProblem>() {
-			@Override
-			public int compare(PacketProblem o1, PacketProblem o2) {
-				return o1.id - o2.id;
-			}
-		}, new LinkColumn<PacketProblem>() {
-			@Override
-			public String getValue(PacketProblem object) {
-				return object.testing ? "(出題中)" : Integer.toString(object.id);
-			}
-		}, new FieldUpdater<PacketProblem, String>() {
-			@Override
-			public void update(int index, PacketProblem object, String value) {
-				if (object.testing) {
-					return;
-				}
-				Controller.getInstance().showCreationProblem(object.id);
-			}
-		});
+    // 問題番号
+    addColumn("問題番号", new Comparator<ProblemReportRow>() {
+      @Override
+      public int compare(ProblemReportRow left, ProblemReportRow right) {
+        return safeProblemId(left) - safeProblemId(right);
+      }
+    }, new LinkColumn<ProblemReportRow>() {
+      @Override
+      public String getValue(ProblemReportRow row) {
+        PacketProblem problem = row.problem;
+        return problem.testing ? "(出題中)" : Integer.toString(problem.id);
+      }
+    }, new FieldUpdater<ProblemReportRow, String>() {
+      @Override
+      public void update(int index, ProblemReportRow row, String value) {
+        PacketProblem problem = row.problem;
+        if (problem.testing) {
+          return;
+        }
+        Controller.getInstance().showCreationProblem(problem.id);
+      }
+    });
 
-		// ジャンル
-		addColumn("ジャンル", new Comparator<PacketProblem>() {
-			@Override
-			public int compare(PacketProblem o1, PacketProblem o2) {
-				return o1.genre.compareTo(o2.genre);
-			}
-		}, new SafeHtmlColumn<PacketProblem>() {
-			@Override
-			public SafeHtml getValue(PacketProblem object) {
-				return TEMPLATES.smallFont(object.genre.toString());
-			}
-		}, null);
+    // 類似度
+    addColumn("類似度", new Comparator<ProblemReportRow>() {
+      @Override
+      public int compare(ProblemReportRow left, ProblemReportRow right) {
+        return Float.compare(safeSimilarity(left), safeSimilarity(right));
+      }
+    }, new TextColumn<ProblemReportRow>() {
+      @Override
+      public String getValue(ProblemReportRow row) {
+        if (row.similarityScore == null) {
+          return SAFE_VALUE_NA;
+        }
+        return formatSimilarity(row.similarityScore);
+      }
+    }, null);
 
-		// 出題形式
-		addColumn("出題形式", new Comparator<PacketProblem>() {
-			@Override
-			public int compare(PacketProblem o1, PacketProblem o2) {
-				return o1.type.compareTo(o2.type);
-			}
-		}, new SafeHtmlColumn<PacketProblem>() {
-			@Override
-			public SafeHtml getValue(PacketProblem object) {
-				return TEMPLATES.smallFont(object.type.toString());
-			}
-		}, null);
+    // ジャンル
+    addColumn("ジャンル", new Comparator<ProblemReportRow>() {
+      @Override
+      public int compare(ProblemReportRow left, ProblemReportRow right) {
+        return safeGenre(left).compareTo(safeGenre(right));
+      }
+    }, new SafeHtmlColumn<ProblemReportRow>() {
+      @Override
+      public SafeHtml getValue(ProblemReportRow row) {
+        return TEMPLATES.smallFont(safeGenre(row));
+      }
+    }, null);
 
-		// ランダムフラグ
-		addColumn("ランダム", new Comparator<PacketProblem>() {
-			@Override
-			public int compare(PacketProblem o1, PacketProblem o2) {
-				return o1.randomFlag.compareTo(o2.randomFlag);
-			}
-		}, new TextColumn<PacketProblem>() {
-			@Override
-			public String getValue(PacketProblem object) {
-				return Integer.toString(object.randomFlag.getIndex());
-			}
-		}, null);
+    // 出題形式
+    addColumn("出題形式", new Comparator<ProblemReportRow>() {
+      @Override
+      public int compare(ProblemReportRow left, ProblemReportRow right) {
+        return safeType(left).compareTo(safeType(right));
+      }
+    }, new SafeHtmlColumn<ProblemReportRow>() {
+      @Override
+      public SafeHtml getValue(ProblemReportRow row) {
+        return TEMPLATES.smallFont(safeType(row));
+      }
+    }, null);
 
-		// 問題文
-		addColumn("問題文", new Comparator<PacketProblem>() {
-			@Override
-			public int compare(PacketProblem o1, PacketProblem o2) {
-				return o1.sentence.compareTo(o2.sentence);
-			}
-		}, new SafeHtmlColumn<PacketProblem>() {
-			@Override
-			public SafeHtml getValue(PacketProblem object) {
-				return TEMPLATES.smallFont(object.getProblemReportSentence());
-			}
-		}, null);
+    // 問題文
+    addColumn("問題文", new Comparator<ProblemReportRow>() {
+      @Override
+      public int compare(ProblemReportRow left, ProblemReportRow right) {
+        return safeSentence(left).compareTo(safeSentence(right));
+      }
+    }, new SafeHtmlColumn<ProblemReportRow>() {
+      @Override
+      public SafeHtml getValue(ProblemReportRow row) {
+        return TEMPLATES.smallFont(row.problem.getProblemReportSentence());
+      }
+    }, null);
 
-		// 問題ノート
-		addColumn("問題ノート", new Comparator<PacketProblem>() {
-			@Override
-			public int compare(PacketProblem o1, PacketProblem o2) {
-				return o1.note.compareTo(o2.note);
-			}
-		}, new SafeHtmlColumn<PacketProblem>() {
-			@Override
-			public SafeHtml getValue(PacketProblem object) {
-				if (Strings.isNullOrEmpty(object.note)) {
-					return null;
-				}
-				return TEMPLATES.smallFont(object.note);
-			}
-		}, null);
+    // 作問者
+    addColumn("作問者", new Comparator<ProblemReportRow>() {
+      @Override
+      public int compare(ProblemReportRow left, ProblemReportRow right) {
+        return safeCreator(left).compareTo(safeCreator(right));
+      }
+    }, new SafeHtmlColumn<ProblemReportRow>() {
+      @Override
+      public SafeHtml getValue(ProblemReportRow row) {
+        String creator = safeCreator(row);
+        if (Strings.isNullOrEmpty(creator)) {
+          return TEMPLATES.smallFont(SAFE_VALUE_NA);
+        }
+        return TEMPLATES.smallFont(creator);
+      }
+    }, null);
 
-		// 作問者
-		addColumn("作問者", new Comparator<PacketProblem>() {
-			@Override
-			public int compare(PacketProblem o1, PacketProblem o2) {
-				return o1.creator.compareTo(o2.creator);
-			}
-		}, new SafeHtmlColumn<PacketProblem>() {
-			@Override
-			public SafeHtml getValue(PacketProblem object) {
-				if (Strings.isNullOrEmpty(object.creator)) {
-					return null;
-				}
-				return TEMPLATES.smallFont(object.creator);
-			}
-		}, null);
+    // 正答率
+    addColumn("正答率", new Comparator<ProblemReportRow>() {
+      @Override
+      public int compare(ProblemReportRow left, ProblemReportRow right) {
+        return safeProblem(left).getAccuracyRate() - safeProblem(right).getAccuracyRate();
+      }
+    }, new TextColumn<ProblemReportRow>() {
+      @Override
+      public String getValue(ProblemReportRow row) {
+        int ratio = safeProblem(row).getAccuracyRate();
+        return ratio == -1 ? "-%" : ratio + "%";
+      }
+    }, null);
 
-		// 画像
-		addColumn("画像", new Comparator<PacketProblem>() {
-			@Override
-			public int compare(PacketProblem o1, PacketProblem o2) {
-				return -((Boolean) o1.hasImage()).compareTo(o2.hasImage());
-			}
-		}, new SafeHtmlColumn<PacketProblem>() {
-			@Override
-			public SafeHtml getValue(PacketProblem object) {
-				if (object.hasImage()) {
-					return SAFE_HTML_EXISTS;
-				} else {
-					return null;
-				}
-			}
-		}, null);
+    // 指摘
+    addColumn("指摘", new Comparator<ProblemReportRow>() {
+      @Override
+      public int compare(ProblemReportRow left, ProblemReportRow right) {
+        PacketProblem l = safeProblem(left);
+        PacketProblem r = safeProblem(right);
+        return ComparisonChain.start()
+            .compare(l.indication, r.indication, Ordering.natural().nullsLast())
+            .compare(l.indicationResolved, r.indicationResolved, Ordering.natural().nullsLast())
+            .result();
+      }
+    }, new SafeHtmlColumn<ProblemReportRow>() {
+      @Override
+      public SafeHtml getValue(ProblemReportRow row) {
+        PacketProblem problem = safeProblem(row);
+        if (problem.indication != null) {
+          if (problem.indication.getTime() + INDICATION_PERIOD < System.currentTimeMillis()) {
+            return TEMPLATES.indication(UriUtils.fromString("notification_error.png"),
+                "指摘から30日以上経過しています。\n問題作成者以外の方も書き換えることができます。");
+          }
+          return TEMPLATES.indication(UriUtils.fromString("notification_warning.png"),
+              "他の問題作成者により指摘がありました。\n速やかに内容を確認してください。");
+        } else if (problem.indicationResolved != null
+            && System.currentTimeMillis() < problem.indicationResolved.getTime() + RESOLVED_CHECK_PERIOD) {
+          return TEMPLATES.indication(UriUtils.fromString("notification_resolved.png"),
+              "問題が修正されました。\n指摘した方は内容を確認して下さい。");
+        }
+        return TEMPLATES.empty();
+      }
+    }, null);
 
-		// 動画
-		addColumn("動画", new Comparator<PacketProblem>() {
-			@Override
-			public int compare(PacketProblem o1, PacketProblem o2) {
-				return -((Boolean) o1.hasMovie()).compareTo(o2.hasMovie());
-			}
-		}, new SafeHtmlColumn<PacketProblem>() {
-			@Override
-			public SafeHtml getValue(PacketProblem object) {
-				if (object.hasMovie()) {
-					return SAFE_HTML_EXISTS;
-				} else {
-					return null;
-				}
-			}
-		}, null);
+    // 登録
+    addColumn("登録", null, new LinkColumn<ProblemReportRow>() {
+      @Override
+      public String getValue(ProblemReportRow row) {
+        return regist ? "追加" : "削除";
+      }
+    }, new FieldUpdater<ProblemReportRow, String>() {
+      @Override
+      public void update(int index, ProblemReportRow row, String value) {
+        final int problemId = safeProblemId(row);
+        final int userCode = UserData.get().getUserCode();
+        if (regist) {
+          final List<Integer> problemIds = new ArrayList<Integer>();
+          problemIds.add(problemId);
+          Service.Util.getInstance().addProblemIdsToReport(userCode, problemIds, callbackReport);
+        } else {
+          Service.Util.getInstance().removeProblemIDFromReport(userCode, problemId, callbackReport);
+        }
+      }
+    });
 
-		// 正解数
-		addColumn("正解数", new Comparator<PacketProblem>() {
-			@Override
-			public int compare(PacketProblem o1, PacketProblem o2) {
-				return o1.good - o2.good;
-			}
-		}, new TextColumn<PacketProblem>() {
-			@Override
-			public String getValue(PacketProblem object) {
-				return Integer.toString(object.good);
-			}
-		}, null);
+    // 操作（詳細）
+    addColumn("操作", null, new LinkColumn<ProblemReportRow>() {
+      @Override
+      public String getValue(ProblemReportRow row) {
+        return "詳細";
+      }
+    }, new FieldUpdater<ProblemReportRow, String>() {
+      @Override
+      public void update(int index, ProblemReportRow row, String value) {
+        showDetailDialog(safeProblem(row));
+      }
+    });
 
-		// 誤答数
-		addColumn("誤答数", new Comparator<PacketProblem>() {
-			@Override
-			public int compare(PacketProblem o1, PacketProblem o2) {
-				return o1.bad - o2.bad;
-			}
-		}, new TextColumn<PacketProblem>() {
-			@Override
-			public String getValue(PacketProblem object) {
-				return Integer.toString(object.bad);
-			}
-		}, null);
+    final RowStyles<ProblemReportRow> rowStyles = new RowStyles<ProblemReportRow>() {
+      @Override
+      public String getStyleNames(ProblemReportRow row, int rowIndex) {
+        if (row == null || row.problem == null) {
+          return null;
+        }
+        PacketProblem problem = row.problem;
+        if (problem.isNew()) {
+          return STYLE_NEW_PROBLEM;
+        }
+        return STYLE_ACCURACY_RATE + problem.getAccuracyRate();
+      }
+    };
+    setRowStyles(rowStyles);
+  }
 
-		// 回答数
-		addColumn("回答数", new Comparator<PacketProblem>() {
+  private final AsyncCallback<Void> callbackReport =
+      new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Void>() {
+        @Override
+        public void onSuccess(Void result) {
+          dataProvider.refresh();
+        }
 
-			@Override
-			public int compare(PacketProblem o1, PacketProblem o2) {
-				return (o1.good + o1.bad) - (o2.good + o2.bad);
-			}
-		}, new TextColumn<PacketProblem>() {
-			@Override
-			public String getValue(PacketProblem object) {
-				return Integer.toString(object.good + object.bad);
-			}
-		}, null);
+        @Override
+        public void onFailureRpc(Throwable caught) {
+          logger.log(Level.WARNING, "問題の追加・削除に失敗しました", caught);
+        }
+      };
 
-		// 正答率
-		addColumn("正答率", new Comparator<PacketProblem>() {
-			public int compare(PacketProblem o1, PacketProblem o2) {
-				return o1.getAccuracyRate() - o2.getAccuracyRate();
-			}
-		}, new TextColumn<PacketProblem>() {
-			@Override
-			public String getValue(PacketProblem object) {
-				int ratio = object.getAccuracyRate();
-				if (ratio == -1) {
-					return "-%";
-				} else {
-					return ratio + "%";
-				}
-			}
-		}, null);
+  /**
+   * 詳細ダイアログを表示する。
+   *
+   * @param problem 問題
+   */
+  private void showDetailDialog(PacketProblem problem) {
+    DialogBox dialog = new DialogBox(true, true);
+    dialog.setText("問題詳細: " + problem.id);
+    dialog.setWidget(new HTML(buildDetailHtml(problem)));
+    dialog.center();
+  }
 
-		// // +1ボタン
-		// addColumn("+1", null, new SafeHtmlColumn<PacketProblem>() {
-		// @Override
-		// public SafeHtml getValue(PacketProblem object) {
-		// }
-		// }, null);
+  /**
+   * 詳細表示用HTMLを生成する。
+   *
+   * @param problem 問題
+   * @return 安全なHTML
+   */
+  private SafeHtml buildDetailHtml(PacketProblem problem) {
+    SafeHtmlBuilder builder = new SafeHtmlBuilder();
+    builder.appendHtmlConstant("<table class='problemReportDetailTable'>");
+    appendDetailRow(builder, "ランダム", Integer.toString(problem.randomFlag.getIndex()));
+    appendDetailRow(builder, "問題ノート", blankToNa(problem.note));
+    appendDetailRow(builder, "画像", problem.hasImage() ? "有" : "無");
+    appendDetailRow(builder, "動画", problem.hasMovie() ? "有" : "無");
+    appendDetailRow(builder, "正解数", Integer.toString(problem.good));
+    appendDetailRow(builder, "誤答数", Integer.toString(problem.bad));
+    appendDetailRow(builder, "回答数", Integer.toString(problem.good + problem.bad));
+    appendDetailRow(builder, "良問", Integer.toString(problem.voteGood));
+    builder.appendHtmlConstant("</table>");
+    return builder.toSafeHtml();
+  }
 
-		// 良問
-		addColumn("良問", new Comparator<PacketProblem>() {
-			@Override
-			public int compare(PacketProblem o1, PacketProblem o2) {
-				return o1.voteGood - o2.voteGood;
-			}
-		}, new GwtButtonColumn<PacketProblem>() {
-			@Override
-			public String getValue(PacketProblem object) {
-				return Integer.toString(object.voteGood);
-			}
-		}, new FieldUpdater<PacketProblem, String>() {
-			@Override
-			public void update(int index, final PacketProblem object, String value) {
-				new ProblemFeedbackDialogBox(dataProvider, object).center();
-			}
-		});
+  /**
+   * 詳細行を追加する。
+   *
+   * @param builder 出力先
+   * @param label ラベル
+   * @param value 値
+   */
+  private static void appendDetailRow(SafeHtmlBuilder builder, String label, String value) {
+    builder.appendHtmlConstant("<tr><th>");
+    builder.appendEscaped(label);
+    builder.appendHtmlConstant("</th><td>");
+    builder.appendEscaped(value);
+    builder.appendHtmlConstant("</td></tr>");
+  }
 
-		// 指摘
-		addColumn("指摘", new Comparator<PacketProblem>() {
-			public int compare(PacketProblem o1, PacketProblem o2) {
-				return ComparisonChain
-						.start()
-						.compare(o1.indication, o2.indication, Ordering.natural().nullsLast())
-						.compare(o1.indicationResolved, o2.indicationResolved,
-								Ordering.natural().nullsLast()).result();
-			}
-		}, new SafeHtmlColumn<PacketProblem>() {
-			@Override
-			public SafeHtml getValue(PacketProblem object) {
-				if (object.indication != null) {
-					if (object.indication.getTime() + INDICATION_PERIOD < System
-							.currentTimeMillis()) {
-						return TEMPLATES.indication(UriUtils.fromString("notification_error.png"),
-								"指摘から30日以上経過しています。\n問題作成者以外の方も書き換えることができます。");
-					} else {
-						return TEMPLATES.indication(
-								UriUtils.fromString("notification_warning.png"),
-								"他の問題作成者により指摘がありました。\n速やかに内容を確認してください。");
-					}
-				} else if (object.indicationResolved != null) {
-					if (System.currentTimeMillis() < object.indicationResolved.getTime()
-							+ RESOLVED_CHECK_PERIOD) {
-						return TEMPLATES.indication(
-								UriUtils.fromString("notification_resolved.png"),
-								"問題が修正されました。\n指摘した方は内容を確認して下さい。");
-					}
-				}
-				return TEMPLATES.empty();
-			}
-		}, null);
+  private static String blankToNa(String value) {
+    return Strings.isNullOrEmpty(value) ? SAFE_VALUE_NA : value;
+  }
 
-		// // 悪問
-		// addColumn("悪問", new Comparator<PacketProblem>() {
-		// @Override
-		// public int compare(PacketProblem o1, PacketProblem o2) {
-		// return o1.voteBad - o2.voteBad;
-		// }
-		// }, new GwtButtonColumn<PacketProblem>() {
-		// @Override
-		// public String getValue(PacketProblem object) {
-		// return Integer.toString(object.voteBad);
-		// }
-		// }, new FieldUpdater<PacketProblem, String>() {
-		// @Override
-		// public void update(int index, final PacketProblem object, String value) {
-		// String feedback = Window.prompt("投票理由をお書き下さい", "");
-		// if (Strings.isNullOrEmpty(feedback)) {
-		// return;
-		// }
-		//
-		// int userCode = UserData.get().getUserCode();
-		// String playerName = UserData.get().getPlayerName();
-		// Service.Util.getInstance().voteToProblem(userCode, object.id, false, feedback,
-		// playerName, new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Void>() {
-		// @Override
-		// public void onSuccess(Void result) {
-		// ++object.voteBad;
-		// dataProvider.refresh();
-		// }
-		//
-		// @Override
-		// public void onFailureRpc(Throwable caught) {
-		// logger.log(Level.WARNING, "問題への投票に失敗しました", caught);
-		// }
-		// });
-		// }
-		// });
+  private static String formatSimilarity(float value) {
+    int scaled = Math.round(value * 1000f);
+    int integerPart = scaled / 1000;
+    int decimalPart = Math.abs(scaled % 1000);
+    String decimal = Integer.toString(decimalPart);
+    while (decimal.length() < 3) {
+      decimal = "0" + decimal;
+    }
+    return integerPart + "." + decimal;
+  }
 
-		// 問題登録・解除
-		addColumn("登録", null, new LinkColumn<PacketProblem>() {
-			@Override
-			public String getValue(PacketProblem object) {
-				return regist ? "追加" : "削除";
-			}
-		}, new FieldUpdater<PacketProblem, String>() {
-			public void update(int index, PacketProblem object, String value) {
-				final int problemId = object.id;
-				final int userCode = UserData.get().getUserCode();
-				if (regist) {
-					final List<Integer> problemIds = new ArrayList<Integer>();
-					problemIds.add(problemId);
-					Service.Util.getInstance().addProblemIdsToReport(userCode, problemIds,
-							callbackReport);
-				} else {
-					Service.Util.getInstance().removeProblemIDFromReport(userCode, problemId,
-							callbackReport);
-				}
-			}
-		});
+  private static PacketProblem safeProblem(ProblemReportRow row) {
+    return row == null || row.problem == null ? new PacketProblem() : row.problem;
+  }
 
-		// 各行の表示色設定
-		final RowStyles<PacketProblem> rowStyles = new RowStyles<PacketProblem>() {
-			@Override
-			public String getStyleNames(PacketProblem row, int rowIndex) {
-				if (row == null) {
-					return null;
-				}
+  private static int safeProblemId(ProblemReportRow row) {
+    return row == null || row.problem == null ? Integer.MIN_VALUE : row.problem.id;
+  }
 
-				if (row.isNew()) {
-					return STYLE_NEW_PROBLEM;
-				} else {
-					return STYLE_ACCURACY_RATE + row.getAccuracyRate();
-				}
-			}
-		};
-		setRowStyles(rowStyles);
-	}
+  private static float safeSimilarity(ProblemReportRow row) {
+    return row == null || row.similarityScore == null ? Float.NEGATIVE_INFINITY : row.similarityScore;
+  }
 
-	private final AsyncCallback<Void> callbackReport = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Void>() {
-		@Override
-		public void onSuccess(Void result) {
-			dataProvider.refresh();
-		}
+  private static String safeGenre(ProblemReportRow row) {
+    return row == null || row.problem == null || row.problem.genre == null ? SAFE_VALUE_NA
+        : row.problem.genre.toString();
+  }
 
-		@Override
-		public void onFailureRpc(Throwable caught) {
-			logger.log(Level.WARNING, "問題の追加・削除に失敗しました", caught);
-		}
-	};
+  private static String safeType(ProblemReportRow row) {
+    return row == null || row.problem == null || row.problem.type == null ? SAFE_VALUE_NA
+        : row.problem.type.toString();
+  }
 
-	private <C, S> void addColumn(String header, Comparator<PacketProblem> comparator,
-			Column<PacketProblem, S> column, FieldUpdater<PacketProblem, S> fieldUpdater) {
-		if (comparator != null) {
-			column.setSortable(true);
-			columnSortHandler.setComparator(column, comparator);
-		}
+  private static String safeSentence(ProblemReportRow row) {
+    return row == null || row.problem == null ? "" : row.problem.getProblemReportSentence();
+  }
 
-		if (fieldUpdater != null) {
-			column.setFieldUpdater(fieldUpdater);
-		}
+  private static String safeCreator(ProblemReportRow row) {
+    return row == null || row.problem == null ? SAFE_VALUE_NA : blankToNa(row.problem.creator);
+  }
 
-		addColumn(column, header);
-	}
+  private <S> void addColumn(String header, Comparator<ProblemReportRow> comparator,
+      Column<ProblemReportRow, S> column, FieldUpdater<ProblemReportRow, S> fieldUpdater) {
+    if (comparator != null) {
+      column.setSortable(true);
+      columnSortHandler.setComparator(column, comparator);
+    }
+    if (fieldUpdater != null) {
+      column.setFieldUpdater(fieldUpdater);
+    }
+    addColumn(column, header);
+  }
 }
-

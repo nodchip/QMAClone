@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 import tv.dyndns.kishibe.qmaclone.client.Service;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblem;
 import tv.dyndns.kishibe.qmaclone.client.report.CellTableProblem;
+import tv.dyndns.kishibe.qmaclone.client.report.ProblemReportRowSorter;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.cellview.client.SimplePager;
@@ -27,7 +28,8 @@ public class PanelSettingIndicatedProblems extends VerticalPanel {
 	private void update(List<PacketProblem> problems) {
 		clear();
 
-		CellTableProblem table = new CellTableProblem(problems, false, PAGE_SIZE);
+		CellTableProblem table = new CellTableProblem(
+				ProblemReportRowSorter.fromProblems(problems), false, PAGE_SIZE);
 		SimplePager.Resources pagerResources = GWT.create(SimplePager.Resources.class);
 		SimplePager simplePager = new SimplePager(TextLocation.CENTER, pagerResources, false, 0,
 				true);

@@ -517,14 +517,8 @@ public class CreationUi extends Composite implements ChangeHistoryPresenter {
 
   private final AsyncCallback<List<PacketSimilarProblem>> callbackSearchSimilarProblem = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<List<PacketSimilarProblem>>() {
     public void onSuccess(List<PacketSimilarProblem> result) {
-      List<PacketProblem> problems = Lists.newArrayList();
-      for (PacketSimilarProblem similarProblem : result) {
-        if (similarProblem == null || similarProblem.problem == null) {
-          continue;
-        }
-        problems.add(similarProblem.problem);
-      }
-      panelSimilar.setWidget(new ProblemReportUi(problems, true, false, MAX_SIMILER_PROBLEMS_PER_PAGE));
+      panelSimilar.setWidget(
+          ProblemReportUi.fromSimilarProblems(result, true, MAX_SIMILER_PROBLEMS_PER_PAGE));
     }
 
     public void onFailureRpc(Throwable caught) {
