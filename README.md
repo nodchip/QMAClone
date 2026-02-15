@@ -7,3 +7,4 @@ QMAClone
 - ログ・メモ・運用補助スクリプトの配置方針は `ops/README.md` を参照してください。
 - 新規の運用ファイルはルート直下ではなく `ops/` 配下に配置します。
 - 監視プラグイン `qmaclone_` は `ops/scripts/monitoring/qmaclone_` に配置しています。
+- `war/` ディレクトリの非推奨化・削除計画は `docs/plans/2026-02-15-war-directory-deprecation-plan.md` を参照してください。
