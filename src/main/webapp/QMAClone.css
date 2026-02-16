@@ -1310,6 +1310,11 @@ body {
 	flex: 0 0 auto;
 }
 
+/* HorizontalPanel は table/td を生成するため、列間余白を明示する。 */
+.lobbyMultiItemSelectorTopRow td + td {
+	padding-left: 10px;
+}
+
 .lobbyMultiItemSelectorToggle,
 .lobbyMultiItemSelectorChoice {
 	display: inline-flex;
