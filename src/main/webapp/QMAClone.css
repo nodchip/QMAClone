@@ -1285,7 +1285,7 @@ body {
 
 .app-root-panel {
 	position: relative;
-	padding: 8px 352px 24px 16px;
+	padding: 8px 16px 24px 16px;
 	box-sizing: border-box;
 }
 
@@ -1295,63 +1295,6 @@ body {
 	letter-spacing: 1px;
 	color: #f2f8ff;
 	text-shadow: 0 0 14px rgba(84, 216, 255, 0.2);
-}
-
-.app-tab-panel {
-	max-width: 1080px;
-	margin: 0 auto;
-}
-
-.app-chat-panel {
-	position: fixed;
-	top: 104px;
-	right: 16px;
-	width: 320px;
-	max-height: calc(100vh - 120px);
-	overflow: hidden;
-	border: 1px solid #355e88;
-	border-radius: 12px;
-	background: linear-gradient(180deg, #0c2441 0%, #081a31 100%);
-	box-shadow: var(--lobby-shadow);
-	z-index: 40;
-}
-
-.app-chat-panel .gwt-TabLayoutPanelTabs,
-.app-chat-panel .gwt-TabBar {
-	background: #0a1e37;
-}
-
-.app-error-panel {
-	max-width: 1080px;
-	margin: 8px auto 0 auto;
-}
-
-@media (max-width: 1380px) {
-	.app-root-panel {
-		padding-right: 330px;
-	}
-
-	.app-chat-panel {
-		width: 300px;
-	}
-}
-
-@media (max-width: 1160px) {
-	.app-root-panel {
-		padding-right: 16px;
-	}
-
-	.app-chat-panel {
-		position: static;
-		width: auto;
-		max-width: 1080px;
-		max-height: none;
-		margin: 10px auto 0 auto;
-	}
-}
-/* chat layout overrides for three-column + collapsible chat */
-.app-root-panel {
-	padding: 8px 16px 24px 16px;
 }
 
 .app-tab-panel {
@@ -1371,15 +1314,31 @@ body {
 }
 
 .app-chat-panel {
-	position: static;
-	width: 320px;
-	max-height: none;
-	overflow: visible;
-	z-index: auto;
+	position: fixed;
+	right: 16px;
+	bottom: 16px;
+	width: 360px;
+	height: min(56vh, 520px);
+	overflow: hidden;
+	border: 1px solid #355e88;
+	border-radius: 12px;
+	background: linear-gradient(180deg, #0c2441 0%, #081a31 100%);
+	box-shadow: var(--lobby-shadow);
+	z-index: 40;
+	display: flex;
+	flex-direction: column;
+}
+
+.app-chat-panel .gwt-TabLayoutPanelTabs,
+.app-chat-panel .gwt-TabBar {
+	background: #0a1e37;
 }
 
 .app-chat-container {
 	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
 }
 
 .app-chat-header {
@@ -1437,40 +1396,50 @@ body {
 
 .app-chat-body {
 	width: 100%;
+	flex: 1 1 auto;
+	min-height: 0;
+	overflow: hidden;
+}
+
+.app-chat-content {
+	height: 100%;
+}
+
+.app-chat-tabs {
+	height: 100%;
+}
+
+.app-chat-pane {
+	height: 100%;
+}
+
+.app-chat-pane .gwt-TextBox {
+	box-sizing: border-box;
 }
 
 .chat-collapsed .app-chat-panel {
 	display: none;
 }
 
-@media (max-width: 1380px) {
+@media (max-width: 720px) {
 	.app-chat-panel {
-		width: 300px;
-	}
-}
-
-@media (max-width: 1160px) {
-	.app-main-panel,
-	.app-main-panel tbody,
-	.app-main-panel tr,
-	.app-main-panel td {
-		display: block;
-		width: 100% !important;
-	}
-
-	.app-chat-panel {
-		width: 100%;
-		margin-top: 10px;
+		right: 12px;
+		bottom: 12px;
+		width: calc(100vw - 24px);
+		height: min(52vh, 500px);
 	}
 }
 .app-chat-reopen {
-	margin: 0 auto 8px auto;
+	position: fixed;
+	right: 16px;
+	bottom: 16px;
 	padding: 6px 10px;
 	border: 1px solid #4f87b0;
 	border-radius: 8px;
 	background: #133457;
 	color: #eaf7ff;
 	cursor: pointer;
+	z-index: 45;
 	transition: background-color 140ms ease, border-color 140ms ease, box-shadow 140ms ease,
 		transform 90ms ease;
 }
@@ -1498,6 +1467,18 @@ body {
 	cursor: not-allowed;
 	box-shadow: none;
 	transform: none;
+}
+
+@media (max-width: 720px) {
+	.app-chat-reopen {
+		right: 12px;
+		bottom: 12px;
+	}
+}
+
+.app-error-panel {
+	max-width: 1080px;
+	margin: 8px auto 0 auto;
 }
 /* 蝠城｡御ｽ懈・繧ｦ繧｣繧ｶ繝ｼ繝・*/
 .creationWizard {
