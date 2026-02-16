@@ -86,9 +86,9 @@ public class QMACloneModule extends AbstractModule {
   }
 
   @Provides
-  @com.google.inject.Singleton
   MessageSender<PacketMatchingStatus> provideMatchingStatusMessageSender(
       ThreadPool threadPool) {
+    // ゲーム単位で購読先を分離するため、シングルトンにはしない。
     return new MessageSender<PacketMatchingStatus>(threadPool) {
       @Override
       protected String encode(PacketMatchingStatus data) {
@@ -98,9 +98,9 @@ public class QMACloneModule extends AbstractModule {
   }
 
   @Provides
-  @com.google.inject.Singleton
   MessageSender<PacketReadyForGame> provideReadyForGameMessageSender(
       ThreadPool threadPool) {
+    // ゲーム単位で購読先を分離するため、シングルトンにはしない。
     return new MessageSender<PacketReadyForGame>(threadPool) {
       @Override
       protected String encode(PacketReadyForGame data) {
@@ -110,8 +110,8 @@ public class QMACloneModule extends AbstractModule {
   }
 
   @Provides
-  @com.google.inject.Singleton
   MessageSender<PacketGameStatus> provideGameStatusMessageSender(ThreadPool threadPool) {
+    // ゲーム単位で購読先を分離するため、シングルトンにはしない。
     return new MessageSender<PacketGameStatus>(threadPool) {
       @Override
       protected String encode(PacketGameStatus data) {
