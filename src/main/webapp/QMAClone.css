@@ -2944,6 +2944,34 @@ body {
 	line-height: 1.2;
 }
 
+.statisticsRoot .statisticsAccuracyGrid {
+	table-layout: fixed;
+	width: 100%;
+}
+
+.statisticsRoot .statisticsAccuracyGrid td {
+	font-size: 13px;
+	line-height: 1.35;
+}
+
+.statisticsRoot .statisticsAccuracyGrid .statisticsAccuracyCornerCell,
+.statisticsRoot .statisticsAccuracyGrid .statisticsAccuracyHeaderCell,
+.statisticsRoot .statisticsAccuracyGrid .statisticsAccuracyRowHeaderCell {
+	background: #e8f3fe;
+	color: #1b476d;
+	font-weight: 700;
+}
+
+.statisticsRoot .statisticsAccuracyGrid .statisticsAccuracyHeaderCell {
+	text-align: center !important;
+}
+
+.statisticsAccuracyHeaderLabel {
+	display: inline-block;
+	text-align: center;
+	line-height: 1.2;
+}
+
 .statisticsRoot .statisticsTable tr:first-child td,
 .statisticsRoot .statisticsTable td:first-child {
 	background: #edf6ff;

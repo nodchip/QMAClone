@@ -65,4 +65,13 @@ public class PanelStatisticsUiStyleTest extends QMACloneGWTTestCaseBase {
 				.contains("statisticsNumberHeaderCell"));
 		assertTrue(grid.getHTML(0, ProblemGenre.Anige.getIndex()).contains("<br"));
 	}
+
+	@Test
+	public void testAccuracyGridUsesModernStylesAndWrappedGenreHeader() {
+		GridAccuracyRate grid = new GridAccuracyRate();
+		assertTrue(grid.getStyleName().contains("statisticsAccuracyGrid"));
+		assertTrue(grid.getCellFormatter().getStyleName(0, ProblemGenre.Anige.getIndex())
+				.contains("statisticsAccuracyHeaderCell"));
+		assertTrue(grid.getHTML(0, ProblemGenre.Anige.getIndex()).contains("<br"));
+	}
 }
