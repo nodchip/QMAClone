@@ -1296,6 +1296,113 @@ body {
 	min-height: 100vh;
 }
 
+.lobbyMultiItemSelector {
+	width: 100%;
+}
+
+.lobbyMultiItemSelectorTopRow {
+	display: flex;
+	align-items: center;
+	column-gap: 8px;
+}
+
+.lobbyMultiItemSelectorTopRow > * {
+	flex: 0 0 auto;
+}
+
+.lobbyMultiItemSelectorToggle,
+.lobbyMultiItemSelectorChoice {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	white-space: nowrap;
+	color: #d7e9ff;
+	line-height: 1.25;
+}
+
+.lobbyMultiItemSelectorToggle input[type="checkbox"],
+.lobbyMultiItemSelectorChoice input[type="checkbox"] {
+	margin: 0;
+	accent-color: #5db3ff;
+}
+
+.lobbyMultiItemSelectorToggle label,
+.lobbyMultiItemSelectorChoice label {
+	color: #d7e9ff;
+	white-space: nowrap;
+}
+
+.lobbyMultiItemSelectorChoices {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-start;
+	gap: 8px 16px;
+	margin-top: 6px;
+}
+
+.lobbyMultiItemSelectorColumn {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	min-width: 116px;
+}
+
+.lobbyEventPopup {
+	border: 1px solid #4f78a5;
+	border-radius: 10px;
+	background: linear-gradient(180deg, #143356 0%, #0d2745 100%);
+	box-shadow: 0 12px 26px rgba(0, 0, 0, 0.35);
+}
+
+.lobbyEventPopupContent {
+	min-width: 240px;
+	max-width: 360px;
+	padding: 10px;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	box-sizing: border-box;
+}
+
+.lobbyEventPopupContent > .gwt-Label {
+	color: #d9ecff;
+	font-size: 13px;
+	font-weight: 700;
+	letter-spacing: 0.04em;
+	padding: 2px 2px 4px 2px;
+}
+
+.lobbyEventPopupRoomButton,
+.lobbyEventPopupCancelButton {
+	width: 100%;
+	min-height: 30px;
+	text-align: left;
+	border: 1px solid #4f78a5;
+	border-radius: 8px;
+	background: #0e2746;
+	color: #dff1ff;
+	padding: 5px 9px;
+	transition: background-color 140ms ease, border-color 140ms ease, box-shadow 140ms ease,
+		transform 90ms ease;
+}
+
+.lobbyEventPopupRoomButton:hover,
+.lobbyEventPopupCancelButton:hover {
+	background: #13345d;
+	border-color: #69deff;
+	box-shadow: 0 0 0 2px rgba(105, 222, 255, 0.18);
+}
+
+.lobbyEventPopupRoomButton:active,
+.lobbyEventPopupCancelButton:active {
+	transform: translateY(1px);
+	box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.lobbyEventPopupCancelButton {
+	text-align: center;
+}
+
 .app-root-panel {
 	position: relative;
 	padding: 8px 392px 24px 16px;

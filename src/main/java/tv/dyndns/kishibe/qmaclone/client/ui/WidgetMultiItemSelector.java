@@ -60,6 +60,10 @@ public class WidgetMultiItemSelector<T extends Enum<T> & HasIndex> extends Verti
 
 	public WidgetMultiItemSelector(String title, T[] items, int columns) {
 		this.items = items;
+		addStyleName("lobbyMultiItemSelector");
+		listBox.addStyleName("lobbyMultiItemSelectorList");
+		checkBoxMultiSelect.addStyleName("lobbyMultiItemSelectorToggle");
+		panelMultiSelect.addStyleName("lobbyMultiItemSelectorChoices");
 
 		setHorizontalAlignment(ALIGN_CENTER);
 
@@ -77,6 +81,7 @@ public class WidgetMultiItemSelector<T extends Enum<T> & HasIndex> extends Verti
 			checkBoxMultiSelect.getElement().getStyle().setColor("#d7e9ff");
 
 			final HorizontalPanel panel = new HorizontalPanel();
+			panel.addStyleName("lobbyMultiItemSelectorTopRow");
 			panel.setVerticalAlignment(ALIGN_MIDDLE);
 			panel.add(listBox);
 			panel.add(checkBoxMultiSelect);
@@ -88,12 +93,14 @@ public class WidgetMultiItemSelector<T extends Enum<T> & HasIndex> extends Verti
 			final VerticalPanel[] panels = new VerticalPanel[columns];
 			for (int i = 0; i < panels.length; ++i) {
 				panels[i] = new VerticalPanel();
+				panels[i].addStyleName("lobbyMultiItemSelectorColumn");
 				panelMultiSelect.add(panels[i]);
 			}
 
 			checkBoxs = new CheckBox[items.length];
 			for (int itemIndex = 0; itemIndex < items.length; ++itemIndex) {
 				checkBoxs[itemIndex] = new CheckBox(items[itemIndex].toString());
+				checkBoxs[itemIndex].addStyleName("lobbyMultiItemSelectorChoice");
 				panels[itemIndex / ((items.length + columns - 1) / columns)]
 						.add(checkBoxs[itemIndex]);
 			}

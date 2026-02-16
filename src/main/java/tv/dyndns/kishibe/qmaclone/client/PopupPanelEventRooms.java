@@ -30,10 +30,14 @@ import tv.dyndns.kishibe.qmaclone.client.packet.PacketRoomKey;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
+/**
+ * ロビーのイベント名候補を選択するポップアップ。
+ */
 public class PopupPanelEventRooms extends PopupPanel implements ClickHandler {
 	private final LobbyUi lobbyUi;
 	private final Map<Button, PacketRoomKey> buttonToRoomKey = new HashMap<Button, PacketRoomKey>();
@@ -43,17 +47,22 @@ public class PopupPanelEventRooms extends PopupPanel implements ClickHandler {
 		super(true, true);
 		setAnimationEnabled(true);
 		this.lobbyUi = panelLobby;
+		setStyleName("lobbyEventPopup");
 
 		final VerticalPanel rootPanel = new VerticalPanel();
+		rootPanel.setStyleName("lobbyEventPopupContent");
+		rootPanel.add(new Label("イベント名を選択"));
 
 		// イベント名
 		for (PacketRoomKey roomKey : eventRooms) {
 			final Button button = new Button(roomKey.toString(), this);
+			button.setStyleName("lobbyEventPopupRoomButton");
 			buttonToRoomKey.put(button, roomKey);
 			rootPanel.add(button);
 		}
 
 		// キャンセルボタン
+		buttonCancel.setStyleName("lobbyEventPopupCancelButton");
 		rootPanel.add(buttonCancel);
 
 		setWidget(rootPanel);
