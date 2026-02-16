@@ -1942,7 +1942,6 @@ body {
 	margin: 0;
 	padding: 10px 12px;
 	border: 1px solid #3f6487;
-	border-left-width: 4px;
 	border-radius: 10px;
 	background: linear-gradient(180deg, #123758 0%, #0e2e4a 100%);
 	box-shadow: 0 6px 16px rgba(7, 28, 47, 0.22);
@@ -2014,7 +2013,6 @@ body {
 
 .app-error-log-warning {
 	border-color: #4f7ea8;
-	border-left-color: #68b3ff;
 }
 
 .app-error-log-warning .app-error-log-title {
@@ -2040,7 +2038,6 @@ body {
 
 .app-error-log-severe {
 	border-color: #84576f;
-	border-left-color: #ff7d93;
 	background: linear-gradient(180deg, #4a2a38 0%, #3b2230 100%);
 }
 
@@ -2071,7 +2068,7 @@ body {
 }
 
 .app-error-log-info {
-	border-left-color: #7aaed7;
+	border-color: #3f6487;
 }
 
 @media (max-width: 720px) {
