@@ -2833,13 +2833,54 @@ body {
 }
 
 .statisticsTopIntro {
-	margin-bottom: 8px;
-	padding: 8px 10px;
-	border: 1px solid #c3dcf1;
-	border-radius: 8px;
-	background: #eef7ff;
-	color: #214d74;
+	margin: 0 0 10px 0;
+	padding: 10px 12px;
+	border: 1px solid #c0d9ef;
+	border-radius: 10px;
+	background: linear-gradient(180deg, #eef7ff 0%, #e3f1ff 100%);
+	color: #1f4d76;
 	font-weight: 700;
+}
+
+.statisticsTopTiles {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+	gap: 10px;
+	margin: 0;
+	padding: 0;
+}
+
+.statisticsTopTile {
+	margin: 0;
+	padding: 10px 12px;
+	border: 1px solid #c6dcee;
+	border-radius: 10px;
+	background: #ffffff;
+	box-shadow: 0 2px 8px rgba(10, 38, 61, 0.08);
+}
+
+.statisticsTopTileTitle {
+	margin: 0 0 4px 0;
+	color: #103e69;
+	font-size: 15px;
+	font-weight: 700;
+	line-height: 1.35;
+}
+
+.statisticsTopTileDesc {
+	margin: 0;
+	color: #2a4f70;
+	font-size: 13px;
+	line-height: 1.5;
+}
+
+.statisticsTopTileUse {
+	margin: 6px 0 0 0;
+	padding-top: 6px;
+	border-top: 1px solid #e1ecf7;
+	color: #345c7f;
+	font-size: 12px;
+	line-height: 1.45;
 }
 
 .statisticsTopList {
@@ -2894,5 +2935,9 @@ body {
 	.statisticsRoot .gwt-SimplePanel {
 		padding-left: 0;
 		margin-top: 10px;
+	}
+
+	.statisticsTopTiles {
+		grid-template-columns: 1fr;
 	}
 }

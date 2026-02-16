@@ -46,4 +46,13 @@ public class PanelStatisticsUiStyleTest extends QMACloneGWTTestCaseBase {
 		assertFalse("800px".equals(root.getElement().getStyle().getWidth()));
 		assertFalse("600px".equals(top.getElement().getStyle().getWidth()));
 	}
+
+	@Test
+	public void testStatisticsTopUsesCardIndexMarkup() {
+		PanelStatisticsTop top = new PanelStatisticsTop();
+		String html = top.getHTML();
+		assertTrue(html.contains("statisticsTopTiles"));
+		assertTrue(html.contains("statisticsTopTile"));
+		assertTrue(html.contains("statisticsTopTileUse"));
+	}
 }

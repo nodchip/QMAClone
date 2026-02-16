@@ -26,13 +26,26 @@ import com.google.gwt.user.client.ui.HTML;
 
 public class PanelStatisticsTop extends HTML {
 	private static final String DESCRIPTION = "<div class='statisticsTopIntro'>左メニューから表示したい統計項目を選んでください。</div>"
-			+ "<dl class='statisticsTopList'>"
-			+ "<dt>問題数</dt><dd>プレイヤーの皆様から投稿された問題の問題数をジャンル・出題形式別に表示します</dd>"
-			+ "<dt>ジャンル別正解率</dt><dd>ジャンル別に問題正解率の分布を表示します</dd>"
-			+ "<dt>プレイヤー正解率</dt><dd>プレイヤーが解いた問題の正解率をジャンル・出題形式別に表示します</dd>"
-			+ "<dt>県別平均トップレーティング</dt><dd>各県のトッププレイヤーたちの平均レーティングを表示します</dd>"
-			+ "<dt>レーティング履歴</dt><dd>プレイヤーのレーティング遷移を表示します</dd>"
-			+ "<dt>レーティング分布</dt><dd>レーティングの分布状況を表示します</dd>" + "</dl>";
+			+ "<div class='statisticsTopTiles'>"
+			+ "<section class='statisticsTopTile'><h3 class='statisticsTopTileTitle'>問題数</h3>"
+			+ "<p class='statisticsTopTileDesc'>投稿された問題数をジャンル・出題形式別に表示します。</p>"
+			+ "<p class='statisticsTopTileUse'>使いどころ: 問題在庫と出題形式の偏り確認</p></section>"
+			+ "<section class='statisticsTopTile'><h3 class='statisticsTopTileTitle'>ジャンル別正解率</h3>"
+			+ "<p class='statisticsTopTileDesc'>ジャンルごとの正解率分布を確認できます。</p>"
+			+ "<p class='statisticsTopTileUse'>使いどころ: 難易度バランスの把握</p></section>"
+			+ "<section class='statisticsTopTile'><h3 class='statisticsTopTileTitle'>プレイヤー正解率</h3>"
+			+ "<p class='statisticsTopTileDesc'>プレイヤーが解いた問題の正解率を集計表示します。</p>"
+			+ "<p class='statisticsTopTileUse'>使いどころ: 得意/苦手ジャンル分析</p></section>"
+			+ "<section class='statisticsTopTile'><h3 class='statisticsTopTileTitle'>県別平均トップレーティング</h3>"
+			+ "<p class='statisticsTopTileDesc'>各県トップ層の平均レーティングを比較できます。</p>"
+			+ "<p class='statisticsTopTileUse'>使いどころ: 地域別の競技レベル把握</p></section>"
+			+ "<section class='statisticsTopTile'><h3 class='statisticsTopTileTitle'>レーティング履歴</h3>"
+			+ "<p class='statisticsTopTileDesc'>プレイヤーのレーティング推移を時系列で確認できます。</p>"
+			+ "<p class='statisticsTopTileUse'>使いどころ: 直近パフォーマンスの推移確認</p></section>"
+			+ "<section class='statisticsTopTile'><h3 class='statisticsTopTileTitle'>レーティング分布</h3>"
+			+ "<p class='statisticsTopTileDesc'>全体のレーティング分布を確認できます。</p>"
+			+ "<p class='statisticsTopTileUse'>使いどころ: 現在の実力帯の位置確認</p></section>"
+			+ "</div>";
 
 	public PanelStatisticsTop() {
 		super(SafeHtmlUtils.fromSafeConstant(DESCRIPTION));
