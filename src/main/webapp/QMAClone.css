@@ -1922,8 +1922,174 @@ body {
 }
 
 .app-error-panel {
-	max-width: 1080px;
-	margin: 8px auto 0 auto;
+	position: fixed;
+	right: 16px;
+	bottom: 16px;
+	z-index: 70;
+	width: min(360px, calc(100vw - 24px));
+	margin: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	pointer-events: none;
+}
+
+.app-error-panel--chat-open {
+	bottom: 16px;
+}
+
+.app-error-log {
+	margin: 0;
+	padding: 10px 12px;
+	border: 1px solid #3f6487;
+	border-left-width: 4px;
+	border-radius: 10px;
+	background: linear-gradient(180deg, #123758 0%, #0e2e4a 100%);
+	box-shadow: 0 6px 16px rgba(7, 28, 47, 0.22);
+	color: #e8f3ff;
+	pointer-events: auto;
+}
+
+.app-error-log-header {
+	width: 100%;
+	margin-bottom: 4px;
+	align-items: center;
+	gap: 6px;
+}
+
+.app-error-log-title {
+	display: inline-block;
+	margin: 0;
+	padding: 1px 8px;
+	border-radius: 999px;
+	font-size: 12px;
+	font-weight: 700;
+	letter-spacing: 0.02em;
+	background: rgba(255, 255, 255, 0.16);
+	color: #f1f7ff;
+}
+
+.app-error-log-message {
+	margin: 0;
+	font-size: 13px;
+	line-height: 1.5;
+	white-space: pre-wrap;
+	word-break: break-word;
+	color: #e8f3ff;
+}
+
+.app-error-log-close {
+	min-width: 24px;
+	width: 24px;
+	height: 24px;
+	padding: 0;
+	line-height: 1;
+	font-size: 14px;
+	font-weight: 700;
+	border: 1px solid rgba(118, 156, 189, 0.52);
+	border-radius: 6px;
+	background: rgba(11, 38, 62, 0.82);
+	color: #cfe2f4;
+	cursor: pointer;
+	transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease,
+		box-shadow 140ms ease;
+}
+
+.app-error-log-close:hover {
+	border-color: rgba(148, 190, 226, 0.8);
+	background: rgba(20, 62, 96, 0.9);
+	color: #e9f4ff;
+	box-shadow: 0 0 0 2px rgba(93, 148, 196, 0.18);
+}
+
+.app-error-log-close:active {
+	background: rgba(13, 49, 79, 0.95);
+	box-shadow: none;
+}
+
+.app-error-log-close:focus-visible {
+	outline: 2px solid rgba(124, 181, 230, 0.9);
+	outline-offset: 1px;
+}
+
+.app-error-log-warning {
+	border-color: #4f7ea8;
+	border-left-color: #68b3ff;
+}
+
+.app-error-log-warning .app-error-log-title {
+	background: rgba(104, 179, 255, 0.22);
+}
+
+.app-error-log-warning .app-error-log-close {
+	border-color: rgba(141, 184, 220, 0.62);
+	background: rgba(17, 56, 88, 0.84);
+	color: #d7ebff;
+}
+
+.app-error-log-warning .app-error-log-close:hover {
+	border-color: rgba(170, 209, 241, 0.88);
+	background: rgba(24, 70, 108, 0.92);
+	color: #edf6ff;
+	box-shadow: 0 0 0 2px rgba(101, 159, 209, 0.2);
+}
+
+.app-error-log-warning .app-error-log-close:active {
+	background: rgba(16, 55, 86, 0.95);
+}
+
+.app-error-log-severe {
+	border-color: #84576f;
+	border-left-color: #ff7d93;
+	background: linear-gradient(180deg, #4a2a38 0%, #3b2230 100%);
+}
+
+.app-error-log-severe .app-error-log-title {
+	background: rgba(255, 125, 147, 0.24);
+	color: #ffeaf0;
+}
+
+.app-error-log-severe .app-error-log-close {
+	border-color: rgba(226, 149, 168, 0.64);
+	background: rgba(82, 40, 55, 0.9);
+	color: #ffe3eb;
+}
+
+.app-error-log-severe .app-error-log-close:hover {
+	border-color: rgba(248, 181, 198, 0.92);
+	background: rgba(112, 49, 72, 0.94);
+	color: #fff2f6;
+	box-shadow: 0 0 0 2px rgba(212, 108, 138, 0.22);
+}
+
+.app-error-log-severe .app-error-log-close:active {
+	background: rgba(91, 39, 58, 0.97);
+}
+
+.app-error-log-severe .app-error-log-close:focus-visible {
+	outline-color: rgba(244, 165, 186, 0.96);
+}
+
+.app-error-log-info {
+	border-left-color: #7aaed7;
+}
+
+@media (max-width: 720px) {
+	.app-error-panel {
+		right: 10px;
+		bottom: 10px;
+		width: calc(100vw - 20px);
+	}
+
+	.app-error-panel--chat-open {
+		bottom: calc(min(48vh, 380px) + 20px);
+	}
+}
+
+@media (max-width: 1200px) and (min-width: 721px) {
+	.app-error-panel--chat-open {
+		bottom: calc(min(44vh, 360px) + 24px);
+	}
 }
 /* 蝠城｡御ｽ懈・繧ｦ繧｣繧ｶ繝ｼ繝・*/
 .creationWizard {

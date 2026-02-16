@@ -44,6 +44,7 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
@@ -63,6 +64,8 @@ public class Controller extends SimplePanel {
 	private static final Controller INSTANCE = new Controller();
 	private static final String HISTORY_TOKEN_PREFIX_PROBLEM = "problem";
 	private static final String LOCAL_STORAGE_KEY_CHAT_COLLAPSED = "qmaclone.chat.collapsed";
+	private static final int MAX_ERROR_LOG_COUNT = 3;
+	private static final int ERROR_LOG_AUTO_DISMISS_MS = 5000;
 
 	public static Controller getInstance() {
 		return INSTANCE;
@@ -137,8 +140,8 @@ public class Controller extends SimplePanel {
 		Logger.getLogger("").addHandler(new Handler() {
 			@Override
 			public void publish(LogRecord record) {
-				log(record.getMessage());
 				if (record.getLevel().intValue() >= Level.WARNING.intValue()) {
+					log(record.getMessage(), record.getLevel());
 					ClientReloadPrompter.maybePrompt(record.getThrown());
 				}
 			}
@@ -338,9 +341,61 @@ public class Controller extends SimplePanel {
 	 *            　エラーメッセージ
 	 */
 	public void log(String message) {
-		HTML html = new HTML(SafeHtmlUtils.fromString(message));
-		html.addStyleDependentName("errorMessage");
-		panelErrorMessage.add(html);
+		log(message, Level.WARNING);
+	}
+
+	public void log(String message, Level level) {
+		if (message == null || message.trim().isEmpty()) {
+			return;
+		}
+
+		Level safeLevel = level == null ? Level.WARNING : level;
+		FlowPanel panelLogEntry = new FlowPanel();
+		panelLogEntry.addStyleName("app-error-log");
+		HorizontalPanel panelLogHeader = new HorizontalPanel();
+		panelLogHeader.addStyleName("app-error-log-header");
+
+		String titleText = "通知";
+		if (safeLevel.intValue() >= Level.SEVERE.intValue()) {
+			panelLogEntry.addStyleName("app-error-log-severe");
+			titleText = "エラー";
+		} else if (safeLevel.intValue() >= Level.WARNING.intValue()) {
+			panelLogEntry.addStyleName("app-error-log-warning");
+			titleText = "警告";
+		} else {
+			panelLogEntry.addStyleName("app-error-log-info");
+		}
+
+		Label labelTitle = new Label(titleText);
+		labelTitle.addStyleName("app-error-log-title");
+		Button buttonClose = new Button("×");
+		buttonClose.setTitle("閉じる");
+		buttonClose.addStyleName("app-error-log-close");
+		buttonClose.addClickHandler(event -> panelLogEntry.removeFromParent());
+
+		HTML htmlMessage = new HTML(SafeHtmlUtils.fromString(message));
+		htmlMessage.addStyleName("app-error-log-message");
+
+		panelLogHeader.setWidth("100%");
+		panelLogHeader.add(labelTitle);
+		panelLogHeader.add(buttonClose);
+		panelLogHeader.setCellWidth(labelTitle, "100%");
+		panelLogEntry.add(panelLogHeader);
+		panelLogEntry.add(htmlMessage);
+		panelErrorMessage.add(panelLogEntry);
+
+		if (safeLevel.intValue() < Level.SEVERE.intValue()) {
+			new Timer() {
+				@Override
+				public void run() {
+					panelLogEntry.removeFromParent();
+				}
+			}.schedule(ERROR_LOG_AUTO_DISMISS_MS);
+		}
+
+		while (panelErrorMessage.getWidgetCount() > MAX_ERROR_LOG_COUNT) {
+			panelErrorMessage.remove(0);
+		}
 	}
 
 	public void setChatEnabled(boolean chatEnabled) {
@@ -380,6 +435,7 @@ public class Controller extends SimplePanel {
 			rootPanel.removeStyleName("chat-collapsed");
 			buttonToggleChat.setText("+");
 			buttonToggleChat.setTitle("チャットを開く");
+			updateErrorPanelOffset();
 			return;
 		}
 
@@ -394,6 +450,18 @@ public class Controller extends SimplePanel {
 			buttonShowChatPanel.setVisible(false);
 			buttonToggleChat.setText("-");
 			buttonToggleChat.setTitle("チャットを閉じる");
+		}
+		updateErrorPanelOffset();
+	}
+
+	/**
+	 * チャット表示状態に合わせて通知スタックの表示位置を調整する。
+	 */
+	private void updateErrorPanelOffset() {
+		if (chatEnabled && !chatCollapsed) {
+			panelErrorMessage.addStyleName("app-error-panel--chat-open");
+		} else {
+			panelErrorMessage.removeStyleName("app-error-panel--chat-open");
 		}
 	}
 
