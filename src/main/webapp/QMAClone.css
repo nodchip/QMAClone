@@ -2972,6 +2972,34 @@ body {
 	line-height: 1.2;
 }
 
+.statisticsRoot .statisticsUserAccuracyGrid {
+	table-layout: fixed;
+	width: 100%;
+}
+
+.statisticsRoot .statisticsUserAccuracyGrid td {
+	font-size: 13px;
+	line-height: 1.35;
+}
+
+.statisticsRoot .statisticsUserAccuracyGrid .statisticsUserAccuracyCornerCell,
+.statisticsRoot .statisticsUserAccuracyGrid .statisticsUserAccuracyHeaderCell,
+.statisticsRoot .statisticsUserAccuracyGrid .statisticsUserAccuracyRowHeaderCell {
+	background: #e8f3fe;
+	color: #1b476d;
+	font-weight: 700;
+}
+
+.statisticsRoot .statisticsUserAccuracyGrid .statisticsUserAccuracyHeaderCell {
+	text-align: center !important;
+}
+
+.statisticsUserAccuracyHeaderLabel {
+	display: inline-block;
+	text-align: center;
+	line-height: 1.2;
+}
+
 .statisticsRoot .statisticsTable tr:first-child td,
 .statisticsRoot .statisticsTable td:first-child {
 	background: #edf6ff;
