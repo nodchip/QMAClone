@@ -164,6 +164,7 @@ public class Controller extends SimplePanel {
 		panelMain.setSpacing(16);
 		panelMain.addStyleName("app-main-panel");
 		tabPanel.addStyleName("app-tab-panel");
+		// チャットのレイアウト責務: 外枠(panel) -> ヘッダー(container/header/title/toggle) -> 本文(body/content)
 		panelChat.addStyleName("app-chat-panel");
 		panelChatContainer.addStyleName("app-chat-container");
 		panelChatHeader.addStyleName("app-chat-header");

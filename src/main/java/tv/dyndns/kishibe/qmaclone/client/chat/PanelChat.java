@@ -31,26 +31,37 @@ import com.google.gwt.user.client.ui.Widget;
 public class PanelChat extends VerticalPanel {
 	public PanelChat() {
 		setWidth("100%");
+		addStyleName("app-chat-content");
 
 		if (SharedData.get().isAdministoratorMode()) {
 			final TabPanel panel = new TabPanel();
+			panel.addStyleName("app-chat-tabs");
 			panel.setAnimationEnabled(true);
 			panel.add(new LazyPanel() {
 				@Override
 				protected Widget createWidget() {
-					return new PanelRealtime();
+					PanelRealtime widget = new PanelRealtime();
+					widget.addStyleName("app-chat-pane");
+					widget.addStyleName("app-chat-pane-realtime");
+					return widget;
 				}
 			}, "リアルタイム");
 			panel.add(new LazyPanel() {
 				@Override
 				protected Widget createWidget() {
-					return new PanelPast();
+					PanelPast widget = new PanelPast();
+					widget.addStyleName("app-chat-pane");
+					widget.addStyleName("app-chat-pane-past");
+					return widget;
 				}
 			}, "過去ログ");
 			panel.selectTab(0);
 			add(panel);
 		} else {
-			add(new PanelRealtime());
+			PanelRealtime panelRealtime = new PanelRealtime();
+			panelRealtime.addStyleName("app-chat-pane");
+			panelRealtime.addStyleName("app-chat-pane-realtime");
+			add(panelRealtime);
 		}
 	}
 }
