@@ -4,6 +4,7 @@ import tv.dyndns.kishibe.qmaclone.client.packet.PacketChatMessage;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.cellview.client.CellList;
+import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.view.client.AbstractDataProvider;
 import com.google.gwt.view.client.ProvidesKey;
 
@@ -19,6 +20,7 @@ public class CellListChatLog extends CellList<PacketChatMessage> {
 	public CellListChatLog(AbstractDataProvider<PacketChatMessage> dataProvider) {
 		super(new CellChatLog(), GWT.<Resources> create(Resources.class), providesKey);
 		setRowCount(rowCount);
+		setKeyboardSelectionPolicy(KeyboardSelectionPolicy.DISABLED);
 		dataProvider.addDataDisplay(this);
 	}
 }

@@ -1,17 +1,13 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder" xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:my="urn:import:tv.dyndns.kishibe.qmaclone.client.chat">
-	<g:HTMLPanel>
-		<g:HorizontalPanel>
-			<g:cell>
-				<g:TextBox ui:field="textBoxName" width="130px" maxLength="6" />
-			</g:cell>
-			<g:cell>
-				<g:TextBox ui:field="textBoxBody" width="600px" maxLength="50" />
-			</g:cell>
-			<g:cell>
-				<g:Button ui:field="buttonSend">送信</g:Button>
-			</g:cell>
-		</g:HorizontalPanel>
-		<my:CellListChatLog ui:field="cellListChatLog" />
-	</g:HTMLPanel>
-</ui:UiBinder> 
+	<g:VerticalPanel ui:field="panelRoot" width="100%" height="100%" styleName="app-chat-realtime-layout">
+		<g:FlowPanel ui:field="panelInputRow" styleName="app-chat-input-row">
+			<g:TextBox ui:field="textBoxName" maxLength="6" styleName="app-chat-name-input" />
+			<g:TextBox ui:field="textBoxBody" maxLength="50" styleName="app-chat-message-input" />
+			<g:Button ui:field="buttonSend" styleName="app-chat-send-button">送信</g:Button>
+		</g:FlowPanel>
+		<g:ScrollPanel ui:field="panelScroll" width="100%" height="100%" styleName="app-chat-log-scroll">
+			<my:CellListChatLog ui:field="cellListChatLog" />
+		</g:ScrollPanel>
+	</g:VerticalPanel>
+</ui:UiBinder>

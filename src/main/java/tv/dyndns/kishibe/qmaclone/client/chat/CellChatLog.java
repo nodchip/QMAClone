@@ -9,6 +9,9 @@ import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 
 public class CellChatLog extends AbstractCell<PacketChatMessage> {
+	private static final String ICON_BASE_URL = "http://kishibe.dyndns.tv/qmaclone/icon/";
+	private static final String FALLBACK_ICON_FILE = "noimage.jpg";
+
 	@Override
 	public void render(com.google.gwt.cell.client.Cell.Context context, PacketChatMessage value,
 			SafeHtmlBuilder sb) {
@@ -17,14 +20,21 @@ public class CellChatLog extends AbstractCell<PacketChatMessage> {
 		}
 		final String trip = Utility.makeTrip(value.userCode, value.remoteAddress);
 		final String date = Utility.toDateFormat(new Date(value.date));
-		sb.appendHtmlConstant("<table cellpadding=\"0\" cellspacing=\"0\"><tbody><tr><td style=\"vertical-align: top;\" align=\"left\"><img style=\"width: 48px; height: 48px;\" class=\"gwt-Image\" src=\"http://kishibe.dyndns.tv/qmaclone/icon/"
-				+ value.imageFileName
-				+ "\"></td><td style=\"vertical-align: top;\" align=\"left\"><table style=\"width: 100%;\" cellpadding=\"0\" cellspacing=\"0\"><tbody><tr><td style=\"vertical-align: top;\" align=\"left\"><div style=\"width: 680px;\" class=\"gwt-HTML\">");
+		sb.appendHtmlConstant("<div class=\"chatLogEntry\"><img style=\"width: 48px; height: 48px;\" class=\"chatLogAvatar gwt-Image\" onerror=\"this.onerror=null;this.src='");
+		sb.appendEscaped(ICON_BASE_URL);
+		sb.appendEscaped(FALLBACK_ICON_FILE);
+		sb.appendHtmlConstant("'\" src=\"");
+		sb.appendEscaped(ICON_BASE_URL);
+		sb.appendEscaped(value.imageFileName);
+		sb.appendHtmlConstant("\"><div class=\"chatLogContent\"><div class=\"chatLogMeta\">");
 		sb.append(value.resId).append(' ').appendEscaped(value.name);
-		sb.appendEscaped(trip).append(' ').appendEscaped(date);
+		sb.appendEscaped(trip).append(' ');
+		sb.appendHtmlConstant("<span class=\"chatLogDate\">");
+		sb.appendEscaped(date);
+		sb.appendHtmlConstant("</span>");
 		sb.append(' ').append('(').append(value.classLevel).append(')');
-		sb.appendHtmlConstant("</div></td></tr><tr><td style=\"vertical-align: top;\" align=\"left\"><div style=\"width: 680px;\" class=\"gwt-HTML\">");
+		sb.appendHtmlConstant("</div><div class=\"chatLogBody\">");
 		sb.appendEscaped(value.body);
-		sb.appendHtmlConstant("</div></td></tr></tbody></table></td></tr></tbody></table>");
+		sb.appendHtmlConstant("</div></div></div>");
 	}
 }

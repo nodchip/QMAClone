@@ -48,8 +48,8 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DecoratedTabPanel;
-import com.google.gwt.user.client.ui.DecoratorPanel;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.LazyPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -73,10 +73,10 @@ public class Controller extends SimplePanel {
 	private final VerticalPanel panelErrorMessage = new VerticalPanel();
 	private final DecoratedTabPanel tabPanel = new DecoratedTabPanel(); // 中のコンテンツのサイズによって自動的にリサイズされるのでTabPanelを使用する
 	private final SimplePanel panelGame = new SimplePanel();
-	private final DecoratorPanel panelChat = new DecoratorPanel();
-	private final VerticalPanel panelChatContainer = new VerticalPanel();
-	private final HorizontalPanel panelChatHeader = new HorizontalPanel();
-	private final Label labelChatHeader = new Label("簡易チャット");
+	private final SimplePanel panelChat = new SimplePanel();
+	private final FlowPanel panelChatContainer = new FlowPanel();
+	private final FlowPanel panelChatHeader = new FlowPanel();
+	private final Label labelChatHeader = new Label("チャット");
 	private final Button buttonToggleChat = new Button();
 	private final SimplePanel panelChatBody = new SimplePanel();
 	private final Button buttonShowChatPanel = new Button("チャットを開く");
@@ -175,6 +175,8 @@ public class Controller extends SimplePanel {
 		panelErrorMessage.addStyleName("app-error-panel");
 		buttonShowChatPanel.addStyleName("app-chat-reopen");
 		buttonShowChatPanel.setVisible(false);
+		buttonToggleChat.setText("-");
+		buttonToggleChat.setTitle("チャットを閉じる");
 		buttonToggleChat.addClickHandler(event -> toggleChatCollapsed());
 		buttonShowChatPanel.addClickHandler(event -> {
 			chatCollapsed = false;
@@ -184,8 +186,9 @@ public class Controller extends SimplePanel {
 		panelChatHeader.setWidth("100%");
 		panelChatHeader.add(labelChatHeader);
 		panelChatHeader.add(buttonToggleChat);
-		panelChatHeader.setCellWidth(labelChatHeader, "100%");
 		panelChatContainer.setWidth("100%");
+		panelChatContainer.setHeight("100%");
+		panelChatBody.setHeight("100%");
 		panelChatContainer.add(panelChatHeader);
 		panelChatContainer.add(panelChatBody);
 		panelChat.setWidget(panelChatContainer);
@@ -380,7 +383,7 @@ public class Controller extends SimplePanel {
 			return;
 		}
 
-		panelChat.setVisible(!collapsed);
+		panelChat.setVisible(true);
 		if (collapsed) {
 			rootPanel.addStyleName("chat-collapsed");
 			buttonShowChatPanel.setVisible(true);

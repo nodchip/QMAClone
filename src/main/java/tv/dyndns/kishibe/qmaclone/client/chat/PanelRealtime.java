@@ -22,7 +22,10 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 
@@ -55,6 +58,12 @@ public class PanelRealtime extends Composite implements KeyDownHandler {
   TextBox textBoxBody;
   @UiField
   Button buttonSend;
+  @UiField
+  VerticalPanel panelRoot;
+  @UiField
+  FlowPanel panelInputRow;
+  @UiField
+  ScrollPanel panelScroll;
   @UiField(provided = true)
   CellListChatLog cellListChatLog;
 
@@ -86,6 +95,15 @@ public class PanelRealtime extends Composite implements KeyDownHandler {
     cellListChatLog = new CellListChatLog(dataProvider);
     cellListChatLog.setPageSize(Constant.CHAT_MAX_RESPONSES);
     initWidget(uiBinder.createAndBindUi(this));
+    panelRoot.setWidth("100%");
+    panelInputRow.setWidth("100%");
+    cellListChatLog.setWidth("100%");
+    panelRoot.setCellHeight(panelInputRow, "auto");
+    panelRoot.setCellWidth(panelInputRow, "100%");
+    panelRoot.setCellHeight(panelScroll, "100%");
+    panelRoot.setCellWidth(panelScroll, "100%");
+    panelScroll.setWidth("100%");
+    panelScroll.setHeight("100%");
     textBoxName.setText(UserData.get().getPlayerName());
     textBoxBody.addKeyDownHandler(this);
 
