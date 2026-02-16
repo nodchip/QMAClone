@@ -2828,6 +2828,19 @@ body {
 	text-align: left;
 }
 
+.statisticsDescription a {
+	color: #1d5f99;
+	font-size: inherit;
+	font-weight: 600;
+	line-height: inherit;
+	text-decoration: underline;
+	text-underline-offset: 2px;
+}
+
+.statisticsDescription a:hover {
+	color: #2a74b3;
+}
+
 .statisticsTopCard {
 	text-align: left;
 }
@@ -3056,6 +3069,89 @@ body {
 .statisticsRoot .statisticsPrefectureGrid .statisticsPrefectureTop3Cell {
 	background: #e9f4ff;
 	color: #0f3f66;
+}
+
+.statisticsRoot .statisticsRatingHistoryChart {
+	width: 100%;
+	max-width: 100%;
+	border: 1px solid #c6daec;
+	border-radius: 8px;
+	background: #ffffff;
+	padding: 6px;
+	box-sizing: border-box;
+}
+
+.statisticsRatingHistorySummary {
+	padding: 10px 12px;
+	border: 1px solid #d3e5f5;
+	border-radius: 8px;
+	background: #f8fcff;
+}
+
+.statisticsRatingHistorySummaryLead {
+	color: #1f4d76;
+	font-weight: 700;
+	margin-bottom: 8px;
+}
+
+.statisticsRatingHistoryMetrics {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin-bottom: 8px;
+}
+
+.statisticsRatingHistoryMetric {
+	display: inline-flex;
+	align-items: baseline;
+	gap: 6px;
+	padding: 6px 10px;
+	border: 1px solid #d5e6f5;
+	border-radius: 999px;
+	background: #ffffff;
+}
+
+.statisticsRatingHistoryMetricLabel {
+	color: #4a6b88;
+	font-size: 12px;
+	font-weight: 700;
+}
+
+.statisticsRatingHistoryMetricValue {
+	color: #123e66;
+	font-size: 14px;
+	font-weight: 700;
+}
+
+.statisticsRatingHistorySummaryNote {
+	color: #3d607f;
+	font-size: 12px;
+	line-height: 1.5;
+}
+
+.statisticsRatingHistorySummaryNote a {
+	color: #1d5f99;
+	font-size: 12px;
+	font-weight: 600;
+	line-height: inherit;
+	text-decoration: underline;
+	text-underline-offset: 2px;
+}
+
+.statisticsRatingHistorySummaryNote a:hover {
+	color: #2a74b3;
+}
+
+.statisticsRatingHistoryEmpty {
+	width: 100%;
+	padding: 14px;
+	border: 1px dashed #9cc0df;
+	border-radius: 8px;
+	background: #f7fbff;
+	color: #2d5376;
+	font-weight: 700;
+	text-align: center;
+	box-sizing: border-box;
 }
 
 .statisticsRoot .statisticsTable tr:first-child td,

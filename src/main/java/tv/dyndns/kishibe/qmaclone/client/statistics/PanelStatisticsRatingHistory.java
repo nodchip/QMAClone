@@ -46,9 +46,17 @@ public class PanelStatisticsRatingHistory extends VerticalPanel {
 			.getName());
 
 	public interface MyTemplate extends SafeHtmlTemplates {
-		@Template("過去100戦のレーティングです<br>"
-				+ "個人レーティングの計算式は<a href='http://apps.topcoder.com/wiki/display/tc/Algorithm+Competition+Rating+System' target='_blank'>Algorithm Competition Rating System - TopCoder Wiki</a><br>"
-				+ "最低レーティング…{0}<br>" + "最高レーティング…{1}<br>" + "平均レーティング…{2}")
+		@Template("<div class='statisticsRatingHistorySummary'>"
+				+ "<div class='statisticsRatingHistorySummaryLead'>過去100戦のレーティング推移です。</div>"
+				+ "<div class='statisticsRatingHistoryMetrics'>"
+				+ "<div class='statisticsRatingHistoryMetric'><span class='statisticsRatingHistoryMetricLabel'>最低</span><span class='statisticsRatingHistoryMetricValue'>{0}</span></div>"
+				+ "<div class='statisticsRatingHistoryMetric'><span class='statisticsRatingHistoryMetricLabel'>最高</span><span class='statisticsRatingHistoryMetricValue'>{1}</span></div>"
+				+ "<div class='statisticsRatingHistoryMetric'><span class='statisticsRatingHistoryMetricLabel'>平均</span><span class='statisticsRatingHistoryMetricValue'>{2}</span></div>"
+				+ "</div>"
+				+ "<div class='statisticsRatingHistorySummaryNote'>"
+				+ "個人レーティングの計算式: <a href='http://apps.topcoder.com/wiki/display/tc/Algorithm+Competition+Rating+System' target='_blank'>Algorithm Competition Rating System - TopCoder Wiki</a>"
+				+ "</div>"
+				+ "</div>")
 		SafeHtml description(int min, int max, int average);
 	}
 
@@ -98,7 +106,9 @@ public class PanelStatisticsRatingHistory extends VerticalPanel {
 		average /= data.size();
 
 		if (min == Integer.MAX_VALUE) {
-			add(new HTML("未プレイ"));
+			HTML empty = new HTML("まだ対戦履歴がありません");
+			empty.addStyleName("statisticsRatingHistoryEmpty");
+			add(empty);
 			return;
 		}
 
@@ -107,7 +117,9 @@ public class PanelStatisticsRatingHistory extends VerticalPanel {
 		HTML title = new HTML("<b>レーティング履歴</b>");
 		title.addStyleName("statisticsSectionTitle");
 		add(title);
-		add(new RatingHistoryChart(data));
+		RatingHistoryChart chart = new RatingHistoryChart(data);
+		chart.addStyleName("statisticsRatingHistoryChart");
+		add(chart);
 		HTML description = new HTML(TEMPLATE.description(min, max, average));
 		description.addStyleName("statisticsDescription");
 		add(description);
