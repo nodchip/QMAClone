@@ -3,6 +3,7 @@ package tv.dyndns.kishibe.qmaclone.client.statistics;
 import org.junit.Test;
 
 import tv.dyndns.kishibe.qmaclone.client.QMACloneGWTTestCaseBase;
+import tv.dyndns.kishibe.qmaclone.client.game.ProblemGenre;
 
 public class PanelStatisticsUiStyleTest extends QMACloneGWTTestCaseBase {
 	@Test
@@ -54,5 +55,14 @@ public class PanelStatisticsUiStyleTest extends QMACloneGWTTestCaseBase {
 		assertTrue(html.contains("statisticsTopTiles"));
 		assertTrue(html.contains("statisticsTopTile"));
 		assertTrue(html.contains("statisticsTopTileUse"));
+	}
+
+	@Test
+	public void testNumberGridUsesModernStylesAndWrappedGenreHeader() {
+		GridNumberOfProblems grid = new GridNumberOfProblems();
+		assertTrue(grid.getStyleName().contains("statisticsNumberGrid"));
+		assertTrue(grid.getCellFormatter().getStyleName(0, ProblemGenre.Anige.getIndex())
+				.contains("statisticsNumberHeaderCell"));
+		assertTrue(grid.getHTML(0, ProblemGenre.Anige.getIndex()).contains("<br"));
 	}
 }

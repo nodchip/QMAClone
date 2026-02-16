@@ -21,7 +21,6 @@
 //THE SOFTWARE.
 package tv.dyndns.kishibe.qmaclone.client.statistics;
 
-import tv.dyndns.kishibe.qmaclone.client.Utility;
 import tv.dyndns.kishibe.qmaclone.client.game.ProblemGenre;
 import tv.dyndns.kishibe.qmaclone.client.game.ProblemType;
 
@@ -30,11 +29,16 @@ import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 
 public class GridNumberOfProblems extends Grid {
+	private static final String COLOR_HEATMAP_LOW = "#f2f7fc";
+	private static final String COLOR_HEATMAP_HIGH = "#b5d3ec";
+	private static final String COLOR_HEATMAP_TEXT = "#173a59";
+
 	public GridNumberOfProblems() {
 		super(ProblemType.values().length + 1, ProblemGenre.values().length + 1);
 		addStyleName("gridFrame");
 		addStyleName("gridFontNormal");
 		addStyleName("statisticsTable");
+		addStyleName("statisticsNumberGrid");
 
 		final int sizeOfColumn = ProblemGenre.values().length + 1;
 		final int sizeOfRow = ProblemType.values().length + 1;
@@ -46,15 +50,33 @@ public class GridNumberOfProblems extends Grid {
 			}
 		}
 
+		formatter.setStyleName(0, 0, "statisticsNumberCornerCell");
+		formatter.setWordWrap(0, 0, false);
+
+		final ColumnFormatter columnFormatter = getColumnFormatter();
+		columnFormatter.setWidth(0, "108px");
 		for (int column = 1; column < sizeOfColumn - 1; ++column) {
-			setText(0, column, ProblemGenre.values()[column].toString());
+			columnFormatter.setWidth(column, "76px");
+		}
+		columnFormatter.setWidth(sizeOfColumn - 1, "64px");
+
+		for (int column = 1; column < sizeOfColumn - 1; ++column) {
+			formatter.setStyleName(0, column, "statisticsNumberHeaderCell");
+			formatter.setWordWrap(0, column, false);
+			setHTML(0, column, formatGenreHeader(ProblemGenre.values()[column]));
 		}
 		setText(0, sizeOfColumn - 1, "計");
+		formatter.setStyleName(0, sizeOfColumn - 1, "statisticsNumberHeaderCell");
+		formatter.setWordWrap(0, sizeOfColumn - 1, false);
 
 		for (int row = 1; row < sizeOfRow - 1; ++row) {
 			setText(row, 0, ProblemType.values()[row].toString());
+			formatter.setStyleName(row, 0, "statisticsNumberRowHeaderCell");
+			formatter.setWordWrap(row, 0, false);
 		}
 		setText(sizeOfRow - 1, 0, "計");
+		formatter.setStyleName(sizeOfRow - 1, 0, "statisticsNumberRowHeaderCell");
+		formatter.setWordWrap(sizeOfRow - 1, 0, false);
 	}
 
 	public void setData(int[][] count) {
@@ -97,12 +119,50 @@ public class GridNumberOfProblems extends Grid {
 		}
 
 		final CellFormatter formatter = getCellFormatter();
+		if (maxValue <= 0) {
+			for (int row = rowStart; row < rowEnd; ++row) {
+				for (int column = columnStart; column < columnEnd; ++column) {
+					final Element elementCell = formatter.getElement(row, column);
+					elementCell.getStyle().setBackgroundColor(COLOR_HEATMAP_LOW);
+					elementCell.getStyle().setColor(COLOR_HEATMAP_TEXT);
+				}
+			}
+			return;
+		}
 		for (int row = rowStart; row < rowEnd; ++row) {
 			for (int column = columnStart; column < columnEnd; ++column) {
 				final Element elementCell = formatter.getElement(row, column);
 				final double colorRatio = (double) matrix[row][column] / (double) maxValue;
-				Utility.setBackgroundColor(elementCell, colorRatio);
+				elementCell.getStyle().setBackgroundColor(
+						interpolateColor(COLOR_HEATMAP_LOW, COLOR_HEATMAP_HIGH, colorRatio));
+				elementCell.getStyle().setColor(COLOR_HEATMAP_TEXT);
 			}
 		}
+	}
+
+	private static String formatGenreHeader(ProblemGenre genre) {
+		if (genre == ProblemGenre.Anige) {
+			return "<span class='statisticsNumberHeaderLabel'>アニメ<br/>＆ゲーム</span>";
+		}
+		return "<span class='statisticsNumberHeaderLabel'>" + genre.toString() + "</span>";
+	}
+
+	private static String interpolateColor(String startColor, String endColor, double ratio) {
+		double clampedRatio = Math.max(0.0d, Math.min(1.0d, ratio));
+		int startRed = Integer.parseInt(startColor.substring(1, 3), 16);
+		int startGreen = Integer.parseInt(startColor.substring(3, 5), 16);
+		int startBlue = Integer.parseInt(startColor.substring(5, 7), 16);
+		int endRed = Integer.parseInt(endColor.substring(1, 3), 16);
+		int endGreen = Integer.parseInt(endColor.substring(3, 5), 16);
+		int endBlue = Integer.parseInt(endColor.substring(5, 7), 16);
+		int red = (int) Math.round(startRed + (endRed - startRed) * clampedRatio);
+		int green = (int) Math.round(startGreen + (endGreen - startGreen) * clampedRatio);
+		int blue = (int) Math.round(startBlue + (endBlue - startBlue) * clampedRatio);
+		return "#" + toHex(red) + toHex(green) + toHex(blue);
+	}
+
+	private static String toHex(int value) {
+		String text = Integer.toHexString(Math.max(0, Math.min(255, value)));
+		return text.length() == 1 ? "0" + text : text;
 	}
 }

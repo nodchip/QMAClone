@@ -2916,6 +2916,34 @@ body {
 	border-color: #d9e8f5 !important;
 }
 
+.statisticsRoot .statisticsNumberGrid {
+	table-layout: fixed;
+	width: 100%;
+}
+
+.statisticsRoot .statisticsNumberGrid td {
+	font-size: 13px;
+	line-height: 1.35;
+}
+
+.statisticsRoot .statisticsNumberGrid .statisticsNumberCornerCell,
+.statisticsRoot .statisticsNumberGrid .statisticsNumberHeaderCell,
+.statisticsRoot .statisticsNumberGrid .statisticsNumberRowHeaderCell {
+	background: #e8f3fe;
+	color: #1b476d;
+	font-weight: 700;
+}
+
+.statisticsRoot .statisticsNumberGrid .statisticsNumberHeaderCell {
+	text-align: center !important;
+}
+
+.statisticsNumberHeaderLabel {
+	display: inline-block;
+	text-align: center;
+	line-height: 1.2;
+}
+
 .statisticsRoot .statisticsTable tr:first-child td,
 .statisticsRoot .statisticsTable td:first-child {
 	background: #edf6ff;
