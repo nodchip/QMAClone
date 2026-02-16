@@ -94,7 +94,10 @@
 - 右チャットの折りたたみ状態は `Controller` と `localStorage` キーで管理する。
 - `PanelChat` にヘッダー文言を重複配置しない。ヘッダーとトグルは `Controller` 側に集約する。
 - 折りたたみ時は再表示トリガ（例: 「チャットを開く」ボタン）を常時視認可能にする。
+- チャットのレイアウト崩れを調査する場合は、`html.html` などで実DOMを採取し、UiBinder の要素型（`table` / `div`）と CSS 前提（`display:flex` など）が一致していることを先に確認する。
+- UiBinder が `VerticalPanel` / `FlexTable` を生成する箇所では、`table` 要素に `display:flex` を適用しない。必要な柔軟レイアウトは内側の `FlowPanel` など `div` 要素に限定する。
 - レイアウト変更時は「通常表示」「折りたたみ表示」「折りたたみ解除」の3状態をスクリーンショットで確認する。
+- チャット位置・サイズを変更した場合は、横幅を段階的に縮めて「デスクトップ固定表示」「下部ドロワー移行直前」「下部ドロワー移行後」の3幅で中央パネルとの重なりがないことを完了条件に含める。
 
 ### ロビーUIスタイル適用
 - UiBinder の `ui:style`（CssResource）で GWT 標準クラス（例: `.gwt-TextBox` / `.gwt-ListBox` / `.gwt-CheckBox`）を直接指定しない。必要な場合は専用 `styleName` を付与するか、`input[type="text"]` / `select` など要素セレクタで適用する。
