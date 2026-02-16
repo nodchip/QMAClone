@@ -3,8 +3,10 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:c="urn:import:com.google.gwt.user.cellview.client"
 	xmlns:my="urn:import:tv.dyndns.kishibe.qmaclone.client.report">
 	<g:HTMLPanel styleName="problemReportPanel">
-		<g:HTML ui:field="htmlHits" styleName="problemReportHits"></g:HTML>
-		<c:SimplePager ui:field="pager" styleName="problemReportPager"></c:SimplePager>
+		<g:HTMLPanel styleName="problemReportHeaderBar">
+			<g:HTML ui:field="htmlHits" styleName="problemReportHits"></g:HTML>
+			<c:SimplePager ui:field="pager" styleName="problemReportPager"></c:SimplePager>
+		</g:HTMLPanel>
 		<my:CellTableProblem ui:field="cellTableProblem" styleName="problemReportTable"></my:CellTableProblem>
 		<g:Button ui:field="buttonRegisterAll" styleName="creationButtonSecondary problemReportRegisterAll">全ての問題を登録する</g:Button>
 	</g:HTMLPanel>

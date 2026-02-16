@@ -18,7 +18,7 @@
   border-radius: 10px;
   overflow: hidden;
   background: #ffffff;
-  box-shadow: 0 2px 8px rgba(15, 63, 113, 0.08);
+  box-shadow: 0 3px 12px rgba(15, 63, 113, 0.1);
 }
 
 .cellTableFirstColumn {
@@ -42,25 +42,26 @@
 }
 
 .cellTableHeader {
-  background-color: #dceefd;
+  background: linear-gradient(180deg, #e4f2ff 0%, #d4e9fb 100%);
   background-image: none;
-  border-bottom: 1px solid #a8cdea;
+  border-bottom: 1px solid #b0d1ec;
   border-left: 0;
   border-right: 0;
-  padding: 8px 10px;
+  padding: 9px 10px;
   text-align: left;
   color: #173b5d;
   font-size: 13px;
   font-weight: 700;
+  letter-spacing: 0.01em;
   overflow: hidden;
 }
 
 .cellTableCell {
-  padding: 8px 10px;
+  padding: 9px 10px;
   overflow: hidden;
   border-bottom: 1px solid #e4eef8;
-  font-size: 12px;
-  line-height: 1.35;
+  font-size: 13px;
+  line-height: 1.4;
 }
 
 .cellTableFirstColumnFooter {
@@ -86,6 +87,7 @@
 
 .cellTableSortableHeader:hover {
   color: #0f4b7d;
+  background: #d8ebfd;
 }
 
 .cellTableSortedHeaderAscending {
@@ -105,7 +107,7 @@
 }
 
 .cellTableOddRow {
-  background: #f8fbff;
+  background: #f7fbff;
 }
 
 .cellTableOddRowCell {
@@ -114,6 +116,7 @@
 
 .cellTableHoveredRow {
   background: #eaf4ff;
+  transition: background-color 120ms ease;
 }
 
 .cellTableHoveredRowCell {

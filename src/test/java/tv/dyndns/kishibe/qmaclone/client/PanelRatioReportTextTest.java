@@ -10,8 +10,8 @@ public class PanelRatioReportTextTest extends QMACloneGWTTestCaseBase {
 		PanelRatioReport panel = new PanelRatioReport();
 		HTML lead = (HTML) panel.getWidget(0);
 		String html = lead.getHTML();
-		assertTrue(html.contains("登録した問題の正答率と状態を確認できます。"));
-		assertTrue(html.contains("情報更新"));
-		assertTrue(html.contains("一括消去は設定画面"));
+		assertTrue(html.contains("この画面では、登録した問題の正答率と状態を確認できます。"));
+		assertTrue(html.contains("一覧を更新"));
+		assertTrue(html.contains("一括消去は設定画面から実行できます。"));
 	}
 }

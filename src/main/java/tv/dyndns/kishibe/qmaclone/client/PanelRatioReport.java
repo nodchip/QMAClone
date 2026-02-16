@@ -47,9 +47,9 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 public class PanelRatioReport extends VerticalPanel implements ClickHandler {
 	private static final Logger logger = Logger.getLogger(PanelRatioReport.class.getName());
 	private static final int MAX_PROBLEMS_PER_PAGE = 100;
-	private final Button buttonAdd = new Button("問題番号追加", this);
-	private final Button buttonRemove = new Button("問題番号削除", this);
-	private final Button buttonUpdate = new Button("情報更新", this);
+	private final Button buttonAdd = new Button("一覧に追加", this);
+	private final Button buttonRemove = new Button("一覧から削除", this);
+	private final Button buttonUpdate = new Button("一覧を更新", this);
 	private final TextBox textBoxProblemNumber = new TextBox();
 	private final SimplePanel panelGrid = new SimplePanel();
 	private boolean enabled = true;
@@ -73,22 +73,45 @@ public class PanelRatioReport extends VerticalPanel implements ClickHandler {
 	public PanelRatioReport() {
 		setWidth("800px");
 		setHorizontalAlignment(ALIGN_CENTER);
+		addStyleName("ratioReportPanel");
 
-		add(new HTML(
-				"登録した問題の正答率と状態を確認できます。<br/>問題を登録・投稿した後は「情報更新」で最新状態を反映します。<br/>登録されている問題の一括消去は設定画面より行えます。"));
+		HTML lead = new HTML(
+				"この画面では、登録した問題の正答率と状態を確認できます。<br/>"
+						+ "「一覧に追加」「一覧から削除」で表示対象を変更し、「一覧を更新」で最新状態を反映します。<br/>"
+						+ "登録されている問題の一括消去は設定画面から実行できます。");
+		lead.addStyleName("ratioReportLead");
+		add(lead);
 
 		HorizontalPanel idPanel = new HorizontalPanel();
 		idPanel.setVerticalAlignment(ALIGN_MIDDLE);
+		idPanel.addStyleName("ratioReportIdGroup");
 
 		textBoxProblemNumber.setWidth("240px");
 		textBoxProblemNumber.addFocusHandler(focusHandler);
+		textBoxProblemNumber.addStyleName("ratioReportProblemIdInput");
+
+		buttonAdd.addStyleName("creationButtonSecondary");
+		buttonAdd.addStyleName("ratioReportActionButton");
+		buttonRemove.addStyleName("creationButtonSecondary");
+		buttonRemove.addStyleName("ratioReportActionButton");
+		buttonUpdate.addStyleName("creationButtonPrimary");
+		buttonUpdate.addStyleName("ratioReportActionButton");
 
 		idPanel.add(textBoxProblemNumber);
 		idPanel.add(buttonAdd);
 		idPanel.add(buttonRemove);
-		add(idPanel);
 
-		add(buttonUpdate);
+		HorizontalPanel editBar = new HorizontalPanel();
+		editBar.setVerticalAlignment(ALIGN_MIDDLE);
+		editBar.addStyleName("ratioReportEditBar");
+		editBar.add(idPanel);
+		add(editBar);
+
+		HorizontalPanel refreshBar = new HorizontalPanel();
+		refreshBar.setVerticalAlignment(ALIGN_MIDDLE);
+		refreshBar.addStyleName("ratioReportRefreshBar");
+		refreshBar.add(buttonUpdate);
+		add(refreshBar);
 
 		add(panelGrid);
 	}
