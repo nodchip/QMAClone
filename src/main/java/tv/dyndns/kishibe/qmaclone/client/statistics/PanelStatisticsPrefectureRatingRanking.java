@@ -43,7 +43,10 @@ public class PanelStatisticsPrefectureRatingRanking extends VerticalPanel {
 		public void onSuccess(int[][] result) {
 			clear();
 			add(title);
-			add(new ChartPrefectureRatingRanking(result));
+			ChartPrefectureRatingRanking chartPrefectureRatingRanking = new ChartPrefectureRatingRanking(
+					result);
+			chartPrefectureRatingRanking.addStyleName("statisticsPrefectureChart");
+			add(chartPrefectureRatingRanking);
 			HTML description = new HTML(new SafeHtmlBuilder().appendHtmlConstant(DESCRIPTION_HTML)
 					.toSafeHtml());
 			description.addStyleName("statisticsDescription");

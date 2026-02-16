@@ -3000,6 +3000,64 @@ body {
 	line-height: 1.2;
 }
 
+.statisticsRoot .statisticsPrefectureChart {
+	width: 100%;
+	max-width: 100%;
+	border: 1px solid #c6daec;
+	border-radius: 8px;
+	background: #ffffff;
+	padding: 6px;
+	box-sizing: border-box;
+}
+
+.statisticsRoot .statisticsPrefectureGrid {
+	table-layout: fixed;
+	width: 100%;
+}
+
+.statisticsRoot .statisticsPrefectureGrid td {
+	font-size: 13px;
+	line-height: 1.35;
+}
+
+.statisticsRoot .statisticsPrefectureGrid .statisticsPrefectureCornerCell,
+.statisticsRoot .statisticsPrefectureGrid .statisticsPrefectureHeaderCell {
+	background: #e8f3fe;
+	color: #1b476d;
+	font-weight: 700;
+}
+
+.statisticsRoot .statisticsPrefectureGrid .statisticsPrefectureHeaderCell {
+	text-align: center !important;
+}
+
+.statisticsPrefectureHeaderLabel {
+	display: inline-block;
+	text-align: center;
+	line-height: 1.2;
+}
+
+.statisticsRoot .statisticsPrefectureGrid .statisticsPrefectureRankCell,
+.statisticsRoot .statisticsPrefectureGrid .statisticsPrefecturePrefectureCell,
+.statisticsRoot .statisticsPrefectureGrid .statisticsPrefectureRatingCell {
+	background: #ffffff;
+	color: #1f476b;
+}
+
+.statisticsRoot .statisticsPrefectureGrid .statisticsPrefectureBodyCellEven {
+	background: #f6fbff;
+}
+
+.statisticsRoot .statisticsPrefectureGrid .statisticsPrefectureRatingCell {
+	font-weight: 700;
+	color: #12486f;
+}
+
+.statisticsRoot .statisticsPrefectureGrid .statisticsPrefectureTop3Cell {
+	background: #e9f4ff;
+	color: #0f3f66;
+}
+
 .statisticsRoot .statisticsTable tr:first-child td,
 .statisticsRoot .statisticsTable td:first-child {
 	background: #edf6ff;

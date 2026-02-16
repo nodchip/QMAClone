@@ -83,4 +83,14 @@ public class PanelStatisticsUiStyleTest extends QMACloneGWTTestCaseBase {
 				.contains("statisticsUserAccuracyHeaderCell"));
 		assertTrue(grid.getHTML(0, ProblemGenre.Anige.getIndex()).contains("<br"));
 	}
+
+	@Test
+	public void testPrefectureGridUsesModernStylesAndWrappedRatingHeader() {
+		GridPrefectureRanking grid = new GridPrefectureRanking();
+		grid.setData(new int[][] { { 13, 1720 }, { 26, 1685 } });
+		assertTrue(grid.getStyleName().contains("statisticsPrefectureGrid"));
+		assertTrue(grid.getCellFormatter().getStyleName(0, 1).contains("statisticsPrefectureHeaderCell"));
+		assertTrue(grid.getCellFormatter().getStyleName(0, 2).contains("statisticsPrefectureHeaderCell"));
+		assertTrue(grid.getHTML(0, 2).contains("<br"));
+	}
 }

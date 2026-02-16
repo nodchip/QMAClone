@@ -26,24 +26,41 @@ import tv.dyndns.kishibe.qmaclone.client.constant.Constant;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 
+/**
+ * 県別平均トップレーティングの一覧グリッドを表示します。
+ */
 public class GridPrefectureRanking extends Grid {
 	public GridPrefectureRanking() {
 		addStyleName("gridFrame");
 		addStyleName("gridFontNormal");
 		addStyleName("statisticsTable");
+		addStyleName("statisticsPrefectureGrid");
 	}
 
+	/**
+	 * 都道府県ごとの順位と平均トップレーティングを表示します。
+	 */
 	public void setData(int[][] data) {
 		resize(data.length + 1, 3);
 
 		CellFormatter formatter = getCellFormatter();
+		formatter.setStyleName(0, 0, "statisticsPrefectureCornerCell");
+		formatter.setWordWrap(0, 0, false);
+
+		getColumnFormatter().setWidth(0, "72px");
+		getColumnFormatter().setWidth(1, "180px");
+		getColumnFormatter().setWidth(2, "180px");
 
 		setHTML(0, 0, "順位");
 		setHTML(0, 1, "都道府県");
-		setHTML(0, 2, "平均トップ<br>レーティング");
+		setHTML(0, 2, "<span class='statisticsPrefectureHeaderLabel'>平均トップ<br/>レーティング</span>");
 		formatter.setHorizontalAlignment(0, 0, HorizontalPanel.ALIGN_CENTER);
 		formatter.setHorizontalAlignment(0, 1, HorizontalPanel.ALIGN_CENTER);
 		formatter.setHorizontalAlignment(0, 2, HorizontalPanel.ALIGN_CENTER);
+		formatter.setStyleName(0, 1, "statisticsPrefectureHeaderCell");
+		formatter.setStyleName(0, 2, "statisticsPrefectureHeaderCell");
+		formatter.setWordWrap(0, 1, false);
+		formatter.setWordWrap(0, 2, false);
 
 		for (int i = 0; i < data.length; ++i) {
 			final int prefecture = data[i][0];
@@ -54,6 +71,17 @@ public class GridPrefectureRanking extends Grid {
 			formatter.setHorizontalAlignment(i + 1, 0, HorizontalPanel.ALIGN_RIGHT);
 			formatter.setHorizontalAlignment(i + 1, 1, HorizontalPanel.ALIGN_CENTER);
 			formatter.setHorizontalAlignment(i + 1, 2, HorizontalPanel.ALIGN_RIGHT);
+			formatter.setStyleName(i + 1, 0, "statisticsPrefectureRankCell");
+			formatter.setStyleName(i + 1, 1, "statisticsPrefecturePrefectureCell");
+			formatter.setStyleName(i + 1, 2, "statisticsPrefectureRatingCell");
+			if ((i % 2) == 1) {
+				formatter.addStyleName(i + 1, 0, "statisticsPrefectureBodyCellEven");
+				formatter.addStyleName(i + 1, 1, "statisticsPrefectureBodyCellEven");
+				formatter.addStyleName(i + 1, 2, "statisticsPrefectureBodyCellEven");
+			}
+			if (i < 3) {
+				formatter.addStyleName(i + 1, 2, "statisticsPrefectureTop3Cell");
+			}
 		}
 	}
 }
