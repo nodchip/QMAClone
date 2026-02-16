@@ -30,7 +30,7 @@ public class PanelStatistics extends TwoColumnSelectionPanel {
 	public PanelStatistics() {
 		super(200);
 		addStyleName("statisticsRoot");
-		setWidth("800px");
+		setWidth("100%");
 		add("トップ", new LazyPanel() {
 			@Override
 			protected Widget createWidget() {

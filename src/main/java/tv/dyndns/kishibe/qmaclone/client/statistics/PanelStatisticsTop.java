@@ -38,6 +38,6 @@ public class PanelStatisticsTop extends HTML {
 		super(SafeHtmlUtils.fromSafeConstant(DESCRIPTION));
 		addStyleName("statisticsCard");
 		addStyleName("statisticsTopCard");
-		setWidth("600px");
+		setWidth("100%");
 	}
 }
