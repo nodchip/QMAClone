@@ -70,6 +70,35 @@ public class ProblemReportRowSorterTest {
   }
 
   /**
+   * 登録問題一覧向けソートは回答数降順、同値時は正答率昇順になることを確認する。
+   */
+  @Test
+  public void testSortByAnswerCountDescThenAccuracyAsc() {
+    PacketProblem a = createProblem(1);
+    a.good = 10;
+    a.bad = 10; // 20 answers, 50%
+
+    PacketProblem b = createProblem(2);
+    b.good = 6;
+    b.bad = 14; // 20 answers, 30%
+
+    PacketProblem c = createProblem(3);
+    c.good = 1;
+    c.bad = 1; // 2 answers, 50%
+
+    List<ProblemReportRow> rows = Lists.newArrayList(
+        new ProblemReportRow(a, null, null),
+        new ProblemReportRow(b, null, null),
+        new ProblemReportRow(c, null, null));
+
+    ProblemReportRowSorter.sortForRatioReport(rows);
+
+    assertEquals(2, rows.get(0).problem.id);
+    assertEquals(1, rows.get(1).problem.id);
+    assertEquals(3, rows.get(2).problem.id);
+  }
+
+  /**
    * テスト用の最小問題を生成する。
    */
   private static PacketProblem createProblem(int id) {

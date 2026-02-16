@@ -77,6 +77,18 @@ public final class ProblemReportRowSorter {
     }
   }
 
+  /**
+   * 登録問題一覧向けの既定順で並び替える。
+   *
+   * @param rows 行データ
+   */
+  public static void sortForRatioReport(List<ProblemReportRow> rows) {
+    if (rows == null || rows.size() <= 1) {
+      return;
+    }
+    Collections.sort(rows, BY_ANSWER_COUNT_DESC_THEN_ACCURACY_ASC_THEN_ID_DESC);
+  }
+
   private static boolean hasSimilarity(List<ProblemReportRow> rows) {
     for (ProblemReportRow row : rows) {
       if (row != null && row.similarityScore != null) {
@@ -106,6 +118,26 @@ public final class ProblemReportRowSorter {
         }
       };
 
+  private static final Comparator<ProblemReportRow> BY_ANSWER_COUNT_DESC_THEN_ACCURACY_ASC_THEN_ID_DESC =
+      new Comparator<ProblemReportRow>() {
+        @Override
+        public int compare(ProblemReportRow left, ProblemReportRow right) {
+          PacketProblem l = safeProblem(left);
+          PacketProblem r = safeProblem(right);
+          int lAnswers = l.good + l.bad;
+          int rAnswers = r.good + r.bad;
+          int byCount = rAnswers - lAnswers;
+          if (byCount != 0) {
+            return byCount;
+          }
+          int byRate = l.getAccuracyRate() - r.getAccuracyRate();
+          if (byRate != 0) {
+            return byRate;
+          }
+          return safeProblemId(right) - safeProblemId(left);
+        }
+      };
+
   private static int safeProblemId(ProblemReportRow row) {
     if (row == null || row.problem == null) {
       return Integer.MIN_VALUE;
@@ -118,5 +150,9 @@ public final class ProblemReportRowSorter {
       return Float.NEGATIVE_INFINITY;
     }
     return row.similarityScore;
+  }
+
+  private static PacketProblem safeProblem(ProblemReportRow row) {
+    return row == null || row.problem == null ? new PacketProblem() : row.problem;
   }
 }

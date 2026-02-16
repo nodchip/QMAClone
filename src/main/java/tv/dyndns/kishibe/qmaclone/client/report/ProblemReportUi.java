@@ -46,7 +46,13 @@ public class ProblemReportUi extends Composite {
 	public ProblemReportUi(List<PacketProblem> problems, boolean regist, boolean initialSort,
 			int maxProblemsPerPage) {
 		this(ProblemReportRowSorter.fromProblems(problems), regist, initialSort, maxProblemsPerPage,
-				true);
+				ProblemReportViewOptions.defaults(), true);
+	}
+
+	public ProblemReportUi(List<PacketProblem> problems, boolean regist, boolean initialSort,
+			int maxProblemsPerPage, ProblemReportViewOptions options) {
+		this(ProblemReportRowSorter.fromProblems(problems), regist, initialSort, maxProblemsPerPage,
+				options, true);
 	}
 
 	/**
@@ -60,15 +66,19 @@ public class ProblemReportUi extends Composite {
 	public static ProblemReportUi fromSimilarProblems(List<PacketSimilarProblem> similarProblems,
 			boolean regist, int maxProblemsPerPage) {
 		return new ProblemReportUi(ProblemReportRowSorter.fromSimilarProblems(similarProblems),
-				regist, false, maxProblemsPerPage, true);
+				regist, false, maxProblemsPerPage, ProblemReportViewOptions.defaults(), true);
 	}
 
 	private ProblemReportUi(List<ProblemReportRow> rows, boolean regist, boolean initialSort,
-			int maxProblemsPerPage, boolean rowsModel) {
+			int maxProblemsPerPage, ProblemReportViewOptions options, boolean rowsModel) {
 		this.rows = rows;
-		ProblemReportRowSorter.sortForDisplay(rows, initialSort);
+		if (options.useRatioDefaultSort) {
+			ProblemReportRowSorter.sortForRatioReport(rows);
+		} else {
+			ProblemReportRowSorter.sortForDisplay(rows, initialSort);
+		}
 
-		cellTableProblem = new CellTableProblem(rows, regist, maxProblemsPerPage);
+		cellTableProblem = new CellTableProblem(rows, regist, maxProblemsPerPage, options);
 
 		final SimplePager.Resources pagerResources = GWT.create(SimplePager.Resources.class);
 		pager = new SimplePager(TextLocation.CENTER, pagerResources, false, 0, true);

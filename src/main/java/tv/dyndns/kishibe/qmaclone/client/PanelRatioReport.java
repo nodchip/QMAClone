@@ -27,6 +27,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblem;
+import tv.dyndns.kishibe.qmaclone.client.report.ProblemReportViewOptions;
 import tv.dyndns.kishibe.qmaclone.client.report.ProblemReportUi;
 
 import com.google.gwt.core.client.Scheduler;
@@ -112,7 +113,8 @@ public class PanelRatioReport extends VerticalPanel implements ClickHandler {
 				return;
 			}
 
-			panelGrid.setWidget(new ProblemReportUi(result, false, true, MAX_PROBLEMS_PER_PAGE));
+			panelGrid.setWidget(new ProblemReportUi(result, false, true, MAX_PROBLEMS_PER_PAGE,
+					ProblemReportViewOptions.forRatioReport()));
 			setEnable(true);
 		}
 

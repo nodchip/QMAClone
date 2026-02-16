@@ -77,6 +77,19 @@ public class CellTableProblem extends CellTable<ProblemReportRow> {
    * @param pageSize ページサイズ
    */
   public CellTableProblem(List<ProblemReportRow> rows, final boolean regist, int pageSize) {
+    this(rows, regist, pageSize, ProblemReportViewOptions.defaults());
+  }
+
+  /**
+   * 共通問題テーブルを生成する。
+   *
+   * @param rows 問題行データ
+   * @param regist 登録列の動作（追加/削除）を切り替えるフラグ
+   * @param pageSize ページサイズ
+   * @param options 表示列オプション
+   */
+  public CellTableProblem(List<ProblemReportRow> rows, final boolean regist, int pageSize,
+      ProblemReportViewOptions options) {
     super(pageSize, CellTableProblemResources.Factory.get(), new ProvidesKey<ProblemReportRow>() {
       @Override
       public Object getKey(ProblemReportRow item) {
@@ -93,18 +106,19 @@ public class CellTableProblem extends CellTable<ProblemReportRow> {
     addColumnSortHandler(columnSortHandler);
 
     // 問題番号
-    addColumn("問題番号", new Comparator<ProblemReportRow>() {
+    if (options.showProblemId) {
+      addColumn("問題番号", new Comparator<ProblemReportRow>() {
       @Override
       public int compare(ProblemReportRow left, ProblemReportRow right) {
         return safeProblemId(left) - safeProblemId(right);
       }
-    }, new LinkColumn<ProblemReportRow>() {
+      }, new LinkColumn<ProblemReportRow>() {
       @Override
       public String getValue(ProblemReportRow row) {
         PacketProblem problem = row.problem;
         return problem.testing ? "(出題中)" : Integer.toString(problem.id);
       }
-    }, new FieldUpdater<ProblemReportRow, String>() {
+      }, new FieldUpdater<ProblemReportRow, String>() {
       @Override
       public void update(int index, ProblemReportRow row, String value) {
         PacketProblem problem = row.problem;
@@ -113,15 +127,17 @@ public class CellTableProblem extends CellTable<ProblemReportRow> {
         }
         Controller.getInstance().showCreationProblem(problem.id);
       }
-    });
+      });
+    }
 
     // 類似度
-    addColumn("類似度", new Comparator<ProblemReportRow>() {
+    if (options.showSimilarity) {
+      addColumn("類似度", new Comparator<ProblemReportRow>() {
       @Override
       public int compare(ProblemReportRow left, ProblemReportRow right) {
         return Float.compare(safeSimilarity(left), safeSimilarity(right));
       }
-    }, new SafeHtmlColumn<ProblemReportRow>() {
+      }, new SafeHtmlColumn<ProblemReportRow>() {
       @Override
       public SafeHtml getValue(ProblemReportRow row) {
         if (row.similarityScore == null) {
@@ -129,54 +145,62 @@ public class CellTableProblem extends CellTable<ProblemReportRow> {
         }
         return TEMPLATES.smallFont(formatSimilarity(row.similarityScore));
       }
-    }, null);
+      }, null);
+    }
 
     // ジャンル
-    addColumn("ジャンル", new Comparator<ProblemReportRow>() {
+    if (options.showGenre) {
+      addColumn("ジャンル", new Comparator<ProblemReportRow>() {
       @Override
       public int compare(ProblemReportRow left, ProblemReportRow right) {
         return safeGenre(left).compareTo(safeGenre(right));
       }
-    }, new SafeHtmlColumn<ProblemReportRow>() {
+      }, new SafeHtmlColumn<ProblemReportRow>() {
       @Override
       public SafeHtml getValue(ProblemReportRow row) {
         return TEMPLATES.smallFont(safeGenre(row));
       }
-    }, null);
+      }, null);
+    }
 
     // 出題形式
-    addColumn("出題形式", new Comparator<ProblemReportRow>() {
+    if (options.showType) {
+      addColumn("出題形式", new Comparator<ProblemReportRow>() {
       @Override
       public int compare(ProblemReportRow left, ProblemReportRow right) {
         return safeType(left).compareTo(safeType(right));
       }
-    }, new SafeHtmlColumn<ProblemReportRow>() {
+      }, new SafeHtmlColumn<ProblemReportRow>() {
       @Override
       public SafeHtml getValue(ProblemReportRow row) {
         return TEMPLATES.smallFont(safeType(row));
       }
-    }, null);
+      }, null);
+    }
 
     // 問題文
-    addColumn("問題文", new Comparator<ProblemReportRow>() {
+    if (options.showSentence) {
+      addColumn("問題文", new Comparator<ProblemReportRow>() {
       @Override
       public int compare(ProblemReportRow left, ProblemReportRow right) {
         return safeSentence(left).compareTo(safeSentence(right));
       }
-    }, new SafeHtmlColumn<ProblemReportRow>() {
+      }, new SafeHtmlColumn<ProblemReportRow>() {
       @Override
       public SafeHtml getValue(ProblemReportRow row) {
         return TEMPLATES.sentenceFont(row.problem.getProblemReportSentence());
       }
-    }, null);
+      }, null);
+    }
 
     // 作問者
-    addColumn("作問者", new Comparator<ProblemReportRow>() {
+    if (options.showCreator) {
+      addColumn("作問者", new Comparator<ProblemReportRow>() {
       @Override
       public int compare(ProblemReportRow left, ProblemReportRow right) {
         return safeCreator(left).compareTo(safeCreator(right));
       }
-    }, new SafeHtmlColumn<ProblemReportRow>() {
+      }, new SafeHtmlColumn<ProblemReportRow>() {
       @Override
       public SafeHtml getValue(ProblemReportRow row) {
         String creator = safeCreator(row);
@@ -185,15 +209,17 @@ public class CellTableProblem extends CellTable<ProblemReportRow> {
         }
         return TEMPLATES.smallFont(creator);
       }
-    }, null);
+      }, null);
+    }
 
     // 正答率
-    addColumn("正答率", new Comparator<ProblemReportRow>() {
+    if (options.showAccuracyRate) {
+      addColumn("正答率", new Comparator<ProblemReportRow>() {
       @Override
       public int compare(ProblemReportRow left, ProblemReportRow right) {
         return safeProblem(left).getAccuracyRate() - safeProblem(right).getAccuracyRate();
       }
-    }, new SafeHtmlColumn<ProblemReportRow>() {
+      }, new SafeHtmlColumn<ProblemReportRow>() {
       @Override
       public SafeHtml getValue(ProblemReportRow row) {
         int ratio = safeProblem(row).getAccuracyRate();
@@ -203,10 +229,29 @@ public class CellTableProblem extends CellTable<ProblemReportRow> {
         String ratioText = ratio + "%";
         return TEMPLATES.rateBadge(STYLE_RATE_BADGE_BASE, getAccuracyBadgeLevelClass(ratio), ratioText);
       }
-    }, null);
+      }, null);
+    }
+
+    // 回答数
+    if (options.showAnswerCount) {
+      addColumn("回答数", new Comparator<ProblemReportRow>() {
+        @Override
+        public int compare(ProblemReportRow left, ProblemReportRow right) {
+          return (safeProblem(left).good + safeProblem(left).bad)
+              - (safeProblem(right).good + safeProblem(right).bad);
+        }
+      }, new SafeHtmlColumn<ProblemReportRow>() {
+        @Override
+        public SafeHtml getValue(ProblemReportRow row) {
+          int answers = safeProblem(row).good + safeProblem(row).bad;
+          return TEMPLATES.smallFont(Integer.toString(answers));
+        }
+      }, null);
+    }
 
     // 指摘
-    addColumn("指摘", new Comparator<ProblemReportRow>() {
+    if (options.showIndication) {
+      addColumn("指摘", new Comparator<ProblemReportRow>() {
       @Override
       public int compare(ProblemReportRow left, ProblemReportRow right) {
         PacketProblem l = safeProblem(left);
@@ -234,15 +279,17 @@ public class CellTableProblem extends CellTable<ProblemReportRow> {
         }
         return TEMPLATES.empty();
       }
-    }, null);
+      }, null);
+    }
 
     // 登録
-    addColumn("登録", null, new LinkColumn<ProblemReportRow>() {
+    if (options.showRegister) {
+      addColumn("登録", null, new LinkColumn<ProblemReportRow>() {
       @Override
       public String getValue(ProblemReportRow row) {
         return regist ? "追加" : "削除";
       }
-    }, new FieldUpdater<ProblemReportRow, String>() {
+      }, new FieldUpdater<ProblemReportRow, String>() {
       @Override
       public void update(int index, ProblemReportRow row, String value) {
         final int problemId = safeProblemId(row);
@@ -255,20 +302,23 @@ public class CellTableProblem extends CellTable<ProblemReportRow> {
           Service.Util.getInstance().removeProblemIDFromReport(userCode, problemId, callbackReport);
         }
       }
-    });
+      });
+    }
 
     // 操作（詳細）
-    addColumn("操作", null, new LinkColumn<ProblemReportRow>() {
+    if (options.showOperation) {
+      addColumn("操作", null, new LinkColumn<ProblemReportRow>() {
       @Override
       public String getValue(ProblemReportRow row) {
         return "詳細";
       }
-    }, new FieldUpdater<ProblemReportRow, String>() {
+      }, new FieldUpdater<ProblemReportRow, String>() {
       @Override
       public void update(int index, ProblemReportRow row, String value) {
         showDetailDialog(safeProblem(row));
       }
-    });
+      });
+    }
 
   }
 
