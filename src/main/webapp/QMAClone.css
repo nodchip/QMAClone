@@ -2752,3 +2752,147 @@ body {
 .guidelineBody h3 {
   color: #0f3f71;
 }
+
+/* 統計画面モダン化 */
+.statisticsRoot {
+	width: 100%;
+	max-width: 980px;
+	margin: 8px auto 0 auto;
+	padding: 12px;
+	border: 1px solid #3f6d96;
+	border-radius: 12px;
+	background: linear-gradient(180deg, #12385d 0%, #0f2f4c 100%);
+	box-shadow: 0 8px 24px rgba(6, 26, 45, 0.22);
+	box-sizing: border-box;
+}
+
+.statisticsRoot .settingLeftPanel {
+	padding: 6px;
+	border: 1px solid #3f6d96;
+	border-radius: 10px;
+	background: #0d2a44;
+}
+
+.statisticsRoot .settingLeftPanelItem {
+	display: block;
+	margin: 4px 0;
+	padding: 8px 10px;
+	border: 1px solid #2a4f71;
+	border-radius: 8px;
+	color: #e3f2ff;
+	background: #123b5f;
+	text-decoration: none;
+	font-size: 14px;
+	line-height: 1.4;
+}
+
+.statisticsRoot .settingLeftPanelItem:hover {
+	border-color: #67a4d6;
+	background: #1a4f79;
+}
+
+.statisticsRoot .gwt-SimplePanel {
+	min-height: 480px;
+	padding-left: 12px;
+	box-sizing: border-box;
+}
+
+.statisticsCard {
+	width: 100%;
+	max-width: 100%;
+	padding: 12px 14px;
+	border: 1px solid #7eb3dd;
+	border-radius: 10px;
+	background: #f7fbff;
+	box-shadow: 0 3px 12px rgba(9, 39, 65, 0.12);
+	box-sizing: border-box;
+}
+
+.statisticsSectionCard > * + * {
+	margin-top: 8px;
+}
+
+.statisticsSectionTitle {
+	display: block;
+	margin: 0;
+	color: #123d63;
+	font-size: 18px;
+	font-weight: 700;
+	text-align: left;
+}
+
+.statisticsDescription {
+	color: #2a4e6f;
+	font-size: 14px;
+	line-height: 1.55;
+	text-align: left;
+}
+
+.statisticsTopCard {
+	text-align: left;
+}
+
+.statisticsTopIntro {
+	margin-bottom: 8px;
+	padding: 8px 10px;
+	border: 1px solid #c3dcf1;
+	border-radius: 8px;
+	background: #eef7ff;
+	color: #214d74;
+	font-weight: 700;
+}
+
+.statisticsTopList {
+	margin: 0;
+	padding-left: 0;
+}
+
+.statisticsTopList dt {
+	margin-top: 8px;
+	color: #0f3f71;
+	font-weight: 700;
+}
+
+.statisticsTopList dd {
+	margin: 2px 0 0 0;
+	color: #2f4f69;
+	line-height: 1.5;
+}
+
+.statisticsRoot .statisticsTable {
+	width: 100%;
+	border-collapse: separate;
+	border-spacing: 0;
+	border: 1px solid #b9d3ea;
+	border-radius: 8px;
+	overflow: hidden;
+	background: #ffffff;
+}
+
+.statisticsRoot .statisticsTable td {
+	padding: 6px 8px;
+	font-size: 14px;
+	border-color: #d9e8f5 !important;
+}
+
+.statisticsRoot .statisticsTable tr:first-child td,
+.statisticsRoot .statisticsTable td:first-child {
+	background: #edf6ff;
+	color: #1a486f;
+	font-weight: 700;
+}
+
+.statisticsRoot iframe {
+	max-width: 100%;
+}
+
+@media (max-width: 1100px) {
+	.statisticsRoot {
+		padding: 10px;
+	}
+
+	.statisticsRoot .gwt-SimplePanel {
+		padding-left: 0;
+		margin-top: 10px;
+	}
+}

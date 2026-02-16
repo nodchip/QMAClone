@@ -56,6 +56,8 @@ public class PanelStatisticsRatingDistribution extends VerticalPanel {
 	private boolean first = true;
 	private final AsyncCallback<PacketRatingDistribution> callbackGetRatingDistribution = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<PacketRatingDistribution>() {
 		public void onSuccess(PacketRatingDistribution result) {
+			clear();
+			add(title);
 			show(result);
 		}
 
@@ -64,13 +66,25 @@ public class PanelStatisticsRatingDistribution extends VerticalPanel {
 		}
 	};
 
+	private final HTML title = new HTML("<b>レーティング分布</b>");
+
+	public PanelStatisticsRatingDistribution() {
+		setHorizontalAlignment(ALIGN_CENTER);
+		addStyleName("statisticsCard");
+		addStyleName("statisticsSectionCard");
+		title.addStyleName("statisticsSectionTitle");
+		add(title);
+	}
+
 	private void show(PacketRatingDistribution ratingDistribution) {
 		int[] distribution = ratingDistribution.distribution;
 		int min = ratingDistribution.min;
 		int max = ratingDistribution.max;
 
 		add(new RatingDistributionChart(distribution, min, max));
-		add(new HTML(TEMPLATE.description(min, max)));
+		HTML description = new HTML(TEMPLATE.description(min, max));
+		description.addStyleName("statisticsDescription");
+		add(description);
 	}
 
 	protected void onLoad() {

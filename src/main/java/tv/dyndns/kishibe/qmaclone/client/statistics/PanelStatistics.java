@@ -29,6 +29,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class PanelStatistics extends TwoColumnSelectionPanel {
 	public PanelStatistics() {
 		super(200);
+		addStyleName("statisticsRoot");
 		setWidth("800px");
 		add("トップ", new LazyPanel() {
 			@Override

@@ -34,6 +34,7 @@ public class GridNumberOfProblems extends Grid {
 		super(ProblemType.values().length + 1, ProblemGenre.values().length + 1);
 		addStyleName("gridFrame");
 		addStyleName("gridFontNormal");
+		addStyleName("statisticsTable");
 
 		final int sizeOfColumn = ProblemGenre.values().length + 1;
 		final int sizeOfRow = ProblemType.values().length + 1;

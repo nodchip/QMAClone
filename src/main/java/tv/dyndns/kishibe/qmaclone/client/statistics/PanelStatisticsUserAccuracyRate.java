@@ -37,7 +37,11 @@ public class PanelStatisticsUserAccuracyRate extends VerticalPanel {
 
 	private PanelStatisticsUserAccuracyRate() {
 		setHorizontalAlignment(ALIGN_CENTER);
-		add(new HTML("<b>プレイヤー正解率</b>"));
+		addStyleName("statisticsCard");
+		addStyleName("statisticsSectionCard");
+		HTML title = new HTML("<b>プレイヤー正解率</b>");
+		title.addStyleName("statisticsSectionTitle");
+		add(title);
 		add(gridUserAccuracyRate);
 	}
 

@@ -30,6 +30,7 @@ public class GridPrefectureRanking extends Grid {
 	public GridPrefectureRanking() {
 		addStyleName("gridFrame");
 		addStyleName("gridFontNormal");
+		addStyleName("statisticsTable");
 	}
 
 	public void setData(int[][] data) {

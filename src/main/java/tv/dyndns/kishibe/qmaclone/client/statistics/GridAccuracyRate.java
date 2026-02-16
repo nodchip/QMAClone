@@ -33,6 +33,7 @@ public class GridAccuracyRate extends Grid {
 		super(12, ProblemGenre.values().length + 1);
 		addStyleName("gridFrame");
 		addStyleName("gridFontNormal");
+		addStyleName("statisticsTable");
 
 		for (int i = 0; i < 12; ++i) {
 			for (int j = 0; j < ProblemGenre.values().length + 1; ++j) {

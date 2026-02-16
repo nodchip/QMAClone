@@ -25,8 +25,8 @@ import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.ui.HTML;
 
 public class PanelStatisticsTop extends HTML {
-	private static final String DESCRIPTION = "←のメニューから設定したい項目を選んでください"
-			+ "<dl>"
+	private static final String DESCRIPTION = "<div class='statisticsTopIntro'>左メニューから表示したい統計項目を選んでください。</div>"
+			+ "<dl class='statisticsTopList'>"
 			+ "<dt>問題数</dt><dd>プレイヤーの皆様から投稿された問題の問題数をジャンル・出題形式別に表示します</dd>"
 			+ "<dt>ジャンル別正解率</dt><dd>ジャンル別に問題正解率の分布を表示します</dd>"
 			+ "<dt>プレイヤー正解率</dt><dd>プレイヤーが解いた問題の正解率をジャンル・出題形式別に表示します</dd>"
@@ -36,6 +36,8 @@ public class PanelStatisticsTop extends HTML {
 
 	public PanelStatisticsTop() {
 		super(SafeHtmlUtils.fromSafeConstant(DESCRIPTION));
+		addStyleName("statisticsCard");
+		addStyleName("statisticsTopCard");
 		setWidth("600px");
 	}
 }

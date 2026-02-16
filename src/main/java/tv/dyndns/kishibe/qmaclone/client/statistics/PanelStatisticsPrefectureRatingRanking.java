@@ -41,8 +41,13 @@ public class PanelStatisticsPrefectureRatingRanking extends VerticalPanel {
 	private boolean first = true;
 	private final AsyncCallback<int[][]> callbackGetPrefectureRanking = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<int[][]>() {
 		public void onSuccess(int[][] result) {
+			clear();
+			add(title);
 			add(new ChartPrefectureRatingRanking(result));
-			add(new HTML(new SafeHtmlBuilder().appendHtmlConstant(DESCRIPTION_HTML).toSafeHtml()));
+			HTML description = new HTML(new SafeHtmlBuilder().appendHtmlConstant(DESCRIPTION_HTML)
+					.toSafeHtml());
+			description.addStyleName("statisticsDescription");
+			add(description);
 			gridPrefectureRanking.setData(result);
 			add(gridPrefectureRanking);
 		}
@@ -52,8 +57,14 @@ public class PanelStatisticsPrefectureRatingRanking extends VerticalPanel {
 		}
 	};
 
+	private final HTML title = new HTML("<b>県別平均トップレーティング</b>");
+
 	public PanelStatisticsPrefectureRatingRanking() {
 		setHorizontalAlignment(ALIGN_CENTER);
+		addStyleName("statisticsCard");
+		addStyleName("statisticsSectionCard");
+		title.addStyleName("statisticsSectionTitle");
+		add(title);
 	}
 
 	protected void onLoad() {

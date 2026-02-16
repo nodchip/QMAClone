@@ -27,6 +27,7 @@ import java.util.logging.Logger;
 import tv.dyndns.kishibe.qmaclone.client.Service;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class PanelStatisticsAccuracyRate extends VerticalPanel {
@@ -36,6 +37,8 @@ public class PanelStatisticsAccuracyRate extends VerticalPanel {
 	private boolean first = true;
 	private final AsyncCallback<int[][]> callbackGetStatisticsOfAccuracyRate = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<int[][]>() {
 		public void onSuccess(int[][] result) {
+			clear();
+			add(title);
 			gridAccuracyRate.setData(result);
 			add(new ChartAccuracyRate(result));
 			add(gridAccuracyRate);
@@ -46,8 +49,14 @@ public class PanelStatisticsAccuracyRate extends VerticalPanel {
 		}
 	};
 
+	private final HTML title = new HTML("<b>ジャンル別正解率</b>");
+
 	public PanelStatisticsAccuracyRate() {
 		setHorizontalAlignment(ALIGN_CENTER);
+		addStyleName("statisticsCard");
+		addStyleName("statisticsSectionCard");
+		title.addStyleName("statisticsSectionTitle");
+		add(title);
 	}
 
 	protected void onLoad() {

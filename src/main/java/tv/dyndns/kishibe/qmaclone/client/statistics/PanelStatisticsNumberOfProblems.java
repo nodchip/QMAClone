@@ -47,7 +47,11 @@ public class PanelStatisticsNumberOfProblems extends VerticalPanel {
 
 	public PanelStatisticsNumberOfProblems() {
 		setHorizontalAlignment(ALIGN_CENTER);
-		add(new HTML("<b>問題数統計</b>"));
+		addStyleName("statisticsCard");
+		addStyleName("statisticsSectionCard");
+		HTML title = new HTML("<b>問題数統計</b>");
+		title.addStyleName("statisticsSectionTitle");
+		add(title);
 		add(gridNumberOfProblem);
 	}
 

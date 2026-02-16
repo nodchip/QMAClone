@@ -71,6 +71,9 @@ public class PanelStatisticsRatingHistory extends VerticalPanel {
 	};
 
 	private PanelStatisticsRatingHistory() {
+		setHorizontalAlignment(ALIGN_CENTER);
+		addStyleName("statisticsCard");
+		addStyleName("statisticsSectionCard");
 	}
 
 	public void resetFlag() {
@@ -101,8 +104,13 @@ public class PanelStatisticsRatingHistory extends VerticalPanel {
 
 		clear();
 
+		HTML title = new HTML("<b>レーティング履歴</b>");
+		title.addStyleName("statisticsSectionTitle");
+		add(title);
 		add(new RatingHistoryChart(data));
-		add(new HTML(TEMPLATE.description(min, max, average)));
+		HTML description = new HTML(TEMPLATE.description(min, max, average));
+		description.addStyleName("statisticsDescription");
+		add(description);
 	}
 
 	protected void onLoad() {

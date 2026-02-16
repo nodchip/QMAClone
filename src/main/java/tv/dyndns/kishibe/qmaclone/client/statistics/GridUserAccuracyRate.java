@@ -33,6 +33,7 @@ public class GridUserAccuracyRate extends Grid {
 		super(ProblemType.values().length + 1, ProblemGenre.values().length + 1);
 		addStyleName("gridFrame");
 		addStyleName("gridFontNormal");
+		addStyleName("statisticsTable");
 
 		final CellFormatter formatter = getCellFormatter();
 
