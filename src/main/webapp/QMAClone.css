@@ -1364,12 +1364,32 @@ body {
 	box-sizing: border-box;
 }
 
-.lobbyEventPopupContent > .gwt-Label {
-	color: #d9ecff;
-	font-size: 13px;
+.lobbyEventPopupHeading {
+	color: #c0d6eb;
+	font-size: 12px;
+	font-weight: 600;
+	letter-spacing: 0;
+	line-height: 1.4;
+	padding: 0 2px 6px 2px;
+	border-bottom: 1px solid rgba(138, 175, 209, 0.24);
+}
+
+.lobbyEventPopupEmptyMessage {
+	color: #f1f7ff;
+	font-size: 14px;
 	font-weight: 700;
-	letter-spacing: 0.04em;
-	padding: 2px 2px 4px 2px;
+	line-height: 1.45;
+	padding: 8px 10px;
+	border: 1px solid rgba(140, 183, 224, 0.45);
+	border-radius: 8px;
+	background: rgba(16, 53, 90, 0.65);
+}
+
+.lobbyEventPopupEmptySubMessage {
+	color: #b9d8f3;
+	font-size: 12px;
+	line-height: 1.45;
+	padding: 0 2px 2px 2px;
 }
 
 .lobbyEventPopupRoomButton,
@@ -1377,6 +1397,8 @@ body {
 	width: 100%;
 	min-height: 30px;
 	text-align: left;
+	white-space: normal;
+	line-height: 1.4;
 	border: 1px solid #4f78a5;
 	border-radius: 8px;
 	background: #0e2746;

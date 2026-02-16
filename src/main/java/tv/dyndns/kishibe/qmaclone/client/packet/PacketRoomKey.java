@@ -21,6 +21,7 @@
 //THE SOFTWARE.
 package tv.dyndns.kishibe.qmaclone.client.packet;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import tv.dyndns.kishibe.qmaclone.client.game.GameMode;
@@ -29,7 +30,6 @@ import tv.dyndns.kishibe.qmaclone.client.game.ProblemType;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
-import com.google.common.collect.ImmutableSet;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class PacketRoomKey implements IsSerializable {
@@ -43,13 +43,22 @@ public class PacketRoomKey implements IsSerializable {
 
   public PacketRoomKey(GameMode gameMode, String name, Set<ProblemGenre> genres,
       Set<ProblemType> types) {
-    genres = gameMode == GameMode.EVENT ? genres : ImmutableSet.of(ProblemGenre.Random);
-    types = gameMode == GameMode.EVENT ? types : ImmutableSet.of(ProblemType.Random);
-
     this.gameMode = gameMode;
     this.name = name;
-    this.genres = ImmutableSet.copyOf(genres);
-    this.types = ImmutableSet.copyOf(types);
+    // GWT RPC で安全にシリアライズできる具体型(HashSet)へ正規化する。
+    this.genres = new HashSet<ProblemGenre>();
+    this.types = new HashSet<ProblemType>();
+    if (gameMode == GameMode.EVENT) {
+      if (genres != null) {
+        this.genres.addAll(genres);
+      }
+      if (types != null) {
+        this.types.addAll(types);
+      }
+    } else {
+      this.genres.add(ProblemGenre.Random);
+      this.types.add(ProblemType.Random);
+    }
   }
 
   @Override
