@@ -74,7 +74,7 @@ public class PanelRatioReport extends VerticalPanel implements ClickHandler {
 		setHorizontalAlignment(ALIGN_CENTER);
 
 		add(new HTML(
-				"登録した問題の正答率を表示します。問題を投稿した場合は自動的に問題が登録されます。<br/>問題番号を登録、又は問題投稿後に「情報更新」ボタンを押すと、画面が更新されます。<br/>表のボタンを押すと項目別にソートします。二度押すと逆順にソートします。<br/>登録されている問題の一括消去は設定画面より行えます。"));
+				"登録した問題の正答率と状態を確認できます。<br/>問題を登録・投稿した後は「情報更新」で最新状態を反映します。<br/>登録されている問題の一括消去は設定画面より行えます。"));
 
 		HorizontalPanel idPanel = new HorizontalPanel();
 		idPanel.setVerticalAlignment(ALIGN_MIDDLE);

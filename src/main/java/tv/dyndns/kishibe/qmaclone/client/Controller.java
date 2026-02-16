@@ -229,8 +229,8 @@ public class Controller extends SimplePanel {
 			// 問題統計パネル
 			tabPanel.add(panelStatistics, "統計");
 
-			// 正解率表示パネル
-			tabPanel.add(panelRatioReport, "正解率統計");
+			// 登録問題一覧パネル
+			tabPanel.add(panelRatioReport, "登録問題一覧");
 
 			// 問題検索パネル
 			tabPanel.add(panelSearchProblem, "検索");
