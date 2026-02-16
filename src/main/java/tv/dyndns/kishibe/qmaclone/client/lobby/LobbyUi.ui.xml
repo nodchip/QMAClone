@@ -209,6 +209,7 @@
   .lobbySummaryBottom {
     margin-top: auto;
     width: 100%;
+    box-sizing: border-box;
     text-align: center;
     padding: 10px 14px;
     border-radius: 10px;
