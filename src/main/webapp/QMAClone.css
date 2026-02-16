@@ -1298,7 +1298,7 @@ body {
 
 .app-root-panel {
 	position: relative;
-	padding: 8px 16px 24px 16px;
+	padding: 8px 392px 24px 16px;
 	box-sizing: border-box;
 }
 
@@ -1324,6 +1324,10 @@ body {
 
 .app-main-panel td {
 	vertical-align: top;
+}
+
+.chat-collapsed .app-root-panel {
+	padding-right: 16px;
 }
 
 .app-chat-panel {
@@ -1711,6 +1715,7 @@ body {
 	}
 
 	.app-root-panel {
+		padding-right: 16px;
 		padding-bottom: 404px;
 	}
 
