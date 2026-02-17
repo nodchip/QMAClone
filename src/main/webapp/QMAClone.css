@@ -643,18 +643,30 @@ a:active {
 
 /* 設定画面 */
 .settingLeftPanel {
-	border: 0px solid #FFFFFF;
+	border: 1px solid var(--color-border-subtle);
+	border-radius: var(--radius-md);
+	background: var(--color-surface-1);
 	overflow: hidden;
 }
 
 .settingLeftPanelItem {
-	color: blue;
+	display: block;
+	padding: 8px 12px;
+	color: var(--color-link);
 	cursor: pointer;
-	text-decoration: underline;
+	text-decoration: none;
+	font-weight: 600;
+	border-bottom: 1px solid var(--color-border-subtle);
+	transition: background-color 140ms ease, color 140ms ease;
+}
+
+.settingLeftPanelItem:hover {
+	background: var(--color-surface-3);
+	color: var(--color-accent-primary);
 }
 
 .settingMessage {
-	color: red;
+	color: var(--color-danger-text);
 }
 
 /* ポジションセレクタ */
@@ -669,16 +681,18 @@ a:active {
 
 /* ページ切り替えボタン */
 .pageSelectButton {
-	background-color: transparent;
+	background-color: var(--color-surface-1);
 	font-size: 20px;
-	border: 1px #000000 dashed;
+	border: 1px var(--color-border-default) dashed;
+	color: var(--color-text-primary);
+	border-radius: var(--radius-sm);
 	cursor: pointer;
 	width: 40px;
 }
 
 /* 掲示板用ボタン */
 .gwt-HTML-bbsThreadTitle {
-	color: red;
+	color: var(--color-danger-text);
 	font-size: 22px;
 }
 
@@ -699,7 +713,7 @@ a:active {
 	font-weight: bold;
 	text-align: center;
 	vertical-align: top;
-	color: black;
+	color: var(--color-text-primary);
 	z-index: 5;
 }
 
@@ -708,7 +722,7 @@ a:active {
 }
 
 .gwt-Label-clickable {
-	color: blue;
+	color: var(--color-link);
 	text-decoration: underline;
 	cursor: pointer;
 	font-size: 12px;
@@ -716,7 +730,7 @@ a:active {
 }
 
 .gwt-Label-clickableEnter {
-	color: red;
+	color: var(--color-danger-text);
 }
 
 .gwt-Grid-problemReportSentence td {
@@ -727,9 +741,9 @@ a:active {
 	text-align: left;
 	margin-top: 8px;
 	padding: 12px;
-	border: 1px solid #9ec4e6;
+	border: 1px solid var(--color-border-default);
 	border-radius: 12px;
-	background: #f8fbff;
+	background: var(--color-surface-2);
 	box-shadow: 0 4px 14px rgba(12, 59, 105, 0.1);
 }
 
@@ -747,8 +761,8 @@ a:active {
 	margin: 0;
 	padding: 4px 10px;
 	border-radius: 999px;
-	background: #e4f1ff;
-	color: #16486f;
+	background: var(--color-surface-3);
+	color: var(--color-text-secondary);
 	font-weight: 700;
 }
 
@@ -757,9 +771,9 @@ a:active {
 }
 
 .problemReportPanel .gwt-SimplePager {
-	border: 1px solid #c6dcef;
+	border: 1px solid var(--color-border-subtle);
 	border-radius: 8px;
-	background: #ffffff;
+	background: var(--color-surface-1);
 	padding: 4px 8px;
 }
 
