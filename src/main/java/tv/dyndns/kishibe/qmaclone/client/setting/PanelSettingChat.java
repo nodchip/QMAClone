@@ -23,13 +23,17 @@ package tv.dyndns.kishibe.qmaclone.client.setting;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import tv.dyndns.kishibe.qmaclone.client.Controller;
 import tv.dyndns.kishibe.qmaclone.client.UserData;
 import tv.dyndns.kishibe.qmaclone.client.Utility;
+import tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -37,6 +41,7 @@ import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class PanelSettingChat extends VerticalPanel implements ClickHandler {
+	private static final Logger logger = Logger.getLogger(PanelSettingChat.class.getName());
 	private static final String CHAT = "CHAT";
 	private static PanelSettingChat instance = new PanelSettingChat();
 	private final FlowPanel panelIgnoreUserCodes = new FlowPanel();
@@ -95,7 +100,20 @@ public class PanelSettingChat extends VerticalPanel implements ClickHandler {
 	private void changeChatEnabled(boolean enabled) {
 		Controller.getInstance().setChatEnabled(enabled);
 		UserData.get().setChatEnabled(enabled);
+		UserData.get().save(callbackSaveChatEnabled);
 	}
+
+	private final AsyncCallback<Void> callbackSaveChatEnabled = new RpcAsyncCallback<Void>() {
+		@Override
+		public void onSuccess(Void result) {
+			SettingSaveToast.showSaved("チャット表示");
+		}
+
+		@Override
+		public void onFailureRpc(Throwable caught) {
+			logger.log(Level.WARNING, "チャット表示設定の保存に失敗しました", caught);
+		}
+	};
 
 	@Override
 	public void onClick(ClickEvent event) {

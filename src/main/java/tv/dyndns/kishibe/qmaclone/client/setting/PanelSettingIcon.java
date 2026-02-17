@@ -135,6 +135,7 @@ public class PanelSettingIcon extends VerticalPanel implements SubmitCompleteHan
     } else if (result.contains(Constant.ICON_UPLOAD_RESPONSE_OK)) {
       htmlMessage.setHTML("アイコンのアップロードに成功しました。反映まで若干時間がかかります。");
       UserData.get().load();
+      SettingSaveToast.showSaved("アイコン");
     } else if (result.contains(Constant.ICON_UPLOAD_RESPONSE_FAILED_TO_DETECT_IMAGE_FILE_TYPE)) {
       htmlMessage.setHTML("画像ファイルを認識できませんでした。正しい画像ファイルであることを確認して再度アップロードしてください。");
     } else if (result.contains(Constant.ICON_UPLOAD_RESPONSE_FAILED_TO_PARSE_REQUEST)) {

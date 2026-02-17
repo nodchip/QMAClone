@@ -57,6 +57,7 @@ public class PanelSettingRatioReport extends VerticalPanel implements ClickHandl
 	private final AsyncCallback<Void> callbackClearProblemIDFromReport = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Void>() {
 		@Override
 		public void onSuccess(Void result) {
+			SettingSaveToast.showSaved("登録問題一覧の一括消去");
 		}
 
 		@Override

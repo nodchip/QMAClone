@@ -93,6 +93,7 @@ public class PanelSettingThemeQuery {
 	};
 	private ThemeQueryTreeViewModel themeQueryTreeViewModel;
 	private Set<String> themeNames;
+	private String lastUpdateOperation = "テーマモード設定";
 
 	public PanelSettingThemeQuery(View view, ServiceAsync serviceAsync, Scheduler scheduler) {
 		this.view = Preconditions.checkNotNull(view);
@@ -160,6 +161,7 @@ public class PanelSettingThemeQuery {
 	public void onAddButtonClicked() {
 		String theme = view.getTheme();
 		String query = view.getQuery();
+		lastUpdateOperation = "テーマ追加";
 		serviceAsync.addThemeModeQuery(theme, query, UserData.get().getUserCode(),
 				callbackUpdateThemeModeQuery);
 	}
@@ -167,6 +169,7 @@ public class PanelSettingThemeQuery {
 	public void onRemoveButtonClicked() {
 		String theme = view.getTheme();
 		String query = view.getQuery();
+		lastUpdateOperation = "テーマ削除";
 		serviceAsync.removeThemeModeQuery(theme, query, UserData.get().getUserCode(),
 				callbackUpdateThemeModeQuery);
 	}
@@ -178,6 +181,7 @@ public class PanelSettingThemeQuery {
 			String theme = view.getTheme();
 			// 新規テーマを追加した場合はテーマリストを更新する
 			themeQueryTreeViewModel.refresh(themeNames != null && !themeNames.contains(theme));
+			SettingSaveToast.showSaved(lastUpdateOperation);
 		}
 
 		@Override
@@ -200,6 +204,7 @@ public class PanelSettingThemeQuery {
 	final AsyncCallback<Void> callbackApplyThemeModeEditor = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Void>() {
 		@Override
 		public void onSuccess(Void result) {
+			SettingSaveToast.showSaved("テーマモード編集権限の申請");
 		}
 
 		@Override

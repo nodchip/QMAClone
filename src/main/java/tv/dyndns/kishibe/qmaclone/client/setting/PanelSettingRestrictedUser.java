@@ -32,6 +32,7 @@ public class PanelSettingRestrictedUser implements IsWidget {
 	@VisibleForTesting
 	View view;
 	private final ServiceAsync service;
+	private String lastOperation = "制限ユーザー設定";
 
 	public PanelSettingRestrictedUser(ServiceAsync service) {
 		this.service = Preconditions.checkNotNull(service);
@@ -91,35 +92,41 @@ public class PanelSettingRestrictedUser implements IsWidget {
 	public void onAddUserCodeButton() {
 		int userCode = view.getUserCode();
 		RestrictionType restrictionType = view.getType();
+		lastOperation = "制限ユーザーコードの追加";
 		service.addRestrictedUserCode(userCode, restrictionType, callbackRestrictedUser);
 	}
 
 	public void onRemoveUserCodeButton() {
 		int userCode = view.getUserCode();
 		RestrictionType restrictionType = view.getType();
+		lastOperation = "制限ユーザーコードの削除";
 		service.removeRestrictedUserCode(userCode, restrictionType, callbackRestrictedUser);
 	}
 
 	public void onClearUserCodesButton() {
 		RestrictionType restrictionType = view.getType();
+		lastOperation = "制限ユーザーコードの一括クリア";
 		service.clearRestrictedUserCodes(restrictionType, callbackRestrictedUser);
 	}
 
 	public void onAddRemoteAddressButton() {
 		String remoteAddress = view.getRemoteAddress();
 		RestrictionType restrictionType = view.getType();
+		lastOperation = "制限リモートアドレスの追加";
 		service.addRestrictedRemoteAddress(remoteAddress, restrictionType, callbackRestrictedUser);
 	}
 
 	public void onRemoveRemoteAddressButton() {
 		String remoteAddress = view.getRemoteAddress();
 		RestrictionType restrictionType = view.getType();
+		lastOperation = "制限リモートアドレスの削除";
 		service.removeRestrictedRemoteAddress(remoteAddress, restrictionType,
 				callbackRestrictedUser);
 	}
 
 	public void onClearRemoteAddressesButton() {
 		RestrictionType restrictionType = view.getType();
+		lastOperation = "制限リモートアドレスの一括クリア";
 		service.clearRestrictedRemoteAddresses(restrictionType, callbackRestrictedUser);
 	}
 
@@ -128,6 +135,7 @@ public class PanelSettingRestrictedUser implements IsWidget {
 		@Override
 		public void onSuccess(Void result) {
 			update();
+			SettingSaveToast.showSaved(lastOperation);
 		}
 
 		@Override

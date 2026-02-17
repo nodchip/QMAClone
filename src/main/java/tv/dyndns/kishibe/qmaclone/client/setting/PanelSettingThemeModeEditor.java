@@ -120,6 +120,7 @@ public class PanelSettingThemeModeEditor extends VerticalPanel implements ClickH
 	private final AsyncCallback<Void> callbackApplyThemeModeEditor = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Void>() {
 		@Override
 		public void onSuccess(Void result) {
+			SettingSaveToast.showSaved("テーマモード編集権限の状態更新");
 		}
 
 		@Override
@@ -130,6 +131,7 @@ public class PanelSettingThemeModeEditor extends VerticalPanel implements ClickH
 	private final AsyncCallback<Void> callbackAcceptThemeModeEditor = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Void>() {
 		@Override
 		public void onSuccess(Void result) {
+			SettingSaveToast.showSaved("テーマモード編集権限の承認");
 		}
 
 		@Override
@@ -140,6 +142,7 @@ public class PanelSettingThemeModeEditor extends VerticalPanel implements ClickH
 	private final AsyncCallback<Void> callbackAddValueChangeHandler = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Void>() {
 		@Override
 		public void onSuccess(Void result) {
+			SettingSaveToast.showSaved("テーマモード編集権限の却下");
 		}
 
 		@Override

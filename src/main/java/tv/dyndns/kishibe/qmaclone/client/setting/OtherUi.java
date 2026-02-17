@@ -92,107 +92,112 @@ public class OtherUi extends Composite {
 		whenFalse.setValue(!value);
 	}
 
+	private void saveSetting(String itemName) {
+		UserData.get().save();
+		SettingSaveToast.showSaved(itemName);
+	}
+
 	@UiHandler("radioButtonSeOn")
 	void onRadioButtonSeOn(ClickEvent e) {
 		UserData.get().setPlaySound(true);
-		UserData.get().save();
+		saveSetting("効果音");
 	}
 
 	@UiHandler("radioButtonSeOff")
 	void onRadioButtonSeOff(ClickEvent e) {
 		UserData.get().setPlaySound(false);
-		UserData.get().save();
+		saveSetting("効果音");
 	}
 
 	@UiHandler("radioButtonRankingMoveOn")
 	void onRadioButtonRankingMoveOn(ClickEvent e) {
 		UserData.get().setRankingMove(true);
-		UserData.get().save();
+		saveSetting("ランキング上下変動表示");
 	}
 
 	@UiHandler("radioButtonRankingMoveOff")
 	void onRadioButtonRankingMoveOff(ClickEvent e) {
 		UserData.get().setRankingMove(false);
-		UserData.get().save();
+		saveSetting("ランキング上下変動表示");
 	}
 
 	@UiHandler("radioButtonHideAnswerOn")
 	void onRadioButtonHideAnswerOn(ClickEvent e) {
 		UserData.get().setHideAnswer(true);
-		UserData.get().save();
+		saveSetting("解答の表示");
 	}
 
 	@UiHandler("radioButtonHideAnswerOff")
 	void onRadioButtonHideAnswerOff(ClickEvent e) {
 		UserData.get().setHideAnswer(false);
-		UserData.get().save();
+		saveSetting("解答の表示");
 	}
 
 	@UiHandler("radioButtonShowInfoOn")
 	void onRadioButtonShowInfoOn(ClickEvent e) {
 		UserData.get().setShowInfo(true);
 		LobbyUi.getInstance().updateInfomationPanel();
-		UserData.get().save();
+		saveSetting("ログイン画面の情報表示");
 	}
 
 	@UiHandler("radioButtonShowInfoOff")
 	void onRadioButtonShowInfoOff(ClickEvent e) {
 		UserData.get().setShowInfo(false);
 		LobbyUi.getInstance().updateInfomationPanel();
-		UserData.get().save();
+		saveSetting("ログイン画面の情報表示");
 	}
 
 	@UiHandler("radioButtonReflectEventResultOn")
 	void onRadioButtonReflectEventResultOn(ClickEvent e) {
 		UserData.get().setReflectEventResult(true);
-		UserData.get().save();
+		saveSetting("イベント戦成績の反映");
 	}
 
 	@UiHandler("radioButtonReflectEventResultOff")
 	void onRadioButtonReflectEventResultOff(ClickEvent e) {
 		UserData.get().setReflectEventResult(false);
-		UserData.get().save();
+		saveSetting("イベント戦成績の反映");
 	}
 
 	@UiHandler("radioButtonWebSocketDefault")
 	void onRadioButtonWebSocketDefault(ClickEvent e) {
 		UserData.get().setWebSocketUsage(WebSocketUsage.Default);
-		UserData.get().save();
+		saveSetting("WebSocket利用設定");
 	}
 
 	@UiHandler("radioButtonWebSocketOn")
 	void onRadioButtonWebSocketOn(ClickEvent e) {
 		UserData.get().setWebSocketUsage(WebSocketUsage.On);
-		UserData.get().save();
+		saveSetting("WebSocket利用設定");
 	}
 
 	@UiHandler("radioButtonWebSocketOff")
 	void onRadioButtonWebSocketOff(ClickEvent e) {
 		UserData.get().setWebSocketUsage(WebSocketUsage.Off);
-		UserData.get().save();
+		saveSetting("WebSocket利用設定");
 	}
 
 	@UiHandler("radioButtonRegisterCreatedProblemOn")
 	void onRadioButtonRegisterCreatedProblemOn(ClickEvent e) {
 		UserData.get().setRegisterCreatedProblem(true);
-		UserData.get().save();
+		saveSetting("問題作成時の自動登録");
 	}
 
 	@UiHandler("radioButtonRegisterCreatedProblemOff")
 	void onRadioButtonRegisterCreatedProblemOff(ClickEvent e) {
 		UserData.get().setRegisterCreatedProblem(false);
-		UserData.get().save();
+		saveSetting("問題作成時の自動登録");
 	}
 
 	@UiHandler("radioButtonRegisterIndicatedProblemOn")
 	void onRadioButtonRegisterIndicatedProblemOn(ClickEvent e) {
 		UserData.get().setRegisterIndicatedProblem(true);
-		UserData.get().save();
+		saveSetting("問題指摘時の自動登録");
 	}
 
 	@UiHandler("radioButtonRegisterIndicatedProblemOff")
 	void onRadioButtonRegisterIndicatedProblemOff(ClickEvent e) {
 		UserData.get().setRegisterIndicatedProblem(false);
-		UserData.get().save();
+		saveSetting("問題指摘時の自動登録");
 	}
 }

@@ -194,6 +194,7 @@ public class PanelSettingUserCodePresenter {
       }
 
       userData.setUserCode(result.userCode);
+      SettingSaveToast.showSaved("ユーザーコード切り替え");
       view.showRequiredReloadMessage();
     }
 
@@ -248,6 +249,7 @@ public class PanelSettingUserCodePresenter {
       view.setSwitchToConnectedUserCodeButtonVisible(false);
       view.setDisconnectUserCodeButtonVisible(false);
       view.showAlreadyConnectedMessage();
+      SettingSaveToast.showSaved("Googleアカウント連携");
       disableAllActionButtonsUntilReload();
       view.showRequiredReloadMessage();
     }
@@ -277,6 +279,7 @@ public class PanelSettingUserCodePresenter {
 
     int userCode = view.getSelectedUserCode();
     userData.setUserCode(userCode);
+    SettingSaveToast.showSaved("連携済みユーザーコード切り替え");
     view.showRequiredReloadMessage();
   }
 
@@ -291,6 +294,7 @@ public class PanelSettingUserCodePresenter {
   AsyncCallback<Void> callbackDisconnectUserCode = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Void>() {
     @Override
     public void onSuccess(Void result) {
+      SettingSaveToast.showSaved("Googleアカウント連携解除");
       view.showRequiredReloadMessage();
     }
 

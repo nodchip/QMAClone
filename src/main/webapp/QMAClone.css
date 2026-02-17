@@ -2858,6 +2858,26 @@ body {
   transform: none;
 }
 
+.app-setting-save-toast {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 12000;
+  max-width: min(380px, calc(100vw - 32px));
+  border: 1px solid #4f8dc8;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #123f6e 0%, #0f3358 100%);
+  box-shadow: 0 10px 24px rgba(8, 29, 49, 0.45);
+  padding: 10px 14px;
+}
+
+.app-setting-save-toast-message {
+  color: #f3f9ff;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
 .creationGuidelineLink {
   display: inline-block;
   margin: 8px 0 12px 0;
