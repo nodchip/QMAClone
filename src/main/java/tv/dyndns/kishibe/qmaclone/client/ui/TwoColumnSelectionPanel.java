@@ -29,7 +29,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -37,12 +36,12 @@ import com.google.gwt.user.client.ui.Widget;
 public class TwoColumnSelectionPanel extends DockPanel implements ClickHandler {
 	private static final String MENU_ITEM_STYLE_SELECTED = "settingLeftPanelItemSelected";
 	private final Map<HTML, Widget> leftToRight = new HashMap<HTML, Widget>();
-	private final ScrollPanel westPanel = new ScrollPanel();
+	private final SimplePanel westPanel = new SimplePanel();
 	private final VerticalPanel panel = new VerticalPanel();
 	private final SimplePanel centerPanel = new SimplePanel();
 
 	public TwoColumnSelectionPanel(int menuWidth) {
-		westPanel.setPixelSize(menuWidth, 480);
+		westPanel.setWidth(menuWidth + "px");
 		westPanel.setWidget(panel);
 		panel.addStyleName("settingLeftPanel");
 		add(westPanel, WEST);
