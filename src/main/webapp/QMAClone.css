@@ -4,19 +4,19 @@ body, a, div, .p {
 }
 
 div, td {
-	color: #000000;
+	color: var(--color-text-primary);
 }
 
 a:link, .w, .w a:link {
-	color: #0000cc;
+	color: var(--color-link);
 }
 
 a:visited {
-	color: #551a8b;
+	color: var(--color-link-visited);
 }
 
 a:active {
-	color: #ff0000;
+	color: var(--color-link-active);
 }
 
 /* ロビー */
@@ -78,13 +78,13 @@ a:active {
 
 /* 汎用グリッド */
 .gridFrame td {
-	border-right: 1px #CCC solid;
-	border-bottom: 1px #CCC solid;
+	border-right: 1px var(--color-border-subtle) solid;
+	border-bottom: 1px var(--color-border-subtle) solid;
 }
 
 .gridNoFrame td {
-	border-right: 0px #CCC solid;
-	border-bottom: 0px #CCC solid;
+	border-right: 0px var(--color-border-subtle) solid;
+	border-bottom: 0px var(--color-border-subtle) solid;
 }
 
 /* 入力フォームのラベルは、入力欄の直前セルのみ右寄せにそろえる。 */
@@ -143,7 +143,7 @@ a:active {
 
 /* マッチング画面 */
 .gwt-HTML-matchingSkip {
-	background-color: yellow;
+	background-color: #fff4b8;
 }
 
 /* 他者の回答 */
@@ -151,7 +151,7 @@ a:active {
 	text-align: center;
 	vertical-align: middle;
 	font-size: 20px;
-	border: 1px solid #C0D0FF;
+	border: 1px solid var(--color-border-default);
 	margin: 0px;
 	padding: 0px;
 	width: 170px;
@@ -159,7 +159,7 @@ a:active {
 }
 
 .gwt-Label-answerPopupNormal {
-	background-color: white;
+	background-color: var(--color-surface-1);
 }
 
 .gwt-Label-answerPopupAnswered {
@@ -1562,33 +1562,61 @@ tr.newProblem td {
 }
 /* lobby modernization overrides */
 :root {
-	--lobby-bg-0: #07152b;
-	--lobby-bg-1: #0e2745;
-	--lobby-surface: #112a4a;
-	--lobby-accent: #54d8ff;
-	--lobby-text: #eaf4ff;
-	--lobby-text-subtle: #b7c9df;
-	--lobby-border: #2f537a;
+	--color-bg-page: #f4f8fd;
+	--color-bg-page-alt: #e8f1fb;
+	--color-surface-1: #ffffff;
+	--color-surface-2: #f7fbff;
+	--color-surface-3: #edf6ff;
+	--color-border-subtle: #d5e5f5;
+	--color-border-default: #9ec4e6;
+	--color-border-strong: #7fb0df;
+	--color-text-primary: #102840;
+	--color-text-secondary: #2f4358;
+	--color-text-muted: #58748a;
+	--color-link: #1d5f99;
+	--color-link-visited: #4f4aa0;
+	--color-link-active: #c62828;
+	--color-accent-primary: #0f3f71;
+	--color-accent-primary-hover: #1a568f;
+	--color-accent-primary-active: #123f6e;
+	--color-focus-ring: #73b7ff;
+	--color-danger-bg: #fde9e9;
+	--color-danger-border: #f3b5b5;
+	--color-danger-text: #8b1f1f;
+	--radius-sm: 6px;
+	--radius-md: 10px;
+	--space-xs: 4px;
+	--space-sm: 8px;
+	--space-md: 12px;
+	--space-lg: 16px;
+	--space-xl: 24px;
+	--lobby-bg-0: var(--color-bg-page);
+	--lobby-bg-1: var(--color-bg-page-alt);
+	--lobby-surface: var(--color-surface-1);
+	--lobby-accent: var(--color-accent-primary);
+	--lobby-text: var(--color-text-primary);
+	--lobby-text-subtle: var(--color-text-secondary);
+	--lobby-border: var(--color-border-default);
 	--lobby-shadow: 0 16px 34px rgba(0, 0, 0, 0.35);
-	--chat-bg-shell: #0d233d;
-	--chat-bg-header: #143356;
-	--chat-bg-log: #0b1d33;
-	--chat-bg-input: #102745;
-	--chat-border: #3c6a95;
-	--chat-text: #eaf4ff;
-	--chat-text-muted: #b8cee4;
+	--chat-bg-shell: var(--color-surface-1);
+	--chat-bg-header: var(--color-surface-3);
+	--chat-bg-log: var(--color-surface-2);
+	--chat-bg-input: var(--color-surface-1);
+	--chat-border: var(--color-border-default);
+	--chat-text: var(--color-text-primary);
+	--chat-text-muted: var(--color-text-muted);
 	--chat-shadow: 0 18px 38px rgba(0, 0, 0, 0.34);
-	--chat-action: #1b4f7e;
-	--chat-action-hover: #2369a6;
-	--chat-action-active: #1a4f7f;
+	--chat-action: var(--color-accent-primary);
+	--chat-action-hover: var(--color-accent-primary-hover);
+	--chat-action-active: var(--color-accent-primary-active);
 	--chat-action-disabled: #68839d;
-	--chat-focus: #8dd7ff;
+	--chat-focus: var(--color-focus-ring);
 }
 
 html,
 body {
 	min-height: 100%;
-	background: radial-gradient(circle at 12% 0%, #24486f 0%, var(--lobby-bg-1) 42%, var(--lobby-bg-0) 100%);
+	background: radial-gradient(circle at 12% 0%, #ffffff 0%, var(--lobby-bg-1) 42%, var(--lobby-bg-0) 100%);
 	color: var(--lobby-text);
 }
 
