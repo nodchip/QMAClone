@@ -155,6 +155,7 @@
   .lobbyLabelCell {
     text-align: right;
     width: 140px;
+    vertical-align: middle;
     color: #b9d3eb;
     white-space: nowrap;
   }

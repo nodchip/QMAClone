@@ -102,7 +102,23 @@ a:active {
 .gridNoFrame tr > td:has(+ td .gwt-TextArea) {
 	text-align: right;
 	padding-right: 12px;
+	vertical-align: middle;
 	white-space: nowrap;
+}
+
+.gridFrame tr > td:has(input),
+.gridFrame tr > td:has(select),
+.gridFrame tr > td:has(textarea),
+.gridFrame tr > td:has(.gwt-TextBox),
+.gridFrame tr > td:has(.gwt-ListBox),
+.gridFrame tr > td:has(.gwt-TextArea),
+.gridNoFrame tr > td:has(input),
+.gridNoFrame tr > td:has(select),
+.gridNoFrame tr > td:has(textarea),
+.gridNoFrame tr > td:has(.gwt-TextBox),
+.gridNoFrame tr > td:has(.gwt-ListBox),
+.gridNoFrame tr > td:has(.gwt-TextArea) {
+	vertical-align: middle;
 }
 
 .gridFontNormal {
@@ -2482,14 +2498,15 @@ body {
 
 .creationFormLabelCell {
   width: 190px;
-  padding: 8px 10px 0 0;
+  padding: 0 10px 0 0;
   color: #103557;
   font-weight: 700;
-  vertical-align: top;
+  vertical-align: middle;
 }
 
 .creationFormValueCell {
   padding: 0;
+  vertical-align: middle;
 }
 
 .creationFormField {
@@ -2508,6 +2525,33 @@ body {
   gap: 8px;
   margin-bottom: 4px;
   align-items: center;
+}
+
+.creationFormRoot .gwt-CheckBox,
+.creationFormRoot .gwt-RadioButton,
+.searchProblemPanel .gwt-CheckBox,
+.searchProblemPanel .gwt-RadioButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  line-height: 1.2;
+}
+
+.creationFormRoot .gwt-CheckBox input[type="checkbox"],
+.creationFormRoot .gwt-RadioButton input[type="radio"],
+.searchProblemPanel .gwt-CheckBox input[type="checkbox"],
+.searchProblemPanel .gwt-RadioButton input[type="radio"] {
+  margin: 0;
+  vertical-align: middle;
+}
+
+.creationFormRoot .gwt-CheckBox label,
+.creationFormRoot .gwt-RadioButton label,
+.searchProblemPanel .gwt-CheckBox label,
+.searchProblemPanel .gwt-RadioButton label {
+  margin: 0;
+  line-height: 1.2;
+  vertical-align: middle;
 }
 
 .creationFormInput {
