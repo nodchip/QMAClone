@@ -6,13 +6,10 @@ import java.util.logging.Logger;
 
 import tv.dyndns.kishibe.qmaclone.client.Service;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblem;
-import tv.dyndns.kishibe.qmaclone.client.report.CellTableProblem;
-import tv.dyndns.kishibe.qmaclone.client.report.ProblemReportRowSorter;
+import tv.dyndns.kishibe.qmaclone.client.report.ProblemReportUi;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.cellview.client.SimplePager;
-import com.google.gwt.user.cellview.client.SimplePager.TextLocation;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class PanelSettingIndicatedProblems extends VerticalPanel {
@@ -20,23 +17,24 @@ public class PanelSettingIndicatedProblems extends VerticalPanel {
 	private static final Logger logger = Logger.getLogger(PanelSettingIndicatedProblems.class
 			.getName());
 	private static final int PAGE_SIZE = 100;
+	private final HTML introCard = new HTML("<h3 class='settingThemeModeTitle'>指摘問題</h3>"
+			+ "<p class='settingThemeModeLead settingIndicatedProblemsLead'>"
+			+ "他プレイヤーから指摘された問題の一覧です。問題番号を押すと編集画面を開き、内容の確認と修正を行えます。"
+			+ "</p>");
+	private final HTML loadingMessage = new HTML(
+			"<p class='settingIndicatedProblemsLoading'>指摘問題を読み込み中です...</p>");
 
 	public PanelSettingIndicatedProblems() {
-		setHorizontalAlignment(ALIGN_CENTER);
+		setStyleName("settingIndicatedProblemsRoot");
+		introCard.setStyleName("settingIndicatedProblemsIntroCard");
+		add(introCard);
+		add(loadingMessage);
 	}
 
 	private void update(List<PacketProblem> problems) {
 		clear();
-
-		CellTableProblem table = new CellTableProblem(
-				ProblemReportRowSorter.fromProblems(problems), false, PAGE_SIZE);
-		SimplePager.Resources pagerResources = GWT.create(SimplePager.Resources.class);
-		SimplePager simplePager = new SimplePager(TextLocation.CENTER, pagerResources, false, 0,
-				true);
-		simplePager.setDisplay(table);
-
-		add(simplePager);
-		add(table);
+		add(introCard);
+		add(new ProblemReportUi(problems, false, true, PAGE_SIZE));
 	}
 
 	@Override
