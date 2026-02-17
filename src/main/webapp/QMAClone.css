@@ -746,6 +746,90 @@ a:active {
 	line-height: 1.5;
 }
 
+.settingRatioReportRoot {
+	display: block;
+	width: 100%;
+}
+
+.settingRatioReportCard {
+	margin: 0;
+	padding: 14px 16px;
+	border: 1px solid var(--color-border-default);
+	border-radius: 12px;
+	background: var(--color-surface-2);
+	box-shadow: 0 4px 14px rgba(12, 59, 105, 0.1);
+	box-sizing: border-box;
+}
+
+.settingRatioReportTitle {
+	margin: 0 0 8px 0;
+	color: var(--color-text-primary);
+	font-size: 21px;
+	font-weight: 700;
+	line-height: 1.3;
+}
+
+.settingRatioReportLead {
+	margin: 0 0 8px 0;
+	padding: 10px 12px;
+	border: 1px solid var(--color-border-subtle);
+	border-radius: 10px;
+	background: var(--color-surface-3);
+	color: var(--color-text-secondary);
+	font-size: 13px;
+	line-height: 1.6;
+}
+
+.settingRatioReportWarning {
+	margin: 0;
+	padding: 10px 12px;
+	border: 1px solid #f0c7c7;
+	border-radius: 10px;
+	background: #fff4f4;
+	color: #7b1f1f;
+	font-size: 12px;
+	font-weight: 600;
+	line-height: 1.6;
+}
+
+.settingRatioReportActionRow {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	margin-top: 12px;
+}
+
+.settingRatioReportDangerButton {
+	margin: 0;
+	padding: 8px 14px;
+	border: 1px solid #c0392b;
+	border-radius: 8px;
+	background: #e74c3c;
+	color: #ffffff;
+	font-size: 13px;
+	font-weight: 700;
+	line-height: 1.2;
+	cursor: pointer;
+	transition: background-color 140ms ease, border-color 140ms ease, box-shadow 140ms ease;
+}
+
+.settingRatioReportDangerButton:hover {
+	background: #d84335;
+	border-color: #b53429;
+	box-shadow: 0 1px 5px rgba(125, 25, 17, 0.24);
+}
+
+.settingRatioReportDangerButton:active {
+	background: #c0392b;
+	border-color: #9f2f25;
+}
+
+.settingRatioReportDangerButton:disabled {
+	opacity: 0.6;
+	cursor: default;
+	box-shadow: none;
+}
+
 .settingIconPanel {
 	width: 100%;
 }

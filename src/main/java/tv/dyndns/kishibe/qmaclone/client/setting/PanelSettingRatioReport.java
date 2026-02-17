@@ -24,6 +24,7 @@ package tv.dyndns.kishibe.qmaclone.client.setting;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback;
 import tv.dyndns.kishibe.qmaclone.client.Service;
 import tv.dyndns.kishibe.qmaclone.client.UserData;
 
@@ -33,18 +34,46 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
+/**
+ * 設定画面の「正答率統計」セクションを表示するパネル。
+ */
 public class PanelSettingRatioReport extends VerticalPanel implements ClickHandler {
 	private static final Logger logger = Logger.getLogger(PanelSettingRatioReport.class.getName());
-	private final Button buttonClearReportProblemID = new Button("クリア", this);
+	private final Button buttonClearReportProblemID = new Button("登録問題一覧を一括消去する", this);
 
+	/**
+	 * 正答率統計の設定UIを初期化する。
+	 */
 	public PanelSettingRatioReport() {
 		setHorizontalAlignment(ALIGN_CENTER);
-		add(new HTML("正答率統計に登録されている問題を一括消去します"));
-		add(buttonClearReportProblemID);
+		setWidth("100%");
+		setStyleName("settingRatioReportRoot");
+
+		VerticalPanel card = new VerticalPanel();
+		card.setWidth("100%");
+		card.setStyleName("settingRatioReportCard");
+		add(card);
+
+		card.add(new HTML("<h3 class='settingRatioReportTitle'>登録問題一覧の一括消去</h3>"));
+		card.add(new HTML(
+				"<p class='settingRatioReportLead'>登録問題一覧に保持している問題IDをまとめて解除できます。"
+						+ "不要な登録を整理したいときに実行してください。</p>"));
+		card.add(new HTML(
+				"<p class='settingRatioReportWarning'>この操作は取り消せません。必要な問題IDは事前に控えてから実行してください。</p>"));
+
+		HorizontalPanel actionRow = new HorizontalPanel();
+		actionRow.setStyleName("settingRatioReportActionRow");
+		buttonClearReportProblemID.setStyleName("settingRatioReportDangerButton");
+		actionRow.add(buttonClearReportProblemID);
+		card.add(actionRow);
 	}
 
+	/**
+	 * 登録問題一覧に保持している問題IDを一括消去する。
+	 */
 	private void clearReportProblemId() {
 		if (!Window.confirm("正解率統計に登録されている問題を一括消去しますか？")) {
 			return;
@@ -54,7 +83,7 @@ public class PanelSettingRatioReport extends VerticalPanel implements ClickHandl
 				callbackClearProblemIDFromReport);
 	}
 
-	private final AsyncCallback<Void> callbackClearProblemIDFromReport = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Void>() {
+	private final AsyncCallback<Void> callbackClearProblemIDFromReport = new RpcAsyncCallback<Void>() {
 		@Override
 		public void onSuccess(Void result) {
 			SettingSaveToast.showSaved("登録問題一覧の一括消去");
@@ -66,6 +95,9 @@ public class PanelSettingRatioReport extends VerticalPanel implements ClickHandl
 		}
 	};
 
+	/**
+	 * クリックイベントを処理する。
+	 */
 	@Override
 	public void onClick(ClickEvent event) {
 		final Object sender = event.getSource();
