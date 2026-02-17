@@ -69,7 +69,8 @@ public class PanelStatisticsRatingDistribution extends VerticalPanel {
 	private final HTML title = new HTML("<b>レーティング分布</b>");
 
 	public PanelStatisticsRatingDistribution() {
-		setHorizontalAlignment(ALIGN_CENTER);
+		setHorizontalAlignment(ALIGN_LEFT);
+		setWidth("100%");
 		addStyleName("statisticsCard");
 		addStyleName("statisticsSectionCard");
 		title.addStyleName("statisticsSectionTitle");
@@ -132,7 +133,6 @@ public class PanelStatisticsRatingDistribution extends VerticalPanel {
 		private static Options options() {
 			Options options = Options.create();
 			options.setCurveType("function");
-			options.setWidth(600);
 			options.setHeight(400);
 			options.setTitle("レーティング分布");
 			return options;

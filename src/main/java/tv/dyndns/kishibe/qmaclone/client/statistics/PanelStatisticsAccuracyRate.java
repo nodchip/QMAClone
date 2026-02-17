@@ -52,7 +52,8 @@ public class PanelStatisticsAccuracyRate extends VerticalPanel {
 	private final HTML title = new HTML("<b>ジャンル別正解率</b>");
 
 	public PanelStatisticsAccuracyRate() {
-		setHorizontalAlignment(ALIGN_CENTER);
+		setHorizontalAlignment(ALIGN_LEFT);
+		setWidth("100%");
 		addStyleName("statisticsCard");
 		addStyleName("statisticsSectionCard");
 		title.addStyleName("statisticsSectionTitle");

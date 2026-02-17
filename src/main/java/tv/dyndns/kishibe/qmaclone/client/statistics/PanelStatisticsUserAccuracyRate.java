@@ -36,7 +36,8 @@ public class PanelStatisticsUserAccuracyRate extends VerticalPanel {
 	}
 
 	private PanelStatisticsUserAccuracyRate() {
-		setHorizontalAlignment(ALIGN_CENTER);
+		setHorizontalAlignment(ALIGN_LEFT);
+		setWidth("100%");
 		addStyleName("statisticsCard");
 		addStyleName("statisticsSectionCard");
 		HTML title = new HTML("<b>プレイヤー正解率</b>");

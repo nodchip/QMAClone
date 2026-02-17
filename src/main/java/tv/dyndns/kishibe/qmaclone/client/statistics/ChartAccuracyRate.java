@@ -62,7 +62,6 @@ public class ChartAccuracyRate extends LineChart {
 		Options options = Options.create();
 		options.setColors(colors.toArray(new String[0]));
 		options.setCurveType("function");
-		options.setWidth(600);
 		options.setHeight(400);
 		options.setTitle("ジャンル別正解率");
 		return options;

@@ -79,7 +79,8 @@ public class PanelStatisticsRatingHistory extends VerticalPanel {
 	};
 
 	private PanelStatisticsRatingHistory() {
-		setHorizontalAlignment(ALIGN_CENTER);
+		setHorizontalAlignment(ALIGN_LEFT);
+		setWidth("100%");
 		addStyleName("statisticsCard");
 		addStyleName("statisticsSectionCard");
 	}
@@ -160,7 +161,6 @@ public class PanelStatisticsRatingHistory extends VerticalPanel {
 		private static Options options() {
 			Options options = Options.create();
 			options.setCurveType("function");
-			options.setWidth(600);
 			options.setHeight(400);
 			options.setTitle("レーティング履歴");
 			return options;

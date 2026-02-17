@@ -1278,6 +1278,11 @@ a:active {
 	flex-wrap: wrap;
 }
 
+.settingThemeModeFormActions {
+	justify-content: flex-end;
+	padding-top: 8px;
+}
+
 .settingThemeModeFormRow td {
 	vertical-align: middle !important;
 	padding: 0 4px 0 0;
@@ -1678,6 +1683,10 @@ a:active {
 
 	.settingOtherItem {
 		padding: 9px 10px;
+	}
+
+	.settingThemeModeFormActions {
+		justify-content: flex-start;
 	}
 }
 
@@ -4552,7 +4561,15 @@ body {
 .app-setting-panel .gwt-SimplePanel,
 .statisticsRoot .gwt-SimplePanel {
 	min-height: 480px;
-	padding-left: 12px;
+	width: 620px;
+	min-width: 620px;
+	max-width: 620px;
+	padding-left: 0;
+	box-sizing: border-box;
+}
+
+.statisticsRoot .gwt-SimplePanel > * {
+	width: 100%;
 	box-sizing: border-box;
 }
 

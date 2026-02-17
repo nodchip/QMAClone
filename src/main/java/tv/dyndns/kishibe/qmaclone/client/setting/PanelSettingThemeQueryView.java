@@ -100,8 +100,8 @@ public class PanelSettingThemeQueryView extends VerticalPanel implements ClickHa
 		add(htmlSelectionSummary);
 
 		{
-			HorizontalPanel panel = new HorizontalPanel();
-			panel.setStyleName("settingThemeModeFormRow");
+			HorizontalPanel inputRow = new HorizontalPanel();
+			inputRow.setStyleName("settingThemeModeFormRow");
 			textBoxTheme.setWidth("140px");
 			textBoxTheme.setMaxLength(MAX_THEME_LENGTH);
 			textBoxTheme.addStyleName("settingThemeModeInput");
@@ -112,13 +112,17 @@ public class PanelSettingThemeQueryView extends VerticalPanel implements ClickHa
 			removeButton.addStyleName("creationButtonSecondary");
 			addButton.addStyleName("settingThemeModeActionButton");
 			removeButton.addStyleName("settingThemeModeActionButton");
-			panel.add(new HTML("<span class='settingThemeModeFieldLabel'>テーマ</span>"));
-			panel.add(textBoxTheme);
-			panel.add(new HTML("<span class='settingThemeModeFieldLabel'>単語</span>"));
-			panel.add(textBoxQuery);
-			panel.add(addButton);
-			panel.add(removeButton);
-			add(panel);
+			inputRow.add(new HTML("<span class='settingThemeModeFieldLabel'>テーマ</span>"));
+			inputRow.add(textBoxTheme);
+			inputRow.add(new HTML("<span class='settingThemeModeFieldLabel'>単語</span>"));
+			inputRow.add(textBoxQuery);
+			add(inputRow);
+
+			HorizontalPanel actionRow = new HorizontalPanel();
+			actionRow.setStyleName("settingThemeModeFormRow settingThemeModeFormActions");
+			actionRow.add(addButton);
+			actionRow.add(removeButton);
+			add(actionRow);
 		}
 
 		HorizontalPanel listPanel = new HorizontalPanel();

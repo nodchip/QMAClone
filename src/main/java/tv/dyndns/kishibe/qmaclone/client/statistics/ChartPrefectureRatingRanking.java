@@ -35,7 +35,6 @@ public class ChartPrefectureRatingRanking extends ColumnChart {
 
 	private static Options options() {
 		Options options = Options.create();
-		options.setWidth(600);
 		options.setHeight(400);
 		options.setTitle("県別平均トップレーティング");
 		return options;

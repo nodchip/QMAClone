@@ -39,10 +39,12 @@ public class TwoColumnSelectionPanel extends DockPanel implements ClickHandler {
 	private final SimplePanel westPanel = new SimplePanel();
 	private final VerticalPanel panel = new VerticalPanel();
 	private final SimplePanel centerPanel = new SimplePanel();
+	private boolean forceContentWidgetWidth = false;
 
 	public TwoColumnSelectionPanel(int menuWidth) {
 		westPanel.setWidth(menuWidth + "px");
 		westPanel.setWidget(panel);
+		panel.setWidth("100%");
 		panel.addStyleName("settingLeftPanel");
 		add(westPanel, WEST);
 		add(centerPanel, CENTER);
@@ -69,6 +71,14 @@ public class TwoColumnSelectionPanel extends DockPanel implements ClickHandler {
 		panel.add(new Label(item));
 	}
 
+	public void setCenterPanelWidth(int widthPx) {
+		centerPanel.setWidth(widthPx + "px");
+	}
+
+	public void setForceContentWidgetWidth(boolean force) {
+		this.forceContentWidgetWidth = force;
+	}
+
 	@Override
 	public void onClick(ClickEvent event) {
 		final Widget sender = (Widget) event.getSource();
@@ -79,6 +89,9 @@ public class TwoColumnSelectionPanel extends DockPanel implements ClickHandler {
 			}
 			sender.addStyleName(MENU_ITEM_STYLE_SELECTED);
 			final Widget w = leftToRight.get(sender);
+			if (forceContentWidgetWidth) {
+				w.setWidth("100%");
+			}
 			centerPanel.setWidget(w);
 			// LazyPanelはsetWidget()のみでは本体が表示されないため、setVisible()を呼び出して表示させる
 			w.setVisible(true);

@@ -63,7 +63,8 @@ public class PanelStatisticsPrefectureRatingRanking extends VerticalPanel {
 	private final HTML title = new HTML("<b>県別平均トップレーティング</b>");
 
 	public PanelStatisticsPrefectureRatingRanking() {
-		setHorizontalAlignment(ALIGN_CENTER);
+		setHorizontalAlignment(ALIGN_LEFT);
+		setWidth("100%");
 		addStyleName("statisticsCard");
 		addStyleName("statisticsSectionCard");
 		title.addStyleName("statisticsSectionTitle");

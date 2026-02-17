@@ -47,12 +47,6 @@ public class GridAccuracyRate extends Grid {
 		getCellFormatter().setStyleName(0, 0, "statisticsAccuracyCornerCell");
 		getCellFormatter().setWordWrap(0, 0, false);
 
-		getColumnFormatter().setWidth(0, "92px");
-		for (int column = 1; column < ProblemGenre.values().length; ++column) {
-			getColumnFormatter().setWidth(column, "72px");
-		}
-		getColumnFormatter().setWidth(ProblemGenre.values().length, "64px");
-
 		for (int genre = 1; genre < ProblemGenre.values().length; ++genre) {
 			final int column = genre;
 			getCellFormatter().setStyleName(0, column, "statisticsAccuracyHeaderCell");

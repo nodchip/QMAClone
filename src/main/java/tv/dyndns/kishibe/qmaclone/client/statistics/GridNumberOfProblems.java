@@ -53,13 +53,6 @@ public class GridNumberOfProblems extends Grid {
 		formatter.setStyleName(0, 0, "statisticsNumberCornerCell");
 		formatter.setWordWrap(0, 0, false);
 
-		final ColumnFormatter columnFormatter = getColumnFormatter();
-		columnFormatter.setWidth(0, "108px");
-		for (int column = 1; column < sizeOfColumn - 1; ++column) {
-			columnFormatter.setWidth(column, "76px");
-		}
-		columnFormatter.setWidth(sizeOfColumn - 1, "64px");
-
 		for (int column = 1; column < sizeOfColumn - 1; ++column) {
 			formatter.setStyleName(0, column, "statisticsNumberHeaderCell");
 			formatter.setWordWrap(0, column, false);

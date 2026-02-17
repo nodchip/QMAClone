@@ -47,10 +47,6 @@ public class GridPrefectureRanking extends Grid {
 		formatter.setStyleName(0, 0, "statisticsPrefectureCornerCell");
 		formatter.setWordWrap(0, 0, false);
 
-		getColumnFormatter().setWidth(0, "72px");
-		getColumnFormatter().setWidth(1, "180px");
-		getColumnFormatter().setWidth(2, "180px");
-
 		setHTML(0, 0, "順位");
 		setHTML(0, 1, "都道府県");
 		setHTML(0, 2, "<span class='statisticsPrefectureHeaderLabel'>平均トップ<br/>レーティング</span>");
