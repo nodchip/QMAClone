@@ -27,6 +27,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import tv.dyndns.kishibe.qmaclone.client.Controller;
+import tv.dyndns.kishibe.qmaclone.client.Service;
 import tv.dyndns.kishibe.qmaclone.client.UserData;
 import tv.dyndns.kishibe.qmaclone.client.Utility;
 import tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback;
@@ -40,11 +41,15 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
+/**
+ * 設定画面のチャット関連設定を表示するパネル。
+ */
 public class PanelSettingChat extends VerticalPanel implements ClickHandler {
 	private static final Logger logger = Logger.getLogger(PanelSettingChat.class.getName());
 	private static final String CHAT = "CHAT";
 	private static PanelSettingChat instance = new PanelSettingChat();
 	private final FlowPanel panelIgnoreUserCodes = new FlowPanel();
+	private final HTML htmlIgnoreUserCodeEmpty = new HTML("現在、発言を非表示にしているユーザーはいません。");
 	private final Map<Button, Integer> buttonToIgnoreUserCode = new HashMap<Button, Integer>();
 	private final RadioButton radioButtonChatOn = new RadioButton(CHAT, "オン");
 	private final RadioButton radioButtonChatOff = new RadioButton(CHAT, "オフ");
@@ -53,10 +58,16 @@ public class PanelSettingChat extends VerticalPanel implements ClickHandler {
 		return instance;
 	}
 
+	/**
+	 * チャット設定UIを初期化する。
+	 */
 	private PanelSettingChat() {
-		setHorizontalAlignment(ALIGN_CENTER);
+		setWidth("100%");
+		setStyleName("settingChatRoot");
 		{
 			final VerticalPanel panel = new VerticalPanel();
+			panel.setWidth("100%");
+			panel.setStyleName("settingChatCard");
 			if (UserData.get().isChatEnabled()) {
 				radioButtonChatOn.setValue(true);
 			} else {
@@ -66,20 +77,37 @@ public class PanelSettingChat extends VerticalPanel implements ClickHandler {
 			radioButtonChatOn.addClickHandler(this);
 			radioButtonChatOff.addClickHandler(this);
 
-			panel.add(new HTML("▼チャットの表示"));
-			panel.add(radioButtonChatOn);
-			panel.add(radioButtonChatOff);
+			panel.add(new HTML("<h3 class='settingChatCardTitle'>チャット表示</h3>"));
+			panel.add(new HTML(
+					"<p class='settingChatLead'>チャット欄を表示するかどうかを切り替えます。必要に応じて表示をオフにしてください。</p>"));
+			radioButtonChatOn.addStyleName("settingChatOption");
+			radioButtonChatOff.addStyleName("settingChatOption");
+			final FlowPanel options = new FlowPanel();
+			options.setStyleName("settingChatOptionGroup");
+			options.add(radioButtonChatOn);
+			options.add(radioButtonChatOff);
+			panel.add(options);
 			add(panel);
 
 		}
 		{
 			final VerticalPanel panel = new VerticalPanel();
-			panel.add(new HTML("▼ボタンを押すと発言非表示を解除します。"));
+			panel.setWidth("100%");
+			panel.setStyleName("settingChatCard");
+			panel.add(new HTML("<h3 class='settingChatCardTitle'>発言非表示の解除</h3>"));
+			panel.add(new HTML(
+					"<p class='settingChatLead'>ユーザーコードのボタンを押すと、そのユーザーの発言非表示を解除します。</p>"));
+			panelIgnoreUserCodes.setStyleName("settingChatIgnoredList");
+			htmlIgnoreUserCodeEmpty.setStyleName("settingChatEmptyMessage");
+			panelIgnoreUserCodes.add(htmlIgnoreUserCodeEmpty);
 			panel.add(panelIgnoreUserCodes);
 			add(panel);
 		}
 	}
 
+	/**
+	 * 発言非表示を解除するためのユーザーコードボタンを追加する。
+	 */
 	public void addIgnoreUserCodeButton(int userCode) {
 		// すでに追加されていたら何もしない
 		if (buttonToIgnoreUserCode.containsValue(userCode)) {
@@ -87,8 +115,10 @@ public class PanelSettingChat extends VerticalPanel implements ClickHandler {
 		}
 
 		final Button button = new Button(Utility.makeTrip(userCode), this);
-		panelIgnoreUserCodes.add(button);
+		button.setStyleName("settingChatIgnoredUserButton");
 		buttonToIgnoreUserCode.put(button, userCode);
+		panelIgnoreUserCodes.add(button);
+		updateIgnoreUserCodeEmptyMessage();
 	}
 
 	// private void removeIgnoreUserCodeButton(Button button) {
@@ -97,10 +127,43 @@ public class PanelSettingChat extends VerticalPanel implements ClickHandler {
 	// buttonToIgnoreUserCode.remove(button);
 	// }
 
+	/**
+	 * 発言非表示ユーザーの登録を解除する。
+	 */
+	private void removeIgnoreUserCodeButton(final Button button) {
+		final Integer ignoreUserCode = buttonToIgnoreUserCode.get(button);
+		if (ignoreUserCode == null) {
+			return;
+		}
+
+		Service.Util.getInstance().removeIgnoreUserCode(UserData.get().getUserCode(), ignoreUserCode,
+				new RpcAsyncCallback<Void>() {
+					@Override
+					public void onSuccess(Void result) {
+						panelIgnoreUserCodes.remove(button);
+						buttonToIgnoreUserCode.remove(button);
+						updateIgnoreUserCodeEmptyMessage();
+						SettingSaveToast.showSaved("発言非表示の解除");
+					}
+
+					@Override
+					public void onFailureRpc(Throwable caught) {
+						logger.log(Level.WARNING, "発言非表示の解除に失敗しました", caught);
+					}
+				});
+	}
+
 	private void changeChatEnabled(boolean enabled) {
 		Controller.getInstance().setChatEnabled(enabled);
 		UserData.get().setChatEnabled(enabled);
 		UserData.get().save(callbackSaveChatEnabled);
+	}
+
+	/**
+	 * 発言非表示ユーザー未登録時メッセージの表示状態を更新する。
+	 */
+	private void updateIgnoreUserCodeEmptyMessage() {
+		htmlIgnoreUserCodeEmpty.setVisible(buttonToIgnoreUserCode.isEmpty());
 	}
 
 	private final AsyncCallback<Void> callbackSaveChatEnabled = new RpcAsyncCallback<Void>() {
@@ -118,10 +181,9 @@ public class PanelSettingChat extends VerticalPanel implements ClickHandler {
 	@Override
 	public void onClick(ClickEvent event) {
 		final Object sender = event.getSource();
-		// if (buttonToIgnoreUserCode.containsKey(sender)) {
-		// removeIgnoreUserCodeButton((Button) sender);
-		// } else
-		if (sender == radioButtonChatOn) {
+		if (buttonToIgnoreUserCode.containsKey(sender)) {
+			removeIgnoreUserCodeButton((Button) sender);
+		} else if (sender == radioButtonChatOn) {
 			changeChatEnabled(true);
 		} else if (sender == radioButtonChatOff) {
 			changeChatEnabled(false);

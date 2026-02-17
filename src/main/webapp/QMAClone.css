@@ -830,6 +830,104 @@ a:active {
 	box-shadow: none;
 }
 
+.settingChatRoot {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	width: 100%;
+}
+
+.settingChatCard {
+	padding: 12px;
+	border: 1px solid var(--color-border-default);
+	border-radius: 12px;
+	background: var(--color-surface-2);
+	box-shadow: 0 4px 14px rgba(12, 59, 105, 0.1);
+	box-sizing: border-box;
+}
+
+.settingChatCardTitle {
+	margin: 0 0 8px 0;
+	color: var(--color-text-primary);
+	font-size: 18px;
+	font-weight: 700;
+	line-height: 1.3;
+}
+
+.settingChatLead {
+	margin: 0 0 10px 0;
+	padding: 10px 12px;
+	border: 1px solid var(--color-border-subtle);
+	border-radius: 10px;
+	background: var(--color-surface-3);
+	color: var(--color-text-secondary);
+	font-size: 13px;
+	line-height: 1.6;
+}
+
+.settingChatOptionGroup {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	flex-wrap: wrap;
+}
+
+.settingChatOption {
+	margin: 0;
+	padding: 6px 10px;
+	border: 1px solid var(--color-border-subtle);
+	border-radius: 999px;
+	background: var(--color-surface-1);
+	color: var(--color-text-primary);
+	font-size: 13px;
+	font-weight: 600;
+}
+
+.settingChatOption input[type="radio"] {
+	margin-right: 6px;
+	accent-color: var(--color-accent-primary);
+}
+
+.settingChatIgnoredList {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
+}
+
+.settingChatIgnoredUserButton {
+	margin: 0;
+	padding: 6px 10px;
+	border: 1px solid var(--color-border-default);
+	border-radius: 8px;
+	background: var(--color-surface-1);
+	color: var(--color-text-primary);
+	font-size: 12px;
+	font-weight: 700;
+	line-height: 1.2;
+	cursor: pointer;
+	transition: background-color 140ms ease, border-color 140ms ease;
+}
+
+.settingChatIgnoredUserButton:hover {
+	background: var(--color-surface-3);
+	border-color: var(--color-border-strong);
+}
+
+.settingChatIgnoredUserButton:active {
+	background: var(--color-surface-2);
+}
+
+.settingChatEmptyMessage {
+	margin: 0;
+	padding: 8px 10px;
+	border: 1px dashed var(--color-border-subtle);
+	border-radius: 8px;
+	color: var(--color-text-muted);
+	font-size: 12px;
+	line-height: 1.5;
+}
+
 .settingIconPanel {
 	width: 100%;
 }
