@@ -106,7 +106,7 @@ public class PanelStatisticsRatingHistory extends VerticalPanel {
 		average /= data.size();
 
 		if (min == Integer.MAX_VALUE) {
-			HTML empty = new HTML("まだ対戦履歴がありません");
+			HTML empty = new HTML("対戦履歴がありません。対戦後に自動で表示されます。");
 			empty.addStyleName("statisticsRatingHistoryEmpty");
 			add(empty);
 			return;

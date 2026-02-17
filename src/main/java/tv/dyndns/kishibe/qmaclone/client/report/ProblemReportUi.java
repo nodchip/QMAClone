@@ -98,7 +98,13 @@ public class ProblemReportUi extends Composite {
 		initWidget(uiBinder.createAndBindUi(this));
 
 		final int count = rows.size();
-		htmlHits.setHTML(SafeHtmlUtils.fromString(count + "件ヒット"));
+		if (count == 0) {
+			htmlHits.setHTML(SafeHtmlUtils.fromString("該当する問題はありません"));
+			htmlHits.addStyleName("problemReportHitsEmpty");
+		} else {
+			htmlHits.setHTML(SafeHtmlUtils.fromString(count + "件見つかりました"));
+			htmlHits.removeStyleName("problemReportHitsEmpty");
+		}
 
 		if (!regist) {
 			buttonRegisterAll.setVisible(false);

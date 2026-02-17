@@ -773,6 +773,12 @@ a:active {
 	font-weight: 700;
 }
 
+.problemReportHits.problemReportHitsEmpty {
+	background: var(--color-danger-bg);
+	color: var(--color-danger-text);
+	border: 1px solid var(--color-danger-border);
+}
+
 .problemReportPager {
 	margin: 0;
 }
