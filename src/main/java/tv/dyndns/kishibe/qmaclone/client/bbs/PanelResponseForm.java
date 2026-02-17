@@ -67,7 +67,7 @@ public class PanelResponseForm extends VerticalPanel {
   }
 
   public Optional<PacketBbsResponse> getBbsResponse() {
-    String body = richTextArea.getHTML();
+    String body = richTextArea.getText();
     if (Strings.isNullOrEmpty(body)) {
       return Optional.absent();
     }

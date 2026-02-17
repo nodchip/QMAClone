@@ -29,6 +29,7 @@ import java.util.logging.Logger;
 import com.google.common.base.Optional;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
@@ -127,7 +128,8 @@ public class PanelThread extends VerticalPanel implements ClickHandler {
         panel.add(upperHtml);
       }
 
-      HTML bodyHtml = new HTML(response.body);
+      HTML bodyHtml = new HTML(new SafeHtmlBuilder()
+          .appendEscapedLines(toDisplayText(response.body)).toSafeHtml());
       bodyHtml.addStyleDependentName("bbsResponseBody");
       panel.add(bodyHtml);
       bodyPanel.add(panel);
@@ -186,6 +188,41 @@ public class PanelThread extends VerticalPanel implements ClickHandler {
     } else if (sender == buttonWrite) {
       write();
     }
+  }
+
+  /**
+   * 掲示板本文を安全に表示するため、HTMLタグを除去して改行を復元する。
+   */
+  static String toDisplayText(String body) {
+    if (body == null) {
+      return "";
+    }
+    StringBuilder text = new StringBuilder(body.length());
+    StringBuilder tag = new StringBuilder();
+    boolean inTag = false;
+    for (int i = 0; i < body.length(); ++i) {
+      char ch = body.charAt(i);
+      if (inTag) {
+        if (ch == '>') {
+          String lowerTag = tag.toString().toLowerCase();
+          if (lowerTag.startsWith("br") || lowerTag.startsWith("/div")
+              || lowerTag.startsWith("/p")) {
+            text.append('\n');
+          }
+          inTag = false;
+          tag.setLength(0);
+        } else {
+          tag.append(ch);
+        }
+      } else if (ch == '<') {
+        inTag = true;
+      } else if (ch == '\u00A0') {
+        text.append(' ');
+      } else {
+        text.append(ch);
+      }
+    }
+    return text.toString().trim();
   }
 }
 
