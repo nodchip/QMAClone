@@ -1,20 +1,22 @@
 package tv.dyndns.kishibe.qmaclone.client.ranking;
 
-import com.google.gwt.user.client.ui.DecoratedTabPanel;
+import tv.dyndns.kishibe.qmaclone.client.ui.TwoColumnSelectionPanel;
+
 import com.google.inject.Inject;
 
-public class RankingViewImpl extends DecoratedTabPanel implements RankingPresenter.View {
+public class RankingViewImpl extends TwoColumnSelectionPanel implements RankingPresenter.View {
 
 	@Inject
 	public RankingViewImpl(RankingPresenter rankingPresenter,
 			GeneralRankingPresenter.View generalRankingPresenter,
 			ThemeRankingPresenter.View themeRankingPresenter) {
+		super(170);
 		rankingPresenter.setView(this);
-
-		setAnimationEnabled(true);
-		add(generalRankingPresenter, "総合ランキング");
-		add(themeRankingPresenter, "テーマランキング");
-		selectTab(0);
+		setWidth("100%");
+		setCenterPanelWidth(620);
+		setForceContentWidgetWidth(true);
+		add("総合ランキング", generalRankingPresenter.asWidget());
+		add("テーマランキング", themeRankingPresenter.asWidget());
 	}
 
 }

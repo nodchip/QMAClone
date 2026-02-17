@@ -24,8 +24,11 @@ public class CellTableRanking extends CellTable<PacketRankingData> {
 	}
 
 	interface CellTableRankingTemplates extends SafeHtmlTemplates {
-		@Template("<img src=\"{0}\" style=\"width: 48px; height: 48px;\">")
+		@Template("<img src=\"{0}\" class=\"rankingAvatar\">")
 		SafeHtml icon(SafeUri fileName);
+
+		@Template("<span class=\"rankingRankBadge {0}\">{1}</span>")
+		SafeHtml ranking(String className, String rank);
 	}
 
 	private static final CellTableRankingTemplates TEMPLATES = GWT
@@ -44,12 +47,21 @@ public class CellTableRanking extends CellTable<PacketRankingData> {
 				});
 
 		rankingProvider.addDataDisplay(this);
+		addStyleName("rankingTableWidget");
 
 		// 順位
 		addColumn(new SafeHtmlColumn<PacketRankingData>() {
 			@Override
 			public SafeHtml getValue(PacketRankingData object) {
-				return SafeHtmlUtils.fromString(String.valueOf(object.ranking));
+				String className = "rankingRankNormal";
+				if (object.ranking == 1) {
+					className = "rankingRankFirst";
+				} else if (object.ranking == 2) {
+					className = "rankingRankSecond";
+				} else if (object.ranking == 3) {
+					className = "rankingRankThird";
+				}
+				return TEMPLATES.ranking(className, String.valueOf(object.ranking));
 			}
 		}, "順位");
 

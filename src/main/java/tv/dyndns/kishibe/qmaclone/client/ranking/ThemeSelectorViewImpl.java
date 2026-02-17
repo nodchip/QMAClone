@@ -23,7 +23,6 @@ public class ThemeSelectorViewImpl extends Tree implements ThemeSelectorPresente
 
 		setAnimationEnabled(true);
 		addSelectionHandler(this);
-		setPixelSize(ThemeRankingViewImpl.LEFT_WIDTH, 400);
 	}
 
 	@Override

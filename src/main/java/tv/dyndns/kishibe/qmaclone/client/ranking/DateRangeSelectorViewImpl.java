@@ -28,7 +28,6 @@ public class DateRangeSelectorViewImpl extends Tree implements DateRangeSelector
 
 		setAnimationEnabled(true);
 		addSelectionHandler(this);
-		setPixelSize(ThemeRankingViewImpl.LEFT_WIDTH, 200);
 	}
 
 	@Override
