@@ -61,6 +61,7 @@ import com.google.gwt.storage.client.Storage;
 
 public class Controller extends SimplePanel {
 	private static final Logger logger = Logger.getLogger(Controller.class.getName());
+	private static final String MAIN_CONTENT_WIDTH = "800px";
 	private static final Controller INSTANCE = new Controller();
 	private static final String HISTORY_TOKEN_PREFIX_PROBLEM = "problem";
 	private static final String LOCAL_STORAGE_KEY_CHAT_COLLAPSED = "qmaclone.chat.collapsed";
@@ -164,9 +165,20 @@ public class Controller extends SimplePanel {
 		rootPanel.setWidth("100%");
 		rootPanel.addStyleName("app-root-panel");
 		panelMain.setWidth("100%");
-		panelMain.setSpacing(16);
+		panelMain.setSpacing(0);
 		panelMain.addStyleName("app-main-panel");
 		tabPanel.addStyleName("app-tab-panel");
+		tabPanel.setWidth("100%");
+		panelGame.setWidth(MAIN_CONTENT_WIDTH);
+		creationUi.setWidth(MAIN_CONTENT_WIDTH);
+		panelStatistics.setWidth(MAIN_CONTENT_WIDTH);
+		panelRatioReport.setWidth(MAIN_CONTENT_WIDTH);
+		panelSearchProblem.setWidth(MAIN_CONTENT_WIDTH);
+		panelSetting.setWidth(MAIN_CONTENT_WIDTH);
+		panelLoginPlayers.setWidth(MAIN_CONTENT_WIDTH);
+		panelRanking.setWidth(MAIN_CONTENT_WIDTH);
+		panelBbs.setWidth(MAIN_CONTENT_WIDTH);
+		panelLink.setWidth(MAIN_CONTENT_WIDTH);
 		// チャットのレイアウト責務: 外枠(panel) -> ヘッダー(container/header/title/toggle) -> 本文(body/content)
 		panelChat.addStyleName("app-chat-panel");
 		panelChatContainer.addStyleName("app-chat-container");
@@ -255,7 +267,9 @@ public class Controller extends SimplePanel {
 			panelMain.add(tabPanel);
 			panelMain.add(panelChat);
 			panelMain.setCellWidth(tabPanel, "100%");
-			panelMain.setCellWidth(panelChat, "320px");
+			panelMain.setCellHorizontalAlignment(tabPanel, HorizontalPanel.ALIGN_CENTER);
+			panelMain.setCellWidth(panelChat, "0px");
+			panelMain.setCellHorizontalAlignment(panelChat, HorizontalPanel.ALIGN_RIGHT);
 			rootPanel.add(panelMain);
 			rootPanel.add(panelErrorMessage);
 			chatCollapsed = loadChatCollapsedPreference();

@@ -4502,8 +4502,8 @@ body {
 /* 統計画面モダン化 */
 .app-setting-panel,
 .statisticsRoot {
-	width: 100%;
-	max-width: 980px;
+	width: 800px;
+	max-width: 800px;
 	margin: 8px auto 0 auto;
 	padding: 12px;
 	border: 1px solid var(--color-border-default);
