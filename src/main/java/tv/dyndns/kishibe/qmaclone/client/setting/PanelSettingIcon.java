@@ -38,6 +38,7 @@ import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Hidden;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -63,14 +64,27 @@ public class PanelSettingIcon extends VerticalPanel implements SubmitCompleteHan
   };
 
   public PanelSettingIcon() {
+    setWidth("100%");
     setHorizontalAlignment(ALIGN_CENTER);
-    add(new HTML("オリジナルアイコンをアップロードできます</br>" + "ファイルサイズは64KBまで</br>" + "画像形式はブラウザで表示可能なもの</br>"
-        + "画像サイズは自動的に正方形に圧縮されて表示されます</br>" + "公序良俗に反する画像の使用はお止めください"));
+    addStyleName("settingIconPanel");
+
+    HTML lead = new HTML("オリジナルアイコンをアップロードできます。<br/>"
+        + "ファイルサイズは64KBまで、画像形式はブラウザで表示可能なものに対応しています。<br/>"
+        + "画像は自動的に正方形に圧縮されて表示されます。公序良俗に反する画像の使用はお止めください。");
+    lead.addStyleName("settingIconLead");
+    add(lead);
+
+    VerticalPanel card = new VerticalPanel();
+    card.setWidth("100%");
+    card.addStyleName("settingIconCard");
 
     image.setPixelSize(96, 96);
-    add(image);
+    image.addStyleName("settingIconPreview");
+    card.add(image);
 
     VerticalPanel panelForm = new VerticalPanel();
+    panelForm.setWidth("100%");
+    panelForm.addStyleName("settingIconForm");
 
     Hidden hiddenUserCode = new Hidden();
     hiddenUserCode.setName(Constant.FORM_NAME_USER_CODE);
@@ -78,6 +92,7 @@ public class PanelSettingIcon extends VerticalPanel implements SubmitCompleteHan
     panelForm.add(hiddenUserCode);
 
     fileUpload.setName(Constant.FORM_NAME_ICON);
+    fileUpload.addStyleName("settingIconFileInput");
     panelForm.add(fileUpload);
 
     form.setAction("icon");
@@ -85,11 +100,24 @@ public class PanelSettingIcon extends VerticalPanel implements SubmitCompleteHan
     form.setMethod(FormPanel.METHOD_POST);
     form.addSubmitCompleteHandler(this);
     form.setWidget(panelForm);
-    add(form);
+    form.addStyleName("settingIconUploadForm");
 
-    add(buttonSubmit);
+    buttonSubmit.setText("アイコンをアップロード");
+    buttonSubmit.addStyleName("creationButtonPrimary");
+    buttonSubmit.addStyleName("settingIconSubmitButton");
 
-    htmlMessage.addStyleDependentName("settingMessage");
+    HorizontalPanel actionRow = new HorizontalPanel();
+    actionRow.addStyleName("settingIconActionRow");
+    actionRow.setWidth("100%");
+    actionRow.setHorizontalAlignment(ALIGN_CENTER);
+    actionRow.add(buttonSubmit);
+
+    card.add(form);
+    card.add(actionRow);
+    add(card);
+
+    htmlMessage.addStyleName("settingMessage");
+    htmlMessage.addStyleName("settingIconMessage");
     add(htmlMessage);
 
     checkForm();
@@ -111,7 +139,7 @@ public class PanelSettingIcon extends VerticalPanel implements SubmitCompleteHan
 
     if (fileUpload.getFilename().length() == 0) {
       buttonSubmit.setEnabled(false);
-      htmlMessage.setHTML("ファイル名が指定されていません");
+      htmlMessage.setHTML("アップロードする画像を選択してください。");
       return false;
     }
 

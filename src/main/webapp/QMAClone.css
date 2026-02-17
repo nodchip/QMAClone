@@ -746,6 +746,81 @@ a:active {
 	line-height: 1.5;
 }
 
+.settingIconPanel {
+	width: 100%;
+}
+
+.settingIconLead {
+	margin: 0 0 10px 0;
+	padding: 10px 12px;
+	border: 1px solid var(--color-border-subtle);
+	border-radius: 10px;
+	background: var(--color-surface-3);
+	color: var(--color-text-secondary);
+	font-size: 13px;
+	line-height: 1.6;
+	text-align: left;
+}
+
+.settingIconCard {
+	width: 100%;
+	padding: 12px;
+	border: 1px solid var(--color-border-default);
+	border-radius: 12px;
+	background: var(--color-surface-2);
+	box-shadow: 0 4px 14px rgba(12, 59, 105, 0.1);
+	box-sizing: border-box;
+}
+
+.settingIconPreview {
+	display: block;
+	margin: 0 auto 12px auto;
+	border: 1px solid var(--color-border-default);
+	border-radius: 12px;
+	padding: 4px;
+	background: var(--color-surface-1);
+	box-shadow: 0 2px 10px rgba(12, 59, 105, 0.16);
+}
+
+.settingIconUploadForm {
+	width: 100%;
+	margin: 0;
+}
+
+.settingIconForm {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 8px;
+}
+
+.settingIconFileInput {
+	max-width: 100%;
+	text-align: center;
+}
+
+.settingIconActionRow {
+	margin-top: 10px;
+	text-align: center;
+	width: 100%;
+}
+
+.settingIconSubmitButton {
+	white-space: nowrap;
+}
+
+.settingIconMessage {
+	margin: 10px 0 0 0;
+	padding: 8px 10px;
+	border: 1px solid var(--color-border-subtle);
+	border-radius: 8px;
+	background: var(--color-surface-1);
+	color: var(--color-text-secondary);
+	font-size: 13px;
+	line-height: 1.5;
+	text-align: left;
+}
+
 /* ポジションセレクタ */
 .positionSelecter {
 	overflow: visible;
