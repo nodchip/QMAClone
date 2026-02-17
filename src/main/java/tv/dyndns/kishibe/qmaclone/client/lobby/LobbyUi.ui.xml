@@ -9,26 +9,26 @@
     min-height: 70vh;
     margin: 16px auto 0 auto;
     padding: 18px;
-    border: 1px solid #2f537a;
+    border: 1px solid #9ec4e6;
     border-radius: 14px;
-    background: linear-gradient(180deg, #122c4d 0%, #0c2240 100%);
+    background: #eaf4ff;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     gap: 14px;
-    color: #eaf4ff;
-    box-shadow: 0 16px 34px rgba(0, 0, 0, 0.35);
+    color: #102840;
+    box-shadow: 0 16px 34px rgba(15, 53, 90, 0.12);
   }
 
   .lobbyStatusRow {
     text-align: center;
     padding: 12px 14px;
     border-radius: 10px;
-    border: 1px solid #355e88;
-    background: rgba(8, 20, 38, 0.55);
+    border: 1px solid #9ec4e6;
+    background: #eaf4ff;
     font-size: 24px;
     font-weight: bold;
-    color: #dcf2ff;
+    color: #102840;
   }
 
   .lobbyTopSection {
@@ -42,7 +42,7 @@
   .lobbySummaryLine {
     text-align: center;
     font-size: 18px;
-    color: #bcd4ea;
+    color: #2f4358;
   }
 
   .lobbyButtonGrid {
@@ -55,10 +55,10 @@
     width: 100%;
     min-width: 260px;
     height: 62px;
-    border: 1px solid #5ea7cc;
+    border: 1px solid #7fb0df;
     border-radius: 10px;
-    background: linear-gradient(180deg, #1b4a72 0%, #123656 100%);
-    color: #e7f7ff;
+    background: #0f3f71;
+    color: #ffffff;
     font-size: 40px;
     font-weight: bold;
     cursor: pointer;
@@ -66,8 +66,8 @@
   }
 
   .lobbyStartButton:hover {
-    border-color: #69deff;
-    box-shadow: 0 0 18px rgba(84, 216, 255, 0.45);
+    border-color: #1a568f;
+    box-shadow: 0 0 0 2px rgba(58, 125, 181, 0.2);
     transform: translateY(-1px);
   }
 
@@ -77,32 +77,32 @@
   }
 
   .lobbyStartButton:disabled {
-    border-color: #6f8ca7;
-    background: linear-gradient(180deg, #57708a 0%, #445c73 100%);
-    color: #d9e7f4;
+    border-color: #c7d4e0;
+    background: #edf2f7;
+    color: #7e91a5;
     cursor: not-allowed;
     box-shadow: none;
     transform: none;
   }
 
   .lobbyStartButton:focus {
-    outline: 2px solid #77e4ff;
+    outline: 2px solid #73b7ff;
     outline-offset: 2px;
   }
 
   .lobbySubButton {
-    border: 1px solid #4f78a5;
+    border: 1px solid #9ec4e6;
     border-radius: 6px;
-    background: #0e2746;
-    color: #dff1ff;
+    background: #eaf4ff;
+    color: #102840;
     transition: background-color 140ms ease, border-color 140ms ease, box-shadow 140ms ease,
       transform 90ms ease;
   }
 
   .lobbySubButton:hover {
-    background: #13345d;
-    border-color: #69deff;
-    box-shadow: 0 0 0 2px rgba(105, 222, 255, 0.18);
+    background: #eaf4ff;
+    border-color: #1a568f;
+    box-shadow: 0 0 0 2px rgba(58, 125, 181, 0.2);
   }
 
   .lobbySubButton:active {
@@ -120,16 +120,16 @@
   }
 
   .lobbyConditionCard {
-    border: 1px solid #355e88;
+    border: 1px solid #9ec4e6;
     border-radius: 10px;
     padding: 12px;
-    background: rgba(8, 20, 38, 0.42);
+    background: #eaf4ff;
   }
 
   .lobbyPrimaryConditionCard {
-    border-color: #4f78a5;
-    background: rgba(12, 30, 52, 0.58);
-    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.2);
+    border-color: #9ec4e6;
+    background: #e3f0ff;
+    box-shadow: 0 8px 18px rgba(15, 53, 90, 0.1);
   }
 
   .lobbySettingsSection {
@@ -141,7 +141,7 @@
   .lobbySectionTitle {
     font-size: 15px;
     font-weight: bold;
-    color: #d9ecff;
+    color: #102840;
     letter-spacing: 0.06em;
     padding: 2px 4px;
   }
@@ -156,7 +156,7 @@
     text-align: right;
     width: 140px;
     vertical-align: middle;
-    color: #b9d3eb;
+    color: #2f4358;
     white-space: nowrap;
   }
 
@@ -174,18 +174,18 @@
     max-width: 300px;
     min-height: 30px;
     box-sizing: border-box;
-    border: 1px solid #4f78a5;
+    border: 1px solid #9ec4e6;
     border-radius: 6px;
-    background: #0e2746;
-    color: #e8f2ff;
+    background: #eaf4ff;
+    color: #102840;
     padding: 4px 8px;
   }
 
   .lobbyValueCell select:focus,
   .lobbyValueCell input[type="text"]:focus {
-    outline: 2px solid #77e4ff;
+    outline: 2px solid #73b7ff;
     outline-offset: 1px;
-    border-color: #77e4ff;
+    border-color: #73b7ff;
   }
 
   .lobbyPublicEventCheck {
@@ -193,7 +193,7 @@
     align-items: center;
     gap: 6px;
     margin-top: 6px;
-    color: #d7e9ff;
+    color: #2f4358;
     white-space: nowrap;
     line-height: 1.2;
   }
@@ -204,7 +204,7 @@
 
   .lobbyPublicEventCheck input[type="checkbox"] {
     margin: 0;
-    accent-color: #5db3ff;
+    accent-color: #0f3f71;
   }
 
   .lobbySummaryBottom {
@@ -214,9 +214,9 @@
     text-align: center;
     padding: 10px 14px;
     border-radius: 10px;
-    border: 1px solid #355e88;
-    background: rgba(8, 20, 38, 0.55);
-    color: #d5ebff;
+    border: 1px solid #9ec4e6;
+    background: #eaf4ff;
+    color: #102840;
     font-size: 22px;
     font-weight: bold;
     display: flex;
@@ -394,3 +394,7 @@
     </g:HTMLPanel>
   </g:HTMLPanel>
 </ui:UiBinder>
+
+
+
+
