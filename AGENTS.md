@@ -112,3 +112,9 @@
 - `Grid` / `FlexTable` ベースの入力フォームは、ラベルセルと値セルをともに `vertical-align: middle` で統一する。
 - ラベルを右寄せにするフォームでは、入力欄との視認距離を保つため `padding-right` を明示し、0にしない。
 - チェックボックス/ラジオボタンの「ラベル + 右側テキスト」は `inline-flex` と `align-items: center` を基本とし、入力要素とテキストの縦位置差を残さない。
+- `RadioButton` 行で左右要素の縦位置が崩れる場合は、`input` 単体ではなく `.gwt-RadioButton` コンテナ自体に `display: flex` と `align-items: center` を適用し、`label` 側は `flex: 1` で幅を確保して中央揃えを維持する。
+
+### GWTセル系UIスタイル適用
+- `CellBrowser` / `CellList` の選択状態を CSS で調整する場合、GWT再コンパイルで変化する難読化クラス（例: `GG-*` / `*WCGB*`）を直接セレクタに使わない。
+- セル選択色は `CellList.Resources`（`CssResource`）や `setStyleName` で付与した安定クラスのみで制御し、`!important` 付きの難読化クラス上書きを恒久対応にしない。
+- スタイル不一致の切り分けでは、まず `dom.html` などに実DOMを保存し、`gwt-*` クラスか難読化クラスかを確認したうえで修正方針（安定クラス化 / 部品置換）を決める。
