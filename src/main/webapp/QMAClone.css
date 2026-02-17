@@ -1250,20 +1250,26 @@ a:active {
 
 .settingThemeModeEditLogTableScroll {
 	overflow-x: auto;
+	overflow-y: auto;
+	max-height: 62vh;
 	border: 1px solid var(--color-border-subtle);
 	border-radius: 10px;
 	background: var(--color-surface-1);
-	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75);
+	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75), 0 3px 12px rgba(14, 47, 75, 0.08);
 }
 
 .settingThemeModeEditLogTable .cellTableWidget {
 	width: 100%;
 	min-width: 720px;
+	table-layout: fixed;
 	border-collapse: separate;
 	border-spacing: 0;
 }
 
 .settingThemeModeEditLogTable .cellTableHeader {
+	position: sticky;
+	top: 0;
+	z-index: 2;
 	padding: 9px 10px;
 	border-bottom: 1px solid var(--color-border-default);
 	background: linear-gradient(180deg, #f8fbff 0%, #ecf4fd 100%);
@@ -1280,6 +1286,62 @@ a:active {
 	font-size: 12px;
 	line-height: 1.5;
 	vertical-align: top;
+}
+
+.settingThemeModeEditLogMultiline {
+	display: -webkit-box;
+	overflow: hidden;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	word-break: break-word;
+}
+
+.settingThemeModeEditLogValueEmpty {
+	color: var(--color-text-muted);
+	font-style: italic;
+}
+
+.settingThemeModeEditLogOperation {
+	display: inline-block;
+	padding: 2px 8px;
+	border-radius: 999px;
+	border: 1px solid #bdd2e6;
+	background: #edf4fb;
+	color: #1e4b73;
+	font-size: 11px;
+	font-weight: 700;
+	line-height: 1.4;
+	white-space: nowrap;
+}
+
+.settingThemeModeEditLogOperation[class*="add"],
+.settingThemeModeEditLogOperation[class*="insert"],
+.settingThemeModeEditLogOperation[class*="create"] {
+	border-color: #b6dfbc;
+	background: #ebf8ee;
+	color: #1f6b2c;
+}
+
+.settingThemeModeEditLogOperation[class*="delete"],
+.settingThemeModeEditLogOperation[class*="remove"] {
+	border-color: #f0c3c3;
+	background: #fff1f1;
+	color: #8a1f1f;
+}
+
+.settingThemeModeEditLogOperation[class*="update"],
+.settingThemeModeEditLogOperation[class*="edit"] {
+	border-color: #f0dbb8;
+	background: #fff8ed;
+	color: #7a4f1b;
+}
+
+.settingThemeModeEditLogEmpty,
+.settingThemeModeEditLogLoading {
+	padding: 22px 14px;
+	color: var(--color-text-muted);
+	font-size: 13px;
+	text-align: center;
 }
 
 .settingThemeModeEditLogTable .cellTableCell:nth-child(1) {
@@ -1329,6 +1391,10 @@ a:active {
 
 	.settingThemeModeEditLogHint {
 		font-size: 11px;
+	}
+
+	.settingThemeModeEditLogTableScroll {
+		max-height: none;
 	}
 
 	.settingThemeModeEditLogPager.gwt-SimplePager {
