@@ -1201,6 +1201,142 @@ a:active {
 	box-shadow: inset 3px 0 0 var(--color-accent-primary) !important;
 }
 
+.settingThemeModeEditLogRoot {
+	display: block;
+	width: 100%;
+}
+
+.settingThemeModeEditLogIntroCard,
+.settingThemeModeEditLogTableCard {
+	margin: 0 0 12px 0;
+	padding: 12px;
+	border: 1px solid var(--color-border-default);
+	border-radius: 12px;
+	background: var(--color-surface-2);
+	box-shadow: 0 4px 14px rgba(12, 59, 105, 0.1);
+	box-sizing: border-box;
+}
+
+.settingThemeModeEditLogLead {
+	margin-top: 8px;
+}
+
+.settingThemeModeEditLogHint {
+	margin: 0 0 10px 0;
+	padding: 10px 12px;
+	border: 1px solid var(--color-border-subtle);
+	border-radius: 10px;
+	background: var(--color-surface-3);
+	color: var(--color-text-secondary);
+	font-size: 12px;
+	line-height: 1.6;
+}
+
+.settingThemeModeEditLogTableBody > * + * {
+	margin-top: 8px;
+}
+
+.settingThemeModeEditLogPager {
+	margin: 0;
+}
+
+.settingThemeModeEditLogPager.gwt-SimplePager {
+	padding: 6px 10px;
+	border: 1px solid var(--color-border-subtle);
+	border-radius: 8px;
+	background: var(--color-surface-1);
+	color: var(--color-text-secondary);
+}
+
+.settingThemeModeEditLogTableScroll {
+	overflow-x: auto;
+	border: 1px solid var(--color-border-subtle);
+	border-radius: 10px;
+	background: var(--color-surface-1);
+	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75);
+}
+
+.settingThemeModeEditLogTable .cellTableWidget {
+	width: 100%;
+	min-width: 720px;
+	border-collapse: separate;
+	border-spacing: 0;
+}
+
+.settingThemeModeEditLogTable .cellTableHeader {
+	padding: 9px 10px;
+	border-bottom: 1px solid var(--color-border-default);
+	background: linear-gradient(180deg, #f8fbff 0%, #ecf4fd 100%);
+	color: var(--color-text-primary);
+	font-size: 12px;
+	font-weight: 700;
+	white-space: nowrap;
+}
+
+.settingThemeModeEditLogTable .cellTableCell {
+	padding: 8px 10px;
+	border-bottom: 1px solid rgba(19, 67, 106, 0.12);
+	color: var(--color-text-secondary);
+	font-size: 12px;
+	line-height: 1.5;
+	vertical-align: top;
+}
+
+.settingThemeModeEditLogTable .cellTableCell:nth-child(1) {
+	color: var(--color-text-primary);
+	font-weight: 700;
+	white-space: nowrap;
+}
+
+.settingThemeModeEditLogTable .cellTableCell:nth-child(2),
+.settingThemeModeEditLogTable .cellTableHeader:nth-child(2) {
+	white-space: nowrap;
+}
+
+.settingThemeModeEditLogTable .cellTableCell:nth-child(4),
+.settingThemeModeEditLogTable .cellTableCell:nth-child(5) {
+	word-break: break-word;
+}
+
+.settingThemeModeEditLogTable .cellTableEvenRow {
+	background: #f9fcff;
+}
+
+.settingThemeModeEditLogTable .cellTableOddRow {
+	background: var(--color-surface-1);
+}
+
+.settingThemeModeEditLogTable .cellTableEvenRow:hover,
+.settingThemeModeEditLogTable .cellTableOddRow:hover {
+	background: #e9f3ff;
+}
+
+.settingThemeModeEditLogTable .cellTableCell:first-child,
+.settingThemeModeEditLogTable .cellTableHeader:first-child {
+	border-left: 0;
+}
+
+.settingThemeModeEditLogTable .cellTableCell:last-child,
+.settingThemeModeEditLogTable .cellTableHeader:last-child {
+	border-right: 0;
+}
+
+@media (max-width: 960px) {
+	.settingThemeModeEditLogIntroCard,
+	.settingThemeModeEditLogTableCard {
+		padding: 10px;
+	}
+
+	.settingThemeModeEditLogHint {
+		font-size: 11px;
+	}
+
+	.settingThemeModeEditLogPager.gwt-SimplePager {
+		padding: 5px 8px;
+		font-size: 12px;
+	}
+}
+
 .settingIconPanel {
 	width: 100%;
 }
