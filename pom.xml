@@ -25,6 +25,7 @@
     <jetty.version>9.4.58.v20250814</jetty.version>
     <gwt.skipCompilation>true</gwt.skipCompilation>
     <surefire.skip>true</surefire.skip>
+    <surefire.dbtest.excludes>**/tv/dyndns/kishibe/qmaclone/server/database/**/*Test.java</surefire.dbtest.excludes>
     <argLine>-Djdk.net.file.ftpfallback=true -Dnet.bytebuddy.experimental=true --add-opens java.base/java.lang=ALL-UNNAMED -Djna.library.path=${zinnia.library.dir} -Djava.library.path=${zinnia.library.dir}</argLine>
   </properties>
 
@@ -461,6 +462,9 @@
         <version>3.5.4</version>
         <configuration>
           <skip>${surefire.skip}</skip>
+          <excludes>
+            <exclude>${surefire.dbtest.excludes}</exclude>
+          </excludes>
           <argLine>${argLine}</argLine>
         </configuration>
       </plugin>
@@ -468,6 +472,12 @@
     </plugins>
   </build>
   <profiles>
+    <profile>
+      <id>with-db-tests</id>
+      <properties>
+        <surefire.dbtest.excludes>**/__never_match_db_exclude__/**</surefire.dbtest.excludes>
+      </properties>
+    </profile>
     <profile>
       <id>gwt-compile-java25</id>
       <activation>

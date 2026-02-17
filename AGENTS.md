@@ -83,6 +83,8 @@
 - `piriti` 依存は再導入せず、JSON デコードはアプリ側実装を維持する。
 - 依存更新時は `mvn "-Dgwt.skipCompilation=false" gwt:compile` を単独実行して成否を先に確定する。
 - 変更範囲が限定される場合は対象パッケージのテストを先に実行し、全量テスト未完了時は未検証範囲を完了報告に明記する。
+- 開発中の通常テスト実行は `mvn "-Dsurefire.skip=false" test` を基本とし、`server/database` 配下の重いテストは既定除外のまま実行時間を抑える。
+- DB関連の変更、またはリリース前の全量検証では `mvn "-Dsurefire.skip=false" -Pwith-db-tests test` を実行し、除外されたDBテストを必ず再有効化する。
 - `ValidatorTegaki` 系テストは `AvailableCharacters` を固定化し、`Service.getAvailableChalactersForHandwriting` を直接呼ばない。
 - `forked VM terminated` 発生時は `surefire-reports` の実行済み差分から停止クラスを特定し、外部依存（RPC / ネイティブ / ファイル）を優先的に切り離す。
 
