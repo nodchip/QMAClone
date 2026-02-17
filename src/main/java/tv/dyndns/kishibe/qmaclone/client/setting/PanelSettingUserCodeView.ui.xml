@@ -3,6 +3,17 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	<g:HTMLPanel styleName="settingUserCodeRoot">
 		<g:HTMLPanel styleName="settingUserCodeCard">
+			<g:Label styleName="settingUserCodeCardTitle" text="現在のユーザーコード" />
+			<g:HTML styleName="settingUserCodeLead">
+				配信画面に映る可能性があるため、初期状態では非表示にしています。表示ボタンを押すと確認後に表示され、10秒後に自動で非表示に戻ります。
+			</g:HTML>
+			<g:HorizontalPanel styleName="settingUserCodeActionRow">
+				<g:HTML ui:field="htmlCurrentUserCodeValue" styleName="settingUserCodeMaskedValue" />
+				<g:Button ui:field="buttonRevealUserCode" styleName="creationButtonSecondary">ユーザーコードを表示する</g:Button>
+			</g:HorizontalPanel>
+		</g:HTMLPanel>
+
+		<g:HTMLPanel styleName="settingUserCodeCard">
 			<g:Label styleName="settingUserCodeCardTitle" text="ユーザーコード変更" />
 			<g:HTML styleName="settingUserCodeLead">
 				ユーザーコードを変更できます。ユーザーコードを控えておくと、どのブラウザからでも同じプレイヤー情報でプレイできます。<br/>

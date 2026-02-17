@@ -20,6 +20,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
@@ -45,10 +46,22 @@ public class PanelSettingUserCodeView extends Composite implements
 	private static final PanelSettingUserCodeViewUiBinder uiBinder = GWT
 			.create(PanelSettingUserCodeViewUiBinder.class);
 	private static final String GROUP_USER_CODE = "group user code";
+	private static final int USER_CODE_REVEAL_DURATION_MILLIS = 10000;
 
 	private final PanelSettingUserCodePresenter presenter;
 	private Map<CheckBox, PacketUserData> radioButtonToUserData;
 	private final UserData userData;
+	private boolean userCodeVisible;
+	private final Timer timerHideUserCode = new Timer() {
+		@Override
+		public void run() {
+			maskUserCode();
+		}
+	};
+	@UiField
+	HTML htmlCurrentUserCodeValue;
+	@UiField
+	Button buttonRevealUserCode;
 	@UiField
 	TextBox textBoxUserCode;
 	@UiField
@@ -76,6 +89,7 @@ public class PanelSettingUserCodeView extends Composite implements
 		this.presenter = Preconditions.checkNotNull(presenter);
 		this.presenter.setView(this);
 		this.userData = Preconditions.checkNotNull(userData);
+		maskUserCode();
 	}
 
 	@UiHandler("buttonSwitchToUserCode")
@@ -103,10 +117,38 @@ public class PanelSettingUserCodeView extends Composite implements
 		presenter.disconnectUserCode();
 	}
 
+	@UiHandler("buttonRevealUserCode")
+	void onRevealUserCode(ClickEvent e) {
+		if (userCodeVisible) {
+			maskUserCode();
+			return;
+		}
+		if (!Window.confirm("ユーザーコードを表示します。配信画面に映る可能性があります。続けますか？")) {
+			return;
+		}
+		showUserCodeTemporarily();
+	}
+
 	@Override
 	protected void onLoad() {
 		super.onLoad();
+		maskUserCode();
 		presenter.onLoad();
+	}
+
+	private void maskUserCode() {
+		timerHideUserCode.cancel();
+		userCodeVisible = false;
+		htmlCurrentUserCodeValue.setHTML("********");
+		buttonRevealUserCode.setText("ユーザーコードを表示する");
+	}
+
+	private void showUserCodeTemporarily() {
+		timerHideUserCode.cancel();
+		userCodeVisible = true;
+		htmlCurrentUserCodeValue.setHTML(userData.getUserCode() + "<span class='settingUserCodeMaskHint'>（10秒後に自動で非表示）</span>");
+		buttonRevealUserCode.setText("ユーザーコードを隠す");
+		timerHideUserCode.schedule(USER_CODE_REVEAL_DURATION_MILLIS);
 	}
 
 	@Override

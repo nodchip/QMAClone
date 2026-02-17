@@ -857,10 +857,25 @@ a:active {
 .settingUserCodeActionRow {
 	width: 100%;
 	margin: 0 0 8px 0;
+	text-align: center;
 }
 
 .settingUserCodeActionRow table {
 	margin: 0 auto;
+	border-collapse: separate;
+	border-spacing: 10px 0;
+	table-layout: auto;
+	max-width: 100%;
+}
+
+.settingUserCodeActionRow tr {
+	white-space: nowrap;
+}
+
+.settingUserCodeActionRow td {
+	vertical-align: middle !important;
+	padding: 0;
+	white-space: nowrap;
 }
 
 .settingUserCodeActionRow .gwt-TextBox {
@@ -871,6 +886,41 @@ a:active {
 	line-height: 1.35;
 	background: var(--color-surface-1);
 	color: var(--color-text-primary);
+}
+
+.settingUserCodeActionRow .gwt-Button {
+	margin: 0;
+	height: 34px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	line-height: 1;
+	box-sizing: border-box;
+}
+
+.settingUserCodeMaskedValue {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 140px;
+	height: 34px;
+	padding: 0 10px;
+	border: 1px solid var(--color-border-default);
+	border-radius: 8px;
+	background: var(--color-surface-1);
+	color: var(--color-text-primary);
+	font-size: 13px;
+	font-weight: 700;
+	line-height: 1;
+	text-align: center;
+	box-sizing: border-box;
+}
+
+.settingUserCodeMaskHint {
+	margin-left: 6px;
+	color: var(--color-text-muted);
+	font-weight: 500;
+	font-size: 12px;
 }
 
 .settingUserCodeMessage {
