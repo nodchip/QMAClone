@@ -953,6 +953,164 @@ a:active {
 	border-color: #214f79;
 }
 
+.searchProblemPanel {
+	text-align: left;
+	margin: 6px auto 0 auto;
+	padding: 12px 14px;
+	border: 1px solid #9fc5e6;
+	border-radius: 12px;
+	background: #f8fbff;
+	box-shadow: 0 4px 14px rgba(12, 59, 105, 0.1);
+	box-sizing: border-box;
+}
+
+.searchProblemLead {
+	margin: 0 0 10px 0;
+	padding: 10px 12px;
+	border: 1px solid #c4dcef;
+	border-radius: 10px;
+	background: linear-gradient(180deg, #f1f8ff 0%, #e6f2ff 100%);
+	color: #204d74;
+	font-size: 13px;
+	line-height: 1.6;
+}
+
+.searchProblemCriteriaCard {
+	width: 520px;
+	margin: 0 auto 10px auto;
+	padding: 8px 10px;
+	border: 1px solid #c3daee;
+	border-radius: 10px;
+	background: #ffffff;
+	box-shadow: 0 1px 6px rgba(27, 79, 124, 0.08);
+	box-sizing: border-box;
+}
+
+.searchProblemFormRow {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 6px 0;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+.searchProblemFormRow .gwt-Label {
+	color: #204d74;
+	font-weight: 600;
+	width: 150px;
+	min-width: 150px;
+	flex: 0 0 150px;
+	white-space: nowrap;
+}
+
+.searchProblemFormRow .searchProblemInlineLabel {
+	min-width: auto;
+	font-weight: 500;
+}
+
+.searchProblemInlineStack {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.searchProblemInlineStack .gwt-TextBox,
+.searchProblemInlineStack .gwt-ListBox {
+	width: 220px !important;
+}
+
+.searchProblemFormRow select,
+.searchProblemFormRow input[type="text"],
+.searchProblemFormRow .gwt-ListBox,
+.searchProblemFormRow .gwt-TextBox {
+	min-height: 30px;
+}
+
+.searchProblemFormRow .gwt-ListBox,
+.searchProblemFormRow .gwt-TextBox {
+	flex: 0 0 auto;
+}
+
+.searchProblemFormRow .gwt-Label + .gwt-TextBox {
+	width: 220px !important;
+}
+
+.searchProblemFormRow .gwt-Label + .gwt-ListBox {
+	width: 220px !important;
+}
+
+.searchProblemControlBlock {
+	width: 520px;
+	margin: 0 auto 10px auto;
+	padding: 8px 10px;
+	border: 1px solid #c3daee;
+	border-radius: 10px;
+	background: #ffffff;
+	box-shadow: 0 1px 6px rgba(27, 79, 124, 0.08);
+	box-sizing: border-box;
+}
+
+.searchProblemPanel .searchProblemSelector {
+	width: 220px;
+}
+
+.searchProblemPanel .searchProblemSelector .lobbyMultiItemSelectorTopRow {
+	justify-content: flex-start;
+	align-items: center;
+	column-gap: 10px;
+}
+
+.searchProblemPanel .searchProblemSelector .lobbyMultiItemSelectorList {
+	width: 220px !important;
+}
+
+.searchProblemPanel .searchProblemSelector .lobbyMultiItemSelectorToggle,
+.searchProblemPanel .searchProblemSelector .lobbyMultiItemSelectorChoice,
+.searchProblemPanel .searchProblemSelector .lobbyMultiItemSelectorToggle label,
+.searchProblemPanel .searchProblemSelector .lobbyMultiItemSelectorChoice label {
+	color: #204d74;
+}
+
+.searchProblemPanel .searchProblemSelector .lobbyMultiItemSelectorToggle input[type="checkbox"],
+.searchProblemPanel .searchProblemSelector .lobbyMultiItemSelectorChoice input[type="checkbox"] {
+	accent-color: #2f7ebf;
+}
+
+.searchProblemGuide {
+	margin: 8px 0 10px 0;
+	padding: 10px 12px;
+	border: 1px solid #d1e3f4;
+	border-radius: 8px;
+	background: #ffffff;
+	color: #345b7d;
+	font-size: 12px;
+	line-height: 1.55;
+}
+
+.searchProblemPanel .searchProblemSearchButton.creationButtonPrimary {
+	margin: 0 0 10px 0;
+	background: linear-gradient(180deg, #2f6ea3 0%, #265f90 100%);
+	border-color: #2a679c;
+	color: #ffffff;
+}
+
+.searchProblemPanel .searchProblemSearchButton.creationButtonPrimary:hover {
+	background: linear-gradient(180deg, #3a7db5 0%, #2f6ea3 100%);
+	border-color: #3778ae;
+	box-shadow: 0 0 0 2px rgba(58, 125, 181, 0.2);
+}
+
+.searchProblemPanel .searchProblemSearchButton.creationButtonPrimary:active {
+	background: linear-gradient(180deg, #235784 0%, #1f4f79 100%);
+	border-color: #235784;
+}
+
+.searchProblemPanel .searchProblemSearchButton.creationButtonPrimary:focus-visible {
+	outline: 2px solid #7eb9e8;
+	outline-offset: 2px;
+}
+
 .popup-canvas-background {
 	background-color: transparent;
 	cursor: pointer;

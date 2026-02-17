@@ -40,7 +40,6 @@ import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -49,6 +48,9 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
+/**
+ * 問題検索画面を表示するパネルです。
+ */
 public class PanelSearchProblem extends VerticalPanel implements ClickHandler, KeyDownHandler {
   private static final Logger logger = Logger.getLogger(PanelSearchProblem.class.getName());
   private final Button buttonSearch = new Button("検索", this);
@@ -68,49 +70,71 @@ public class PanelSearchProblem extends VerticalPanel implements ClickHandler, K
   public PanelSearchProblem() {
     setWidth("800px");
     setHorizontalAlignment(ALIGN_CENTER);
+    addStyleName("searchProblemPanel");
 
-    add(new Label("問題の検索を行います"));
+    HTML lead = new HTML(new SafeHtmlBuilder().appendEscapedLines(
+        "問題文や作問者名で、登録済みの問題を検索できます。\n"
+            + "条件を設定して「検索する」を押してください。").toSafeHtml());
+    lead.addStyleName("searchProblemLead");
+    add(lead);
 
     {
       textBoxQuery.addKeyDownHandler(this);
       textBoxCreator.addKeyDownHandler(this);
 
-      textBoxQuery.setWidth("200px");
-      textBoxCreator.setWidth("200px");
-      listBoxMaxProblemsPerPage.setWidth("200px");
+      textBoxQuery.setWidth("220px");
+      textBoxCreator.setWidth("220px");
+      listBoxMaxProblemsPerPage.setWidth("220px");
+      listBoxCreatorMatching.setWidth("220px");
 
       listBoxMaxProblemsPerPage.addItem("10");
       listBoxMaxProblemsPerPage.addItem("100");
       listBoxMaxProblemsPerPage.addItem("1000");
       listBoxMaxProblemsPerPage.setSelectedIndex(1);
-
-      final Grid grid = new Grid(3, 2);
-      grid.addStyleName("gridFrame");
-      grid.addStyleName("gridFontNormal");
-      grid.setHTML(0, 0, "問題文");
-      grid.setWidget(0, 1, textBoxQuery);
-      grid.setHTML(1, 0, "問題作成者");
-      grid.setWidget(1, 1, textBoxCreator);
-      grid.setHTML(2, 0, "1ページあたりの表示問題数");
-      grid.setWidget(2, 1, listBoxMaxProblemsPerPage);
-      add(grid);
-    }
-    {
       listBoxCreatorMatching.addItem("完全一致");
       listBoxCreatorMatching.addItem("部分一致");
 
-      final HorizontalPanel panel = new HorizontalPanel();
-      panel.add(new Label("問題作成者の検索方法"));
-      panel.add(listBoxCreatorMatching);
-      add(panel);
-    }
-    add(multiItemSelectorGenre);
-    add(multiItemSelectorType);
-    add(multiItemSelectorRandomFlag);
+      final VerticalPanel form = new VerticalPanel();
+      form.addStyleName("searchProblemCriteriaCard");
 
-    add(new HTML(new SafeHtmlBuilder().appendEscapedLines(
+      final HorizontalPanel rowQuery = new HorizontalPanel();
+      rowQuery.addStyleName("searchProblemFormRow");
+      rowQuery.add(new Label("問題文（キーワード）"));
+      rowQuery.add(textBoxQuery);
+      form.add(rowQuery);
+
+      final HorizontalPanel rowCreator = new HorizontalPanel();
+      rowCreator.addStyleName("searchProblemFormRow");
+      rowCreator.add(new Label("作問者 / 一致条件"));
+      final VerticalPanel creatorStack = new VerticalPanel();
+      creatorStack.addStyleName("searchProblemInlineStack");
+      creatorStack.add(textBoxCreator);
+      creatorStack.add(listBoxCreatorMatching);
+      rowCreator.add(creatorStack);
+      form.add(rowCreator);
+
+      final HorizontalPanel rowPerPage = new HorizontalPanel();
+      rowPerPage.addStyleName("searchProblemFormRow");
+      rowPerPage.add(new Label("表示件数（1ページ）"));
+      rowPerPage.add(listBoxMaxProblemsPerPage);
+      form.add(rowPerPage);
+
+      form.add(createLabeledSelectorRow("ジャンル", multiItemSelectorGenre));
+      form.add(createLabeledSelectorRow("出題形式", multiItemSelectorType));
+      form.add(createLabeledSelectorRow("ランダムフラグ", multiItemSelectorRandomFlag));
+
+      add(form);
+    }
+
+    HTML queryGuide = new HTML(new SafeHtmlBuilder().appendEscapedLines(
         "複数の単語を空白で区切るとAND検索となります。\n" + "複数の単語を「OR」で区切るとOR検索となります。「OR」は大文字で入力してください。\n"
-            + "単語の先頭に「-」(ハイフン)を加えると除外検索となります。").toSafeHtml()));
+            + "単語の先頭に「-」(ハイフン)を加えると除外検索となります。").toSafeHtml());
+    queryGuide.addStyleName("searchProblemGuide");
+    add(queryGuide);
+
+    buttonSearch.setText("検索する");
+    buttonSearch.addStyleName("creationButtonPrimary");
+    buttonSearch.addStyleName("searchProblemSearchButton");
 
     add(buttonSearch);
     add(panelGrid);
@@ -168,6 +192,19 @@ public class PanelSearchProblem extends VerticalPanel implements ClickHandler, K
     multiItemSelectorRandomFlag.setEnabled(enabled);
     listBoxMaxProblemsPerPage.setEnabled(enabled);
     listBoxCreatorMatching.setEnabled(enabled);
+  }
+
+  private HorizontalPanel createLabeledSelectorRow(String labelText,
+      WidgetMultiItemSelector<?> selector) {
+    selector.addStyleName("searchProblemSelector");
+
+    final HorizontalPanel row = new HorizontalPanel();
+    row.addStyleName("searchProblemFormRow");
+
+    Label label = new Label(labelText);
+    row.add(label);
+    row.add(selector);
+    return row;
   }
 
   @Override
