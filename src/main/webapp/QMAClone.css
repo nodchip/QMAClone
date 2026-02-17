@@ -676,6 +676,76 @@ a:active {
 	color: var(--color-danger-text);
 }
 
+.settingTopPanel {
+	width: 100%;
+}
+
+.settingTopRoot {
+	border: 1px solid var(--color-border-default);
+	border-radius: 12px;
+	background: var(--color-surface-2);
+	padding: 14px;
+	box-shadow: 0 4px 14px rgba(12, 59, 105, 0.1);
+}
+
+.settingTopHero {
+	margin-bottom: 12px;
+	padding: 10px 12px;
+	border: 1px solid var(--color-border-subtle);
+	border-radius: 10px;
+	background: var(--color-surface-3);
+}
+
+.settingTopTitle {
+	margin: 0 0 6px 0;
+	color: var(--color-text-primary);
+	font-size: 18px;
+	font-weight: 700;
+}
+
+.settingTopLead {
+	margin: 0;
+	color: var(--color-text-secondary);
+	font-size: 13px;
+	line-height: 1.6;
+}
+
+.settingTopGrid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+	gap: 10px;
+}
+
+.settingTopItem {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	padding: 10px 12px;
+	border: 1px solid var(--color-border-subtle);
+	border-radius: 10px;
+	background: var(--color-card-shared);
+	box-shadow: 0 1px 6px rgba(27, 79, 124, 0.08);
+}
+
+.settingTopName {
+	color: var(--color-text-primary);
+	font-size: 13px;
+	font-weight: 700;
+}
+
+.settingTopDesc {
+	color: var(--color-text-secondary);
+	font-size: 12px;
+	line-height: 1.5;
+}
+
+.settingTopHint {
+	margin: 12px 0 0 0;
+	color: var(--color-text-muted);
+	font-size: 12px;
+	line-height: 1.5;
+}
+
 /* ポジションセレクタ */
 .positionSelecter {
 	overflow: visible;
@@ -3200,6 +3270,8 @@ body {
 	background: var(--color-surface-2);
 	box-shadow: 0 8px 24px rgba(15, 53, 90, 0.12);
 	box-sizing: border-box;
+}
+
 .app-setting-panel .settingLeftPanel,
 .statisticsRoot .settingLeftPanel {
 	padding: 6px;

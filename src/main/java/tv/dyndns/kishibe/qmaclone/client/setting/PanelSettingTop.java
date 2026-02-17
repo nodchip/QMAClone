@@ -25,6 +25,26 @@ import com.google.gwt.user.client.ui.HTML;
 
 public class PanelSettingTop extends HTML {
 	public PanelSettingTop() {
-		super("←のメニューから設定したい項目を選んでください<br>" + "<b>アイコン</b>…アイコンのアップロードができます<br>" + "<b>ユーザーコード</b>…ユーザーコードを切り替えます<br>" + "<b>正答率統計</b>…正答率統計に登録されている問題を登録解除できます<br>" + "<b>チャット</b>…無視発言を解除できます<br>" + "<b>その他</b>…効果音等の設定ができます", true);
+		super("<div class='settingTopRoot'>"
+				+ "<div class='settingTopHero'>"
+				+ "<h2 class='settingTopTitle'>設定ガイド</h2>"
+				+ "<p class='settingTopLead'>左メニューから、変更したい項目を選んでください。"
+				+ "保存できる設定と、管理系の設定をここからまとめて確認できます。</p>"
+				+ "</div>"
+				+ "<div class='settingTopGrid'>"
+				+ "<div class='settingTopItem'><span class='settingTopName'>アイコン</span>"
+				+ "<span class='settingTopDesc'>プロフィール用アイコンのアップロードを行います。</span></div>"
+				+ "<div class='settingTopItem'><span class='settingTopName'>ユーザーコード</span>"
+				+ "<span class='settingTopDesc'>ユーザーコードの切り替えと連携設定を行います。</span></div>"
+				+ "<div class='settingTopItem'><span class='settingTopName'>正答率統計</span>"
+				+ "<span class='settingTopDesc'>登録問題一覧にある問題の登録解除を行います。</span></div>"
+				+ "<div class='settingTopItem'><span class='settingTopName'>チャット</span>"
+				+ "<span class='settingTopDesc'>無視設定した発言者の解除を行います。</span></div>"
+				+ "<div class='settingTopItem'><span class='settingTopName'>その他</span>"
+				+ "<span class='settingTopDesc'>効果音など、プレイ環境に関する設定を変更します。</span></div>"
+				+ "</div>"
+				+ "<p class='settingTopHint'>必要な項目を選ぶと、右側に設定内容が表示されます。</p>"
+				+ "</div>", true);
+		addStyleName("settingTopPanel");
 	}
 }
