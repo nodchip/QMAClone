@@ -2942,9 +2942,33 @@ body {
 
 .creationGuidelineLink {
   display: inline-block;
-  margin: 8px 0 12px 0;
+  margin: 8px 0 0 0;
   color: var(--color-accent-primary);
   font-weight: 700;
+}
+
+.creationIntroCard {
+  margin: 0 0 12px 0;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 10px;
+  background: var(--color-surface-3);
+  color: var(--color-text-secondary);
+  box-sizing: border-box;
+}
+
+.creationIntroCardTitle {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--color-text-primary);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.creationIntroCardBody {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.6;
 }
 
 .creationHistoryRoot {

@@ -17,13 +17,16 @@
 			よろしくお願い致します。
 		</g:HTMLPanel>
 		<g:HTMLPanel ui:field="htmlPanelMain" visible="false">
-			問題ジャンルの偏りを減らすため、問題数の少ないジャンルへの投稿にご協力ください。
-			<br />
-			投稿後は正解率統計で自作問題の状態をご確認いただき、指摘フラグが付いた場合は早めの修正をお願いします。
-			<br />
-			<a href="creation-guideline.html" target="_blank" rel="noopener noreferrer"
-				class="creationGuidelineLink">問題作成ガイドラインを見る（新規タブ）</a>
 			<g:HTMLPanel styleName="creationWizard">
+				<g:HTMLPanel styleName="creationIntroCard">
+					<g:Label styleName="creationIntroCardTitle" text="作成ガイド" />
+					<g:HTML styleName="creationIntroCardBody">
+						問題ジャンルの偏りを減らすため、問題数の少ないジャンルへの投稿にご協力ください。<br />
+						投稿後は正解率統計で自作問題の状態をご確認いただき、指摘フラグが付いた場合は早めの修正をお願いします。
+					</g:HTML>
+					<a href="creation-guideline.html" target="_blank" rel="noopener noreferrer"
+						class="creationGuidelineLink">問題作成ガイドラインを見る（新規タブ）</a>
+				</g:HTMLPanel>
 				<g:HTMLPanel styleName="creationWizardUtilityBar">
 					<g:Button ui:field="buttonNewProblem" text="入力内容をリセットする"
 						styleName="creationButtonSecondary" />
