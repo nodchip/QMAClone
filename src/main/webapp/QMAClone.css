@@ -821,6 +821,100 @@ a:active {
 	text-align: left;
 }
 
+.settingUserCodeRoot {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.settingUserCodeCard {
+	padding: 12px;
+	border: 1px solid var(--color-border-default);
+	border-radius: 12px;
+	background: var(--color-surface-2);
+	box-shadow: 0 4px 14px rgba(12, 59, 105, 0.1);
+}
+
+.settingUserCodeCardTitle {
+	display: block;
+	margin: 0 0 8px 0;
+	color: var(--color-text-primary);
+	font-size: 18px;
+	font-weight: 700;
+}
+
+.settingUserCodeLead {
+	margin: 0 0 10px 0;
+	padding: 10px 12px;
+	border: 1px solid var(--color-border-subtle);
+	border-radius: 10px;
+	background: var(--color-surface-3);
+	color: var(--color-text-secondary);
+	font-size: 13px;
+	line-height: 1.6;
+}
+
+.settingUserCodeActionRow {
+	width: 100%;
+	margin: 0 0 8px 0;
+}
+
+.settingUserCodeActionRow table {
+	margin: 0 auto;
+}
+
+.settingUserCodeActionRow .gwt-TextBox {
+	padding: 7px 10px;
+	border: 1px solid var(--color-border-default);
+	border-radius: 8px;
+	font-size: 13px;
+	line-height: 1.35;
+	background: var(--color-surface-1);
+	color: var(--color-text-primary);
+}
+
+.settingUserCodeMessage {
+	margin: 0 0 8px 0;
+	padding: 8px 10px;
+	border: 1px solid var(--color-border-subtle);
+	border-radius: 8px;
+	background: var(--color-surface-1);
+	color: var(--color-text-secondary);
+	font-size: 13px;
+	line-height: 1.5;
+}
+
+.settingUserCodeMessageError {
+	border-color: #f0b8b8;
+	background: #fff3f3;
+	color: var(--color-danger-text);
+}
+
+.settingUserCodeLinkedListCard {
+	margin: 6px 0 10px 0;
+	padding: 10px 12px;
+	border: 1px solid var(--color-border-subtle);
+	border-radius: 10px;
+	background: var(--color-surface-3);
+}
+
+.settingUserCodeLinkedListTitle {
+	display: block;
+	margin: 0 0 8px 0;
+	color: var(--color-text-primary);
+	font-size: 13px;
+	font-weight: 700;
+}
+
+.settingUserCodeLinkedList .gwt-RadioButton {
+	display: block;
+	margin: 4px 0;
+	padding: 6px 8px;
+	border: 1px solid var(--color-border-subtle);
+	border-radius: 8px;
+	background: var(--color-surface-1);
+}
+
 /* ポジションセレクタ */
 .positionSelecter {
 	overflow: visible;
@@ -1102,7 +1196,7 @@ a:active {
 .ratioReportEditBar {
 	display: flex;
 	align-items: center;
-	justify-content: flex-start;
+	justify-content: center;
 	gap: 10px;
 	margin: 0 0 8px 0;
 	flex-wrap: wrap;
@@ -1140,7 +1234,7 @@ a:active {
 .ratioReportRefreshBar {
 	display: flex;
 	align-items: center;
-	justify-content: flex-start;
+	justify-content: center;
 	margin: 0 0 10px 0;
 }
 

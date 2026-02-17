@@ -1,33 +1,55 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
-	<ui:style>
-		.invalid-usercode {
-			color: red;
-		}
-	</ui:style>
-	<g:HTMLPanel>
-	<h2>ユーザーコード変更</h2>
-	ユーザーコードを変更できます。 ユーザーコードを控えておくとどのブラウザからでも自分のプレイヤー情報でプレイできます。 ユーザーコードの変更後はF5を押してページのリロードをして下さい
-	<g:TextBox ui:field="textBoxUserCode" width="200px"/>
-    <g:Button ui:field="buttonSwitchToUserCode" enabled="true">ユーザーコードを切り替える</g:Button><br />
-    <g:HTML ui:field="htmlInvalidUserCode" visible="false" styleName="{style.invalid-usercode}">ユーザーコードが正しく入力されていません。またはユーザーコードが見つかりません。</g:HTML><br />
-	
-	<h2>Googleアカウント連携（OIDC）</h2>
-		QMACloneユーザーコードをGoogleアカウントに連携させることができます。<br />
-		QMACloneユーザーコードをGoogleアカウントに連携させると、どのブラウザからでも共通のプレイヤー情報でプレイできます。<br />
-		すでに連携させている場合は連携させたユーザーアカウントに切り替えることができます。<br />
-		複数のユーザーコードをGoogleアカウントに連携させる場合は、上のボタンでユーザーコードを切り替えたあと、下のボタンでGoogleに連携させてください<br/>
-		<br />
-		注意:　ポップアップをブロックしている方は許可してください。<br />
-		<br />
-		<g:Button ui:field="buttonConnect" visible="false">現在のユーザーコードをGoogleアカウントに紐づける</g:Button><br />
-		<g:HTML ui:field="htmlAlreadyConnected" visible="false">すでに連携させています。新たに連携させる必要はありません。</g:HTML><br />
-		<g:HTML ui:field="htmlConnected" visible="false">このGoogleアカウントに紐づくQMACloneユーザーコードは見つかりませんでした。必要であれば「現在のユーザーコードをGoogleアカウントに紐づける」を実行してください。</g:HTML><br />
+	<g:HTMLPanel styleName="settingUserCodeRoot">
+		<g:HTMLPanel styleName="settingUserCodeCard">
+			<g:Label styleName="settingUserCodeCardTitle" text="ユーザーコード変更" />
+			<g:HTML styleName="settingUserCodeLead">
+				ユーザーコードを変更できます。ユーザーコードを控えておくと、どのブラウザからでも同じプレイヤー情報でプレイできます。<br/>
+				ユーザーコードの変更後は、F5を押してページをリロードしてください。
+			</g:HTML>
+			<g:HorizontalPanel styleName="settingUserCodeActionRow">
+				<g:TextBox ui:field="textBoxUserCode" width="220px" />
+				<g:Button ui:field="buttonSwitchToUserCode" enabled="true"
+					styleName="creationButtonPrimary">ユーザーコードを切り替える</g:Button>
+			</g:HorizontalPanel>
+			<g:HTML ui:field="htmlInvalidUserCode" visible="false"
+				styleName="settingUserCodeMessage settingUserCodeMessageError">ユーザーコードが正しく入力されていません。またはユーザーコードが見つかりません。</g:HTML>
+		</g:HTMLPanel>
 
-		<g:VerticalPanel ui:field="panelUserCodeList"/>		
-		<g:Button ui:field="buttonShowUserCodeList" visible="false">Googleログインして紐づけ済みユーザーコードを表示する</g:Button><br />
-		<g:Button ui:field="buttonSwitchToConnectedUserCode" visible="false">選択したユーザーコードに切り替える</g:Button><br />
-		<g:Button ui:field="buttonDisconnectUserCode" visible="false">選択したユーザーコードとGoogleアカウントの紐づけを解除する</g:Button><br />
+		<g:HTMLPanel styleName="settingUserCodeCard">
+			<g:Label styleName="settingUserCodeCardTitle" text="Googleアカウント連携（OIDC）" />
+			<g:HTML styleName="settingUserCodeLead">
+				QMACloneユーザーコードをGoogleアカウントに連携させると、どのブラウザからでも共通のプレイヤー情報でプレイできます。<br />
+				複数のユーザーコードを連携する場合は、先に上の「ユーザーコード変更」で切り替えてから連携してください。<br />
+				ポップアップをブロックしている場合は許可してください。
+			</g:HTML>
+			<g:HorizontalPanel styleName="settingUserCodeActionRow">
+				<g:Button ui:field="buttonConnect" visible="false"
+					styleName="creationButtonPrimary">現在のユーザーコードをGoogleアカウントに紐づける</g:Button>
+			</g:HorizontalPanel>
+			<g:HTML ui:field="htmlAlreadyConnected" visible="false"
+				styleName="settingUserCodeMessage">すでに連携させています。新たに連携させる必要はありません。</g:HTML>
+			<g:HTML ui:field="htmlConnected" visible="false"
+				styleName="settingUserCodeMessage">このGoogleアカウントに紐づくQMACloneユーザーコードは見つかりませんでした。必要であれば「現在のユーザーコードをGoogleアカウントに紐づける」を実行してください。</g:HTML>
+
+			<g:HTMLPanel styleName="settingUserCodeLinkedListCard">
+				<g:Label styleName="settingUserCodeLinkedListTitle" text="連携済みユーザーコード" />
+				<g:VerticalPanel ui:field="panelUserCodeList" styleName="settingUserCodeLinkedList" />
+			</g:HTMLPanel>
+
+			<g:HorizontalPanel styleName="settingUserCodeActionRow">
+				<g:Button ui:field="buttonShowUserCodeList" visible="false"
+					styleName="creationButtonSecondary">Googleログインして紐づけ済みユーザーコードを表示する</g:Button>
+			</g:HorizontalPanel>
+			<g:HorizontalPanel styleName="settingUserCodeActionRow">
+				<g:Button ui:field="buttonSwitchToConnectedUserCode" visible="false"
+					styleName="creationButtonSecondary">選択したユーザーコードに切り替える</g:Button>
+			</g:HorizontalPanel>
+			<g:HorizontalPanel styleName="settingUserCodeActionRow">
+				<g:Button ui:field="buttonDisconnectUserCode" visible="false"
+					styleName="creationButtonSecondary">選択したユーザーコードとGoogleアカウントの紐づけを解除する</g:Button>
+			</g:HorizontalPanel>
+		</g:HTMLPanel>
 	</g:HTMLPanel>
 </ui:UiBinder> 
