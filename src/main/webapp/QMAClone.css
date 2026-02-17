@@ -2031,9 +2031,13 @@ a:active {
 .gwt-HTML-bbsResponseBody {
 	margin-left: 20px;
 	font-size: 16px;
+	display: block;
 	white-space: pre-wrap;
 	word-break: break-word;
 	overflow-wrap: anywhere;
+	max-height: 220px;
+	overflow-y: auto;
+	overflow-x: hidden;
 }
 
 .timerLabel {

@@ -45,6 +45,7 @@ import tv.dyndns.kishibe.qmaclone.client.constant.Constant;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketBbsResponse;
 
 public class PanelThread extends VerticalPanel implements ClickHandler {
+  private static final int MAX_BODY_DISPLAY_LENGTH = 4000;
   private static final Logger logger = Logger.getLogger(PanelThread.class.getName());
   private final int threadId;
   private final String title;
@@ -222,7 +223,11 @@ public class PanelThread extends VerticalPanel implements ClickHandler {
         text.append(ch);
       }
     }
-    return text.toString().trim();
+    String normalized = text.toString().replace("&nbsp;", " ").replace("&#160;", " ").trim();
+    if (normalized.length() > MAX_BODY_DISPLAY_LENGTH) {
+      return normalized.substring(0, MAX_BODY_DISPLAY_LENGTH) + "\n...(長文のため省略)";
+    }
+    return normalized;
   }
 }
 
