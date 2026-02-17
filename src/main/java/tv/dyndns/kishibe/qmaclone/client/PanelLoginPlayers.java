@@ -31,8 +31,8 @@ import tv.dyndns.kishibe.qmaclone.client.packet.PacketUserData;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -47,13 +47,11 @@ public class PanelLoginPlayers extends VerticalPanel {
 			return isAttached();
 		}
 	};
-	private final HTML html = new HTML("ログイン中のプレイヤーを表示します。<br/>最大で2分程度のタイムラグが出ます。");
+	private static final String LEAD = "ログイン中のプレイヤーを表示します。最大で2分程度のタイムラグが出ます。";
 
 	public PanelLoginPlayers() {
-		setWidth("800px");
-		setHorizontalAlignment(ALIGN_CENTER);
-		add(html);
-
+		setWidth("100%");
+		addStyleName("loginPlayersRoot");
 		update();
 	}
 
@@ -64,30 +62,33 @@ public class PanelLoginPlayers extends VerticalPanel {
 	private final AsyncCallback<List<PacketUserData>> callbackGetLoginUsers = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<List<PacketUserData>>() {
 		public void onSuccess(List<PacketUserData> result) {
 			clear();
-			add(html);
-			HorizontalPanel horizontalPanel = new HorizontalPanel();
+			add(createIntroCard());
+
+			FlowPanel grid = new FlowPanel();
+			grid.setStyleName("loginPlayersGrid");
 			for (PacketUserData data : result) {
 				final VerticalPanel panel = new VerticalPanel();
+				panel.setStyleName("loginPlayersCard");
 				panel.setHorizontalAlignment(ALIGN_CENTER);
 
 				final Image image = new Image(Constant.ICON_URL_PREFIX + data.imageFileName);
 				image.setPixelSize(Constant.ICON_SIZE_BIG, Constant.ICON_SIZE_BIG);
+				image.setStyleName("loginPlayersAvatar");
 				panel.add(image);
 
 				final Label label = new Label(data.playerName);
+				label.setStyleName("loginPlayersName");
 				panel.add(label);
 
-				horizontalPanel.add(panel);
-
-				if (horizontalPanel.getWidgetCount() == 8) {
-					add(horizontalPanel);
-					horizontalPanel = new HorizontalPanel();
-				}
+				grid.add(panel);
 			}
-
-			if (horizontalPanel.getWidgetCount() != 0) {
-				add(horizontalPanel);
+			if (result.isEmpty()) {
+				HTML empty = new HTML("現在ログイン中のプレイヤーはいません。");
+				empty.setStyleName("loginPlayersEmpty");
+				add(empty);
+				return;
 			}
+			add(grid);
 		}
 
 		public void onFailureRpc(Throwable caught) {
@@ -99,6 +100,14 @@ public class PanelLoginPlayers extends VerticalPanel {
 	protected void onLoad() {
 		super.onLoad();
 		Scheduler.get().scheduleFixedDelay(commandUpdate, UPDATE_DURATION);
+	}
+
+	private HTML createIntroCard() {
+		HTML intro = new HTML(
+				"<h3 class='loginPlayersTitle'>プレイヤー一覧</h3><p class='loginPlayersLead'>" + LEAD
+						+ "</p>");
+		intro.setStyleName("loginPlayersIntroCard");
+		return intro;
 	}
 }
 

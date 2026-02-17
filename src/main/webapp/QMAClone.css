@@ -4941,6 +4941,83 @@ body {
 	max-width: 100%;
 }
 
+.loginPlayersRoot {
+	width: 100%;
+}
+
+.loginPlayersIntroCard {
+	margin: 0 0 12px 0;
+	padding: 12px;
+	border: 1px solid var(--color-border-default);
+	border-radius: 12px;
+	background: var(--color-surface-2);
+	box-shadow: 0 4px 14px rgba(12, 59, 105, 0.1);
+	box-sizing: border-box;
+}
+
+.loginPlayersTitle {
+	margin: 0 0 8px 0;
+	color: var(--color-text-primary);
+	font-size: 18px;
+	font-weight: 700;
+	line-height: 1.35;
+}
+
+.loginPlayersLead {
+	margin: 0;
+	color: var(--color-text-secondary);
+	font-size: 13px;
+	line-height: 1.6;
+}
+
+.loginPlayersGrid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+	gap: 10px;
+}
+
+.loginPlayersCard {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-start;
+	gap: 6px;
+	padding: 10px 8px;
+	border: 1px solid var(--color-border-subtle);
+	border-radius: 10px;
+	background: var(--color-card-shared);
+	box-shadow: 0 2px 8px rgba(10, 38, 61, 0.08);
+	box-sizing: border-box;
+}
+
+.loginPlayersAvatar {
+	border: 1px solid var(--color-border-default);
+	border-radius: 10px;
+	background: var(--color-surface-1);
+	box-shadow: 0 2px 8px rgba(12, 59, 105, 0.14);
+}
+
+.loginPlayersName {
+	width: 100%;
+	color: var(--color-text-primary);
+	font-size: 12px;
+	font-weight: 700;
+	line-height: 1.4;
+	text-align: center;
+	word-break: break-word;
+}
+
+.loginPlayersEmpty {
+	margin: 0;
+	padding: 14px 12px;
+	border: 1px dashed var(--color-border-default);
+	border-radius: 10px;
+	background: var(--color-surface-1);
+	color: var(--color-text-muted);
+	font-size: 13px;
+	text-align: center;
+}
+
 @media (max-width: 1100px) {
 	.app-setting-panel,
 	.statisticsRoot {
@@ -4955,6 +5032,15 @@ body {
 
 	.statisticsTopTiles {
 		grid-template-columns: 1fr;
+	}
+
+	.loginPlayersIntroCard {
+		padding: 10px;
+	}
+
+	.loginPlayersGrid {
+		grid-template-columns: repeat(auto-fill, minmax(86px, 1fr));
+		gap: 8px;
 	}
 }
 
