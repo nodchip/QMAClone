@@ -23,7 +23,6 @@
 
 ### GWT / クライアント
 - クライアント変更後は GWT 再コンパイル成功を完了条件に含める。
-- 依存関係を更新した場合は、`mvn "-Dgwt.skipCompilation=false" gwt:compile` の成功を確認してから完了とする。
 - 基盤クラス（例: `StatusUpdater`）変更時は、`@Override` エラー連鎖を関連画面まで確認する。
 - `cache.js` を更新した場合、配備先が最新成果物を参照していることを確認する。
 - GWTの調査起点は `docs/gwt-guide/README.md` とし、該当トピックの要約ドキュメントを先に確認してから公式ページへ遷移する。
@@ -50,7 +49,7 @@
 - Tomcat 再配備時は、必要に応じて旧展開物削除とサービス再起動で静的状態を確実に破棄する。
 - Eclipse で不整合が疑われる場合は、`target` と `gwt-unitCache` のクリーンを実施する。
 - 検証（`build` / `test` / `gwt:compile`）が1つでも失敗した場合はデプロイを中断し、修正と再検証完了まで配備しない。
-- 変更を反映した場合は、完了報告前に `deploy_qmaclone_tomcat9.ps1` を実行して配備まで完了させる。
+- 修正を加えた場合は、完了報告前に `deploy_qmaclone_tomcat9.ps1` を実行して配備まで完了させる。
 - 配備完了判定は、`/QMAClone-1.0-SNAPSHOT/` が `HTTP 200`、`/tv.dyndns.kishibe.qmaclone.QMAClone/service` が `HTTP 405` を返すことを確認して行う。
 - 新規の運用ログ/メモはルート直下へ置かず、`ops/log/` と `ops/notes/` 配下へ配置する。
 - 新規/更新の運用補助スクリプトは `ops/scripts/` 配下へ配置し、既存ルートスクリプトは段階移行で扱う。
@@ -80,7 +79,6 @@
 - `src/main/java/net/zschech/gwt/websockets` は GWT クライアント基盤として扱い、置換対象に含めない。
 
 ### GWTコンパイル・テストの安定化
-- `piriti` 依存は再導入せず、JSON デコードはアプリ側実装を維持する。
 - 依存更新時は `mvn "-Dgwt.skipCompilation=false" gwt:compile` を単独実行して成否を先に確定する。
 - 変更範囲が限定される場合は対象パッケージのテストを先に実行し、全量テスト未完了時は未検証範囲を完了報告に明記する。
 - 開発中の通常テスト実行は `mvn "-Dsurefire.skip=false" test` を基本とし、`server/database` 配下の重いテストは既定除外のまま実行時間を抑える。
