@@ -818,6 +818,73 @@ a:active {
 	text-align: center;
 }
 
+.settingOtherRoot {
+	display: block;
+	width: 100%;
+}
+
+.settingOtherIntroCard {
+	margin: 0 0 12px 0;
+	padding: 12px;
+	border: 1px solid var(--color-border-default);
+	border-radius: 12px;
+	background: var(--color-surface-2);
+	box-shadow: 0 4px 14px rgba(12, 59, 105, 0.1);
+	box-sizing: border-box;
+}
+
+.settingOtherLead {
+	margin-top: 8px;
+}
+
+.settingOtherGrid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+	gap: 10px;
+}
+
+.settingOtherItem {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	padding: 10px 12px;
+	border: 1px solid var(--color-border-subtle);
+	border-radius: 10px;
+	background: var(--color-card-shared);
+	box-shadow: 0 1px 6px rgba(27, 79, 124, 0.08);
+	box-sizing: border-box;
+}
+
+.settingOtherItemTitle {
+	margin: 0;
+	color: var(--color-text-primary);
+	font-size: 13px;
+	font-weight: 700;
+	line-height: 1.5;
+}
+
+.settingOtherOptionGroup {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 6px 12px;
+}
+
+.settingOtherOption {
+	display: inline-flex;
+	align-items: center;
+	margin: 0;
+	color: var(--color-text-secondary);
+	font-size: 12px;
+	font-weight: 600;
+	line-height: 1.4;
+}
+
+.settingOtherOption input[type="radio"] {
+	margin: 0 5px 0 0;
+	accent-color: var(--color-accent-primary);
+}
+
 /* 設定画面 */
 .settingLeftPanel {
 	border: 1px solid var(--color-border-subtle);
@@ -1599,6 +1666,18 @@ a:active {
 	.settingThemeModeEditLogPager.gwt-SimplePager {
 		padding: 5px 8px;
 		font-size: 12px;
+	}
+
+	.settingOtherIntroCard {
+		padding: 10px;
+	}
+
+	.settingOtherGrid {
+		grid-template-columns: 1fr;
+	}
+
+	.settingOtherItem {
+		padding: 9px 10px;
 	}
 }
 
