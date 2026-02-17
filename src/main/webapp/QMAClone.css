@@ -665,6 +665,13 @@ a:active {
 	color: var(--color-accent-primary);
 }
 
+.settingLeftPanelItem.settingLeftPanelItemSelected {
+	background: var(--color-surface-3);
+	color: var(--color-accent-primary);
+	box-shadow: inset 3px 0 0 var(--color-accent-primary);
+	font-weight: 700;
+}
+
 .settingMessage {
 	color: var(--color-danger-text);
 }

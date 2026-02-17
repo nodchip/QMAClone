@@ -35,6 +35,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class TwoColumnSelectionPanel extends DockPanel implements ClickHandler {
+	private static final String MENU_ITEM_STYLE_SELECTED = "settingLeftPanelItemSelected";
 	private final Map<HTML, Widget> leftToRight = new HashMap<HTML, Widget>();
 	private final ScrollPanel westPanel = new ScrollPanel();
 	private final VerticalPanel panel = new VerticalPanel();
@@ -73,6 +74,11 @@ public class TwoColumnSelectionPanel extends DockPanel implements ClickHandler {
 	public void onClick(ClickEvent event) {
 		final Widget sender = (Widget) event.getSource();
 		if (leftToRight.containsKey(sender)) {
+			// 左メニューの選択状態を単一選択にそろえる。
+			for (HTML menuItem : leftToRight.keySet()) {
+				menuItem.removeStyleName(MENU_ITEM_STYLE_SELECTED);
+			}
+			sender.addStyleName(MENU_ITEM_STYLE_SELECTED);
 			final Widget w = leftToRight.get(sender);
 			centerPanel.setWidget(w);
 			// LazyPanelはsetWidget()のみでは本体が表示されないため、setVisible()を呼び出して表示させる
