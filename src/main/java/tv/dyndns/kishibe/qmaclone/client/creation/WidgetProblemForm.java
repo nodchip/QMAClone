@@ -314,13 +314,6 @@ public class WidgetProblemForm extends VerticalPanel implements ClickHandler, Ch
     checkBoxRemovePlayerAnswers.setVisible(false);
     grid.setWidget(row++, 1, panelAnswerCount);
 
-    // 回答数
-    grid.setText(row, 0, "+1");
-    HorizontalPanel panelVoteCount = new HorizontalPanel();
-    panelVoteCount.addStyleName("creationFormInlineRow");
-    panelVoteCount.add(new Label("廃止済み"));
-    grid.setWidget(row++, 1, panelVoteCount);
-
     // 評価
     grid.setText(row, 0, "良問");
     HorizontalPanel panelGood = new HorizontalPanel();
