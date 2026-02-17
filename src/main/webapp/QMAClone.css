@@ -957,12 +957,99 @@ a:active {
 }
 
 .settingUserCodeLinkedList .gwt-RadioButton {
-	display: block;
-	margin: 4px 0;
-	padding: 6px 8px;
+	display: flex;
+	align-items: center;
+	margin: 6px 0;
+	padding: 10px 12px;
 	border: 1px solid var(--color-border-subtle);
-	border-radius: 8px;
+	border-radius: 12px;
 	background: var(--color-surface-1);
+	transition: border-color 180ms ease, background-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+}
+
+.settingUserCodeLinkedList .gwt-RadioButton:hover {
+	border-color: var(--color-border-strong);
+	background: var(--color-surface-3);
+	box-shadow: 0 2px 8px rgba(10, 25, 47, 0.08);
+	transform: translateY(-1px);
+}
+
+.settingUserCodeLinkedList .gwt-RadioButton input[type="radio"] {
+	margin: 0 10px 0 0;
+	accent-color: var(--color-accent-primary);
+	flex: 0 0 auto;
+}
+
+.settingUserCodeLinkedList .gwt-RadioButton label {
+	display: inline-flex;
+	align-items: center;
+	flex: 1 1 auto;
+	min-width: 0;
+	color: var(--color-text-primary);
+	font-size: 13px;
+	font-weight: 600;
+	line-height: 1.4;
+	cursor: pointer;
+}
+
+.settingUserCodeRadioLabel {
+	display: inline-flex;
+	align-items: center;
+	gap: 10px;
+	min-width: 0;
+}
+
+.settingUserCodeLinkedList .settingUserCodeRadioLabel img {
+	width: 32px !important;
+	height: 32px !important;
+	border-radius: 8px;
+	border: 1px solid var(--color-border-subtle);
+	background: var(--color-surface-1);
+	flex: 0 0 auto;
+}
+
+.settingUserCodeRadioMeta {
+	display: inline-flex;
+	flex-direction: column;
+	gap: 1px;
+	min-width: 0;
+}
+
+.settingUserCodeRadioName {
+	color: var(--color-text-primary);
+	font-size: 13px;
+	font-weight: 700;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.settingUserCodeRadioCode {
+	color: var(--color-text-muted);
+	font-size: 11px;
+	font-weight: 600;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.settingUserCodeLinkedList .gwt-RadioButton input[type="radio"]:checked + label .settingUserCodeRadioName {
+	color: var(--color-accent-primary);
+}
+
+.settingUserCodeLinkedList .gwt-RadioButton input[type="radio"]:checked + label .settingUserCodeRadioCode {
+	color: var(--color-text-secondary);
+}
+
+.settingUserCodeLinkedList .gwt-RadioButton:has(input[type="radio"]:checked) {
+	border-color: var(--color-accent-primary);
+	background: var(--color-surface-3);
+	box-shadow: 0 0 0 2px rgba(17, 123, 205, 0.2);
+}
+
+.settingUserCodeLinkedList .gwt-RadioButton:focus-within {
+	outline: 2px solid rgba(17, 123, 205, 0.35);
+	outline-offset: 1px;
 }
 
 /* ポジションセレクタ */

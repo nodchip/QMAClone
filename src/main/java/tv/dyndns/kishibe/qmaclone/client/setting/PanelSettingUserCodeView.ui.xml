@@ -44,7 +44,7 @@
 			<g:HTML ui:field="htmlConnected" visible="false"
 				styleName="settingUserCodeMessage">このGoogleアカウントに紐づくQMACloneユーザーコードは見つかりませんでした。必要であれば「現在のユーザーコードをGoogleアカウントに紐づける」を実行してください。</g:HTML>
 
-			<g:HTMLPanel styleName="settingUserCodeLinkedListCard">
+			<g:HTMLPanel ui:field="panelLinkedUserCodeCard" styleName="settingUserCodeLinkedListCard">
 				<g:Label styleName="settingUserCodeLinkedListTitle" text="連携済みユーザーコード" />
 				<g:VerticalPanel ui:field="panelUserCodeList" styleName="settingUserCodeLinkedList" />
 			</g:HTMLPanel>

@@ -29,13 +29,14 @@ import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.inject.Inject;
 
 public class PanelSettingUserCodeView extends Composite implements
 		PanelSettingUserCodePresenter.View {
 
 	public interface MyTemplate extends SafeHtmlTemplates {
-		@Template("<img src='{0}' width='32px' height='32px'/>{1} {2}")
+		@Template("<span class='settingUserCodeRadioLabel'><img src='{0}' width='32' height='32' /><span class='settingUserCodeRadioMeta'><span class='settingUserCodeRadioName'>{2}</span><span class='settingUserCodeRadioCode'>ユーザーコード: {1}</span></span></span>")
 		SafeHtml image(SafeUri imageUrl, int userCode, String name);
 	}
 
@@ -77,6 +78,8 @@ public class PanelSettingUserCodeView extends Composite implements
 	@UiField
 	VerticalPanel panelUserCodeList;
 	@UiField
+	HTMLPanel panelLinkedUserCodeCard;
+	@UiField
 	Button buttonShowUserCodeList;
 	@UiField
 	Button buttonSwitchToConnectedUserCode;
@@ -89,6 +92,7 @@ public class PanelSettingUserCodeView extends Composite implements
 		this.presenter = Preconditions.checkNotNull(presenter);
 		this.presenter.setView(this);
 		this.userData = Preconditions.checkNotNull(userData);
+		panelLinkedUserCodeCard.setVisible(false);
 		maskUserCode();
 	}
 
@@ -199,12 +203,14 @@ public class PanelSettingUserCodeView extends Composite implements
 	@Override
 	public void setUserDataList(List<PacketUserData> userDataList) {
 		panelUserCodeList.clear();
+		panelLinkedUserCodeCard.setVisible(!userDataList.isEmpty());
 		radioButtonToUserData = Maps.newHashMap();
 		for (PacketUserData userData : userDataList) {
 			SafeUri imageUrl = UriUtils.fromString(Constant.ICON_URL_PREFIX
 					+ userData.imageFileName);
 			SafeHtml label = TEMPLATE.image(imageUrl, userData.userCode, userData.playerName);
 			RadioButton radioButton = new RadioButton(GROUP_USER_CODE, label);
+			radioButton.addStyleName("settingUserCodeRadioItem");
 			radioButtonToUserData.put(radioButton, userData);
 			panelUserCodeList.add(radioButton);
 
