@@ -641,6 +641,153 @@ a:active {
 	cursor: pointer;
 }
 
+.settingImageLinkRoot {
+	display: block;
+	width: 100%;
+}
+
+.settingImageLinkIntroCard,
+.settingImageLinkTableCard {
+	margin: 0 0 12px 0;
+	padding: 12px;
+	border: 1px solid var(--color-border-default);
+	border-radius: 12px;
+	background: var(--color-surface-2);
+	box-shadow: 0 4px 14px rgba(12, 59, 105, 0.1);
+	box-sizing: border-box;
+}
+
+.settingImageLinkLead {
+	margin-top: 8px;
+}
+
+.settingImageLinkHint {
+	margin: 0 0 10px 0;
+	padding: 10px 12px;
+	border: 1px solid var(--color-border-subtle);
+	border-radius: 10px;
+	background: var(--color-surface-3);
+	color: var(--color-text-secondary);
+	font-size: 12px;
+	line-height: 1.6;
+}
+
+.settingImageLinkPager {
+	margin: 0 0 8px 0;
+}
+
+.settingImageLinkPager.gwt-SimplePager {
+	padding: 6px 10px;
+	border: 1px solid var(--color-border-subtle);
+	border-radius: 8px;
+	background: var(--color-surface-1);
+	color: var(--color-text-secondary);
+}
+
+.settingImageLinkTableScroll {
+	overflow-x: auto;
+	border: 1px solid var(--color-border-subtle);
+	border-radius: 10px;
+	background: var(--color-surface-1);
+	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75);
+}
+
+.settingImageLinkTable .cellTableWidget {
+	width: 100%;
+	min-width: 700px;
+	table-layout: fixed;
+	border-collapse: separate;
+	border-spacing: 0;
+}
+
+.settingImageLinkTable .cellTableHeader {
+	padding: 9px 10px;
+	border-bottom: 1px solid var(--color-border-default);
+	background: linear-gradient(180deg, #f8fbff 0%, #ecf4fd 100%);
+	color: var(--color-text-primary);
+	font-size: 12px;
+	font-weight: 700;
+	white-space: nowrap;
+}
+
+.settingImageLinkTable .cellTableCell {
+	padding: 8px 10px;
+	border-bottom: 1px solid rgba(19, 67, 106, 0.12);
+	color: var(--color-text-secondary);
+	font-size: 12px;
+	line-height: 1.52;
+	vertical-align: middle;
+	word-break: break-word;
+}
+
+.settingImageLinkTable .cellTableCell:first-child {
+	font-weight: 700;
+}
+
+.settingImageLinkTable .cellTableCell a {
+	color: var(--color-link);
+	font-weight: 600;
+	text-decoration: underline;
+	text-underline-offset: 2px;
+}
+
+.settingImageLinkTable .cellTableCell a:hover {
+	color: var(--color-accent-primary-hover);
+}
+
+.settingImageLinkTable .cellTableEvenRow {
+	background: #f9fcff;
+}
+
+.settingImageLinkTable .cellTableOddRow {
+	background: var(--color-surface-1);
+}
+
+.settingImageLinkTable .cellTableEvenRow:hover,
+.settingImageLinkTable .cellTableOddRow:hover {
+	background: #e9f3ff;
+}
+
+.settingImageLinkStatus {
+	display: inline-block;
+	min-width: 56px;
+	padding: 2px 8px;
+	border-radius: 999px;
+	border: 1px solid #b6dfbc;
+	background: #ebf8ee;
+	color: #1f6b2c;
+	font-size: 11px;
+	font-weight: 700;
+	line-height: 1.4;
+	text-align: center;
+}
+
+.settingImageLinkStatus--redirect {
+	border-color: #f0dbb8;
+	background: #fff8ed;
+	color: #7a4f1b;
+}
+
+.settingImageLinkStatus--client {
+	border-color: #f0c3c3;
+	background: #fff1f1;
+	color: #8a1f1f;
+}
+
+.settingImageLinkStatus--server {
+	border-color: #dcafaf;
+	background: #fde9e9;
+	color: #7d1919;
+}
+
+.settingImageLinkEmpty,
+.settingImageLinkLoading {
+	padding: 20px 14px;
+	color: var(--color-text-muted);
+	font-size: 13px;
+	text-align: center;
+}
+
 /* 設定画面 */
 .settingLeftPanel {
 	border: 1px solid var(--color-border-subtle);
@@ -1384,6 +1531,24 @@ a:active {
 }
 
 @media (max-width: 960px) {
+	.settingImageLinkIntroCard,
+	.settingImageLinkTableCard {
+		padding: 10px;
+	}
+
+	.settingImageLinkHint {
+		font-size: 11px;
+	}
+
+	.settingImageLinkPager.gwt-SimplePager {
+		padding: 5px 8px;
+		font-size: 12px;
+	}
+
+	.settingImageLinkTable .cellTableWidget {
+		min-width: 620px;
+	}
+
 	.settingThemeModeEditLogIntroCard,
 	.settingThemeModeEditLogTableCard {
 		padding: 10px;

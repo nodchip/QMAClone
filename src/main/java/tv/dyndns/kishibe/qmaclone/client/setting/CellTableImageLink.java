@@ -13,16 +13,17 @@ import tv.dyndns.kishibe.qmaclone.client.report.SafeHtmlColumn;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtml;
-import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.safehtml.shared.SafeUri;
 import com.google.gwt.safehtml.shared.UriUtils;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.Header;
 import com.google.gwt.user.cellview.client.TextHeader;
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.view.client.ListDataProvider;
 
 public class CellTableImageLink extends CellTable<PacketImageLink> {
@@ -39,6 +40,10 @@ public class CellTableImageLink extends CellTable<PacketImageLink> {
 
 	public CellTableImageLink() {
 		super(100, GWT.<CellTable.BasicResources> create(CellTable.BasicResources.class));
+		setPageSize(100);
+		setWidth("100%");
+		setEmptyTableWidget(new HTML("<div class='settingImageLinkEmpty'>リンク切れは見つかりませんでした。</div>"));
+		setLoadingIndicator(new HTML("<div class='settingImageLinkLoading'>画像リンク情報を読み込み中です...</div>"));
 		Service.Util.getInstance().getWrongImageLinks(new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<List<PacketImageLink>>() {
 			@Override
 			public void onSuccess(List<PacketImageLink> result) {
@@ -54,38 +59,72 @@ public class CellTableImageLink extends CellTable<PacketImageLink> {
 		dataProvider.addDataDisplay(this);
 
 		// 問題番号
-		addColumn(new TextHeader("問題番号"), null, new LinkColumn<PacketImageLink>() {
+		Column<PacketImageLink, String> problemIdColumn = new LinkColumn<PacketImageLink>() {
 			@Override
 			public String getValue(PacketImageLink object) {
 				return Integer.toString(object.problemId);
 			}
-		}, new FieldUpdater<PacketImageLink, String>() {
+		};
+		addColumn(new TextHeader("問題番号"), null, problemIdColumn, new FieldUpdater<PacketImageLink, String>() {
 			@Override
 			public void update(int index, PacketImageLink object, String value) {
 				Controller.getInstance().showCreationProblem(object.problemId);
 			}
 		});
+		setColumnWidth(problemIdColumn, 18, Unit.PCT);
 
 		// 画像リンク
-		addColumn(new TextHeader("画像リンク"), null, new SafeHtmlColumn<PacketImageLink>() {
+		Column<PacketImageLink, SafeHtml> imageLinkColumn = new SafeHtmlColumn<PacketImageLink>() {
 			@Override
 			public SafeHtml getValue(PacketImageLink object) {
-				String urlToShow = object.url;
-				if (urlToShow.length() > 50) {
-					urlToShow = urlToShow.substring(0, 20) + " ... "
-							+ urlToShow.substring(urlToShow.length() - 25, urlToShow.length());
-				}
+				String urlToShow = makeCompactUrl(object.url);
 				return TEMPLATES.link(UriUtils.fromString(object.url), urlToShow);
 			}
-		}, null);
+		};
+		addColumn(new TextHeader("画像リンク"), null, imageLinkColumn, null);
+		setColumnWidth(imageLinkColumn, 62, Unit.PCT);
 
 		// ステータスコード
-		addColumn(new TextHeader("ステータスコード"), null, new SafeHtmlColumn<PacketImageLink>() {
+		Column<PacketImageLink, SafeHtml> statusCodeColumn = new SafeHtmlColumn<PacketImageLink>() {
 			@Override
 			public SafeHtml getValue(PacketImageLink object) {
-				return SafeHtmlUtils.fromString(Integer.toString(object.statusCode));
+				return renderStatusBadge(object.statusCode);
 			}
-		}, null);
+		};
+		addColumn(new TextHeader("ステータス"), null, statusCodeColumn, null);
+		setColumnWidth(statusCodeColumn, 20, Unit.PCT);
+	}
+
+	/**
+	 * 長いURLは先頭と末尾を残して省略し、一覧可読性を維持する。
+	 */
+	private static String makeCompactUrl(String rawUrl) {
+		if (rawUrl == null) {
+			return "";
+		}
+		if (rawUrl.length() <= 72) {
+			return rawUrl;
+		}
+		return rawUrl.substring(0, 30) + " ... " + rawUrl.substring(rawUrl.length() - 32);
+	}
+
+	/**
+	 * HTTPステータスを種別ごとのバッジ表示にする。
+	 */
+	private static SafeHtml renderStatusBadge(int statusCode) {
+		String categoryClass = "settingImageLinkStatus--ok";
+		if (statusCode >= 500) {
+			categoryClass = "settingImageLinkStatus--server";
+		} else if (statusCode >= 400) {
+			categoryClass = "settingImageLinkStatus--client";
+		} else if (statusCode >= 300) {
+			categoryClass = "settingImageLinkStatus--redirect";
+		}
+		SafeHtmlBuilder builder = new SafeHtmlBuilder();
+		builder.appendHtmlConstant("<span class='settingImageLinkStatus ")
+				.appendEscaped(categoryClass).appendHtmlConstant("'>")
+				.appendEscaped(Integer.toString(statusCode)).appendHtmlConstant("</span>");
+		return builder.toSafeHtml();
 	}
 
 	private <C, S> void addColumn(Header<C> header, ValueUpdater<C> valueUpdater,
