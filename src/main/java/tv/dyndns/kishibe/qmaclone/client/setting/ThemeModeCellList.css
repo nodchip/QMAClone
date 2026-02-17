@@ -1,0 +1,39 @@
+.cellListWidget {
+	background: transparent;
+}
+
+.cellListEvenItem,
+.cellListOddItem {
+	padding: 8px 10px;
+	border-bottom: 1px solid rgba(26, 72, 111, 0.08);
+	color: #0a2f4f;
+	font-size: 13px;
+	line-height: 1.45;
+	transition: background-color 140ms ease, color 140ms ease;
+	cursor: pointer;
+}
+
+.cellListEvenItem {
+	background: #f8fbff;
+}
+
+.cellListOddItem {
+	background: #f3f8fe;
+}
+
+.cellListEvenItem:hover,
+.cellListOddItem:hover {
+	background: #e8f3ff;
+	color: #1d6cae;
+}
+
+.cellListSelectedItem,
+.cellListSelectedItem:hover,
+.cellListKeyboardSelectedItem,
+.cellListKeyboardSelectedItem:hover {
+	background: linear-gradient(90deg, #d5e9ff 0%, #e7f3ff 100%) !important;
+	background-color: #dcecff !important;
+	color: #103a5f !important;
+	font-weight: 700;
+	box-shadow: inset 3px 0 0 #3a7db5;
+}

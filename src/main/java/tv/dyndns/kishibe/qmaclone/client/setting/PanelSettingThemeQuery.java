@@ -30,7 +30,6 @@ import tv.dyndns.kishibe.qmaclone.client.ServiceAsync;
 import tv.dyndns.kishibe.qmaclone.client.UserData;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketTheme;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketThemeQuery;
-import tv.dyndns.kishibe.qmaclone.client.setting.theme.ThemeQueryTreeViewModel;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
@@ -44,8 +43,7 @@ import com.google.gwt.view.client.HasData;
 public class PanelSettingThemeQuery {
 
 	public interface View extends IsWidget {
-		void setPresenter(PanelSettingThemeQuery panelSettingThemeMode,
-				ThemeQueryTreeViewModel themeQueryTreeViewModel);
+		void setPresenter(PanelSettingThemeQuery panelSettingThemeMode);
 
 		boolean isAttached();
 
@@ -67,6 +65,8 @@ public class PanelSettingThemeQuery {
 
 		void setQuery(String query);
 
+		void setSelectionSummary(String theme, String query);
+
 		String getNote();
 
 		boolean confirmToApply();
@@ -74,6 +74,8 @@ public class PanelSettingThemeQuery {
 		void notifyApplying();
 
 		void enableForm(boolean enabled);
+
+		void refreshThemeModeLists(boolean refreshThemes);
 	}
 
 	private static final Logger logger = Logger.getLogger(PanelSettingThemeQuery.class.getName());
@@ -91,7 +93,6 @@ public class PanelSettingThemeQuery {
 			return view.isAttached();
 		}
 	};
-	private ThemeQueryTreeViewModel themeQueryTreeViewModel;
 	private Set<String> themeNames;
 	private String lastUpdateOperation = "テーマモード設定";
 
@@ -99,8 +100,7 @@ public class PanelSettingThemeQuery {
 		this.view = Preconditions.checkNotNull(view);
 		this.serviceAsync = Preconditions.checkNotNull(serviceAsync);
 		this.scheduler = Preconditions.checkNotNull(scheduler);
-		this.themeQueryTreeViewModel = new ThemeQueryTreeViewModel(this);
-		view.setPresenter(this, themeQueryTreeViewModel);
+		view.setPresenter(this);
 		serviceAsync.isThemeModeEditor(UserData.get().getUserCode(), callbackIsThemeModeEditor);
 	}
 
@@ -180,7 +180,7 @@ public class PanelSettingThemeQuery {
 		public void onSuccess(Void result) {
 			String theme = view.getTheme();
 			// 新規テーマを追加した場合はテーマリストを更新する
-			themeQueryTreeViewModel.refresh(themeNames != null && !themeNames.contains(theme));
+			view.refreshThemeModeLists(themeNames != null && !themeNames.contains(theme));
 			SettingSaveToast.showSaved(lastUpdateOperation);
 		}
 
@@ -229,6 +229,7 @@ public class PanelSettingThemeQuery {
 	public void onThemeQuerySelected(String theme, String query) {
 		view.setTheme(theme);
 		view.setQuery(query);
+		view.setSelectionSummary(theme, query);
 	}
 
 	public void onThemeRequested(final HasData<PacketTheme> display) {
