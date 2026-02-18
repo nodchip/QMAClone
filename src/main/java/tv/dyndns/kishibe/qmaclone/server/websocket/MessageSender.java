@@ -3,9 +3,12 @@ package tv.dyndns.kishibe.qmaclone.server.websocket;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.Map;
+import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -91,6 +94,9 @@ public abstract class MessageSender<T> implements Closeable {
 
   private final class JavaxConnection implements Connection {
     private final javax.websocket.Session session;
+    private final Queue<String> pendingMessages = new ConcurrentLinkedQueue<>();
+    private final AtomicBoolean sending = new AtomicBoolean(false);
+    private final AtomicBoolean closed = new AtomicBoolean(false);
 
     private JavaxConnection(javax.websocket.Session session) {
       this.session = Preconditions.checkNotNull(session);
@@ -98,21 +104,57 @@ public abstract class MessageSender<T> implements Closeable {
 
     @Override
     public void send(String json) {
-      session.getAsyncRemote().sendText(json, result -> {
-        if (result.isOK()) {
+      if (closed.get()) {
+        return;
+      }
+      pendingMessages.offer(json);
+      flushPendingMessages();
+    }
+
+    private void flushPendingMessages() {
+      if (!sending.compareAndSet(false, true)) {
+        return;
+      }
+      sendNext();
+    }
+
+    private void sendNext() {
+      if (closed.get()) {
+        sending.set(false);
+        pendingMessages.clear();
+        return;
+      }
+
+      String next = pendingMessages.poll();
+      if (next == null) {
+        sending.set(false);
+        if (!pendingMessages.isEmpty() && sending.compareAndSet(false, true)) {
+          sendNext();
+        }
+        return;
+      }
+
+      session.getAsyncRemote().sendText(next, result -> {
+        if (!result.isOK()) {
+          logger.log(Level.WARNING,
+              "WebSocket でのデータ送信に失敗しました。接続を閉じます。remoteAddress="
+                  + getRemoteAddress(),
+              result.getException());
+          sending.set(false);
+          pendingMessages.clear();
+          close();
+          sessions.remove(getSessionKey());
           return;
         }
-        logger.log(Level.WARNING,
-            "WebSocket でのデータ送信に失敗しました。接続を閉じます。remoteAddress="
-                + getRemoteAddress(),
-            result.getException());
-        close();
-        sessions.remove(getSessionKey());
+        sendNext();
       });
     }
 
     @Override
     public void close() {
+      if (!closed.compareAndSet(false, true)) {
+        return;
+      }
       try {
         session.close();
       } catch (IOException e) {
