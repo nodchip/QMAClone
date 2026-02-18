@@ -1,0 +1,28 @@
+package tv.dyndns.kishibe.qmaclone.client;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
+import org.junit.Test;
+
+/**
+ * 結果画面のモダンレイアウト構造をソース上で検証する。
+ */
+public class PanelResultModernLayoutSourceTest {
+  /**
+   * ヒーロー領域とランキング領域を持ち、旧Grid実装を除去している。
+   */
+  @Test
+  public void panelResultUsesHeroAndRankingContainers() throws Exception {
+    String source =
+        Files.readString(Paths.get("src/main/java/tv/dyndns/kishibe/qmaclone/client/PanelResult.java"),
+            StandardCharsets.UTF_8);
+    assertTrue(source.contains("resultHero"));
+    assertTrue(source.contains("resultRankingList"));
+    assertFalse(source.contains("new Grid("));
+  }
+}
