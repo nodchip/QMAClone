@@ -38,15 +38,21 @@ public class PanelGame extends HorizontalPanel {
 
 	public PanelGame() {
 		setWidth("800px");
+		setStyleName("gameRoot");
 
 		verticalPanel = new VerticalPanel();
+		verticalPanel.setStyleName("gameSidebar");
 		panel = new SimplePanel[2];
 		for (int i = 0; i < 2; ++i) {
 			panel[i] = new SimplePanel();
 		}
+		panel[0].setStyleName("gamePlayerPane");
+		panel[1].setStyleName("gameQuestionPane");
 
 		labelCounter = new Label("ゲーム開始");
+		labelCounter.setStyleName("gameCounter");
 		labelScore = new Label("得点 : 0");
+		labelScore.setStyleName("gameScore");
 
 		verticalPanel.add(labelCounter);
 		verticalPanel.add(labelScore);

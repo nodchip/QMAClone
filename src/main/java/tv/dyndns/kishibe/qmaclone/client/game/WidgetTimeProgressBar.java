@@ -60,9 +60,11 @@ public class WidgetTimeProgressBar extends VerticalPanel {
 	public WidgetTimeProgressBar() {
 		setHorizontalAlignment(ALIGN_CENTER);
 		setVerticalAlignment(ALIGN_MIDDLE);
+		setStyleName("gameTimerWidget");
 
 		add(html);
 		html.setPixelSize(WIDTH, 40);
+		html.setStyleName("gameTimerTrack");
 		update();
 	}
 
@@ -85,7 +87,7 @@ public class WidgetTimeProgressBar extends VerticalPanel {
 				.width(width, Unit.PX)
 				.height(32, Unit.PX)
 				.trustedBackgroundColor(color)
-				.zIndex(-5)
+				.zIndex(1)
 				.toSafeStyles();
 		SafeHtml safeHtml = TEMPLATE.bar(message, styles);
 		html.setHTML(safeHtml);

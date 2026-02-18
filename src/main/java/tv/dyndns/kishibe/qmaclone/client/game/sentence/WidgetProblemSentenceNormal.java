@@ -71,7 +71,8 @@ public class WidgetProblemSentenceNormal extends WidgetProblemSentence {
 			htmlSentence.setPixelSize(360, 200);
 			panel.add(new WidgetBackgroundYouTube(problem.movieUrl, 240, 200));
 		} else {
-			htmlSentence.setPixelSize(600, 200);
+			htmlSentence.setHeight("200px");
+			htmlSentence.setWidth("100%");
 		}
 
 		final DecoratorPanel decoratorPanel = new DecoratorPanel();

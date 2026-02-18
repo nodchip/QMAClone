@@ -52,9 +52,11 @@ public abstract class QuestionPanel extends VerticalPanel {
 		this.problem = Preconditions.checkNotNull(problem);
 		this.sessionData = Preconditions.checkNotNull(sessionData);
 		setHorizontalAlignment(ALIGN_CENTER);
+		setStyleName("questionPanelRoot");
 
 		HorizontalPanel panelProblemInfo = new HorizontalPanel();
-		panelProblemInfo.addStyleName("gwt-HorizontalPanel-problemInformation");
+		panelProblemInfo.setStyleName("gwt-HorizontalPanel-problemInformation");
+		panelProblemInfo.addStyleName("questionInfoBar");
 		panelProblemInfo.add(new Label(problem.genre.toString()));
 		panelProblemInfo.add(new HTML(SafeHtmlUtils.fromSafeConstant("&nbsp;")));
 		panelProblemInfo.add(new Label(problem.type.toString()));
@@ -71,15 +73,29 @@ public abstract class QuestionPanel extends VerticalPanel {
 		answerView = createAnswerView();
 		inputWidget = createWidgetInput();
 
+		SimplePanel sentencePanel = new SimplePanel();
+		sentencePanel.setStyleName("questionSentenceShell");
+		sentencePanel.setWidget(problemStatement);
+
+		panelTimeProgressBar.setStyleName("questionTimerShell");
+
+		SimplePanel answerPanel = new SimplePanel();
+		answerPanel.setStyleName("questionAnswerShell");
+		answerPanel.setWidget(answerView);
+
+		SimplePanel inputPanel = new SimplePanel();
+		inputPanel.setStyleName("questionInputShell");
+		inputPanel.setWidget(inputWidget);
+
 		add(panelProblemInfo);
-		add(problemStatement);
+		add(sentencePanel);
 		add(panelTimeProgressBar);
-		add(answerView);
-		add(inputWidget);
+		add(answerPanel);
+		add(inputPanel);
 
-		setWidth("600px");
+		setWidth("100%");
 
-		setCellHeight(inputWidget, "300px");
+		setCellHeight(inputPanel, "300px");
 	}
 
 	protected abstract WidgetProblemSentence createWidgetProblemSentence();

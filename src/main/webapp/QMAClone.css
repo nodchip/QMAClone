@@ -575,6 +575,109 @@ a:active {
 	color: #0f4f84;
 }
 
+/* ゲーム画面 */
+.gameRoot {
+	margin: 8px auto 0 auto;
+	padding: 0;
+	border: 1px solid var(--color-border-default);
+	border-radius: 12px;
+	background: var(--color-surface-2);
+	box-shadow: 0 8px 24px rgba(15, 53, 90, 0.12);
+	box-sizing: border-box;
+}
+
+.gameSidebar {
+	width: 200px;
+	padding: 8px;
+	border: 1px solid var(--color-border-default);
+	border-radius: 10px;
+	background: var(--color-surface-1);
+	box-sizing: border-box;
+}
+
+.gameCounter,
+.gameScore {
+	display: block;
+	width: 100%;
+	margin: 0 0 6px 0;
+	padding: 7px 10px;
+	border: 1px solid var(--color-border-subtle);
+	border-radius: 8px;
+	background: var(--color-surface-3);
+	color: var(--color-text-primary);
+	font-size: 14px;
+	font-weight: 700;
+	box-sizing: border-box;
+}
+
+.gameScore {
+	margin-bottom: 8px;
+}
+
+.gamePlayerPane {
+	border: 1px solid var(--color-border-subtle);
+	border-radius: 8px;
+	background: var(--color-surface-2);
+	box-sizing: border-box;
+	overflow: hidden;
+}
+
+.gameQuestionPane {
+	width: 600px;
+	padding: 8px;
+	border: 1px solid var(--color-border-default);
+	border-radius: 10px;
+	background: var(--color-surface-1);
+	box-sizing: border-box;
+}
+
+.questionPanelRoot {
+	width: 100%;
+	gap: 6px;
+}
+
+.questionInfoBar {
+	width: 100%;
+	padding: 8px 10px;
+	border: 1px solid var(--color-border-subtle);
+	border-radius: 8px;
+	background: linear-gradient(180deg, #f7fbff 0%, #eef6ff 100%);
+	box-sizing: border-box;
+}
+
+.questionSentenceShell,
+.questionTimerShell,
+.questionAnswerShell,
+.questionInputShell {
+	width: 100%;
+	padding: 6px;
+	border: 1px solid var(--color-border-subtle);
+	border-radius: 8px;
+	background: var(--color-surface-2);
+	box-sizing: border-box;
+}
+
+.questionInputShell {
+	min-height: 300px;
+}
+
+.gameTimerWidget {
+	width: 100%;
+}
+
+.gameTimerTrack {
+	width: 100% !important;
+}
+
+.timerLabel {
+	position: relative;
+	z-index: 2;
+	padding-left: 8px;
+	color: var(--color-text-primary);
+	font-weight: 700;
+	line-height: 32px;
+}
+
 /* ゲーム開始待機画面 */
 .readyForGameRoot {
 	padding: 12px 14px;
