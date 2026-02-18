@@ -117,3 +117,8 @@
 - `CellBrowser` / `CellList` の選択状態を CSS で調整する場合、GWT再コンパイルで変化する難読化クラス（例: `GG-*` / `*WCGB*`）を直接セレクタに使わない。
 - セル選択色は `CellList.Resources`（`CssResource`）や `setStyleName` で付与した安定クラスのみで制御し、`!important` 付きの難読化クラス上書きを恒久対応にしない。
 - スタイル不一致の切り分けでは、まず `dom.html` などに実DOMを保存し、`gwt-*` クラスか難読化クラスかを確認したうえで修正方針（安定クラス化 / 部品置換）を決める。
+
+### ゲーム画面プレイヤー一覧レイアウト
+- `AbsolutePanel` 配下のカードUIを変更する場合は、`親幅 = 子要素width + left余白 + right余白` を満たすように `setPixelSize` / `OFFSET_X` / CSS `width` を同時に見直す。
+- カード本体と重ね表示ラベル（`answerPopup`）は、`left` と `width` を同一基準でそろえ、`box-sizing: border-box` を指定して境界線分のはみ出しを防ぐ。
+- 「右寄り」「はみ出し」調査ではスクリーンショットだけで判断せず、`dom.html` を採取して対象要素の inline style（`left` / `width`）と適用クラスを確認してから修正する。
