@@ -489,6 +489,10 @@ a:active {
 }
 
 .matchingPlayerRow {
+	display: grid;
+	grid-template-columns: 52px 160px 96px 64px minmax(0, 1fr) 108px;
+	align-items: center;
+	column-gap: 6px;
 	width: 100%;
 	border: 1px solid var(--color-border-subtle);
 	border-radius: var(--radius-sm);
@@ -503,35 +507,198 @@ a:active {
 }
 
 .matchingPlayerIcon {
+	display: block;
+	width: 48px;
+	height: 48px;
 	border-radius: 8px;
 	border: 1px solid var(--color-border-default);
 	background: var(--color-surface-1);
-	margin-right: 8px;
 }
 
-.matchingPlayerSummaryArea {
-	flex: 1;
+.matchingPlayerName {
+	color: var(--color-text-primary);
+	font-size: 15px;
+	font-weight: 700;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
-.matchingPlayerSummary {
+.matchingPlayerAffiliation {
 	font-size: 14px;
 	color: var(--color-text-primary);
+	font-weight: 700;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
-.matchingPlayerSummarySkip {
-	color: #8b5c00;
+.matchingPlayerRating {
+	font-size: 14px;
+	color: var(--color-text-primary);
+	font-weight: 700;
+	text-align: right;
+	font-variant-numeric: tabular-nums;
+}
+
+.matchingPlayerGreeting {
+	font-size: 14px;
+	color: var(--color-text-secondary);
+	padding-left: 10px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 .matchingSkipBadge {
-	display: inline-block;
-	margin-top: 2px;
-	padding: 1px 6px;
+	display: block;
+	padding: 2px 8px;
 	border-radius: 999px;
 	border: 1px solid #f1d17a;
 	background: #fff3c2;
 	color: #845200;
+	font-size: 12px;
+	font-weight: 700;
+	text-align: center;
+	white-space: nowrap;
+}
+
+.matchingSkipBadgeRequested {
+	border-color: #f1d17a;
+	background: #fff3c2;
+	color: #845200;
+}
+
+.matchingSkipBadge:not(.matchingSkipBadgeRequested) {
+	border-color: #8ec2f2;
+	background: #e9f4ff;
+	color: #0f4f84;
+}
+
+/* ゲーム開始待機画面 */
+.readyForGameRoot {
+	padding: 12px 14px;
+	gap: 8px;
+	box-sizing: border-box;
+}
+
+.readyForGameHeader {
+	width: 100%;
+	border: 1px solid var(--color-border-default);
+	border-radius: var(--radius-md);
+	background: linear-gradient(180deg, var(--color-surface-2) 0%, var(--color-surface-1) 100%);
+	padding: 12px;
+	box-sizing: border-box;
+}
+
+.readyForGameTitle {
+	font-size: 24px;
+	font-weight: 700;
+	color: var(--color-text-primary);
+	margin-bottom: 4px;
+}
+
+.readyForGameCountdown {
+	font-size: 20px;
+	font-weight: 700;
+	color: var(--color-accent-primary);
+	margin-bottom: 2px;
+}
+
+.readyForGameGuide {
+	font-size: 14px;
+	color: var(--color-text-secondary);
+	margin-bottom: 4px;
+}
+
+.readyForGamePlayerCount {
+	font-size: 14px;
+	color: var(--color-text-muted);
+}
+
+.readyForGamePlayerFrame {
+	width: 100%;
+	border: 1px solid var(--color-border-default);
+	border-radius: var(--radius-md);
+	background: var(--color-surface-1);
+	padding: 8px;
+	box-sizing: border-box;
+	overflow-y: visible;
+}
+
+.readyForGamePlayerList {
+	width: 100%;
+	gap: 6px;
+}
+
+.readyForGamePlayerRow {
+	display: grid;
+	grid-template-columns: 52px 160px 96px 64px minmax(0, 1fr) 108px;
+	align-items: center;
+	column-gap: 6px;
+	width: 100%;
+	border: 1px solid var(--color-border-subtle);
+	border-radius: var(--radius-sm);
+	background: var(--color-surface-2);
+	padding: 6px 8px;
+	box-sizing: border-box;
+}
+
+.readyForGamePlayerIcon {
+	border-radius: 8px;
+	border: 1px solid var(--color-border-default);
+	background: var(--color-surface-1);
+	width: 48px;
+	height: 48px;
+}
+
+.readyForGamePlayerName {
+	color: var(--color-text-primary);
+	font-size: 15px;
+	font-weight: 700;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.readyForGamePlayerAffiliation {
+	color: var(--color-text-primary);
+	font-size: 14px;
+	font-weight: 700;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.readyForGamePlayerRating {
+	color: var(--color-text-primary);
+	font-size: 14px;
+	font-weight: 700;
+	text-align: right;
+	font-variant-numeric: tabular-nums;
+}
+
+.readyForGamePlayerGreeting {
+	font-size: 14px;
+	color: var(--color-text-secondary);
+	line-height: 1.3;
+	padding-left: 10px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.readyForGamePlayerBadge {
+	display: block;
+	text-align: center;
+	padding: 2px 8px;
+	border-radius: 999px;
+	border: 1px solid #8ec2f2;
+	background: #e9f4ff;
+	color: #0f4f84;
 	font-size: 11px;
 	font-weight: 700;
+	white-space: nowrap;
 }
 
 /* 他者の回答 */

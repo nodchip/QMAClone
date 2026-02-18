@@ -25,13 +25,12 @@ import java.util.List;
 
 import tv.dyndns.kishibe.qmaclone.client.constant.Constant;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketMatchingPlayer;
+import tv.dyndns.kishibe.qmaclone.client.packet.PacketPlayerSummary;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -101,35 +100,44 @@ public class PanelMatching extends VerticalPanel implements ClickHandler {
 		verticalPanel.setStyleName("matchingPlayerList");
 
 		for (PacketMatchingPlayer player : players) {
-			final HorizontalPanel horizontalPanel = new HorizontalPanel();
-			horizontalPanel.setVerticalAlignment(ALIGN_MIDDLE);
-			horizontalPanel.setStyleName("matchingPlayerRow");
+			final PacketPlayerSummary summary = (player.playerSummary != null) ? player.playerSummary
+					: PacketPlayerSummary.getDefaultPlayerSummary();
+			final FlowPanel rowPanel = new FlowPanel();
+			rowPanel.setStyleName("matchingPlayerRow");
+			rowPanel.setWidth("100%");
 
 			final Image image = new Image(Constant.ICON_URL_PREFIX + player.imageFileName);
 			image.setPixelSize(Constant.ICON_SIZE, Constant.ICON_SIZE);
 			image.setStyleName("matchingPlayerIcon");
-			horizontalPanel.add(image);
+			rowPanel.add(image);
 
-			final FlowPanel summaryPanel = new FlowPanel();
-			summaryPanel.setStyleName("matchingPlayerSummaryArea");
+			final Label labelName = new Label(summary.level + " " + summary.name);
+			labelName.setStyleName("matchingPlayerName");
+			rowPanel.add(labelName);
 
-			final HTML html = new HTML(player.playerSummary.asSafeHtml());
-			html.setStyleName("matchingPlayerSummary");
+			final Label labelPrefecture = new Label(summary.prefecture);
+			labelPrefecture.setStyleName("matchingPlayerAffiliation");
+			rowPanel.add(labelPrefecture);
+
+			final Label labelRating = new Label(String.valueOf(summary.rating));
+			labelRating.setStyleName("matchingPlayerRating");
+			rowPanel.add(labelRating);
+
+			final String greeting = (player.greeting == null || player.greeting.isEmpty()) ? "-"
+					: player.greeting;
+			final Label labelGreeting = new Label(greeting);
+			labelGreeting.setStyleName("matchingPlayerGreeting");
+			rowPanel.add(labelGreeting);
+
+			final Label labelSkip = new Label(player.isRequestSkip ? "待機スキップ希望" : "通常待機");
+			labelSkip.setStyleName("matchingSkipBadge");
 			if (player.isRequestSkip) {
-				html.addStyleName("matchingPlayerSummarySkip");
-				horizontalPanel.addStyleName("matchingPlayerRowSkip");
+				rowPanel.addStyleName("matchingPlayerRowSkip");
+				labelSkip.addStyleName("matchingSkipBadgeRequested");
 			}
-			summaryPanel.add(html);
+			rowPanel.add(labelSkip);
 
-			if (player.isRequestSkip) {
-				final Label labelSkip = new Label("待機スキップ希望");
-				labelSkip.setStyleName("matchingSkipBadge");
-				summaryPanel.add(labelSkip);
-			}
-
-			horizontalPanel.add(summaryPanel);
-
-			verticalPanel.add(horizontalPanel);
+			verticalPanel.add(rowPanel);
 		}
 
 		labelPlayerCount.setText("参加プレイヤー: " + players.size() + "人");
