@@ -256,10 +256,10 @@ public class Controller extends SimplePanel {
 			addMainSection(panelSetting, "設定");
 
 			// プレイヤー一覧
-			addMainSection(panelLoginPlayers, "ﾌﾟﾚｲﾔｰ一覧");
+			addMainSection(panelLoginPlayers, "プレイヤー一覧");
 
 			// ランキング
-			addMainSection(panelRanking, "ﾗﾝｷﾝｸﾞ");
+			addMainSection(panelRanking, "ランキング");
 
 			// 掲示板
 			addMainSection(panelBbs, "掲示板");
