@@ -2061,26 +2061,47 @@ a:active {
 }
 
 .bbsThreadListButton,
-.bbsActionButton,
-.bbsPrimaryButton {
+.bbsActionButton {
 	height: 34px;
 	padding: 0 12px;
-	border: 1px solid var(--color-border-subtle);
+	border: 1px solid #9fb9d8;
 	border-radius: 8px;
-	background: var(--color-surface-1);
-	color: var(--color-text-secondary);
+	background: linear-gradient(180deg, #f8fbff 0%, #e7f1fc 100%);
+	color: #0f3f69;
 	font-size: 13px;
 	font-weight: 700;
 	cursor: pointer;
-	transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease;
+	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85);
+	transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease,
+		box-shadow 160ms ease;
 }
 
 .bbsThreadListButton:hover,
-.bbsActionButton:hover,
+.bbsActionButton:hover {
+	background: #dcecff;
+	border-color: #7fa4cb;
+	color: #0b3253;
+	box-shadow: 0 1px 4px rgba(12, 59, 105, 0.16);
+}
+
+.bbsPrimaryButton {
+	height: 34px;
+	padding: 0 12px;
+	border: 1px solid var(--color-accent-primary);
+	border-radius: 8px;
+	background: var(--color-accent-primary);
+	color: #fff;
+	font-size: 13px;
+	font-weight: 700;
+	cursor: pointer;
+	transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease,
+		box-shadow 160ms ease;
+}
+
 .bbsPrimaryButton:hover {
-	background: var(--color-surface-3);
-	border-color: var(--color-border-strong);
-	color: var(--color-text-primary);
+	background: var(--color-accent-secondary);
+	border-color: var(--color-accent-secondary);
+	box-shadow: 0 2px 6px rgba(17, 123, 205, 0.28);
 }
 
 .bbsThreadList {
@@ -2219,6 +2240,35 @@ a:active {
 	border: 1px solid var(--color-border-default);
 	border-radius: 10px;
 	background: var(--color-surface-1);
+}
+
+/* 掲示板ボタン配色の最終優先指定（.gwt-Button 上書き対策） */
+.gwt-Button.bbsThreadListButton,
+.gwt-Button.bbsActionButton {
+	border: 1px solid #9fb9d8;
+	background: linear-gradient(180deg, #f8fbff 0%, #e7f1fc 100%);
+	color: #0f3f69;
+	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85);
+}
+
+.gwt-Button.bbsThreadListButton:hover,
+.gwt-Button.bbsActionButton:hover {
+	background: #dcecff;
+	border-color: #7fa4cb;
+	color: #0b3253;
+	box-shadow: 0 1px 4px rgba(12, 59, 105, 0.16);
+}
+
+.gwt-Button.bbsPrimaryButton {
+	border: 1px solid var(--color-accent-primary);
+	background: var(--color-accent-primary);
+	color: #fff;
+}
+
+.gwt-Button.bbsPrimaryButton:hover {
+	background: var(--color-accent-secondary);
+	border-color: var(--color-accent-secondary);
+	box-shadow: 0 2px 6px rgba(17, 123, 205, 0.28);
 }
 
 .timerLabel {
