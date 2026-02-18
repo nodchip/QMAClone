@@ -874,29 +874,48 @@ a:active {
 .gwt-Label-answerPopup {
 	text-align: center;
 	vertical-align: middle;
-	font-size: 20px;
-	border: 1px solid var(--color-border-default);
+	font-size: 19px;
+	font-weight: 700;
+	letter-spacing: 0.02em;
+	color: #123a5c;
+	border: 1px solid #84b8e6;
+	border-radius: 10px;
+	background: linear-gradient(180deg, #f5fbff 0%, #e7f2fc 100%);
+	box-shadow: 0 3px 10px rgba(20, 57, 92, 0.12);
 	margin: 0px;
-	padding: 0px;
+	padding: 0 8px;
 	width: 180px;
 	height: 32px;
+	line-height: 30px;
 	box-sizing: border-box;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
 .gwt-Label-answerPopupNormal {
-	background-color: var(--color-surface-1);
+	color: #5a7288;
+	border-color: #b7cfe5;
+	background: linear-gradient(180deg, #f5f9fd 0%, #e8eef5 100%);
+	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72);
 }
 
 .gwt-Label-answerPopupAnswered {
-	background-color: yellow;
+	color: #7a5400;
+	border-color: #f0c35d;
+	background: linear-gradient(180deg, #fff8cf 0%, #ffe8a8 100%);
 }
 
 .gwt-Label-answerPopupYes {
-	background-color: aqua;
+	color: #0f5b48;
+	border-color: #65c9ac;
+	background: linear-gradient(180deg, #dcfff4 0%, #baf0df 100%);
 }
 
 .gwt-Label-answerPopupNo {
-	background-color: red;
+	color: #7a1d28;
+	border-color: #f29aa8;
+	background: linear-gradient(180deg, #ffe1e7 0%, #ffc1cb 100%);
 }
 
 .gwt-HTML-playerName {
