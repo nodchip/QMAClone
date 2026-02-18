@@ -31,6 +31,7 @@ import tv.dyndns.kishibe.qmaclone.client.report.ProblemReportUi;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
 import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
@@ -66,6 +67,7 @@ public class PanelResult extends VerticalPanel {
 		setStyleName("resultRoot");
 
 		Label title = new Label("成績発表");
+		title.setStyleName("resultTitle");
 		add(title);
 		setCellHeight(title, "50px");
 		setCellWidth(title, "800px");
@@ -73,8 +75,9 @@ public class PanelResult extends VerticalPanel {
 		{
 			add(resultFooter);
 			resultFooter.setStyleName("resultFooter");
-			HTML html = new HTML("<a href='http://kishibe.dyndns.tv/QMAClone/'>ロビーに戻る</a>");
-			resultFooter.add(html);
+			Anchor backLink = new Anchor("ロビーに戻る", "http://kishibe.dyndns.tv/QMAClone/");
+			backLink.setStyleName("resultBackLink");
+			resultFooter.add(backLink);
 		}
 
 		resultHero.setStyleName("resultHero");
@@ -133,10 +136,20 @@ public class PanelResult extends VerticalPanel {
 			image.setPixelSize(Constant.ICON_SIZE, Constant.ICON_SIZE);
 			image.addStyleName("resultRankingCardIcon");
 			card.add(image);
-			card.add(new HTML("<b>" + player.rank + "位</b> " + player.playerSummary.asResultSafeHtml().asString()));
-			card.add(new HTML("得点: " + player.score + "点"));
-			card.add(new HTML("レーティング: "
-					+ renderRatingChange(player.playerSummary.rating, player.newRating).asString()));
+
+			HTML name = new HTML(
+					"<b>" + player.rank + "位</b> " + player.playerSummary.asResultSafeHtml().asString());
+			name.setStyleName("resultRankingName");
+			card.add(name);
+
+			HTML score = new HTML("得点: " + player.score + "点");
+			score.setStyleName("resultRankingScore");
+			card.add(score);
+
+			HTML rating = new HTML(
+					"レーティング: " + renderRatingChange(player.playerSummary.rating, player.newRating).asString());
+			rating.setStyleName("resultRankingRating");
+			card.add(rating);
 			resultRankingList.add(card);
 		}
 	}

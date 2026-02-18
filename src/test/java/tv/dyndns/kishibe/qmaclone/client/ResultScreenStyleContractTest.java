@@ -16,6 +16,8 @@ public class ResultScreenStyleContractTest {
   public void resultScreenDefinesModernCardStyles() throws Exception {
     String css =
         Files.readString(Paths.get("src/main/webapp/QMAClone.css"), StandardCharsets.UTF_8);
+    assertTrue(css.contains(".resultTitle"));
+    assertTrue(css.contains(".resultBackLink"));
     assertTrue(css.contains(".resultHero"));
     assertTrue(css.contains(".resultRankingCard"));
     assertTrue(css.contains(".resultRankingCardMine"));

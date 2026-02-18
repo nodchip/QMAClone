@@ -6671,6 +6671,20 @@ body {
 	gap: 10px;
 }
 
+.resultTitle {
+	margin: 4px 0 8px;
+	padding: 8px 16px;
+	border-radius: 12px;
+	background: linear-gradient(180deg, #f7fbff 0%, #e4f0ff 100%);
+	border: 1px solid #93bce0;
+	box-shadow: 0 4px 10px rgba(13, 61, 104, 0.14);
+	color: #0b3760;
+	font-size: 32px;
+	font-weight: 800;
+	letter-spacing: 0.08em;
+	line-height: 1.2;
+}
+
 .resultHero {
 	width: 100%;
 	box-sizing: border-box;
@@ -6694,7 +6708,8 @@ body {
 }
 
 .resultRankingCard {
-	display: flex;
+	display: grid;
+	grid-template-columns: 56px minmax(190px, 1fr) 140px 240px;
 	align-items: center;
 	gap: 12px;
 	padding: 10px 12px;
@@ -6716,9 +6731,47 @@ body {
 	border-radius: 8px;
 }
 
+.resultRankingName,
+.resultRankingScore,
+.resultRankingRating {
+	margin: 0;
+	white-space: nowrap;
+}
+
+.resultRankingName {
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
 .resultFooter {
 	width: 100%;
 	text-align: center;
+}
+
+.resultBackLink {
+	display: inline-block;
+	margin: 4px 0 10px;
+	padding: 10px 18px;
+	border-radius: 999px;
+	border: 1px solid #2d8ed4;
+	background: linear-gradient(180deg, #2ea2ea 0%, #1f7fc5 100%);
+	color: #ffffff !important;
+	font-weight: 700;
+	text-decoration: none;
+	box-shadow: 0 4px 10px rgba(13, 61, 104, 0.2);
+	transition: transform 90ms ease, box-shadow 140ms ease, background-color 140ms ease,
+		border-color 140ms ease;
+}
+
+.resultBackLink:hover,
+.resultBackLink:focus-visible {
+	background: linear-gradient(180deg, #41b0f2 0%, #2a8ed1 100%);
+	border-color: #41b0f2;
+	box-shadow: 0 5px 12px rgba(13, 61, 104, 0.24);
+}
+
+.resultBackLink:active {
+	transform: translateY(1px);
 }
 
 .resultRatingBadgeUp {
