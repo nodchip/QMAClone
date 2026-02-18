@@ -40,14 +40,17 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class PanelResult extends VerticalPanel {
 	public interface MyTemplate extends SafeHtmlTemplates {
-		@Template("{0} → <span style='color:green'>{1} ▲</span>")
-		SafeHtml up(int oldRating, int newRating);
+		@Template("{0} → <span class='resultRatingBadgeUp'>{1} (+{2})</span>")
+		SafeHtml up(int oldRating, int newRating, int diff);
 
-		@Template("{0} → {1} ＝")
+		@Template("{0} → <span class='resultRatingBadgeFlat'>{1} (±0)</span>")
 		SafeHtml equal(int oldRating, int newRating);
 
-		@Template("{0} → <span style='color:red'>{1} ▼</span>")
-		SafeHtml down(int oldRating, int newRating);
+		@Template("{0} → <span class='resultRatingBadgeDown'>{1} (-{2})</span>")
+		SafeHtml down(int oldRating, int newRating, int diff);
+
+		@Template("<span class='resultRatingBadgeFlat'>変動なし</span>")
+		SafeHtml noChange();
 	}
 
 	private static final MyTemplate TEMPLATE = GWT.create(MyTemplate.class);
@@ -140,14 +143,14 @@ public class PanelResult extends VerticalPanel {
 
 	private SafeHtml renderRatingChange(int oldRating, int newRating) {
 		if (newRating <= 0) {
-			return TEMPLATE.equal(oldRating, oldRating);
+			return TEMPLATE.noChange();
 		}
 		if (oldRating < newRating) {
-			return TEMPLATE.up(oldRating, newRating);
+			return TEMPLATE.up(oldRating, newRating, newRating - oldRating);
 		}
 		if (oldRating == newRating) {
 			return TEMPLATE.equal(oldRating, newRating);
 		}
-		return TEMPLATE.down(oldRating, newRating);
+		return TEMPLATE.down(oldRating, newRating, oldRating - newRating);
 	}
 }
