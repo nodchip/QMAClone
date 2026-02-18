@@ -6664,3 +6664,75 @@ body {
 	text-align: center;
 }
 
+.resultRoot {
+	width: 100%;
+	max-width: 800px;
+	box-sizing: border-box;
+	gap: 10px;
+}
+
+.resultHero {
+	width: 100%;
+	box-sizing: border-box;
+}
+
+.resultHeroCard {
+	padding: 12px 14px;
+	border: 1px solid #8eb9dd;
+	border-radius: 12px;
+	background: linear-gradient(180deg, #f8fcff 0%, #eaf5ff 100%);
+	box-shadow: 0 4px 12px rgba(14, 57, 98, 0.12);
+	line-height: 1.5;
+}
+
+.resultRankingList {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	box-sizing: border-box;
+}
+
+.resultRankingCard {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding: 10px 12px;
+	border: 1px solid #b7d0e8;
+	border-radius: 10px;
+	background: #f1f7ff;
+	box-sizing: border-box;
+}
+
+.resultRankingCardMine {
+	border-color: #2d8ed4;
+	background: linear-gradient(180deg, #edf7ff 0%, #dceeff 100%);
+	box-shadow: 0 4px 12px rgba(20, 83, 132, 0.16);
+}
+
+.resultRankingCardIcon {
+	flex: 0 0 auto;
+	border: 1px solid #8eb9dd;
+	border-radius: 8px;
+}
+
+.resultFooter {
+	width: 100%;
+	text-align: center;
+}
+
+.resultRatingBadgeUp {
+	color: #0f7c4a;
+	font-weight: 700;
+}
+
+.resultRatingBadgeDown {
+	color: #b03a4a;
+	font-weight: 700;
+}
+
+.resultRatingBadgeFlat {
+	color: #355a78;
+	font-weight: 700;
+}
+
