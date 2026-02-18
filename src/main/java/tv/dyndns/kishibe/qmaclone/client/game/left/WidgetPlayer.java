@@ -40,8 +40,6 @@ import com.google.gwt.user.client.ui.Image;
 
 public class WidgetPlayer extends HorizontalPanel {
 	private static final Logger logger = Logger.getLogger(WidgetPlayer.class.getName());
-	private static final int INTERPOLATE_RATIO_NUMERATOR = 1;
-	private static final int INTERPOLATE_RATIO_DENOMINATOR = 10;
 	private static final int OFFSET_X = 0;
 	public static final int HEIGHT = 65;
 	private final HTML htmlName = new HTML();
@@ -217,16 +215,9 @@ public class WidgetPlayer extends HorizontalPanel {
 		destY = (rank - 1) * HEIGHT;
 	}
 
-	private int interpolate(int src, int dest, int ratioNumerator, int ratioDenominator) {
-		return (src * (ratioDenominator - ratioNumerator) + dest * ratioNumerator)
-				/ ratioDenominator;
-	}
-
 	public void updatePosition() {
-		int newX = interpolate(currentX, destX, INTERPOLATE_RATIO_NUMERATOR,
-				INTERPOLATE_RATIO_DENOMINATOR);
-		int newY = interpolate(currentY, destY, INTERPOLATE_RATIO_NUMERATOR,
-				INTERPOLATE_RATIO_DENOMINATOR);
+		int newX = PlayerListMotion.nextPosition(currentX, destX);
+		int newY = PlayerListMotion.nextPosition(currentY, destY);
 
 		if (newX != currentX || newY != currentY) {
 			currentX = newX;

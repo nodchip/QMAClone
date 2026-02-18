@@ -37,7 +37,6 @@ import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 
 public class WidgetPlayerList extends AbsolutePanel {
-	private static final int UPDATE_DURATION = 100;
 	private final List<WidgetPlayer> players = Lists.newArrayList();
 	private MarkedCanvas markedCanvas;
 	private final RepeatingCommand commandUpdate = new RepeatingCommand() {
@@ -131,7 +130,7 @@ public class WidgetPlayerList extends AbsolutePanel {
 	protected void onLoad() {
 		super.onLoad();
 		if (UserData.get().isRankingMove()) {
-			Scheduler.get().scheduleFixedDelay(commandUpdate, UPDATE_DURATION);
+			Scheduler.get().scheduleFixedPeriod(commandUpdate, PlayerListMotion.FRAME_INTERVAL_MS);
 		}
 	}
 
