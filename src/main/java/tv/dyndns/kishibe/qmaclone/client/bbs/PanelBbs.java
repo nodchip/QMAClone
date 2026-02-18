@@ -35,9 +35,9 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.DecoratorPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.LazyPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -59,6 +59,11 @@ public class PanelBbs extends VerticalPanel implements PageSelectable, ClickHand
 	public PanelBbs(int bbsId) {
 		this.bbsId = bbsId;
 		setWidth("800px");
+		addStyleName("bbsRoot");
+		displayPanel.setWidth("100%");
+		displayPanel.addStyleName("bbsThreadList");
+		buildThread.addStyleName("bbsBuildThreadPanel");
+		threadListButton.addStyleName("bbsThreadListButton");
 		displayPanel.setHorizontalAlignment(ALIGN_CENTER);
 		reload();
 	}
@@ -76,8 +81,11 @@ public class PanelBbs extends VerticalPanel implements PageSelectable, ClickHand
 				int numberOfPage = (numberOfBbsThreads - 1) / Constant.BBS_THREADS_PER_PAGE + 1;
 				pageSelector = new WidgetPageSelector(instance, numberOfPage);
 				pageSelector.setPage(0);
+				pageSelector.addStyleName("bbsPager");
 
 				HorizontalPanel panel = new HorizontalPanel();
+				panel.addStyleName("bbsToolbar");
+				panel.setSpacing(8);
 				panel.add(pageSelector);
 				panel.add(threadListButton);
 				add(panel);
@@ -105,9 +113,10 @@ public class PanelBbs extends VerticalPanel implements PageSelectable, ClickHand
 			displayPanel.clear();
 
 			for (PacketBbsThread thread : result) {
-				DecoratorPanel decoratorPanel = new DecoratorPanel();
-				decoratorPanel.setWidget(new PanelThread((int) thread.id, thread.title));
-				displayPanel.add(decoratorPanel);
+				SimplePanel threadCard = new SimplePanel();
+				threadCard.addStyleName("bbsThreadCardShell");
+				threadCard.setWidget(new PanelThread((int) thread.id, thread.title));
+				displayPanel.add(threadCard);
 			}
 		}
 

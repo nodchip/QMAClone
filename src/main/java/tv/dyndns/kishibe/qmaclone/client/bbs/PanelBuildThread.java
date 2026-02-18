@@ -49,21 +49,30 @@ public class PanelBuildThread extends VerticalPanel implements ClickHandler {
 
   public PanelBuildThread(PanelBbs panelBbs) {
     this.panelBbs = panelBbs;
+    setWidth("100%");
+    addStyleName("bbsBuildThreadRoot");
+    buttonToSecondState.addStyleName("bbsPrimaryButton");
+    buttonBuild.addStyleName("bbsPrimaryButton");
+    textBoxThreadTitle.addStyleName("bbsThreadTitleInput");
+    responseForm.addStyleName("bbsBuildResponseForm");
 
     displayFirstState();
   }
 
   private void displayFirstState() {
     clear();
+    addStyleName("bbsBuildThreadFirstState");
     add(buttonToSecondState);
   }
 
   private void displaySecondState() {
     clear();
-    add(new HTML("<b>新規スレッド作成</b>"));
+    add(new HTML("<div class='bbsBuildThreadTitle'>新規スレッド作成</div>"));
 
     {
       HorizontalPanel panel = new HorizontalPanel();
+      panel.setSpacing(8);
+      panel.addStyleName("bbsBuildThreadActions");
       panel.add(buttonBuild);
 
       textBoxThreadTitle.setWidth("400px");

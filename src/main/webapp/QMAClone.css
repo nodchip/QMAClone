@@ -2017,27 +2017,208 @@ a:active {
 	width: 40px;
 }
 
-/* 掲示板用ボタン */
+/* 掲示板 */
+.bbsRoot {
+	width: 100%;
+	max-width: 800px;
+	padding: 12px;
+	border: 1px solid var(--color-border-default);
+	border-radius: 12px;
+	background: var(--color-surface-2);
+	box-shadow: 0 8px 24px rgba(15, 53, 90, 0.12);
+	box-sizing: border-box;
+}
+
+.bbsToolbar {
+	margin-bottom: 10px;
+	align-items: center;
+}
+
+.bbsPager .pageSelectButton {
+	min-width: 34px;
+	height: 34px;
+	padding: 0 8px;
+	border: 1px solid var(--color-border-subtle);
+	border-radius: 8px;
+	background: var(--color-surface-1);
+	font-size: 14px;
+	font-weight: 700;
+	line-height: 1;
+	color: var(--color-text-secondary);
+	transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease;
+}
+
+.bbsPager .pageSelectButton:hover {
+	background: var(--color-surface-3);
+	border-color: var(--color-border-strong);
+	color: var(--color-text-primary);
+}
+
+.bbsPager .pageSelectButton:disabled {
+	background: var(--color-accent-primary);
+	border-color: var(--color-accent-primary);
+	color: #fff;
+}
+
+.bbsThreadListButton,
+.bbsActionButton,
+.bbsPrimaryButton {
+	height: 34px;
+	padding: 0 12px;
+	border: 1px solid var(--color-border-subtle);
+	border-radius: 8px;
+	background: var(--color-surface-1);
+	color: var(--color-text-secondary);
+	font-size: 13px;
+	font-weight: 700;
+	cursor: pointer;
+	transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease;
+}
+
+.bbsThreadListButton:hover,
+.bbsActionButton:hover,
+.bbsPrimaryButton:hover {
+	background: var(--color-surface-3);
+	border-color: var(--color-border-strong);
+	color: var(--color-text-primary);
+}
+
+.bbsThreadList {
+	gap: 10px;
+}
+
+.bbsThreadCardShell {
+	width: 100%;
+	padding: 12px;
+	border: 1px solid var(--color-border-default);
+	border-radius: 12px;
+	background: var(--color-surface-1);
+	box-shadow: 0 3px 10px rgba(12, 59, 105, 0.08);
+	box-sizing: border-box;
+}
+
+.bbsThreadRoot {
+	width: 100%;
+}
+
 .gwt-HTML-bbsThreadTitle {
-	color: var(--color-danger-text);
-	font-size: 22px;
+	display: block;
+	margin: 0 0 8px 0;
+	color: var(--color-text-primary);
+	font-size: 18px;
+	font-weight: 800;
+	line-height: 1.4;
+}
+
+.bbsResponseList {
+	width: 100%;
+}
+
+.bbsResponseCard {
+	margin-bottom: 8px;
+	padding: 8px 10px;
+	border: 1px solid var(--color-border-subtle);
+	border-radius: 10px;
+	background: var(--color-surface-2);
 }
 
 .gwt-HTML-bbsResponseHeader {
-	margin-left: 10px;
-	font-size: 18px;
+	margin: 0;
+	font-size: 13px;
+	font-weight: 700;
+	color: var(--color-text-muted);
 }
 
 .gwt-HTML-bbsResponseBody {
-	margin-left: 20px;
-	font-size: 16px;
+	margin: 6px 0 0 0;
+	font-size: 14px;
+	line-height: 1.55;
+	color: var(--color-text-secondary);
 	display: block;
 	white-space: pre-wrap;
 	word-break: break-word;
 	overflow-wrap: anywhere;
-	max-height: 220px;
+	max-height: 180px;
 	overflow-y: auto;
 	overflow-x: hidden;
+}
+
+.bbsThreadActions {
+	margin: 8px 0;
+}
+
+.bbsResponseFormRoot {
+	width: 100%;
+}
+
+.bbsResponseFormOptions {
+	margin-bottom: 6px;
+	align-items: center;
+}
+
+.bbsSelect {
+	height: 34px;
+	border: 1px solid var(--color-border-subtle);
+	border-radius: 8px;
+	background: var(--color-surface-1);
+	color: var(--color-text-secondary);
+}
+
+.bbsBodyTextArea {
+	width: 100%;
+	min-height: 120px;
+	padding: 10px;
+	border: 1px solid var(--color-border-subtle);
+	border-radius: 10px;
+	background: var(--color-surface-1);
+	color: var(--color-text-secondary);
+	font-size: 14px;
+	line-height: 1.55;
+	box-sizing: border-box;
+	resize: vertical;
+}
+
+.bbsBodyTextArea:focus {
+	outline: none;
+	border-color: var(--color-accent-primary);
+	box-shadow: 0 0 0 2px rgba(17, 123, 205, 0.2);
+}
+
+.bbsBuildThreadPanel {
+	margin-top: 12px;
+	padding: 10px 12px;
+	border: 1px solid var(--color-border-default);
+	border-radius: 12px;
+	background: var(--color-surface-1);
+	box-sizing: border-box;
+}
+
+.bbsBuildThreadTitle {
+	margin-bottom: 8px;
+	font-size: 15px;
+	font-weight: 800;
+	color: var(--color-text-primary);
+}
+
+.bbsBuildThreadActions {
+	margin-bottom: 8px;
+	align-items: center;
+}
+
+.bbsThreadTitleInput {
+	height: 34px;
+	padding: 0 10px;
+	border: 1px solid var(--color-border-subtle);
+	border-radius: 8px;
+	background: var(--color-surface-1);
+	color: var(--color-text-secondary);
+}
+
+.bbsAllThreadList .bbsDisclosure {
+	margin-bottom: 8px;
+	border: 1px solid var(--color-border-default);
+	border-radius: 10px;
+	background: var(--color-surface-1);
 }
 
 .timerLabel {

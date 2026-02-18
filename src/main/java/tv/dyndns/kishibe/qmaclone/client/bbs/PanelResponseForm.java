@@ -38,16 +38,22 @@ public class PanelResponseForm extends VerticalPanel {
   private final TextArea textAreaBody = new TextArea();
 
   public PanelResponseForm(boolean displayAge) {
+    setWidth("100%");
+    addStyleName("bbsResponseFormRoot");
     {
       HorizontalPanel panel = new HorizontalPanel();
+      panel.setSpacing(8);
+      panel.addStyleName("bbsResponseFormOptions");
       listBoxAnonymous.addItem("匿名", "0");
       listBoxAnonymous.addItem("名前のみ表示", "1");
       listBoxAnonymous.addItem("全て表示", "2");
       listBoxAnonymous.setSelectedIndex(UserData.get().getBbsDispInfo());
       listBoxAnonymous.setWidth("200px");
+      listBoxAnonymous.addStyleName("bbsSelect");
       panel.add(listBoxAnonymous);
 
       if (displayAge) {
+        checkBoxAge.addStyleName("bbsAgeCheckbox");
         panel.add(checkBoxAge);
         checkBoxAge.setValue(UserData.get().isBbsAge());
       }
@@ -55,8 +61,9 @@ public class PanelResponseForm extends VerticalPanel {
       add(panel);
     }
 
-    textAreaBody.setWidth("600px");
+    textAreaBody.setWidth("100%");
     textAreaBody.setVisibleLines(8);
+    textAreaBody.addStyleName("bbsBodyTextArea");
     add(textAreaBody);
   }
 

@@ -57,6 +57,13 @@ public class PanelThread extends VerticalPanel implements ClickHandler {
   public PanelThread(int threadId, String title) {
     this.threadId = threadId;
     this.title = title;
+    setWidth("100%");
+    addStyleName("bbsThreadRoot");
+    bodyPanel.setWidth("100%");
+    bodyPanel.addStyleName("bbsResponseList");
+    responseForm.addStyleName("bbsResponseForm");
+    buttonAll.addStyleName("bbsActionButton");
+    buttonWrite.addStyleName("bbsActionButton");
     setHorizontalAlignment(ALIGN_CENTER);
     setEnabled(false);
     Service.Util.getInstance().getBbsResponses(threadId, Constant.BBS_INITIAL_RESPONSE_PER_THREAD,
@@ -72,6 +79,8 @@ public class PanelThread extends VerticalPanel implements ClickHandler {
 
     {
       HorizontalPanel panel = new HorizontalPanel();
+      panel.setSpacing(8);
+      panel.addStyleName("bbsThreadActions");
       panel.add(buttonAll);
       panel.add(buttonWrite);
       add(panel);
@@ -100,6 +109,8 @@ public class PanelThread extends VerticalPanel implements ClickHandler {
 
     for (PacketBbsResponse response : responses) {
       VerticalPanel panel = new VerticalPanel();
+      panel.setWidth("100%");
+      panel.addStyleName("bbsResponseCard");
 
       {
         String upper = "";
