@@ -42,7 +42,7 @@ import com.google.gwt.user.client.ui.HTML;
 public class WidgetProblemSentenceEffect extends WidgetProblemSentenceNormal {
   public interface HintTemplate extends SafeHtmlTemplates {
     @Template("<p style='position:relative;'>"
-        + "<span style='width:600px;height:64px;font-size:56px;text-align:center;vertical-align:middle;'>{0}</span>")
+        + "<span style='display:inline-block;width:100%;height:64px;font-size:56px;text-align:center;vertical-align:middle;'>{0}</span>")
     SafeHtml prefix(String hint);
 
     @Template("<span style='{0}'></span>")
@@ -51,7 +51,7 @@ public class WidgetProblemSentenceEffect extends WidgetProblemSentenceNormal {
 
   private static final HintTemplate HINT_TEMPLATE = GWT.create(HintTemplate.class);
   private static final SafeHtml SURFIX_TEMPLATE = SafeHtmlUtils.fromSafeConstant("</p>");
-  private static final int WIDTH = 600;
+  private static final int DEFAULT_WIDTH = 600;
   private static final int NUMBER_OF_LINE = 10;
   private static final int INITIALI_WIDTH = 100;
   private static final int UPDATE_PERIOD_MS = 200;
@@ -75,17 +75,18 @@ public class WidgetProblemSentenceEffect extends WidgetProblemSentenceNormal {
 
   public WidgetProblemSentenceEffect(PacketProblem problem) {
     super(problem);
-    setWidth("600px");
+    setWidth("100%");
 
     String hint = problem.choices[0];
     prefix = HINT_TEMPLATE.prefix(hint);
 
-    html.setPixelSize(600, 80);
+    html.setHeight("80px");
+    html.setWidth("100%");
 
     add(html);
     setCellHorizontalAlignment(html, ALIGN_CENTER);
     setCellVerticalAlignment(html, ALIGN_MIDDLE);
-    setCellWidth(html, "600px");
+    setCellWidth(html, "100%");
     setCellHeight(html, "64px");
 
     Rand rand = new Rand(Objects.hashCode(problem.id, problem.shuffledChoices,
@@ -95,7 +96,7 @@ public class WidgetProblemSentenceEffect extends WidgetProblemSentenceNormal {
       if (rand.get(2) == 0) {
         velocities[i] *= -1;
       }
-      pos[i] = rand.get(WIDTH - INITIALI_WIDTH);
+      pos[i] = rand.get(DEFAULT_WIDTH - INITIALI_WIDTH);
     }
 
     update();
@@ -111,12 +112,14 @@ public class WidgetProblemSentenceEffect extends WidgetProblemSentenceNormal {
     }
 
     // 目隠しの位置を更新する
+    int width = getEffectiveWidth();
     int lineWidth = INITIALI_WIDTH * (showAllCount - count) / showAllCount;
+    lineWidth = Math.min(lineWidth, width);
     for (int i = 0; i < NUMBER_OF_LINE; ++i) {
       pos[i] += velocities[i];
       if (pos[i] < 0) {
         velocities[i] = Math.abs(velocities[i]);
-      } else if (pos[i] > WIDTH - lineWidth) {
+      } else if (pos[i] > width - lineWidth) {
         velocities[i] = -Math.abs(velocities[i]);
       }
     }
@@ -134,6 +137,11 @@ public class WidgetProblemSentenceEffect extends WidgetProblemSentenceNormal {
     builder.append(SURFIX_TEMPLATE);
 
     html.setHTML(builder.toSafeHtml());
+  }
+
+  private int getEffectiveWidth() {
+    int width = html.getOffsetWidth();
+    return width > 0 ? width : DEFAULT_WIDTH;
   }
 
   @Override

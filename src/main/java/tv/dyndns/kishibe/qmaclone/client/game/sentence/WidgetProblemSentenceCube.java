@@ -57,9 +57,10 @@ public class WidgetProblemSentenceCube extends WidgetProblemSentenceNormal {
 
 		label.addStyleDependentName("cubeHint");
 		grid.setWidget(0, 0, label);
+		grid.setWidth("100%");
 		add(grid);
 		setCellHorizontalAlignment(grid, ALIGN_CENTER);
-		setCellWidth(grid, "600px");
+		setCellWidth(grid, "100%");
 
 		changeLabel();
 	}

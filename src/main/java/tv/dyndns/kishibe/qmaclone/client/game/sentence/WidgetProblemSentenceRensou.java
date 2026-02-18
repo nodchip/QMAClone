@@ -73,7 +73,8 @@ public class WidgetProblemSentenceRensou extends WidgetProblemSentence {
 
 		htmlSentence.addStyleDependentName("problemStatement");
 		htmlSentence.addStyleDependentName("problemStatementCenter");
-		htmlSentence.setSize("600px", "200px");
+		htmlSentence.setHeight("200px");
+		htmlSentence.setWidth("100%");
 
 		DecoratorPanel decoratorPanel = new DecoratorPanel();
 		decoratorPanel.setWidget(htmlSentence);

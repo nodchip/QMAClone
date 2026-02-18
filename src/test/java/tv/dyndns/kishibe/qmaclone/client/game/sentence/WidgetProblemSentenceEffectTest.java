@@ -32,4 +32,10 @@ public class WidgetProblemSentenceEffectTest extends QMACloneGWTTestCaseBase {
 
 		assertFalse(widget.html.getHTML().contains("position:absolute;"));
 	}
+
+	@Test
+	public void testSentenceWidthShouldBeFullWidth() {
+		assertEquals("100%", widget.getElement().getStyle().getWidth());
+		assertEquals("100%", widget.html.getElement().getStyle().getWidth());
+	}
 }

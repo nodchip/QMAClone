@@ -184,4 +184,13 @@ public class WidgetProblemSentenceRensouTest extends QMACloneGWTTestCaseBase {
 		ui.update(0, 10000);
 		assertEquals("a<br>b<br>c<br>d", ui.htmlSentence.getHTML().replaceAll("</br>", ""));
 	}
+
+	@Test
+	public void testSentenceWidthShouldBeFullWidth() {
+		PacketProblem problem = new PacketProblem();
+		problem.sentence = "a\nb\nc\nd\n";
+
+		WidgetProblemSentenceRensou ui = new WidgetProblemSentenceRensou(problem);
+		assertEquals("100%", ui.htmlSentence.getElement().getStyle().getWidth());
+	}
 }
