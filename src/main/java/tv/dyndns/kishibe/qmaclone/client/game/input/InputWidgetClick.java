@@ -38,6 +38,8 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 
 public class InputWidgetClick extends InputWidget implements MouseDownHandler, ClickHandler {
+	private static final int DISPLAY_IMAGE_WIDTH = Constant.CLICK_IMAGE_WIDTH * 9 / 10;
+	private static final int DISPLAY_IMAGE_HEIGHT = Constant.CLICK_IMAGE_HEIGHT * 9 / 10;
 	private static InputWidgetClick INSTANCE = null;
 	private boolean throughClick = false;
 	private MarkedCanvas canvas;
@@ -64,15 +66,17 @@ public class InputWidgetClick extends InputWidget implements MouseDownHandler, C
 
 		HorizontalPanel panel = new HorizontalPanel();
 		panel.setVerticalAlignment(ALIGN_MIDDLE);
+		panel.setStyleName("gwt-HorizontalPanel-clickInput");
 
 		image = new Image(problem.getClickImageUrl());
-		image.setPixelSize(Constant.CLICK_IMAGE_WIDTH, Constant.CLICK_IMAGE_HEIGHT);
+		image.setPixelSize(DISPLAY_IMAGE_WIDTH, DISPLAY_IMAGE_HEIGHT);
+		image.setStyleName("gwt-Image-clickProblem");
 		panel.add(image);
 
 		buttonOk.setStyleName("gwt-Button-clickControl");
 		panel.add(buttonOk);
 
-		canvas = new MarkedCanvas(image, Constant.CLICK_IMAGE_WIDTH, Constant.CLICK_IMAGE_HEIGHT);
+		canvas = new MarkedCanvas(image, DISPLAY_IMAGE_WIDTH, DISPLAY_IMAGE_HEIGHT);
 		canvas.addMouseDownHandler(this);
 
 		add(panel);
@@ -108,8 +112,61 @@ public class InputWidgetClick extends InputWidget implements MouseDownHandler, C
 	public void onClick(ClickEvent event) {
 		Object sender = event.getSource();
 		if (sender == buttonOk) {
-			sendAnswer(clickPosition != null ? (clickPosition.x + " " + clickPosition.y) : "");
+			sendAnswer(clickPosition != null ? convertToOriginalCoordinates(clickPosition,
+					getDisplayedCanvasWidth(), getDisplayedCanvasHeight()).toString()
+					: "");
 		}
+	}
+
+	/**
+	 * 表示縮小後の座標を元画像座標へ変換する。
+	 */
+	static Point convertToOriginalCoordinates(Point displayedPoint, int displayedWidth,
+			int displayedHeight) {
+		return ClickCoordinateScaler.toOriginal(displayedPoint, displayedWidth,
+				displayedHeight, Constant.CLICK_IMAGE_WIDTH, Constant.CLICK_IMAGE_HEIGHT);
+	}
+
+	/**
+	 * 後方互換のために固定表示幅版を残す。
+	 */
+	static Point convertToOriginalCoordinates(Point displayedPoint) {
+		return ClickCoordinateScaler.toOriginal(displayedPoint, DISPLAY_IMAGE_WIDTH,
+				DISPLAY_IMAGE_HEIGHT, Constant.CLICK_IMAGE_WIDTH, Constant.CLICK_IMAGE_HEIGHT);
+	}
+
+	/**
+	 * クリックイベントが返すX座標系の幅を返す。
+	 */
+	private int getDisplayedCanvasWidth() {
+		if (canvas != null && canvas.getCoordWidth() > 0) {
+			return canvas.getCoordWidth();
+		}
+		return DISPLAY_IMAGE_WIDTH;
+	}
+
+	/**
+	 * クリックイベントが返すY座標系の高さを返す。
+	 */
+	private int getDisplayedCanvasHeight() {
+		if (canvas != null && canvas.getCoordHeight() > 0) {
+			return canvas.getCoordHeight();
+		}
+		return DISPLAY_IMAGE_HEIGHT;
+	}
+
+	/**
+	 * 元画像座標を現在の表示座標へ変換する。
+	 */
+	public static Point convertToDisplayedCoordinates(Point originalPoint) {
+		int displayedWidth = DISPLAY_IMAGE_WIDTH;
+		int displayedHeight = DISPLAY_IMAGE_HEIGHT;
+		if (INSTANCE != null) {
+			displayedWidth = INSTANCE.getDisplayedCanvasWidth();
+			displayedHeight = INSTANCE.getDisplayedCanvasHeight();
+		}
+		return ClickCoordinateScaler.toDisplayed(originalPoint, Constant.CLICK_IMAGE_WIDTH,
+				Constant.CLICK_IMAGE_HEIGHT, displayedWidth, displayedHeight);
 	}
 
 	@Override

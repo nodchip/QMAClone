@@ -41,8 +41,8 @@ import com.google.gwt.user.client.ui.HTML;
 
 public class WidgetProblemSentenceEffect extends WidgetProblemSentenceNormal {
   public interface HintTemplate extends SafeHtmlTemplates {
-    @Template("<p style='position:relative;'>"
-        + "<span style='display:inline-block;width:100%;height:64px;font-size:56px;text-align:center;vertical-align:middle;'>{0}</span>")
+    @Template("<p class='effectHintRoot' style='position:relative;width:100%;margin:0;'>"
+        + "<span class='effectHintText'>{0}</span>")
     SafeHtml prefix(String hint);
 
     @Template("<span style='{0}'></span>")

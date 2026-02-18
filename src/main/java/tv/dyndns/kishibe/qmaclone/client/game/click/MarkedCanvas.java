@@ -69,6 +69,20 @@ public class MarkedCanvas implements HasMouseDownHandlers {
 		return canvas.getPopupTop();
 	}
 
+	/**
+	 * マウスイベントで報告されるX座標系の幅を返す。
+	 */
+	public int getCoordWidth() {
+		return canvas.getCoordWidth();
+	}
+
+	/**
+	 * マウスイベントで報告されるY座標系の高さを返す。
+	 */
+	public int getCoordHeight() {
+		return canvas.getCoordHeight();
+	}
+
 	public int addSegmentMark(int startX, int startY, int endX, int endY, int id) {
 		Mark mark = new MarkSegment(canvas, startX, startY, endX, endY);
 		return add(id, mark);

@@ -38,6 +38,7 @@ public class InputWidgetHayaimono extends InputWidget implements ClickHandler {
 
 		int numberOfRows = numberOfChoices / 2;
 		Grid grid = new Grid(numberOfRows, 4);
+		grid.setStyleName("gwt-Grid-hayaimono");
 
 		add(grid);
 		for (int i = 0; i < numberOfChoices; ++i) {

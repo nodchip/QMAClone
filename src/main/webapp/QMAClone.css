@@ -981,6 +981,8 @@ a:active {
 
 .gwt-Label-cubeHint {
 	font-size: 48px;
+	width: 100%;
+	text-align: center;
 }
 
 .gwt-Label-answer {
@@ -6360,8 +6362,305 @@ body {
 		display: block;
 	}
 
-	.rankingSelectorCard {
+.rankingSelectorCard {
 		margin-bottom: 8px;
 	}
+}
+
+/* ゲーム解答欄のモダン化 */
+.gwt-Label-answer {
+	padding: 4px 10px;
+	border: 1px solid #8eb8de;
+	border-radius: 10px;
+	background: linear-gradient(180deg, #f7fbff 0%, #e6f1fc 100%);
+	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.88), 0 2px 6px rgba(14, 57, 98, 0.12);
+	box-sizing: border-box;
+}
+
+.gwt-Button-yesNo,
+.gwt-Button-yesNoImage,
+.gwt-Button-4taku,
+.gwt-Button-4takuImage,
+.gwt-Button-narabekae,
+.gwt-Button-typing,
+.gwt-Button-mojipanel,
+.gwt-Button-tato,
+.gwt-Button-tatoImage,
+.gwt-Button-junban,
+.gwt-Button-junbanImage,
+.gwt-Button-senmusubi,
+.gwt-Button-senmusubiImage,
+.gwt-Button-slot,
+.gwt-Button-tegaki,
+.gwt-Button-hayaimono,
+.gwt-Button-group {
+	border-color: #8eb8de;
+	border-radius: 10px;
+	background: linear-gradient(180deg, #f7fbff 0%, #e4effa 100%);
+	color: #0f3f69;
+	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.88), 0 1px 4px rgba(14, 57, 98, 0.12);
+	transition: background-color 140ms ease, border-color 140ms ease, box-shadow 140ms ease,
+		transform 90ms ease;
+}
+
+.gwt-Button-yesNo:hover:not(:disabled),
+.gwt-Button-yesNoImage:hover:not(:disabled),
+.gwt-Button-4taku:hover:not(:disabled),
+.gwt-Button-4takuImage:hover:not(:disabled),
+.gwt-Button-narabekae:hover:not(:disabled),
+.gwt-Button-typing:hover:not(:disabled),
+.gwt-Button-mojipanel:hover:not(:disabled),
+.gwt-Button-tato:hover:not(:disabled),
+.gwt-Button-tatoImage:hover:not(:disabled),
+.gwt-Button-junban:hover:not(:disabled),
+.gwt-Button-junbanImage:hover:not(:disabled),
+.gwt-Button-senmusubi:hover:not(:disabled),
+.gwt-Button-senmusubiImage:hover:not(:disabled),
+.gwt-Button-slot:hover:not(:disabled),
+.gwt-Button-tegaki:hover:not(:disabled),
+.gwt-Button-hayaimono:hover:not(:disabled),
+.gwt-Button-group:hover:not(:disabled) {
+	border-color: #5aa0d8;
+	background: linear-gradient(180deg, #ffffff 0%, #d8e9f9 100%);
+	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.96), 0 2px 8px rgba(14, 57, 98, 0.18);
+}
+
+.gwt-Button-yesNo:active:not(:disabled),
+.gwt-Button-yesNoImage:active:not(:disabled),
+.gwt-Button-4taku:active:not(:disabled),
+.gwt-Button-4takuImage:active:not(:disabled),
+.gwt-Button-narabekae:active:not(:disabled),
+.gwt-Button-typing:active:not(:disabled),
+.gwt-Button-mojipanel:active:not(:disabled),
+.gwt-Button-tato:active:not(:disabled),
+.gwt-Button-tatoImage:active:not(:disabled),
+.gwt-Button-junban:active:not(:disabled),
+.gwt-Button-junbanImage:active:not(:disabled),
+.gwt-Button-senmusubi:active:not(:disabled),
+.gwt-Button-senmusubiImage:active:not(:disabled),
+.gwt-Button-slot:active:not(:disabled),
+.gwt-Button-tegaki:active:not(:disabled),
+.gwt-Button-hayaimono:active:not(:disabled),
+.gwt-Button-group:active:not(:disabled) {
+	transform: translateY(1px);
+}
+
+.gwt-Button-yesNo:focus-visible,
+.gwt-Button-yesNoImage:focus-visible,
+.gwt-Button-4taku:focus-visible,
+.gwt-Button-4takuImage:focus-visible,
+.gwt-Button-narabekae:focus-visible,
+.gwt-Button-typing:focus-visible,
+.gwt-Button-mojipanel:focus-visible,
+.gwt-Button-tato:focus-visible,
+.gwt-Button-tatoImage:focus-visible,
+.gwt-Button-junban:focus-visible,
+.gwt-Button-junbanImage:focus-visible,
+.gwt-Button-senmusubi:focus-visible,
+.gwt-Button-senmusubiImage:focus-visible,
+.gwt-Button-slot:focus-visible,
+.gwt-Button-tegaki:focus-visible,
+.gwt-Button-hayaimono:focus-visible,
+.gwt-Button-group:focus-visible {
+	outline: 2px solid rgba(29, 127, 206, 0.55);
+	outline-offset: 1px;
+}
+
+.gwt-Button-narabekaeSelected,
+.gwt-Button-tatoSelected,
+.gwt-Button-tatoImageSelected,
+.gwt-Button-junbanSelected,
+.gwt-Button-junbanImageSelected,
+.gwt-Button-senmusubiSelected,
+.gwt-Button-senmusubiImageSelected {
+	border-color: #2c93dc;
+	background: linear-gradient(180deg, #d9eeff 0%, #bcdfff 100%);
+	color: #08365d;
+	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.78), 0 2px 8px rgba(18, 95, 160, 0.24);
+}
+
+.gwt-Grid-Row-slotCenter {
+	background: linear-gradient(180deg, #e8f5ff 0%, #d4ecff 100%);
+}
+
+.gwt-Button-narabekaeControl,
+.gwt-Button-typingControl,
+.gwt-Button-tatoControl,
+.gwt-Button-senmusubiControl,
+.gwt-Button-slotControl,
+.gwt-Button-clickControl,
+.gwt-Button-tegakiControl,
+.gwt-Button-group-control {
+	border-color: #2b92db;
+	border-radius: 10px;
+	background: linear-gradient(180deg, #2e9ee6 0%, #1f7ac0 100%);
+	color: #fff;
+	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.26), 0 2px 8px rgba(11, 66, 112, 0.34);
+}
+
+.gwt-Button-group-header {
+	color: #0f3f69;
+	font-weight: 700;
+}
+
+/* ゲーム解答欄の整列・微調整 */
+.questionAnswerShell {
+	text-align: center;
+}
+
+.questionAnswerShell .gwt-Label-answer {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin: 0 auto;
+	width: 100%;
+}
+
+.gwt-Label-answerPopup {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	box-shadow: none;
+}
+
+.gwt-Button-yesNo,
+.gwt-Button-4taku,
+.gwt-Button-narabekae,
+.gwt-Button-mojipanel,
+.gwt-Button-hayaimono,
+.gwt-Button-slot,
+.gwt-Button-slotControl,
+.gwt-Button-clickControl,
+.gwt-Button-tato,
+.gwt-Button-junban,
+.gwt-Button-senmusubi,
+.gwt-Button-senmusubiControl,
+.gwt-Button-tatoControl,
+.gwt-Button-typing,
+.gwt-Button-typingControl,
+.gwt-Button-typingSwitcher {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	vertical-align: middle;
+	padding: 0;
+}
+
+.gwt-Button-slot {
+	line-height: 1;
+}
+
+.gwt-Label-slot {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	line-height: 1;
+}
+
+.gwt-Button-yesNo {
+	line-height: 1;
+}
+
+.gwt-Button-mojipanel {
+	line-height: 1;
+}
+
+.gwt-Button-hayaimono,
+.gwt-Button-tato,
+.gwt-Button-junban,
+.gwt-Button-senmusubi {
+	padding: 0 10px;
+}
+
+.gwt-Button-4taku {
+	padding: 0 12px;
+}
+
+.gwt-Button-typing,
+.gwt-Button-4taku,
+.gwt-Button-hayaimono {
+	line-height: 1.15;
+}
+
+.questionAnswerShell .gwt-Label-answer {
+	border: 0;
+	border-radius: 0;
+	background: transparent;
+	box-shadow: none;
+}
+
+.gwt-Grid-hayaimono td {
+	vertical-align: middle;
+}
+
+.gwt-Grid-hayaimono td:nth-child(1),
+.gwt-Grid-hayaimono td:nth-child(3) {
+	width: 30px;
+	text-align: center;
+	font-size: 26px;
+	font-weight: 700;
+	color: #0f3f69;
+}
+
+.gwt-Button-senmusubi {
+	width: 220px;
+}
+
+.gwt-Button-senmusubiImage,
+.gwt-Button-senmusubiImageSelected {
+	width: 120px;
+	height: 86px;
+}
+
+.gwt-HorizontalPanel-clickInput {
+	width: 100%;
+	gap: 10px;
+	align-items: center;
+}
+
+.gwt-Image-clickProblem {
+	border: 1px solid #8fb9de;
+	border-radius: 10px;
+	box-shadow: 0 4px 12px rgba(14, 57, 98, 0.18);
+}
+
+.gwt-Button-typingSwitcher {
+	margin-top: 6px;
+	padding: 8px 14px;
+	font-size: 15px;
+	font-weight: 700;
+	border: 1px solid #2b92db;
+	border-radius: 10px;
+	background: linear-gradient(180deg, #2e9ee6 0%, #1f7ac0 100%);
+	color: #fff;
+	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.26), 0 2px 8px rgba(11, 66, 112, 0.34);
+	cursor: pointer;
+	transition: background-color 140ms ease, border-color 140ms ease, box-shadow 140ms ease,
+		transform 90ms ease;
+}
+
+.gwt-Button-typingSwitcher:hover:not(:disabled) {
+	background: linear-gradient(180deg, #3ca9ee 0%, #2588cd 100%);
+	border-color: #3ca9ee;
+}
+
+.gwt-Button-typingSwitcher:active:not(:disabled) {
+	transform: translateY(1px);
+}
+
+.effectHintRoot {
+	width: 100%;
+	margin: 0;
+}
+
+.effectHintText {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	height: 64px;
+	font-size: 56px;
+	text-align: center;
 }
 

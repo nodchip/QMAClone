@@ -167,7 +167,7 @@ public class WidgetPlayer extends HorizontalPanel {
 			return;
 		}
 
-		Point answerPosition = getAnswerPosition();
+		Point answerPosition = InputWidgetClick.convertToDisplayedCoordinates(getAnswerPosition());
 		if (answerPosition == null || !answerPosition.isValid()) {
 			return;
 		}
@@ -245,7 +245,7 @@ public class WidgetPlayer extends HorizontalPanel {
 			return;
 		}
 
-		Point answerPosition = getAnswerPosition();
+		Point answerPosition = InputWidgetClick.convertToDisplayedCoordinates(getAnswerPosition());
 		if (answerPosition == null || !answerPosition.isValid()) {
 			return;
 		}

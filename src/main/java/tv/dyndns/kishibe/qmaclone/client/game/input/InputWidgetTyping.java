@@ -70,6 +70,7 @@ public class InputWidgetTyping extends InputWidget implements ClickHandler {
 		add(panel);
 		add(new HTML(new SafeHtmlBuilder().appendEscapedLines(
 				"ボタンを押して" + letterType.toString() + "を入力し\n最後にOKを押してください").toSafeHtml()));
+		buttonChange.setStyleName("gwt-Button-typingSwitcher");
 		add(buttonChange);
 	}
 

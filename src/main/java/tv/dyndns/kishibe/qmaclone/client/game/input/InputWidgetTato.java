@@ -47,7 +47,7 @@ public class InputWidgetTato extends InputWidget implements ClickHandler {
 	private static final String STYLE_NAME = "gwt-Button-tato";
 	private static final String STYLE_NAME_SELECTED = "gwt-Button-tatoSelected";
 	private static final String STYLE_NAME_IMAGE = "gwt-Button-tatoImage";
-	private static final String STYLE_NAME_IMAGE_SELECTED = "gwt-Button-tatoImage";
+	private static final String STYLE_NAME_IMAGE_SELECTED = "gwt-Button-tatoImageSelected";
 	private final Button[] buttonChoice;
 	private final Button buttonOk = new Button("OK", this);
 	private final Set<Integer> selectedIndex = new TreeSet<Integer>();
