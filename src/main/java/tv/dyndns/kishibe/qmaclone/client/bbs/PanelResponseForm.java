@@ -22,7 +22,6 @@
 package tv.dyndns.kishibe.qmaclone.client.bbs;
 
 import tv.dyndns.kishibe.qmaclone.client.UserData;
-import tv.dyndns.kishibe.qmaclone.client.lib.text.RichTextToolbar;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketBbsResponse;
 
 import com.google.common.base.Optional;
@@ -30,14 +29,13 @@ import com.google.common.base.Strings;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.RichTextArea;
+import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class PanelResponseForm extends VerticalPanel {
   private final ListBox listBoxAnonymous = new ListBox();
   private final CheckBox checkBoxAge = new CheckBox("スレッド順位を上げる");
-  private final RichTextArea richTextArea = new RichTextArea();
-  private final RichTextToolbar toolbar = new RichTextToolbar(richTextArea);
+  private final TextArea textAreaBody = new TextArea();
 
   public PanelResponseForm(boolean displayAge) {
     {
@@ -57,17 +55,13 @@ public class PanelResponseForm extends VerticalPanel {
       add(panel);
     }
 
-    richTextArea.ensureDebugId("cwRichText-area");
-    richTextArea.setWidth("600px");
-    toolbar.ensureDebugId("cwRichText-toolbar");
-    toolbar.setWidth("100%");
-
-    add(toolbar);
-    add(richTextArea);
+    textAreaBody.setWidth("600px");
+    textAreaBody.setVisibleLines(8);
+    add(textAreaBody);
   }
 
   public Optional<PacketBbsResponse> getBbsResponse() {
-    String body = richTextArea.getText();
+    String body = textAreaBody.getText();
     if (Strings.isNullOrEmpty(body)) {
       return Optional.absent();
     }
@@ -89,10 +83,10 @@ public class PanelResponseForm extends VerticalPanel {
   public void setEnabled(boolean enabled) {
     listBoxAnonymous.setEnabled(enabled);
     checkBoxAge.setEnabled(enabled);
-    richTextArea.setEnabled(enabled);
+    textAreaBody.setEnabled(enabled);
   }
 
   public void clearForm() {
-    richTextArea.setHTML("");
+    textAreaBody.setText("");
   }
 }
