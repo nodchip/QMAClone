@@ -1,5 +1,10 @@
 # Test Dependency Mockito Migration Design
 
+## Status
+- 状態: 中止（2026-02-18）
+- 理由: ユーザー判断により本移行計画は中止。
+- 補足: 再開時は依存バージョン互換性を再調査して新規計画化する。
+
 ## 1. Goal
 - test依存のうち `mockito-all` を最小リスクで更新し、既存テストの実行互換を維持する。
 - runtime依存や機能コードには影響を広げない。

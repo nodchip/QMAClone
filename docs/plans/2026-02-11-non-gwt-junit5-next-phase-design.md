@@ -1,5 +1,10 @@
 # 非GWTサーバーテスト JUnit5移行 次フェーズ設計
 
+## ステータス
+- 状態: 中止（2026-02-18）
+- 理由: ユーザー判断により次フェーズ移行計画を中止。
+- 補足: 再開時は対象テストの再分類から新規計画として開始する。
+
 - 日付: 2026-02-11
 - 対象: `src/test/java/tv/dyndns/kishibe/qmaclone/server` 配下の `@Rule + GuiceBerryRule` 依存テスト
 - 方針: Vintage/Jupiter 共存を前提に、移行可能テストのみ段階的に Jupiter 化する

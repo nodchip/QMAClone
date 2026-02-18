@@ -1,5 +1,10 @@
 # Runtime Dependency Security Upgrade Implementation Plan
 
+## Status
+- 状態: 中止（2026-02-18）
+- 理由: ユーザー判断により本計画は中止。
+- 補足: 再開する場合は本書を直接継続せず、新規計画として起票する。
+
 > **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 
 **Goal:** runtime依存5件をセキュリティ優先で更新し、既存機能を壊さずにローカルTomcat配備まで完了する。

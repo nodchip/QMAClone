@@ -1,5 +1,10 @@
 # Runtime Dependency Security Upgrade Verification
 
+## Status
+- 状態: 中止（2026-02-18）
+- 理由: ユーザー判断により本検証タスクは中止。
+- 補足: 未完了の手動確認項目はクローズ扱いとする。
+
 ## Updated Dependencies
 - mysql-connector-java: 8.0.28 -> 8.0.33
 - google-http-client: 1.34.2 -> 2.1.0
