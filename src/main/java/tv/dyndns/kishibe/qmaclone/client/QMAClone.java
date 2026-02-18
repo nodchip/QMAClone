@@ -60,7 +60,6 @@ public class QMAClone implements EntryPoint {
 
 	public void onModuleLoad2() {
 		RootPanel.get("slot").add(Controller.getInstance());
-		RootPanel.get("position_selecter").add(WidgetPositionSelecter.getIstance());
 		RootPanel.get("title").setVisible(false);
 
 		final String token = History.getToken();
