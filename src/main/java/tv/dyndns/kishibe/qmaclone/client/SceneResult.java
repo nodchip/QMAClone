@@ -61,7 +61,7 @@ public class SceneResult extends SceneBase {
 					return false;
 				}
 
-				panel.setPlayerList(playerResults);
+				panel.setPlayerList(playerResults, sessionData.getPlayerListIndex());
 
 				PacketResult myResult = null;
 				for (PacketResult result : playerResults) {

@@ -31,7 +31,7 @@ import tv.dyndns.kishibe.qmaclone.client.report.ProblemReportUi;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
 import com.google.gwt.safehtml.shared.SafeHtml;
-import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
@@ -51,15 +51,16 @@ public class PanelResult extends VerticalPanel {
 	}
 
 	private static final MyTemplate TEMPLATE = GWT.create(MyTemplate.class);
-	private Grid grid;
-	private VerticalPanel panelTransition = new VerticalPanel();
-	private SimplePanel panelPlayer = new SimplePanel();
-	private SimplePanel panelProblem = new SimplePanel();
+	private final FlowPanel resultHero = new FlowPanel();
+	private final FlowPanel resultRankingList = new FlowPanel();
+	private final FlowPanel resultFooter = new FlowPanel();
+	private final SimplePanel panelProblem = new SimplePanel();
 
 	public PanelResult(List<PacketProblem> problems) {
 		setWidth("800px");
 		setHorizontalAlignment(ALIGN_CENTER);
 		setVerticalAlignment(ALIGN_MIDDLE);
+		setStyleName("resultRoot");
 
 		Label title = new Label("成績発表");
 		add(title);
@@ -67,17 +68,17 @@ public class PanelResult extends VerticalPanel {
 		setCellWidth(title, "800px");
 
 		{
-			add(panelTransition);
-			panelTransition.setVisible(false);
-			panelTransition.setHorizontalAlignment(ALIGN_CENTER);
-
+			add(resultFooter);
+			resultFooter.setStyleName("resultFooter");
 			HTML html = new HTML("<a href='http://kishibe.dyndns.tv/QMAClone/'>ロビーに戻る</a>");
-			panelTransition.add(html);
-			panelTransition.setCellHeight(html, "50px");
-			panelTransition.setCellWidth(html, "800px");
+			resultFooter.add(html);
 		}
 
-		add(panelPlayer);
+		resultHero.setStyleName("resultHero");
+		add(resultHero);
+
+		resultRankingList.setStyleName("resultRankingList");
+		add(resultRankingList);
 
 		// 問題
 		panelProblem.setWidget(new ProblemReportUi(problems, true, false,
@@ -89,43 +90,64 @@ public class PanelResult extends VerticalPanel {
 	}
 
 	public void setPlayerList(List<PacketResult> result) {
-		panelTransition.setVisible(true);
+		setPlayerList(result, -1);
+	}
 
-		grid = new Grid(result.size() + 1, 5);
-		grid.addStyleName("gridFrame");
-		grid.addStyleName("gridFontNormal");
-		grid.setText(0, 1, "プレイヤー名");
-		grid.setText(0, 2, "得点");
-		grid.setText(0, 3, "順位");
-		grid.setText(0, 4, "レーティング");
+	public void setPlayerList(List<PacketResult> result, int myPlayerListId) {
+		resultHero.clear();
+		resultRankingList.clear();
+
+		PacketResult myResult = null;
+		for (PacketResult player : result) {
+			if (player.playerListId == myPlayerListId) {
+				myResult = player;
+				break;
+			}
+		}
+		if (myResult == null && !result.isEmpty()) {
+			myResult = result.get(0);
+		}
+
+		if (myResult != null) {
+			FlowPanel heroCard = new FlowPanel();
+			heroCard.setStyleName("resultHeroCard");
+			heroCard.add(new HTML("<b>あなたの結果</b>"));
+			heroCard.add(new HTML("順位: " + myResult.rank + "位"));
+			heroCard.add(new HTML("得点: " + myResult.score + "点"));
+			heroCard.add(new HTML("レーティング: "
+					+ renderRatingChange(myResult.playerSummary.rating, myResult.newRating).asString()));
+			resultHero.add(heroCard);
+		}
 
 		for (int i = 0; i < result.size(); ++i) {
 			PacketResult player = result.get(i);
+			FlowPanel card = new FlowPanel();
+			card.setStyleName("resultRankingCard");
+			if (player.playerListId == myPlayerListId) {
+				card.addStyleName("resultRankingCardMine");
+			}
 			Image image = new Image(Constant.ICON_URL_PREFIX + player.imageFileName);
 			image.setPixelSize(Constant.ICON_SIZE, Constant.ICON_SIZE);
-			int row = i + 1;
-			grid.setWidget(row, 0, image);
-			grid.setHTML(row, 1, player.playerSummary.asResultSafeHtml());
-			grid.setText(row, 2, player.score + "点");
-			grid.setText(row, 3, player.rank + "位");
-
-			int newRating = player.newRating;
-			if (newRating <= 0) {
-				continue;
-			}
-
-			SafeHtml ratingChange;
-			int oldRating = player.playerSummary.rating;
-			if (oldRating < newRating) {
-				ratingChange = TEMPLATE.up(oldRating, newRating);
-			} else if (oldRating == newRating) {
-				ratingChange = TEMPLATE.equal(oldRating, newRating);
-			} else {
-				ratingChange = TEMPLATE.down(oldRating, newRating);
-			}
-			grid.setHTML(row, 4, ratingChange.asString());
+			image.addStyleName("resultRankingCardIcon");
+			card.add(image);
+			card.add(new HTML("<b>" + player.rank + "位</b> " + player.playerSummary.asResultSafeHtml().asString()));
+			card.add(new HTML("得点: " + player.score + "点"));
+			card.add(new HTML("レーティング: "
+					+ renderRatingChange(player.playerSummary.rating, player.newRating).asString()));
+			resultRankingList.add(card);
 		}
+	}
 
-		panelPlayer.add(grid);
+	private SafeHtml renderRatingChange(int oldRating, int newRating) {
+		if (newRating <= 0) {
+			return TEMPLATE.equal(oldRating, oldRating);
+		}
+		if (oldRating < newRating) {
+			return TEMPLATE.up(oldRating, newRating);
+		}
+		if (oldRating == newRating) {
+			return TEMPLATE.equal(oldRating, newRating);
+		}
+		return TEMPLATE.down(oldRating, newRating);
 	}
 }

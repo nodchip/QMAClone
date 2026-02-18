@@ -25,4 +25,15 @@ public class PanelResultModernLayoutSourceTest {
     assertTrue(source.contains("resultRankingList"));
     assertFalse(source.contains("new Grid("));
   }
+
+  /**
+   * 自分の順位カードを強調表示するクラスが用意されている。
+   */
+  @Test
+  public void panelResultHighlightsMyRow() throws Exception {
+    String source =
+        Files.readString(Paths.get("src/main/java/tv/dyndns/kishibe/qmaclone/client/PanelResult.java"),
+            StandardCharsets.UTF_8);
+    assertTrue(source.contains("resultRankingCardMine"));
+  }
 }
