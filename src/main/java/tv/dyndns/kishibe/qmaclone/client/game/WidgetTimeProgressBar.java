@@ -21,8 +21,6 @@
 //THE SOFTWARE.
 package tv.dyndns.kishibe.qmaclone.client.game;
 
-import tv.dyndns.kishibe.qmaclone.client.Utility;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
@@ -37,18 +35,17 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class WidgetTimeProgressBar extends VerticalPanel {
 	public interface BarTemplate extends SafeHtmlTemplates {
-		@Template("<p style='position:relative;'><span class='timerLabel'>{0}</span>"
-				+ "<span style='{1}'></span></p>")
+		@Template("<p class='timerMeter'><span class='timerLabel'>{0}</span>"
+				+ "<span class='timerFill' style='{1}'></span></p>")
 		SafeHtml bar(String message, SafeStyles styles);
 	}
 
 	private static final BarTemplate TEMPLATE = GWT.create(BarTemplate.class);
-	private static final int WIDTH = 480;
-	private static final int UPDATE_DURATION = 250;
+	private static final int UPDATE_DURATION = 33;
 	private static final int MAX_TIME = 30 * 1000;
 	private final HTML html = new HTML();
-	private int second = 30;
-	private final long startTime = System.currentTimeMillis();
+	private int syncedRemainingMs = MAX_TIME;
+	private long syncedAtMs = System.currentTimeMillis();
 	private final RepeatingCommand commandUpdate = new RepeatingCommand() {
 		@Override
 		public boolean execute() {
@@ -63,28 +60,33 @@ public class WidgetTimeProgressBar extends VerticalPanel {
 		setStyleName("gameTimerWidget");
 
 		add(html);
-		html.setPixelSize(WIDTH, 40);
+		html.setWidth("100%");
+		html.setHeight("40px");
 		html.setStyleName("gameTimerTrack");
 		update();
 	}
 
 	public void setTime(int second) {
-		this.second = Math.max(0, second);
+		int clampedSecond = Math.max(0, second);
+		syncedRemainingMs = clampedSecond * 1000;
+		syncedAtMs = System.currentTimeMillis();
 	}
 
 	private void update() {
-		long currentTime = System.currentTimeMillis();
-		int time = (int) (currentTime - startTime);
-
-		int left = time * WIDTH / MAX_TIME;
-		int width = WIDTH - left;
-		String message = second == 0 ? "時間切れ" : ("残り時間約" + second + "秒");
-		String color = Utility.createBackgroundColorString((double) width / (double) WIDTH);
+		long now = System.currentTimeMillis();
+		int elapsedSinceSync = (int) (now - syncedAtMs);
+		int remainingMs = Math.max(0, syncedRemainingMs - elapsedSinceSync);
+		double remainingRate = TimerGaugeStyle.remainingRate(MAX_TIME - remainingMs, MAX_TIME);
+		double left = (1.0 - remainingRate) * 100.0;
+		double width = remainingRate * 100.0;
+		int displaySecond = (remainingMs + 999) / 1000;
+		String message = displaySecond == 0 ? "時間切れ" : ("残り時間約" + displaySecond + "秒");
+		String color = TimerGaugeStyle.fillColor(remainingRate);
 		SafeStyles styles = new SafeStylesBuilder()
 				.position(Position.ABSOLUTE)
-				.top(0, Unit.PX)
-				.left(left, Unit.PX)
-				.width(width, Unit.PX)
+				.top(2, Unit.PX)
+				.left(left, Unit.PCT)
+				.width(width, Unit.PCT)
 				.height(32, Unit.PX)
 				.trustedBackgroundColor(color)
 				.zIndex(1)

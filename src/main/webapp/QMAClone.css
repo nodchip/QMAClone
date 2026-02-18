@@ -727,21 +727,55 @@ a:active {
 	min-height: 300px;
 }
 
+.questionTimerShell {
+	text-align: center;
+}
+
 .gameTimerWidget {
 	width: 100%;
 }
 
 .gameTimerTrack {
 	width: 100% !important;
+	max-width: 700px;
+	margin: 0 auto;
+}
+
+.timerMeter {
+	position: relative;
+	width: 100%;
+	max-width: 680px;
+	height: 36px;
+	margin: 0 auto;
+	border: 1px solid #8eb9de;
+	border-radius: 999px;
+	background: linear-gradient(180deg, #f7fbff 0%, #e4effa 100%);
+	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 2px 8px rgba(12, 56, 96, 0.12);
+	overflow: hidden;
+}
+
+.timerFill {
+	border-radius: 999px;
+	box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+	transition: left 90ms linear, width 90ms linear, background-color 120ms linear;
 }
 
 .timerLabel {
-	position: relative;
-	z-index: 2;
-	padding-left: 8px;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	width: calc(100% - 24px);
+	text-align: center;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	z-index: 4;
 	color: var(--color-text-primary);
 	font-weight: 700;
-	line-height: 32px;
+	font-size: 17px;
+	line-height: 1;
+	text-shadow: 0 1px 0 rgba(255, 255, 255, 0.42);
 }
 
 /* ゲーム開始待機画面 */
@@ -3013,17 +3047,6 @@ a:active {
 	background: var(--color-accent-primary-hover);
 	border-color: var(--color-accent-primary-hover);
 	box-shadow: 0 2px 6px rgba(17, 123, 205, 0.28);
-}
-
-.timerLabel {
-	width: 480px;
-	height: 40px;
-	font-size: 20px;
-	font-weight: bold;
-	text-align: center;
-	vertical-align: top;
-	color: var(--color-text-primary);
-	z-index: 5;
 }
 
 .gwt-Button {
