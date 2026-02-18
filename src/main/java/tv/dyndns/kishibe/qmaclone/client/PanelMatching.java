@@ -29,6 +29,7 @@ import tv.dyndns.kishibe.qmaclone.client.packet.PacketMatchingPlayer;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -39,7 +40,8 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 public class PanelMatching extends VerticalPanel implements ClickHandler {
 	private SceneMatching scene;
 
-	private Label label;
+	private final Label labelCountdown;
+	private final Label labelPlayerCount;
 
 	private SimplePanel gridPanel = new SimplePanel();
 
@@ -48,52 +50,89 @@ public class PanelMatching extends VerticalPanel implements ClickHandler {
 	public PanelMatching(SceneMatching sceneMatching) {
 		setHorizontalAlignment(ALIGN_CENTER);
 		setVerticalAlignment(ALIGN_MIDDLE);
+		setStyleName("matchingRoot");
 
 		scene = sceneMatching;
 
-		label = new Label("通信待機中です\nしばらくお待ちください");
+		final VerticalPanel headerPanel = new VerticalPanel();
+		headerPanel.setStyleName("matchingHeader");
+
+		final Label labelTitle = new Label("マッチング中");
+		labelTitle.setStyleName("matchingTitle");
+		headerPanel.add(labelTitle);
+
+		labelCountdown = new Label("通信待機中です。しばらくお待ちください。");
+		labelCountdown.setStyleName("matchingCountdown");
+		headerPanel.add(labelCountdown);
+
+		final Label labelGuide = new Label("対戦相手が集まり次第、ゲームを開始します。");
+		labelGuide.setStyleName("matchingGuide");
+		headerPanel.add(labelGuide);
+
+		labelPlayerCount = new Label("参加プレイヤー: 0人");
+		labelPlayerCount.setStyleName("matchingPlayerCount");
+		headerPanel.add(labelPlayerCount);
 
 		setWidth("800px");
 		setHeight("600px");
 
-		add(label);
-		setCellWidth(label, "800px");
-		setCellHeight(label, "100px");
+		add(headerPanel);
+		setCellWidth(headerPanel, "800px");
+		setCellHeight(headerPanel, "140px");
 
+		buttonDontWait.setStyleName("matchingSkipButton");
 		add(buttonDontWait);
 		setCellWidth(buttonDontWait, "800px");
-		setCellHeight(buttonDontWait, "50px");
+		setCellHeight(buttonDontWait, "44px");
 
+		gridPanel.setStyleName("matchingPlayerFrame");
 		add(gridPanel);
 		setCellWidth(gridPanel, "800px");
-		setCellHeight(gridPanel, "450px");
+		setCellHeight(gridPanel, "416px");
 		setCellVerticalAlignment(gridPanel, ALIGN_TOP);
 	}
 
 	public void setRestSecond(int rest) {
-		label.setText("マッチング終了まで残り約" + rest + "秒");
+		labelCountdown.setText("マッチング終了まで残り約" + rest + "秒");
 	}
 
 	public void setPlayerList(List<PacketMatchingPlayer> players) {
 		final VerticalPanel verticalPanel = new VerticalPanel();
+		verticalPanel.setStyleName("matchingPlayerList");
 
 		for (PacketMatchingPlayer player : players) {
 			final HorizontalPanel horizontalPanel = new HorizontalPanel();
 			horizontalPanel.setVerticalAlignment(ALIGN_MIDDLE);
+			horizontalPanel.setStyleName("matchingPlayerRow");
 
 			final Image image = new Image(Constant.ICON_URL_PREFIX + player.imageFileName);
 			image.setPixelSize(Constant.ICON_SIZE, Constant.ICON_SIZE);
+			image.setStyleName("matchingPlayerIcon");
 			horizontalPanel.add(image);
 
+			final FlowPanel summaryPanel = new FlowPanel();
+			summaryPanel.setStyleName("matchingPlayerSummaryArea");
+
 			final HTML html = new HTML(player.playerSummary.asSafeHtml());
+			html.setStyleName("matchingPlayerSummary");
 			if (player.isRequestSkip) {
-				html.addStyleDependentName("matchingSkip");
+				html.addStyleName("matchingPlayerSummarySkip");
+				horizontalPanel.addStyleName("matchingPlayerRowSkip");
 			}
-			horizontalPanel.add(html);
+			summaryPanel.add(html);
+
+			if (player.isRequestSkip) {
+				final Label labelSkip = new Label("待機スキップ希望");
+				labelSkip.setStyleName("matchingSkipBadge");
+				summaryPanel.add(labelSkip);
+			}
+
+			horizontalPanel.add(summaryPanel);
 
 			verticalPanel.add(horizontalPanel);
 		}
 
+		labelPlayerCount.setText("参加プレイヤー: " + players.size() + "人");
 		gridPanel.setWidget(verticalPanel);
 	}
 

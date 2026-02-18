@@ -411,8 +411,127 @@ a:active {
 }
 
 /* マッチング画面 */
-.gwt-HTML-matchingSkip {
-	background-color: #fff4b8;
+.matchingRoot {
+	padding: 12px 14px;
+	gap: 8px;
+	box-sizing: border-box;
+}
+
+.matchingHeader {
+	width: 100%;
+	border: 1px solid var(--color-border-default);
+	border-radius: var(--radius-md);
+	background: linear-gradient(180deg, var(--color-surface-2) 0%, var(--color-surface-1) 100%);
+	padding: 12px;
+	box-sizing: border-box;
+}
+
+.matchingTitle {
+	font-size: 24px;
+	font-weight: 700;
+	color: var(--color-text-primary);
+	margin-bottom: 4px;
+}
+
+.matchingCountdown {
+	font-size: 19px;
+	font-weight: 700;
+	color: var(--color-accent-primary);
+	margin-bottom: 2px;
+}
+
+.matchingGuide {
+	font-size: 14px;
+	color: var(--color-text-secondary);
+	margin-bottom: 4px;
+}
+
+.matchingPlayerCount {
+	font-size: 14px;
+	color: var(--color-text-muted);
+}
+
+.matchingSkipButton {
+	width: 100%;
+	height: 40px;
+	border: 1px solid var(--color-accent-primary);
+	border-radius: var(--radius-sm);
+	background: linear-gradient(180deg, #1d5b94 0%, var(--color-accent-primary) 100%);
+	color: #ffffff;
+	font-size: 16px;
+	font-weight: 700;
+	cursor: pointer;
+}
+
+.matchingSkipButton:hover {
+	background: linear-gradient(180deg, #2a6aa6 0%, var(--color-accent-primary-hover) 100%);
+}
+
+.matchingSkipButton:disabled {
+	opacity: 0.68;
+	cursor: default;
+}
+
+.matchingPlayerFrame {
+	width: 100%;
+	height: 100%;
+	border: 1px solid var(--color-border-default);
+	border-radius: var(--radius-md);
+	background: var(--color-surface-1);
+	padding: 8px;
+	box-sizing: border-box;
+	overflow-y: hidden;
+}
+
+.matchingPlayerList {
+	width: 100%;
+	gap: 4px;
+}
+
+.matchingPlayerRow {
+	width: 100%;
+	border: 1px solid var(--color-border-subtle);
+	border-radius: var(--radius-sm);
+	background: var(--color-surface-2);
+	padding: 4px 6px;
+	box-sizing: border-box;
+}
+
+.matchingPlayerRowSkip {
+	background: #fff8db;
+	border-color: #f1d17a;
+}
+
+.matchingPlayerIcon {
+	border-radius: 8px;
+	border: 1px solid var(--color-border-default);
+	background: var(--color-surface-1);
+	margin-right: 8px;
+}
+
+.matchingPlayerSummaryArea {
+	flex: 1;
+}
+
+.matchingPlayerSummary {
+	font-size: 14px;
+	color: var(--color-text-primary);
+}
+
+.matchingPlayerSummarySkip {
+	color: #8b5c00;
+}
+
+.matchingSkipBadge {
+	display: inline-block;
+	margin-top: 2px;
+	padding: 1px 6px;
+	border-radius: 999px;
+	border: 1px solid #f1d17a;
+	background: #fff3c2;
+	color: #845200;
+	font-size: 11px;
+	font-weight: 700;
 }
 
 /* 他者の回答 */
