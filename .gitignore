@@ -13,3 +13,4 @@
 !/ops/notes/.gitkeep
 !/ops/log/*.example
 !/ops/notes/*.example
+/dom.html
