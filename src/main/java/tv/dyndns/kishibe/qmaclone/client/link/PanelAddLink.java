@@ -54,9 +54,17 @@ public class PanelAddLink extends VerticalPanel implements ClickHandler {
 
 	public PanelAddLink(PanelLink panelLink) {
 		this.panelLink = panelLink;
+		setWidth("100%");
+		addStyleName("linkEditorRoot");
+		buttonAddLink.addStyleName("linkPrimaryButton");
+		buttonSubmit.addStyleName("linkPrimaryButton");
+		buttonCancel.addStyleName("linkSecondaryButton");
+		widgetLinkDataForm.addStyleName("linkFormCard");
 
 		{
 			final HorizontalPanel panel = new HorizontalPanel();
+			panel.setSpacing(8);
+			panel.addStyleName("linkEditorActions");
 			panel.add(buttonAddLink);
 			panel.add(buttonSubmit);
 			panel.add(buttonCancel);

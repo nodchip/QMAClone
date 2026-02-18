@@ -141,6 +141,275 @@ a:active {
 	text-decoration: underline;
 }
 
+.linkRoot {
+	width: 100%;
+	max-width: 800px;
+	padding: 12px;
+	border: 1px solid var(--color-border-default);
+	border-radius: 12px;
+	background: var(--color-surface-2);
+	box-shadow: 0 8px 24px rgba(15, 53, 90, 0.12);
+	box-sizing: border-box;
+}
+
+.linkHeaderCard {
+	padding: 10px 12px;
+	border: 1px solid var(--color-border-default);
+	border-radius: 10px;
+	background: linear-gradient(180deg, #f7fbff 0%, #eaf3fd 100%);
+	box-sizing: border-box;
+}
+
+.linkPageTitle {
+	margin: 0;
+	font-size: 20px;
+	font-weight: 800;
+	color: var(--color-text-primary);
+}
+
+.linkPageLead {
+	margin: 8px 0 10px 0;
+	color: var(--color-text-muted);
+	font-size: 13px;
+	line-height: 1.6;
+}
+
+.linkPager {
+	margin: 0 0 10px 0;
+}
+
+.linkPager .pageSelectButton {
+	min-width: 34px;
+	height: 34px;
+	padding: 0 8px;
+	border: 1px solid var(--color-border-subtle);
+	border-radius: 8px;
+	background: var(--color-surface-1);
+	color: var(--color-text-secondary);
+	font-size: 14px;
+	font-weight: 700;
+}
+
+.linkList {
+	width: 100%;
+}
+
+.linkItemCard {
+	width: 100%;
+	margin-bottom: 10px;
+	padding: 10px;
+	border: 1px solid var(--color-border-default);
+	border-radius: 12px;
+	background: var(--color-surface-1);
+	box-shadow: 0 3px 10px rgba(12, 59, 105, 0.08);
+	box-sizing: border-box;
+}
+
+.linkItemSummary {
+	margin: 0 0 8px 0;
+	font-size: 14px;
+	line-height: 1.5;
+}
+
+.linkItemBodyRow {
+	align-items: flex-start;
+}
+
+.linkItemBanner {
+	min-width: 220px;
+}
+
+.linkBannerImage {
+	width: 200px;
+	height: 40px;
+	object-fit: contain;
+	border: 1px solid var(--color-border-subtle);
+	border-radius: 8px;
+	background: var(--color-surface-1);
+}
+
+.linkItemDescription {
+	margin: 0;
+	font-size: 13px;
+	line-height: 1.6;
+	color: var(--color-text-secondary);
+}
+
+.linkItemActions {
+	min-width: 74px;
+}
+
+.linkEditorCard {
+	margin-top: 12px;
+	padding: 10px;
+	border: 1px solid var(--color-border-default);
+	border-radius: 12px;
+	background: var(--color-surface-1);
+	box-shadow: 0 4px 14px rgba(12, 59, 105, 0.1);
+	box-sizing: border-box;
+}
+
+.linkEditorActions {
+	margin-bottom: 8px;
+}
+
+.linkPrimaryButton,
+.linkSecondaryButton,
+.linkDangerButton {
+	height: 34px;
+	padding: 0 12px;
+	border-radius: 8px;
+	font-size: 13px;
+	font-weight: 700;
+	cursor: pointer;
+}
+
+.linkPrimaryButton {
+	border: 1px solid var(--color-accent-primary);
+	background: linear-gradient(180deg, #1d5b94 0%, var(--color-accent-primary) 100%);
+	color: #fff;
+}
+
+.linkSecondaryButton {
+	border: 1px solid var(--color-border-subtle);
+	background: var(--color-surface-1);
+	color: var(--color-text-secondary);
+}
+
+.linkDangerButton {
+	border: 1px solid #d58585;
+	background: #fff1f1;
+	color: #9b2c2c;
+}
+
+.linkFormRoot {
+	width: 100%;
+}
+
+.linkFormCard {
+	padding: 12px;
+	border: 1px solid var(--color-border-subtle);
+	border-radius: 10px;
+	background: linear-gradient(180deg, #fcfeff 0%, #f4f9ff 100%);
+	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+	box-sizing: border-box;
+}
+
+.linkFormStatus {
+	margin-bottom: 6px;
+	font-size: 13px;
+	font-weight: 700;
+	color: var(--color-text-muted);
+}
+
+.linkFormGrid {
+	width: 100%;
+	border-collapse: separate;
+	border-spacing: 0 8px;
+}
+
+.linkFormGrid td {
+	padding: 0;
+	border-right: 0;
+	border-bottom: 0;
+}
+
+.linkFormLabelCell {
+	width: 170px;
+	padding: 0 10px 0 0 !important;
+	color: var(--color-text-secondary);
+	font-size: 13px;
+	font-weight: 700;
+	vertical-align: middle;
+	white-space: nowrap;
+}
+
+.linkFormValueCell {
+	padding: 0 !important;
+	vertical-align: middle;
+}
+
+.linkFormInput {
+	width: 100% !important;
+	max-width: 520px;
+	height: 34px;
+	padding: 0 10px;
+	border: 1px solid var(--color-border-subtle);
+	border-radius: 8px;
+	background: var(--color-surface-1);
+	color: var(--color-text-secondary);
+	transition: border-color 140ms ease, box-shadow 140ms ease, background-color 140ms ease;
+	box-sizing: border-box;
+}
+
+.linkFormTextArea {
+	width: 100% !important;
+	max-width: 520px;
+	min-height: 110px;
+	padding: 10px;
+	border: 1px solid var(--color-border-subtle);
+	border-radius: 10px;
+	background: var(--color-surface-1);
+	color: var(--color-text-secondary);
+	transition: border-color 140ms ease, box-shadow 140ms ease, background-color 140ms ease;
+	box-sizing: border-box;
+	resize: vertical;
+}
+
+.linkFormWarningList {
+	margin-top: 6px;
+}
+
+.linkFormInput:hover,
+.linkFormTextArea:hover {
+	border-color: var(--color-border-default);
+}
+
+.linkFormInput:focus,
+.linkFormTextArea:focus {
+	border-color: var(--color-accent-primary-hover);
+	box-shadow: 0 0 0 2px rgba(79, 141, 200, 0.2);
+	outline: none;
+}
+
+/* リンク画面ボタン配色の優先指定 */
+.gwt-Button.linkPrimaryButton {
+	border: 1px solid var(--color-accent-primary);
+	background: linear-gradient(180deg, #1d5b94 0%, var(--color-accent-primary) 100%);
+	color: #fff;
+	transition: border-color 140ms ease, box-shadow 140ms ease, transform 90ms ease;
+}
+
+.gwt-Button.linkPrimaryButton:hover {
+	background: linear-gradient(180deg, #2a6aa6 0%, var(--color-accent-primary-hover) 100%);
+	border-color: var(--color-accent-primary-hover);
+	box-shadow: 0 0 0 2px rgba(79, 141, 200, 0.2);
+}
+
+.gwt-Button.linkSecondaryButton {
+	border: 1px solid var(--color-border-subtle);
+	background: var(--color-surface-1);
+	color: var(--color-text-secondary);
+}
+
+.gwt-Button.linkSecondaryButton:hover {
+	background: var(--color-surface-3);
+	border-color: var(--color-border-strong);
+	color: var(--color-text-primary);
+}
+
+.gwt-Button.linkDangerButton {
+	border: 1px solid #d58585;
+	background: #fff1f1;
+	color: #9b2c2c;
+}
+
+.gwt-Button.linkDangerButton:hover {
+	border-color: #c15656;
+	background: #ffe6e6;
+	color: #7f1d1d;
+}
+
 /* マッチング画面 */
 .gwt-HTML-matchingSkip {
 	background-color: #fff4b8;
@@ -2099,8 +2368,8 @@ a:active {
 }
 
 .bbsPrimaryButton:hover {
-	background: var(--color-accent-secondary);
-	border-color: var(--color-accent-secondary);
+	background: var(--color-accent-primary-hover);
+	border-color: var(--color-accent-primary-hover);
 	box-shadow: 0 2px 6px rgba(17, 123, 205, 0.28);
 }
 
@@ -2266,8 +2535,8 @@ a:active {
 }
 
 .gwt-Button.bbsPrimaryButton:hover {
-	background: var(--color-accent-secondary);
-	border-color: var(--color-accent-secondary);
+	background: var(--color-accent-primary-hover);
+	border-color: var(--color-accent-primary-hover);
 	box-shadow: 0 2px 6px rgba(17, 123, 205, 0.28);
 }
 
@@ -4476,6 +4745,18 @@ body {
   cursor: not-allowed;
   box-shadow: none;
   transform: none;
+}
+
+.app-setting-panel .gwt-Button.linkPrimaryButton {
+  border-color: var(--color-accent-primary);
+  background: linear-gradient(180deg, #1d5b94 0%, var(--color-accent-primary) 100%);
+  color: #fff;
+}
+
+.app-setting-panel .gwt-Button.linkPrimaryButton:hover {
+  background: linear-gradient(180deg, #2a6aa6 0%, var(--color-accent-primary-hover) 100%);
+  border-color: var(--color-accent-primary-hover);
+  box-shadow: 0 0 0 2px rgba(79, 141, 200, 0.2);
 }
 
 .app-setting-save-toast {

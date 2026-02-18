@@ -33,6 +33,7 @@ import tv.dyndns.kishibe.qmaclone.client.ui.WidgetPageSelector;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class PanelLink extends VerticalPanel implements PageSelectable, LinkDataUpdateListener {
@@ -40,10 +41,24 @@ public class PanelLink extends VerticalPanel implements PageSelectable, LinkData
 	private final VerticalPanel displayPanel = new VerticalPanel();
 	private final PanelAddLink panelAddLink = new PanelAddLink(this);
 	private final PanelLink instance = this;
+	private final HTML title = new HTML("リンク");
+	private final HTML lead = new HTML("登録されたリンク集です。更新・追加は下部フォームから行えます。");
+	private final HorizontalPanel header = new HorizontalPanel();
 
 	public PanelLink() {
 		setWidth("800px");
-		add(new HTML("<b>リンク</b>"));
+		addStyleName("linkRoot");
+		title.addStyleName("linkPageTitle");
+		lead.addStyleName("linkPageLead");
+		header.addStyleName("linkHeaderCard");
+		header.setWidth("100%");
+		header.add(title);
+		header.setCellHorizontalAlignment(title, ALIGN_LEFT);
+		displayPanel.setWidth("100%");
+		displayPanel.addStyleName("linkList");
+		panelAddLink.addStyleName("linkEditorCard");
+		add(header);
+		add(lead);
 		displayPanel.setHorizontalAlignment(ALIGN_CENTER);
 		reload();
 	}
@@ -76,12 +91,14 @@ public class PanelLink extends VerticalPanel implements PageSelectable, LinkData
 		public void onSuccess(Integer result) {
 			clear();
 
-			add(new HTML("<b>リンク</b>"));
+			add(header);
+			add(lead);
 
 			final int numberOflinkDatas = result;
 
 			final WidgetPageSelector widgetPageSelector = new WidgetPageSelector(instance,
 					(numberOflinkDatas - 1) / Constant.LINK_DATA_PER_PAGE + 1);
+			widgetPageSelector.addStyleName("linkPager");
 			add(widgetPageSelector);
 			widgetPageSelector.setPage(0);
 			setCellHorizontalAlignment(widgetPageSelector, ALIGN_CENTER);

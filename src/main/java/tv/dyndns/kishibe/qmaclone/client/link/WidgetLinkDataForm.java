@@ -62,15 +62,21 @@ public class WidgetLinkDataForm extends VerticalPanel {
 	};
 
 	public WidgetLinkDataForm() {
+		setWidth("100%");
+		addStyleName("linkFormRoot");
+		labelId.addStyleName("linkFormStatus");
 		add(labelId);
 
 		final Grid grid = new Grid(5, 2);
 		grid.addStyleName("gridFrame");
 		grid.addStyleName("gridFontNormal");
+		grid.addStyleName("linkFormGrid");
 		add(grid);
 		final CellFormatter cellFormatter = grid.getCellFormatter();
 		for (int row = 0; row < 5; ++row) {
 			cellFormatter.setHorizontalAlignment(row, 0, ALIGN_RIGHT);
+			cellFormatter.addStyleName(row, 0, "linkFormLabelCell");
+			cellFormatter.addStyleName(row, 1, "linkFormValueCell");
 		}
 
 		grid.setText(0, 0, "ホームページ名");
@@ -80,23 +86,34 @@ public class WidgetLinkDataForm extends VerticalPanel {
 		grid.setText(4, 0, "説明文");
 
 		textBoxHomePageName.setMaxLength(32);
-		textBoxHomePageName.setWidth("400px");
+		textBoxHomePageName.setWidth("100%");
 		textBoxHomePageName.addClickHandler(textBoxClickHandler);
+		textBoxHomePageName.addStyleName("linkFormInput");
+		textBoxHomePageName.getElement().setPropertyString("placeholder", TEXT_HOME_PAGE_NAME);
 
 		textBoxAuthorName.setMaxLength(16);
-		textBoxAuthorName.setWidth("400px");
+		textBoxAuthorName.setWidth("100%");
 		textBoxAuthorName.addClickHandler(textBoxClickHandler);
+		textBoxAuthorName.addStyleName("linkFormInput");
+		textBoxAuthorName.getElement().setPropertyString("placeholder", TEXT_AUTHOR_NAME);
 
 		textBoxUrl.setMaxLength(256);
-		textBoxUrl.setWidth("400px");
+		textBoxUrl.setWidth("100%");
 		textBoxUrl.addClickHandler(textBoxClickHandler);
+		textBoxUrl.addStyleName("linkFormInput");
+		textBoxUrl.getElement().setPropertyString("placeholder", TEXT_URL);
 
 		textBoxBannerUrl.setMaxLength(256);
-		textBoxBannerUrl.setWidth("400px");
+		textBoxBannerUrl.setWidth("100%");
 		textBoxBannerUrl.addClickHandler(textBoxClickHandler);
+		textBoxBannerUrl.addStyleName("linkFormInput");
+		textBoxBannerUrl.getElement().setPropertyString("placeholder", TEXT_BANNER_URL);
 
-		textAreaDescription.setCharacterWidth(60);
+		textAreaDescription.setWidth("100%");
+		textAreaDescription.setCharacterWidth(56);
 		textAreaDescription.addClickHandler(textBoxClickHandler);
+		textAreaDescription.addStyleName("linkFormTextArea");
+		textAreaDescription.getElement().setPropertyString("placeholder", TEXT_DESCRIPTION);
 
 		grid.setWidget(0, 1, textBoxHomePageName);
 		grid.setWidget(1, 1, textBoxAuthorName);
@@ -105,6 +122,7 @@ public class WidgetLinkDataForm extends VerticalPanel {
 		grid.setWidget(4, 1, textAreaDescription);
 
 		add(panelWarning);
+		panelWarning.addStyleName("linkFormWarningList");
 
 		clearFrom();
 	}
@@ -113,32 +131,32 @@ public class WidgetLinkDataForm extends VerticalPanel {
 		boolean result = true;
 		panelWarning.clear();
 
-		final String textHomePageName = textBoxHomePageName.getText();
-		if (textHomePageName.length() == 0 || textHomePageName.equals(TEXT_HOME_PAGE_NAME)) {
+		final String textHomePageName = textBoxHomePageName.getText().trim();
+		if (textHomePageName.length() == 0) {
 			result = false;
 			addWarningMessage("ホームページ名を入力してください");
 		}
 
-		final String textAuthorName = textBoxAuthorName.getText();
-		if (textAuthorName.length() == 0 || textAuthorName.equals(TEXT_AUTHOR_NAME)) {
+		final String textAuthorName = textBoxAuthorName.getText().trim();
+		if (textAuthorName.length() == 0) {
 			result = false;
 			addWarningMessage("ホームページの管理者名を入力してください");
 		}
 
-		final String textUrl = textBoxUrl.getText();
-		if (textUrl.length() == 0 || textUrl.equals(TEXT_URL)) {
+		final String textUrl = textBoxUrl.getText().trim();
+		if (textUrl.length() == 0) {
 			result = false;
 			addWarningMessage("ホームページのURLを入力してください");
 		}
 
-		final String textBannerUrl = textBoxBannerUrl.getText();
-		if (textBannerUrl.length() == 0 || textBannerUrl.equals(TEXT_BANNER_URL)) {
+		final String textBannerUrl = textBoxBannerUrl.getText().trim();
+		if (textBannerUrl.length() == 0) {
 			result = false;
 			addWarningMessage("ホームページのバナー画像URLを入力してください");
 		}
 
-		final String textDescription = textAreaDescription.getText();
-		if (textDescription.length() == 0 || textDescription.equals(TEXT_DESCRIPTION)) {
+		final String textDescription = textAreaDescription.getText().trim();
+		if (textDescription.length() == 0) {
 			result = false;
 			addWarningMessage("ホームページの説明文を入力してください");
 		}
@@ -181,11 +199,11 @@ public class WidgetLinkDataForm extends VerticalPanel {
 	public void clearFrom() {
 		id = Integer.MIN_VALUE;
 		labelId.setText(TEXT_NEW_LINK);
-		textBoxHomePageName.setText(TEXT_HOME_PAGE_NAME);
-		textBoxAuthorName.setText(TEXT_AUTHOR_NAME);
-		textBoxUrl.setText(TEXT_URL);
-		textBoxBannerUrl.setText(TEXT_BANNER_URL);
-		textAreaDescription.setText(TEXT_DESCRIPTION);
+		textBoxHomePageName.setText("");
+		textBoxAuthorName.setText("");
+		textBoxUrl.setText("");
+		textBoxBannerUrl.setText("");
+		textAreaDescription.setText("");
 	}
 
 	public void setEnabled(boolean enabled) {

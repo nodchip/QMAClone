@@ -53,7 +53,7 @@ public class WidgetLinkData extends VerticalPanel implements ClickHandler {
 		SafeHtml messageWithLink(SafeUri url, String homePageName, String authorName,
 				String lastUpdate);
 
-		@Template("<a href='{0}' target='_black'><img src='{1]' /></a>")
+		@Template("<a href='{0}' target='_blank'><img src='{1}' class='linkBannerImage' /></a>")
 		SafeHtml image(SafeUri url, String bannerUrl);
 	}
 
@@ -67,19 +67,34 @@ public class WidgetLinkData extends VerticalPanel implements ClickHandler {
 	public WidgetLinkData(PacketLinkData linkData, PanelLink panelLink) {
 		this.linkData = linkData;
 		this.panelLink = panelLink;
-		add(new HTML(TEMPLATE.messageWithLink(UriUtils.fromString(linkData.url),
+		setWidth("100%");
+		addStyleName("linkItemCard");
+		buttonUpdate.addStyleName("linkSecondaryButton");
+		buttonRemove.addStyleName("linkDangerButton");
+		HTML summary = new HTML(TEMPLATE.messageWithLink(UriUtils.fromString(linkData.url),
 				linkData.homePageName, linkData.authorName,
-				Utility.toDateFormat(new Date(linkData.lastUpdate)))));
+				Utility.toDateFormat(new Date(linkData.lastUpdate))));
+		summary.addStyleName("linkItemSummary");
+		add(summary);
 
 		{
 			final HorizontalPanel panel = new HorizontalPanel();
+			panel.setSpacing(10);
+			panel.setWidth("100%");
+			panel.addStyleName("linkItemBodyRow");
 			panel.setVerticalAlignment(ALIGN_MIDDLE);
-			panel.add(new HTML(
-					TEMPLATE.image(UriUtils.fromString(linkData.url), linkData.bannerUrl)));
-			panel.add(new HTML(SafeHtmlUtils.fromString(linkData.description)));
+			HTML banner = new HTML(TEMPLATE.image(UriUtils.fromString(linkData.url), linkData.bannerUrl));
+			banner.addStyleName("linkItemBanner");
+			panel.add(banner);
+			HTML description = new HTML(SafeHtmlUtils.fromString(linkData.description));
+			description.addStyleName("linkItemDescription");
+			panel.add(description);
+			panel.setCellWidth(description, "100%");
 
 			{
 				final VerticalPanel panelButtons = new VerticalPanel();
+				panelButtons.setSpacing(6);
+				panelButtons.addStyleName("linkItemActions");
 				panelButtons.add(buttonUpdate);
 				panelButtons.add(buttonRemove);
 				panel.add(panelButtons);
