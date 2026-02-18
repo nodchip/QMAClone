@@ -18,6 +18,7 @@ public class ResultScreenStyleContractTest {
         Files.readString(Paths.get("src/main/webapp/QMAClone.css"), StandardCharsets.UTF_8);
     assertTrue(css.contains(".resultTitle"));
     assertTrue(css.contains(".resultBackLink"));
+    assertTrue(css.contains(".resultProblemHeading"));
     assertTrue(css.contains(".resultHero"));
     assertTrue(css.contains(".resultRankingCard"));
     assertTrue(css.contains(".resultRankingCardMine"));

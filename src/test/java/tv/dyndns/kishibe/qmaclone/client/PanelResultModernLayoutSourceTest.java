@@ -49,4 +49,15 @@ public class PanelResultModernLayoutSourceTest {
     assertTrue(source.contains("resultRankingScore"));
     assertTrue(source.contains("resultRankingRating"));
   }
+
+  /**
+   * 出題問題一覧の見出しが結果画面に配置される。
+   */
+  @Test
+  public void panelResultContainsProblemHeading() throws Exception {
+    String source =
+        Files.readString(Paths.get("src/main/java/tv/dyndns/kishibe/qmaclone/client/PanelResult.java"),
+            StandardCharsets.UTF_8);
+    assertTrue(source.contains("resultProblemHeading"));
+  }
 }

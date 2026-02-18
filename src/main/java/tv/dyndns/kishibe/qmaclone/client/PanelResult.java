@@ -86,9 +86,14 @@ public class PanelResult extends VerticalPanel {
 		resultRankingList.setStyleName("resultRankingList");
 		add(resultRankingList);
 
+		Label problemHeading = new Label("このセッションで出題した問題一覧");
+		problemHeading.setStyleName("resultProblemHeading");
+		add(problemHeading);
+
 		// 問題
 		panelProblem.setWidget(new ProblemReportUi(problems, true, false,
 				Constant.MAX_PROBLEMS_PER_SESSION));
+		panelProblem.setStyleName("resultProblemSection");
 
 		add(panelProblem);
 

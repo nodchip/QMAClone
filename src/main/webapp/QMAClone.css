@@ -6688,6 +6688,7 @@ body {
 .resultHero {
 	width: 100%;
 	box-sizing: border-box;
+	margin-bottom: 10px;
 }
 
 .resultHeroCard {
@@ -6746,6 +6747,24 @@ body {
 .resultFooter {
 	width: 100%;
 	text-align: center;
+}
+
+.resultProblemHeading {
+	width: 100%;
+	margin: 12px 0 6px;
+	padding: 8px 12px;
+	border-left: 4px solid #2d8ed4;
+	background: linear-gradient(180deg, #f7fbff 0%, #eef6ff 100%);
+	color: #0d3d68;
+	font-size: 18px;
+	font-weight: 700;
+	text-align: left;
+	box-sizing: border-box;
+}
+
+.resultProblemSection {
+	width: 100%;
+	box-sizing: border-box;
 }
 
 .resultBackLink {
