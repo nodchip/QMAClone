@@ -21,6 +21,8 @@
 //THE SOFTWARE.
 package tv.dyndns.kishibe.qmaclone.client;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
@@ -40,15 +42,13 @@ import tv.dyndns.kishibe.qmaclone.client.statistics.PanelStatistics;
 import tv.dyndns.kishibe.qmaclone.client.util.DetailRemoteLogger;
 
 import com.google.gwt.core.shared.GWT;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.DecoratedTabPanel;
+import com.google.gwt.user.client.ui.DeckPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -74,8 +74,10 @@ public class Controller extends SimplePanel {
 
 	private final VerticalPanel rootPanel = new VerticalPanel();
 	private final HorizontalPanel panelMain = new HorizontalPanel();
+	private final VerticalPanel panelMainSidebar = new VerticalPanel();
+	private final VerticalPanel panelMainContent = new VerticalPanel();
 	private final VerticalPanel panelErrorMessage = new VerticalPanel();
-	private final DecoratedTabPanel tabPanel = new DecoratedTabPanel(); // 中のコンテンツのサイズによって自動的にリサイズされるのでTabPanelを使用する
+	private final DeckPanel panelContentDeck = new DeckPanel();
 	private final SimplePanel panelGame = new SimplePanel();
 	private final SimplePanel panelChat = new SimplePanel();
 	private final FlowPanel panelChatContainer = new FlowPanel();
@@ -90,6 +92,8 @@ public class Controller extends SimplePanel {
 	private boolean chatEnabled = false;
 	private boolean chatCollapsed = false;
 	private SceneBase scene = null;
+	private final List<Button> mainNavButtons = new ArrayList<Button>();
+	private final List<Widget> mainNavWidgets = new ArrayList<Widget>();
 
 	private final LazyPanel creationUi = new LazyPanel() {
 		public CreationUi createWidget() {
@@ -167,8 +171,14 @@ public class Controller extends SimplePanel {
 		panelMain.setWidth("100%");
 		panelMain.setSpacing(0);
 		panelMain.addStyleName("app-main-panel");
-		tabPanel.addStyleName("app-tab-panel");
-		tabPanel.setWidth("100%");
+		panelMainSidebar.addStyleName("app-main-sidebar");
+		panelMainSidebar.setWidth("190px");
+		panelMainSidebar.setHorizontalAlignment(VerticalPanel.ALIGN_LEFT);
+		panelMainContent.addStyleName("app-main-content");
+		panelMainContent.setWidth("100%");
+		panelMainContent.setHorizontalAlignment(VerticalPanel.ALIGN_CENTER);
+		panelContentDeck.addStyleName("app-main-content-deck");
+		panelContentDeck.setWidth("100%");
 		panelGame.setWidth(MAIN_CONTENT_WIDTH);
 		creationUi.setWidth(MAIN_CONTENT_WIDTH);
 		panelStatistics.setWidth(MAIN_CONTENT_WIDTH);
@@ -227,47 +237,48 @@ public class Controller extends SimplePanel {
 			// ログイン通知インスタンスの開始
 			loginReporter.start();
 
-			tabPanel.setAnimationEnabled(true);
-
-			// 遅延ローディング
-			tabPanel.addSelectionHandler(selectionHandlerTab);
-
 			// ゲームパネル
-			tabPanel.add(panelGame, "ゲーム");
+			addMainSection(panelGame, "ゲーム");
 
 			// 問題作成パネル
-			tabPanel.add(creationUi, "問題作成");
+			addMainSection(creationUi, "問題作成");
 
 			// 問題統計パネル
-			tabPanel.add(panelStatistics, "統計");
+			addMainSection(panelStatistics, "統計");
 
 			// 登録問題一覧パネル
-			tabPanel.add(panelRatioReport, "登録問題一覧");
+			addMainSection(panelRatioReport, "登録問題一覧");
 
 			// 問題検索パネル
-			tabPanel.add(panelSearchProblem, "検索");
+			addMainSection(panelSearchProblem, "検索");
 
 			// 各種設定パネル
-			tabPanel.add(panelSetting, "設定");
+			addMainSection(panelSetting, "設定");
 
 			// プレイヤー一覧
-			tabPanel.add(panelLoginPlayers, "ﾌﾟﾚｲﾔｰ一覧");
+			addMainSection(panelLoginPlayers, "ﾌﾟﾚｲﾔｰ一覧");
 
 			// ランキング
-			tabPanel.add(panelRanking, "ﾗﾝｷﾝｸﾞ");
+			addMainSection(panelRanking, "ﾗﾝｷﾝｸﾞ");
 
 			// 掲示板
-			tabPanel.add(panelBbs, "掲示板");
+			addMainSection(panelBbs, "掲示板");
 
 			// リンク
-			tabPanel.add(panelLink, "リンク");
+			addMainSection(panelLink, "リンク");
 
-			tabPanel.selectTab(0);
+			selectMainSection(0);
 
-			panelMain.add(tabPanel);
+			panelMainContent.add(panelContentDeck);
+			panelMainContent.setCellWidth(panelContentDeck, "100%");
+			panelMainContent.setCellHorizontalAlignment(panelContentDeck, HorizontalPanel.ALIGN_CENTER);
+			panelMain.add(panelMainSidebar);
+			panelMain.add(panelMainContent);
 			panelMain.add(panelChat);
-			panelMain.setCellWidth(tabPanel, "100%");
-			panelMain.setCellHorizontalAlignment(tabPanel, HorizontalPanel.ALIGN_CENTER);
+			panelMain.setCellWidth(panelMainSidebar, "190px");
+			panelMain.setCellHorizontalAlignment(panelMainSidebar, HorizontalPanel.ALIGN_LEFT);
+			panelMain.setCellWidth(panelMainContent, "100%");
+			panelMain.setCellHorizontalAlignment(panelMainContent, HorizontalPanel.ALIGN_CENTER);
 			panelMain.setCellWidth(panelChat, "0px");
 			panelMain.setCellHorizontalAlignment(panelChat, HorizontalPanel.ALIGN_RIGHT);
 			rootPanel.add(panelMain);
@@ -344,7 +355,7 @@ public class Controller extends SimplePanel {
 		if (creationUi.getWidget() instanceof CreationUi) {
 			((CreationUi) creationUi.getWidget()).setProblem(problemID);
 		}
-		tabPanel.selectTab(tabPanel.getWidgetIndex(creationUi));
+		selectMainSection(mainNavWidgets.indexOf(creationUi));
 		scrollToTop();
 	}
 
@@ -479,11 +490,40 @@ public class Controller extends SimplePanel {
 		}
 	}
 
-	private SelectionHandler<Integer> selectionHandlerTab = new SelectionHandler<Integer>() {
-		@Override
-		public void onSelection(SelectionEvent<Integer> event) {
-			tabPanel.getWidget(event.getSelectedItem()).setVisible(true);
+	private void addMainSection(Widget widget, String label) {
+		final int sectionIndex = panelContentDeck.getWidgetCount();
+		panelContentDeck.add(widget);
+
+		Button button = new Button(label);
+		button.addStyleName("app-main-nav-button");
+		button.setTitle(label);
+		button.addClickHandler(event -> {
+			selectMainSection(sectionIndex);
+			scrollToTop();
+		});
+		panelMainSidebar.add(button);
+		panelMainSidebar.setCellWidth(button, "100%");
+		mainNavButtons.add(button);
+		mainNavWidgets.add(widget);
+	}
+
+	private void selectMainSection(int selectedIndex) {
+		if (selectedIndex < 0 || selectedIndex >= panelContentDeck.getWidgetCount()) {
+			return;
 		}
-	};
+		panelContentDeck.showWidget(selectedIndex);
+		updateMainNavigationSelection(selectedIndex);
+	}
+
+	private void updateMainNavigationSelection(int selectedIndex) {
+		for (int i = 0; i < mainNavButtons.size(); ++i) {
+			Button button = mainNavButtons.get(i);
+			if (i == selectedIndex) {
+				button.addStyleName("app-main-nav-button-active");
+			} else {
+				button.removeStyleName("app-main-nav-button-active");
+			}
+		}
+	}
 }
 
