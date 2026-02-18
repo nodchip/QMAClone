@@ -209,7 +209,7 @@ public class Controller extends SimplePanel {
 		panelChat.setWidget(panelChatContainer);
 
 		rootPanel.setHorizontalAlignment(VerticalPanel.ALIGN_RIGHT);
-		rootPanel.add(new HTML("<h1>QMAClone by nodchip</h1>"));
+		rootPanel.add(new HTML("<h1>QMAClone</h1>"));
 		rootPanel.setHorizontalAlignment(VerticalPanel.ALIGN_CENTER);
 		rootPanel.add(buttonShowChatPanel);
 		// rootPanel.add(new PanelAdvertisement());
