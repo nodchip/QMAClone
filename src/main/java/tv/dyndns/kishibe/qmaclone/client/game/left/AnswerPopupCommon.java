@@ -31,7 +31,7 @@ public class AnswerPopupCommon implements AnswerPopup {
 	private static final Logger logger = Logger.getLogger(AnswerPopupCommon.class.getName());
 	private static final String COMMON_STYLE_NAME = "answerPopup";
 	private static final String[][] LETTERS = { { "1", "2", "3", "4" }, { "A", "B", "C", "D" } };
-	private static final int OFFSET_X = 4;
+	private static final int OFFSET_X = 0;
 	private static final int OFFSET_Y = 16;
 	private final Label label = new Label();
 	private final AbsolutePanel absolutePanel;

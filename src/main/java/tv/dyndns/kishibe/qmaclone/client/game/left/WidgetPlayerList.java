@@ -49,6 +49,7 @@ public class WidgetPlayerList extends AbsolutePanel {
 	};
 
 	public WidgetPlayerList(List<PacketMatchingPlayer> players) {
+		setStyleName("gamePlayerList");
 		setPixelSize(180, WidgetPlayer.HEIGHT * players.size());
 
 		int rank = 0;

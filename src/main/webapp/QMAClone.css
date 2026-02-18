@@ -622,6 +622,72 @@ a:active {
 	overflow: hidden;
 }
 
+.gamePlayerList {
+	padding: 0;
+	box-sizing: border-box;
+	background: linear-gradient(180deg, #f4f8fd 0%, #eaf2fb 100%);
+}
+
+.gamePlayerCard {
+	width: 180px;
+	height: 56px;
+	border: 1px solid #a8c4dd;
+	border-radius: 10px;
+	background: linear-gradient(180deg, #ffffff 0%, #edf5fe 100%);
+	box-shadow: 0 2px 8px rgba(12, 59, 105, 0.12);
+	box-sizing: border-box;
+	overflow: hidden;
+}
+
+.gamePlayerCard td {
+	padding: 0;
+	vertical-align: middle;
+}
+
+.gamePlayerCard td:first-child {
+	width: 48px !important;
+	padding: 0 6px;
+}
+
+.gamePlayerIcon {
+	display: block;
+	border: 1px solid var(--color-border-subtle);
+	border-radius: 8px;
+	background: var(--color-surface-1);
+}
+
+.gamePlayerName {
+	display: block;
+	width: 112px;
+	color: var(--color-text-primary);
+	line-height: 1.15;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.gamePlayerNameLevel {
+	display: inline-block;
+	max-width: 100%;
+	font-size: 12px;
+	font-weight: 700;
+	color: #3e5f80;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.gamePlayerNameMain {
+	display: inline-block;
+	max-width: 100%;
+	font-size: 17px;
+	font-weight: 800;
+	color: #0f3658;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
 .gameQuestionPane {
 	width: 600px;
 	padding: 8px;
@@ -812,8 +878,9 @@ a:active {
 	border: 1px solid var(--color-border-default);
 	margin: 0px;
 	padding: 0px;
-	width: 170px;
+	width: 180px;
 	height: 32px;
+	box-sizing: border-box;
 }
 
 .gwt-Label-answerPopupNormal {
@@ -833,7 +900,7 @@ a:active {
 }
 
 .gwt-HTML-playerName {
-	font-size: 20px;
+	font-size: 16px;
 }
 
 /* 問題 */

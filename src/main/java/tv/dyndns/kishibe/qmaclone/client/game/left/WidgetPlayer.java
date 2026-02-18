@@ -42,7 +42,7 @@ public class WidgetPlayer extends HorizontalPanel {
 	private static final Logger logger = Logger.getLogger(WidgetPlayer.class.getName());
 	private static final int INTERPOLATE_RATIO_NUMERATOR = 1;
 	private static final int INTERPOLATE_RATIO_DENOMINATOR = 10;
-	private static final int OFFSET_X = 5;
+	private static final int OFFSET_X = 0;
 	public static final int HEIGHT = 65;
 	private final HTML htmlName = new HTML();
 	private String answer;
@@ -66,16 +66,18 @@ public class WidgetPlayer extends HorizontalPanel {
 		this.parentPanel = parentPanel;
 		answerPopupFactory = new AnswerPopupFactory(parentPanel);
 
-		setPixelSize(180, 50);
+		setStyleName("gamePlayerCard");
+		setPixelSize(180, 56);
 		setVerticalAlignment(ALIGN_MIDDLE);
 
 		Image image = new Image(Constant.ICON_URL_PREFIX + imageFileName);
 		image.setPixelSize(Constant.ICON_SIZE, Constant.ICON_SIZE);
+		image.addStyleName("gamePlayerIcon");
 		add(image);
 		setCellWidth(image, "50px");
 
 		setPlayerSummary(playerSummary);
-		htmlName.addStyleDependentName("playerName");
+		htmlName.addStyleName("gamePlayerName");
 		add(htmlName);
 
 		update();

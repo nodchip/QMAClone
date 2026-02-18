@@ -29,7 +29,9 @@ public class PacketPlayerSummaryTest extends QMACloneGWTTestCaseBase {
 
 	public void testAsGameSafeHtml() {
 		final SafeHtml html = player.asGameSafeHtml();
-		assertEquals("修練10<br>プレイヤー", html.asString());
+		assertEquals(
+				"<span class='gamePlayerNameLevel'>修練10</span><br><span class='gamePlayerNameMain'>プレイヤー</span>",
+				html.asString());
 	}
 
 	public void testGetDefaultPlayerSummary() {

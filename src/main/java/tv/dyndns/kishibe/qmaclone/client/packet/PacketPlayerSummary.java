@@ -37,8 +37,12 @@ public class PacketPlayerSummary implements IsSerializable {
 
 	public SafeHtml asGameSafeHtml() {
 		if (gameHtml == null) {
-			StringBuilder sb = new StringBuilder().append(level).append('\n').append(name);
-			gameHtml = new SafeHtmlBuilder().appendEscapedLines(sb.toString()).toSafeHtml();
+			gameHtml = new SafeHtmlBuilder()
+					.appendHtmlConstant("<span class='gamePlayerNameLevel'>")
+					.appendEscaped(level)
+					.appendHtmlConstant("</span><br><span class='gamePlayerNameMain'>")
+					.appendEscaped(name)
+					.appendHtmlConstant("</span>").toSafeHtml();
 		}
 
 		return gameHtml;
