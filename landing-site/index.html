@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QMAClone | 無料で遊べるオンライン対戦クイズ</title>
+  <meta name="description" content="QMACloneは、無料で遊べるオンライン対戦クイズゲームです。約35万問の問題、問題投稿、チャット、ランキングに対応。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./landing.css">
+</head>
+<body>
+  <div class="landing-shell">
+    <header class="hero">
+      <p class="hero-kicker">QMAClone by nodchip</p>
+      <h1>無料で遊べる<br>オンライン対戦クイズ</h1>
+      <p class="hero-copy">約35万問の問題で、今すぐ対戦。ひとり練習から全国対戦、問題投稿まで、ブラウザひとつで楽しめます。</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="https://kishibe.dyndns.tv/QMAClone/">ゲームを始める</a>
+        <a class="btn btn-secondary" href="https://kishibe.dyndns.tv/QMAClone/creation-guideline.html">問題作成のルールを見る</a>
+      </div>
+      <ul class="hero-stats" aria-label="主要指標">
+        <li><strong>約35万問</strong><span>登録問題</span></li>
+        <li><strong>最大8人</strong><span>同時対戦</span></li>
+        <li><strong>16形式</strong><span>出題スタイル</span></li>
+      </ul>
+    </header>
+
+    <main>
+      <section class="panel reveal">
+        <h2>QMACloneの魅力</h2>
+        <div class="grid cards-3">
+          <article class="card">
+            <h3>リアルタイム対戦</h3>
+            <p>全国のプレイヤーとリアルタイムでクイズ対戦。短時間でも濃い勝負を楽しめます。</p>
+          </article>
+          <article class="card">
+            <h3>問題投稿</h3>
+            <p>ユーザー投稿で問題が増え続ける仕組み。遊ぶだけでなく、作って参加できます。</p>
+          </article>
+          <article class="card">
+            <h3>チャット</h3>
+            <p>ロビーやプレイ中に会話可能。対戦の熱量をそのまま共有できます。</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="panel reveal">
+        <h2>遊び方</h2>
+        <div class="grid cards-2">
+          <article class="card">
+            <h3>モード</h3>
+            <ul>
+              <li>COM対戦</li>
+              <li>全体対戦</li>
+              <li>イベント対戦</li>
+              <li>テーマモード</li>
+            </ul>
+          </article>
+          <article class="card">
+            <h3>出題形式</h3>
+            <p>○×、四択、連想、並べ替え、四文字、タイピング、キューブ、エフェクト、一問多答、順番当て、線結び、クリック、手書き、早い者勝ち、グループ分けに対応。</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="panel reveal">
+        <h2>アップデート履歴</h2>
+        <div class="history-toolbar">
+          <p id="historyCount" class="history-count"></p>
+          <div class="history-actions">
+            <button id="historyMore" class="btn btn-secondary" type="button">さらに20件表示</button>
+            <button id="historyAll" class="btn btn-secondary" type="button">すべて表示</button>
+          </div>
+        </div>
+        <div id="updateHistoryList" class="history-list"></div>
+      </section>
+
+      <section class="panel reveal">
+        <h2>関連リンク</h2>
+        <div class="links">
+          <a href="https://github.com/nodchip/QMAClone" target="_blank" rel="noopener noreferrer">GitHub</a>
+          <a href="https://github.com/nodchip/QMAClone/issues" target="_blank" rel="noopener noreferrer">QMAClone GitHub Issues</a>
+          <a href="https://p.eagate.573.jp/game/qma/" target="_blank" rel="noopener noreferrer">クイズマジックアカデミー</a>
+          <a href="https://www.gwtproject.org/" target="_blank" rel="noopener noreferrer">Google Web Toolkit</a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>QMAClone Official Landing</p>
+      <a class="footer-link" href="https://kishibe.dyndns.tv/QMAClone/">今すぐプレイする</a>
+    </footer>
+    <div class="site-meta">
+      <p class="copyright">Copyright (c) 2006- nodchip</p>
+    </div>
+  </div>
+  <script src="./history-data.js"></script>
+  <script src="./landing.js"></script>
+</body>
+</html>
