@@ -72,10 +72,6 @@ a:active {
 	margin-left: 20px;
 }
 
-.problemChangeHistoryDiffColumn {
-	text-align: center;
-}
-
 /* 汎用グリッド */
 .gridFrame td {
 	border-right: 1px var(--color-border-subtle) solid;
@@ -3394,11 +3390,6 @@ a:active {
 	white-space: nowrap;
 }
 
-.searchProblemFormRow .searchProblemInlineLabel {
-	min-width: auto;
-	font-weight: 500;
-}
-
 .searchProblemInlineStack {
 	display: flex;
 	flex-direction: column;
@@ -3433,17 +3424,6 @@ a:active {
 
 .searchProblemFormRow .gwt-Label + .gwt-ListBox {
 	width: 220px !important;
-}
-
-.searchProblemControlBlock {
-	width: 520px;
-	margin: 0 auto 10px auto;
-	padding: 8px 10px;
-	border: 1px solid var(--color-border-subtle);
-	border-radius: 10px;
-	background: var(--color-card-shared);
-	box-shadow: 0 1px 6px rgba(27, 79, 124, 0.08);
-	box-sizing: border-box;
 }
 
 .searchProblemPanel .searchProblemSelector {
@@ -5509,67 +5489,12 @@ body {
   vertical-align: middle;
 }
 
-.creationHistoryDetail {
-  padding: 8px;
-  border: 1px dashed var(--color-border-default);
-  border-radius: 8px;
-  background: var(--color-surface-1);
-  color: var(--color-text-primary);
-  line-height: 1.5;
-}
-
-.creationHistoryDiffPreview {
-  display: block;
-  line-height: 1.45;
-}
-
-.creationHistoryDiffSummary {
-  margin-top: 4px;
-}
-
-.creationHistoryDiffItem {
-  margin-bottom: 8px;
-  border: 1px solid var(--color-border-subtle);
-  border-radius: 6px;
-  background: var(--color-surface-2);
-}
-
-.creationHistoryDiffRow {
-  display: table;
-  width: 100%;
-  margin-top: 4px;
-}
-
-.creationHistoryDiffBefore,
-.creationHistoryDiffAfter {
-  display: table-cell;
-  width: 50%;
-  vertical-align: top;
-  padding: 6px;
-  white-space: pre-wrap;
-  word-break: break-word;
-}
-
-.creationHistoryDiffBefore {
-  border-right: 1px solid var(--color-border-subtle);
-}
-
-.creationHistoryDiffNoChange {
-  color: var(--color-text-muted);
-  font-style: italic;
-}
-
 .creationHistoryDiffCard {
   margin-top: 0;
   padding: 10px;
   border: 1px solid var(--color-border-default);
   border-radius: 8px;
   background: var(--color-surface-1);
-}
-
-.creationHistoryDetailTopCard {
-  margin-bottom: 10px;
-  background: var(--color-surface-2);
 }
 
 @media (max-width: 960px) {
@@ -5794,23 +5719,6 @@ body {
 	color: var(--color-text-muted);
 	font-size: 12px;
 	line-height: 1.45;
-}
-
-.statisticsTopList {
-	margin: 0;
-	padding-left: 0;
-}
-
-.statisticsTopList dt {
-	margin-top: 8px;
-	color: var(--color-text-primary);
-	font-weight: 700;
-}
-
-.statisticsTopList dd {
-	margin: 2px 0 0 0;
-	color: var(--color-text-secondary);
-	line-height: 1.5;
 }
 
 .statisticsRoot .statisticsTable {
