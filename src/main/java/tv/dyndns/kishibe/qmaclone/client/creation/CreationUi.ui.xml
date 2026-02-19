@@ -1,7 +1,7 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
-	<g:HTMLPanel width="800px">
+	<g:HTMLPanel width="800px" styleName="creationRootPanel">
 		<g:HTMLPanel ui:field="htmlPanelSorry" visible="false">
 			問題作成は30回以上プレイされた方のみに限定させて頂いております。
 			申し訳ありません。

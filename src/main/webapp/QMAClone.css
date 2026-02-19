@@ -3331,10 +3331,10 @@ a:active {
 
 .ratioReportLead {
 	margin: 0 0 10px 0;
-	padding: 10px 12px;
-	border: 1px solid var(--color-border-subtle);
-	border-radius: 10px;
-	background: var(--color-surface-3);
+	padding: 0;
+	border: 0;
+	border-radius: 0;
+	background: transparent;
 	color: var(--color-text-secondary);
 	font-size: 13px;
 	line-height: 1.6;
@@ -3357,14 +3357,16 @@ a:active {
 }
 
 .ratioReportProblemIdInput {
-	padding: 7px 10px;
+	height: 34px;
+	padding: 0 10px;
 	border: 1px solid var(--color-border-default);
 	border-radius: 8px;
 	font-size: 13px;
-	line-height: 1.35;
+	line-height: 32px;
 	background: var(--color-surface-1);
 	color: var(--color-text-primary);
 	box-shadow: inset 0 1px 2px rgba(12, 59, 105, 0.06);
+	box-sizing: border-box;
 }
 
 .ratioReportProblemIdInput:focus {
@@ -3376,6 +3378,7 @@ a:active {
 .ratioReportActionButton {
 	margin: 0;
 	white-space: nowrap;
+	height: 34px;
 }
 
 .ratioReportRefreshBar {
@@ -3398,6 +3401,18 @@ a:active {
 .ratioReportRefreshBar .creationButtonPrimary:active {
 	background: var(--color-accent-primary-active);
 	border-color: var(--color-accent-primary-active);
+}
+
+.creationRootPanel {
+	width: 800px;
+	max-width: 800px;
+	margin: 8px auto 0 auto;
+	padding: 12px;
+	border: 1px solid var(--color-border-default);
+	border-radius: 12px;
+	background: var(--color-surface-2);
+	box-shadow: 0 8px 24px rgba(15, 53, 90, 0.12);
+	box-sizing: border-box;
 }
 
 .searchProblemPanel {
@@ -4967,11 +4982,11 @@ body {
 }
 /* 問題作成ウィザード */
 .creationWizard {
-  margin-top: 8px;
-  padding: 12px;
-  border: 1px solid var(--color-border-default);
-  border-radius: var(--radius-md);
-  background: var(--color-surface-2);
+  margin-top: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
 }
 
 .creationWizardUtilityBar {
@@ -5673,15 +5688,27 @@ body {
 	background: var(--color-surface-2);
 	box-shadow: 0 8px 24px rgba(15, 53, 90, 0.12);
 	box-sizing: border-box;
+	/* DockPanelはtableなので、既定の border-spacing があると幅が意図せず増える。 */
+	border-collapse: separate;
+	border-spacing: 0;
+}
+
+.app-setting-panel > tbody > tr > td,
+.statisticsRoot > tbody > tr > td,
+.rankingRootPanel > tbody > tr > td {
+	/* 外枠DockPanelのセル余白は0にして、内部コンテンツ側で余白を管理する。 */
+	padding: 0;
 }
 
 .app-setting-panel .settingLeftPanel,
 .statisticsRoot .settingLeftPanel,
 .rankingRootPanel .settingLeftPanel {
+	width: 100%;
 	padding: 6px;
 	border: 1px solid var(--color-border-default);
 	border-radius: 10px;
 	background: var(--color-surface-1);
+	box-sizing: border-box;
 }
 
 .app-setting-panel .settingLeftPanelItem,
@@ -5717,9 +5744,9 @@ body {
 
 .app-setting-panel .gwt-SimplePanel {
 	min-height: 480px;
-	width: 620px;
-	min-width: 620px;
-	max-width: 620px;
+	width: 594px;
+	min-width: 594px;
+	max-width: 594px;
 	padding-left: 0;
 	box-sizing: border-box;
 }
@@ -5727,16 +5754,21 @@ body {
 .statisticsRoot .gwt-SimplePanel,
 .rankingRootPanel .gwt-SimplePanel {
 	min-height: 480px;
-	width: 620px;
-	min-width: 620px;
-	max-width: 620px;
+	width: 594px;
+	min-width: 594px;
+	max-width: 594px;
 	padding-left: 0;
 	box-sizing: border-box;
 }
 
+
 .statisticsRoot .gwt-SimplePanel > * {
 	width: 100%;
 	box-sizing: border-box;
+}
+
+.twoColumnSelectionGap {
+	width: 10px;
 }
 
 .statisticsCard {
@@ -6361,6 +6393,10 @@ body {
 		padding-left: 0;
 	}
 
+	.twoColumnSelectionGap {
+		width: 0;
+	}
+
 	.app-setting-panel,
 	.statisticsRoot,
 	.loginPlayersRoot,
@@ -6373,6 +6409,7 @@ body {
 		padding-left: 0;
 		margin-top: 10px;
 	}
+
 
 	.statisticsTopTiles {
 		grid-template-columns: 1fr;
