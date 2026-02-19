@@ -31,6 +31,7 @@
 - 依存更新時は `mvn "-Dgwt.skipCompilation=false" gwt:compile` を単独実行して成否を先に確定する。
 - 基盤クラス（例: `StatusUpdater`）変更時は、`@Override` エラー連鎖を関連画面まで確認する。
 - `cache.js` を更新した場合、配備先が最新成果物を参照していることを確認する。
+- キーボード入力の制御キー（Backspace/Enter など）は `keypress` に依存せず `keydown` で拾う（環境差で `keypress` が発火しない場合がある）。
 - 依存関係は安定版のみ使用し、RC / alpha / milestone 版は採用しない。
 - `piriti` 依存は再導入せず、クライアントの JSON デコードは明示実装を維持する。
 - `gin` は `de.knightsoft-net:gin:4.0.0` を基準とし、Guice 更新時は GWT rebind 成否を先に確認する。
@@ -54,7 +55,11 @@
 - Tomcat 再配備時は、必要に応じて旧展開物削除とサービス再起動で静的状態を確実に破棄する。
 - Eclipse で不整合が疑われる場合は、`target` と `gwt-unitCache` のクリーンを実施する。
 - 検証（`build` / `test` / `gwt:compile`）が1つでも失敗した場合はデプロイを中断し、修正と再検証完了まで配備しない。
-- 修正を加えた場合は、完了報告前に `deploy_qmaclone_tomcat9.ps1` を実行し、`/QMAClone-1.0-SNAPSHOT/` の `HTTP 200` と `/tv.dyndns.kishibe.qmaclone.QMAClone/service` の `HTTP 405` を確認して、実行コマンドとHTTP結果を完了報告に残す。
+- 実行成果物に影響する修正（サーバー/クライアント/CSS/配備スクリプト）を加えた場合は、原則として完了報告前に `deploy_qmaclone_tomcat9.ps1` を実行してデプロイする（ユーザーが不要と明示した場合を除く）。
+- デプロイ後は次を確認し、実行コマンドとHTTP結果を完了報告に残す。
+1. `/QMAClone-1.0-SNAPSHOT/` の `HTTP 200`
+2. `/tv.dyndns.kishibe.qmaclone.QMAClone/service` の `HTTP 405`
+3. `/tv.dyndns.kishibe.qmaclone.QMAClone/service?warmup=1` の `HTTP 200`
 - 新規の運用ログ/メモはルート直下へ置かず、`ops/log/` と `ops/notes/` 配下へ配置する。
 - 新規/更新の運用補助スクリプトは `ops/scripts/` 配下へ配置し、既存ルートスクリプトは段階移行で扱う。
 
