@@ -15,11 +15,27 @@ public abstract class GlobalKeyEventHandler implements NativePreviewHandler {
 
 	@Override
 	public final void onPreviewNativeEvent(NativePreviewEvent event) {
-		if (event.getTypeInt() != Event.ONKEYPRESS) {
-			return;
+		// BackSpace 等の制御キーは環境によって keypress が発火しないため keydown で拾う。
+		if (event.getTypeInt() == Event.ONKEYDOWN) {
+			int keyCode = event.getNativeEvent().getKeyCode();
+			switch (keyCode) {
+			case 8: // BackSpace
+				event.cancel();
+				onKeyPress('\b');
+				return;
+			case 13: // Enter
+				event.cancel();
+				onKeyPress('\n');
+				return;
+			default:
+				return;
+			}
 		}
-		char ch = getCharCode(event.getNativeEvent());
-		onKeyPress(ch);
+
+		if (event.getTypeInt() == Event.ONKEYPRESS) {
+			char ch = getCharCode(event.getNativeEvent());
+			onKeyPress(ch);
+		}
 	}
 
 	private native char getCharCode(NativeEvent e)/*-{
