@@ -9,23 +9,23 @@
     min-height: 70vh;
     margin: 0 auto 0 auto;
     padding: 18px;
-    border: 1px solid var(--color-border-default);
+    border: 1px solid #9ec4e6;
     border-radius: 14px;
-    background: var(--color-surface-2);
+    background: #f7fbff;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     gap: 14px;
-    color: var(--color-text-primary);
+    color: #102840;
     box-shadow: 0 16px 34px rgba(15, 53, 90, 0.12);
   }
 
   .lobbyStatusRow {
     text-align: center;
-    padding: 12px 14px;
-    border-radius: 10px;
-    border: 1px solid #9ec4e6;
-    background: #eaf4ff;
+    padding: 4px 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
     font-size: 24px;
     font-weight: bold;
     color: #102840;
