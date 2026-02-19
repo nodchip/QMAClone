@@ -33,6 +33,7 @@ import com.google.common.collect.Sets;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.CheckBox;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -55,7 +56,7 @@ public class WidgetMultiItemSelector<T extends Enum<T> & HasIndex> extends Verti
 	@VisibleForTesting
 	CheckBox[] checkBoxs;
 	@VisibleForTesting
-	final HorizontalPanel panelMultiSelect = new HorizontalPanel();
+	final FlowPanel panelMultiSelect = new FlowPanel();
 	private T[] items;
 
 	public WidgetMultiItemSelector(String title, T[] items, int columns) {
@@ -90,9 +91,9 @@ public class WidgetMultiItemSelector<T extends Enum<T> & HasIndex> extends Verti
 
 		// 下段
 		{
-			final VerticalPanel[] panels = new VerticalPanel[columns];
+			final FlowPanel[] panels = new FlowPanel[columns];
 			for (int i = 0; i < panels.length; ++i) {
-				panels[i] = new VerticalPanel();
+				panels[i] = new FlowPanel();
 				panels[i].addStyleName("lobbyMultiItemSelectorColumn");
 				panelMultiSelect.add(panels[i]);
 			}
