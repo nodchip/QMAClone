@@ -78,6 +78,7 @@ import tv.dyndns.kishibe.qmaclone.client.game.GameMode;
 import tv.dyndns.kishibe.qmaclone.client.game.ProblemGenre;
 import tv.dyndns.kishibe.qmaclone.client.game.ProblemType;
 import tv.dyndns.kishibe.qmaclone.client.game.RandomFlag;
+import tv.dyndns.kishibe.qmaclone.client.game.Transition;
 import tv.dyndns.kishibe.qmaclone.client.packet.NewAndOldProblems;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketBbsResponse;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketBbsThread;
@@ -416,11 +417,15 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
       throw new ServiceException(message, e);
     }
 
-    session.receiveAnswer(playerListId, answer);
+    Transition transitionBeforeReceive = session.getTransition();
+    boolean accepted = session.receiveAnswer(playerListId, answer);
+    boolean outOfTransition = transitionBeforeReceive != Transition.Problem;
     gameLogger.write(MoreObjects.toStringHelper(this).add("method", "sendAnswer").add("sessionId", sessionId)
         .add("playerListId", playerListId)
         .add("answer", Arrays.deepToString(Strings.nullToEmpty(answer).split(Constant.DELIMITER_GENERAL)))
-        .add("userCode", userCode).add("responseTime", responseTime).add("remoteAddress", getRemoteAddress())
+        .add("userCode", userCode).add("responseTime", responseTime).add("accepted", accepted)
+        .add("outOfTransition", outOfTransition).add("transitionBeforeReceive", transitionBeforeReceive)
+        .add("remoteAddress", getRemoteAddress())
         .toString());
   }
 

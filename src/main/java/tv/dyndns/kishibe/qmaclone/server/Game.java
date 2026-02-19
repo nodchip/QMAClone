@@ -618,16 +618,16 @@ public class Game {
 	 * @param playerListId プレイヤーリストID
 	 * @param answer       プレイヤーの解答
 	 */
-	public synchronized void receiveAnswer(int playerListId, String answer) {
+	public synchronized boolean receiveAnswer(int playerListId, String answer) {
 		// Problem状態以外の場合は処理しない
 		if (transition.get() != Transition.Problem) {
-			return;
+			return false;
 		}
 
 		PlayerStatus player = playerStatuses.get(playerListId);
 		player.clearSkipCount();
 		if (player.isAnswered()) {
-			return;
+			return false;
 		}
 		player.setAnswer(answer, Math.max(1, getRestProblemMs()));
 
@@ -642,6 +642,7 @@ public class Game {
 		if (allHumAnswered) {
 			transition.set(transitFromProblemToAnswer());
 		}
+		return true;
 	}
 
 	/**

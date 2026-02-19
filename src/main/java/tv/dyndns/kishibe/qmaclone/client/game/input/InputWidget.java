@@ -58,6 +58,7 @@ public abstract class InputWidget extends VerticalPanel {
   private final QuestionPanel questionPanel;
   private long startTime;
   private boolean answered = false;
+  private boolean sending = false;
   private final SessionData sessionData;
 
   protected InputWidget(PacketProblem problem, AnswerView answerView, QuestionPanel questionPanel,
@@ -89,25 +90,17 @@ public abstract class InputWidget extends VerticalPanel {
   }
 
   protected void sendAnswer(String answer) {
-    playSound(Constant.SOUND_URL_BUTTON_OK);
-    enable(false);
-
-    if (questionPanel != null) {
-      questionPanel.showCorrectRatioAndCreator();
-    }
-
-    if (UserData.get().isHideAnswer()) {
-      hideAnswer();
-    }
-
-    if (answered) {
+    if (answered || sending) {
       String message = "解答が重複して送信されました: "
           + MoreObjects.toStringHelper(this).add("sessionId", sessionData.getSessionId())
               .add("playerListIndex", sessionData.getPlayerListIndex())
-              .add("userCode", UserData.get().getUserCode()).add("problem", problem).toString();
+              .add("userCode", UserData.get().getUserCode()).add("problem", problem)
+              .add("answered", answered).add("sending", sending).toString();
       logger.log(Level.WARNING, message);
       return;
     }
+
+    playSound(Constant.SOUND_URL_BUTTON_OK);
 
     int sessionId = sessionData.getSessionId();
     if (sessionId <= 0) {
@@ -119,6 +112,14 @@ public abstract class InputWidget extends VerticalPanel {
       return;
     }
 
+    enable(false);
+    if (questionPanel != null) {
+      questionPanel.showCorrectRatioAndCreator();
+    }
+    if (UserData.get().isHideAnswer()) {
+      hideAnswer();
+    }
+
     int playerListId = sessionData.getPlayerListIndex();
     int responseTime = (int) (System.currentTimeMillis() - startTime);
     if (responseTime > 30 * 1000 + 1000) {
@@ -128,16 +129,20 @@ public abstract class InputWidget extends VerticalPanel {
               .add("responseTime", responseTime).add("userCode", UserData.get().getUserCode())
               .add("problem", problem).toString();
       logger.log(Level.WARNING, message);
+      enable(true);
       return;
     }
 
+    sending = true;
     Service.Util.getInstance().sendAnswer(sessionId, playerListId, answer,
         UserData.get().getUserCode(), responseTime, callbackSendAnswer);
-    answered = true;
   }
 
   private final AsyncCallback<Void> callbackSendAnswer = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Void>() {
     public void onSuccess(Void result) {
+      sending = false;
+      answered = true;
+
       SceneBase sceneBase = Controller.getInstance().getScene();
       if (!(sceneBase instanceof SceneGame)) {
         logger.log(Level.WARNING, "既にゲームシーンから移行しています: " + sceneBase.toString());
@@ -149,6 +154,8 @@ public abstract class InputWidget extends VerticalPanel {
     }
 
     public void onFailureRpc(Throwable caught) {
+      sending = false;
+      enable(true);
       logger.log(Level.WARNING, "解答の送信中にエラーが発生しました", caught);
     }
   };

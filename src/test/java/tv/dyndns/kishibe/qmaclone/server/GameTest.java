@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.isIn;
 import static org.hamcrest.Matchers.isOneOf;
 import static org.hamcrest.Matchers.lessThan;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.ArrayList;
@@ -155,6 +156,11 @@ public class GameTest {
         selectedGenres, selectedTypes, 0, null);
 
     assertEquals(16, problems.size());
+  }
+
+  @Test
+  public void receiveAnswerShouldReturnFalseWhenTransitionIsNotProblem() {
+    assertFalse(game.receiveAnswer(0, "answer"));
   }
 }
 

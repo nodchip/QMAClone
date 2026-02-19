@@ -92,6 +92,8 @@ public class ServiceServletStubTest {
   @Mock
   private GameLogger mockGameLogger;
   @Mock
+  private Game mockGame;
+  @Mock
   private ThreadPool mockThreadPool;
   @Mock
   private BadUserDetector mockBadUserDetector;
@@ -443,6 +445,28 @@ public class ServiceServletStubTest {
     PacketProblem problem = new PacketProblem();
     problem.genre = genre;
     return problem;
+  }
+
+  @Test
+  public void sendAnswerShouldLogAcceptedWhenGameAcceptsAnswer() throws Exception {
+    doReturn(REMOTE_ADDRESS).when(service).getRemoteAddress();
+    when(mockGameManager.getSession(10)).thenReturn(mockGame);
+    when(mockGame.receiveAnswer(3, "ans")).thenReturn(true);
+
+    service.sendAnswer(10, 3, "ans", USER_CODE, 1234);
+
+    verify(mockGameLogger).write(org.mockito.ArgumentMatchers.contains("accepted=true"));
+  }
+
+  @Test
+  public void sendAnswerShouldLogAcceptedFalseWhenGameRejectsAnswer() throws Exception {
+    doReturn(REMOTE_ADDRESS).when(service).getRemoteAddress();
+    when(mockGameManager.getSession(10)).thenReturn(mockGame);
+    when(mockGame.receiveAnswer(3, "ans")).thenReturn(false);
+
+    service.sendAnswer(10, 3, "ans", USER_CODE, 1234);
+
+    verify(mockGameLogger).write(org.mockito.ArgumentMatchers.contains("accepted=false"));
   }
 
   @Test
