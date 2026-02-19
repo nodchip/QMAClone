@@ -37,6 +37,7 @@ public class TwoColumnSelectionPanel extends DockPanel implements ClickHandler {
 	private static final String MENU_ITEM_STYLE_SELECTED = "settingLeftPanelItemSelected";
 	private final Map<HTML, Widget> leftToRight = new HashMap<HTML, Widget>();
 	private final SimplePanel westPanel = new SimplePanel();
+	private final SimplePanel gapPanel = new SimplePanel();
 	private final VerticalPanel panel = new VerticalPanel();
 	private final SimplePanel centerPanel = new SimplePanel();
 	private boolean forceContentWidgetWidth = false;
@@ -47,6 +48,9 @@ public class TwoColumnSelectionPanel extends DockPanel implements ClickHandler {
 		panel.setWidth("100%");
 		panel.addStyleName("settingLeftPanel");
 		add(westPanel, WEST);
+		gapPanel.setWidth("10px");
+		gapPanel.addStyleName("twoColumnSelectionGap");
+		add(gapPanel, WEST);
 		add(centerPanel, CENTER);
 	}
 
