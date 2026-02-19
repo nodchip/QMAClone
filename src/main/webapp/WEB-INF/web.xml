@@ -73,19 +73,6 @@
 		<welcome-file>QMAClone.html</welcome-file>
 	</welcome-file-list>
 
-	<servlet>
-		<servlet-name>remoteLoggingServlet</servlet-name>
-		<servlet-class>tv.dyndns.kishibe.qmaclone.server.RemoteLoggingServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>remoteLoggingServlet</servlet-name>
-		<url-pattern>/tv.dyndns.kishibe.qmaclone.QMAClone/remote_logging</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>remoteLoggingServlet</servlet-name>
-		<url-pattern>/remote_logging</url-pattern>
-	</servlet-mapping>
-
 	<!-- https://issues.apache.org/jira/browse/AMQ-6154 -->
 	<absolute-ordering/>
 </web-app>

@@ -1,5 +1,6 @@
 package tv.dyndns.kishibe.qmaclone.client.setting;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -10,15 +11,10 @@ import com.google.gwt.user.client.ui.SimplePanel;
  */
 public final class SettingSaveToast {
   private static final int DISPLAY_DURATION_MS = 2000;
-  private static final SimplePanel PANEL = new SimplePanel();
-  private static final HTML MESSAGE = new HTML();
+  private static SimplePanel panel;
+  private static HTML message;
+  private static Timer hideTimer;
   private static boolean initialized = false;
-  private static final Timer HIDE_TIMER = new Timer() {
-    @Override
-    public void run() {
-      PANEL.setVisible(false);
-    }
-  };
 
   private SettingSaveToast() {}
 
@@ -32,11 +28,14 @@ public final class SettingSaveToast {
   }
 
   private static void showRaw(String message) {
+    if (!isClientRuntime()) {
+      return;
+    }
     ensureInitialized();
-    MESSAGE.setText(message);
-    PANEL.setVisible(true);
-    HIDE_TIMER.cancel();
-    HIDE_TIMER.schedule(DISPLAY_DURATION_MS);
+    SettingSaveToast.message.setText(message);
+    panel.setVisible(true);
+    hideTimer.cancel();
+    hideTimer.schedule(DISPLAY_DURATION_MS);
   }
 
   private static void ensureInitialized() {
@@ -44,10 +43,26 @@ public final class SettingSaveToast {
       return;
     }
     initialized = true;
-    PANEL.addStyleName("app-setting-save-toast");
-    MESSAGE.addStyleName("app-setting-save-toast-message");
-    PANEL.setWidget(MESSAGE);
-    PANEL.setVisible(false);
-    RootPanel.get().add(PANEL);
+    panel = new SimplePanel();
+    message = new HTML();
+    hideTimer = new Timer() {
+      @Override
+      public void run() {
+        panel.setVisible(false);
+      }
+    };
+    panel.addStyleName("app-setting-save-toast");
+    message.addStyleName("app-setting-save-toast-message");
+    panel.setWidget(message);
+    panel.setVisible(false);
+    RootPanel.get().add(panel);
+  }
+
+  private static boolean isClientRuntime() {
+    try {
+      return GWT.isClient();
+    } catch (Throwable ignored) {
+      return false;
+    }
   }
 }

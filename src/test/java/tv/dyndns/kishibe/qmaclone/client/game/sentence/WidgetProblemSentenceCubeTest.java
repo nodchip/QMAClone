@@ -11,10 +11,11 @@ public class WidgetProblemSentenceCubeTest extends QMACloneGWTTestCaseBase {
 	@Test
 	public void testSentenceWidthShouldBeFullWidth() {
 		PacketProblem problem = new PacketProblem();
+		problem.sentence = "テスト";
 		problem.shuffledAnswers = new String[] { "サンプル" };
 
 		WidgetProblemSentenceCube widget = new WidgetProblemSentenceCube(problem);
-		Grid grid = (Grid) widget.getWidget(0);
+		Grid grid = (Grid) widget.getWidget(1);
 		assertEquals("100%", grid.getElement().getStyle().getWidth());
 	}
 }

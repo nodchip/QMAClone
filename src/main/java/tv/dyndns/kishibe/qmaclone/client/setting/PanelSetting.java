@@ -74,7 +74,7 @@ public class PanelSetting extends TwoColumnSelectionPanel {
 						.getInstance(), Scheduler.get()).asWidget().asWidget();
 			}
 		});
-		add("テーマモード<br>編集ログ", new LazyPanel() {
+		add("テーマモード編集ログ", new LazyPanel() {
 			@Override
 			protected Widget createWidget() {
 				return new PanelSettingThemeModeEditLog(new PanelSettingThemeModeEditLogView(),

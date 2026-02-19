@@ -16,6 +16,8 @@ public class StatusUpdaterTest extends QMACloneGWTTestCaseBase {
 	@Override
 	protected void gwtSetUp() throws Exception {
 		super.gwtSetUp();
+		UserData.get().setUserCode(0);
+		UserData.get().setWebSocketUsage(WebSocketUsage.Off);
 
 		callbackArgument = null;
 		statusArgument = null;

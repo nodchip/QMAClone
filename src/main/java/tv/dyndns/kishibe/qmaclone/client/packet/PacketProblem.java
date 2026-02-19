@@ -102,6 +102,9 @@ public class PacketProblem extends PacketProblemMinimum implements IsSerializabl
   }
 
   public String getPanelSentence() {
+    if (sentence == null) {
+      return "";
+    }
     String s = sentence;
     s = s.replaceAll("%n", "\n");
     s = s.replaceAll("%w", Constant.WAIT_SPACE);
