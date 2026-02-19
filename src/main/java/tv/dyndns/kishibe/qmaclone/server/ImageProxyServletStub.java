@@ -3,9 +3,12 @@ package tv.dyndns.kishibe.qmaclone.server;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -31,8 +34,19 @@ public class ImageProxyServletStub extends HttpServlet {
   private static final Logger logger = Logger.getLogger(ImageProxyServletStub.class.toString());
   private static final int MAX_WIDTH = 512;
   private static final int MAX_HEIGHT = 384;
+  private static final long LOG_AGGREGATION_WINDOW_MILLIS = 60L * 1000L;
+  private static final ConcurrentMap<String, AggregatedLogState> aggregatedLogStates =
+      new ConcurrentHashMap<>();
   private static String HEX = "0123456789abcdef";
   private final ImageUtils imageUtils;
+
+  /**
+   * 同種エラーを一定時間内で集約するための状態。
+   */
+  private static final class AggregatedLogState {
+    private long windowStartTimeMillis;
+    private int countInWindow;
+  }
 
   @Inject
   public ImageProxyServletStub(ImageUtils imageUtils) {
@@ -44,7 +58,15 @@ public class ImageProxyServletStub extends HttpServlet {
       IOException {
     try (InputStream inputStream = req.getInputStream();
         OutputStream outputStream = resp.getOutputStream()) {
-      processGet(req, resp);
+      try {
+        processGet(req, resp);
+      } catch (ServletException e) {
+        logAggregatedWarning("invalid-parameter", "ImageProxyServlet: 不正なリクエストです", e);
+        writeErrorResponse(resp, HttpServletResponse.SC_BAD_REQUEST, "INVALID_IMAGE_REQUEST");
+      } catch (IOException e) {
+        logAggregatedWarning("fetch-failed", "ImageProxyServlet: 画像の取得に失敗しました", e);
+        writeErrorResponse(resp, HttpServletResponse.SC_NOT_FOUND, "IMAGE_NOT_AVAILABLE");
+      }
     }
   }
 
@@ -163,6 +185,45 @@ public class ImageProxyServletStub extends HttpServlet {
     }
 
     return result;
+  }
+
+  /**
+   * クライアントへ明示的なエラーレスポンスを返す。
+   */
+  private void writeErrorResponse(HttpServletResponse resp, int statusCode, String message)
+      throws IOException {
+    if (resp.isCommitted()) {
+      return;
+    }
+    resp.reset();
+    resp.setStatus(statusCode);
+    resp.setContentType("text/plain; charset=UTF-8");
+    resp.getOutputStream().write(message.getBytes(StandardCharsets.UTF_8));
+  }
+
+  /**
+   * 同種エラーを1分単位で集約してWARNINGログを出力する。
+   */
+  private void logAggregatedWarning(String key, String message, Exception e) {
+    long now = System.currentTimeMillis();
+    AggregatedLogState state = aggregatedLogStates.computeIfAbsent(key, k -> new AggregatedLogState());
+    synchronized (state) {
+      if (state.windowStartTimeMillis == 0L) {
+        state.windowStartTimeMillis = now;
+      }
+      if (now - state.windowStartTimeMillis >= LOG_AGGREGATION_WINDOW_MILLIS) {
+        if (state.countInWindow > 1) {
+          logger.log(Level.WARNING, String.format("ImageProxyServlet: 同種エラーを集約しました key=%s count=%d",
+              key, state.countInWindow - 1));
+        }
+        state.windowStartTimeMillis = now;
+        state.countInWindow = 0;
+      }
+      if (state.countInWindow == 0) {
+        logger.log(Level.WARNING, message, e);
+      }
+      state.countInWindow++;
+    }
   }
 
   /**

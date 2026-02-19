@@ -79,8 +79,10 @@ public class Constant {
   public static final String DELIMITER_KUMIAWASE_PAIR = "<--->";
   public static final String FORM_NAME_USER_CODE = "user_code";
   public static final String FORM_NAME_ICON = "icon";
+  public static final long ICON_UPLOAD_MAX_FILE_SIZE = 64L * 1024L;
   public static final String ICON_UPLOAD_RESPONSE_OK = "--OK--";
   public static final String ICON_UPLOAD_RESPONSE_FAILED_TO_PARSE_REQUEST = "--FAILED_TO_PARSE_REQUEST--";
+  public static final String ICON_UPLOAD_RESPONSE_FILE_TOO_LARGE = "--FILE_TOO_LARGE--";
   public static final String ICON_UPLOAD_RESPONSE_FAILED_TO_DETECT_IMAGE_FILE_TYPE = "--FAILED_TO_DETECT_IMAGE_FILE_TYPE--";
   public static final String ICON_UPLOAD_RESPONSE_REQUEST_FORMAT_ERROR = "--REQUEST_FORMAT_ERROR--";
   public static final String ICON_UPLOAD_RESPONSE_IMAGE_FILE_NAME_FORMAT_ERROR = "--IMAGE_FILE_NAME_FORMAT_ERROR--";

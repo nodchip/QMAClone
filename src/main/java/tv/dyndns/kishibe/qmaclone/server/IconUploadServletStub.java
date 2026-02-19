@@ -46,6 +46,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.FileUploadBase.SizeLimitExceededException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
@@ -79,14 +80,14 @@ public class IconUploadServletStub extends HttpServlet implements Servlet {
 
     FileItemFactory factory = new DiskFileItemFactory();
     ServletFileUpload upload = new ServletFileUpload(factory);
-    upload.setSizeMax(64L * 1024L);
+    upload.setSizeMax(Constant.ICON_UPLOAD_MAX_FILE_SIZE);
     List<FileItem> items = null;
 
     try {
       List<FileItem> temp = upload.parseRequest(request);
       items = temp;
     } catch (FileUploadException e) {
-      writeResponse(response, Constant.ICON_UPLOAD_RESPONSE_FAILED_TO_PARSE_REQUEST);
+      writeResponse(response, resolveUploadParseFailureResponse(e));
       return;
     }
 
@@ -190,5 +191,18 @@ public class IconUploadServletStub extends HttpServlet implements Servlet {
   private void writeResponse(HttpServletResponse response, String message) throws IOException {
     response.setContentType("text/plain");
     response.getOutputStream().write(message.getBytes());
+  }
+
+  /**
+   * リクエスト解析失敗の原因に応じてレスポンスコード文字列を返す。
+   */
+  String resolveUploadParseFailureResponse(FileUploadException e) {
+    if (e instanceof SizeLimitExceededException) {
+      logger.log(Level.WARNING, String.format("アイコンアップロードサイズ上限超過: maxBytes=%d",
+          Constant.ICON_UPLOAD_MAX_FILE_SIZE), e);
+      return Constant.ICON_UPLOAD_RESPONSE_FILE_TOO_LARGE;
+    }
+    logger.log(Level.WARNING, "アイコンアップロードリクエストの解析に失敗しました", e);
+    return Constant.ICON_UPLOAD_RESPONSE_FAILED_TO_PARSE_REQUEST;
   }
 }

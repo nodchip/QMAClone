@@ -17,6 +17,8 @@
 - 改善: Jetty 関連変更時は両例外をセットで確認し、DevMode と Tomcat で個別に起動検証する。
 - ミス: GWT 再コンパイル失敗後に古い `cache.js` が配信され、画面不整合が起きた。
 - 改善: クライアント変更の完了条件に「GWT 再コンパイル成功」と「配備先で最新成果物が参照されること」を含める。
+- ミス: GWT クライアントで非対応 API（例: `String.format`）を使用し、デプロイ時の `gwt:compile` で停止した。
+- 改善: クライアント変更では GWT JRE エミュレーション非対応 API を使わず、`deploy_qmaclone_tomcat9.ps1` 実行前に `gwt:compile` 成功を確定する。
 - ミス: WebSocket URL を環境固定値で扱い、接続先不一致（404/500）を誘発した。
 - 改善: URL は `protocol / host / contextPath` から導出し、クライアントログに接続先 URL を必ず含める。
 - ミス: WebSocket 障害をサーバーログ確認前に断定し、調査が遠回りになった。
@@ -36,6 +38,7 @@
 - `piriti` 依存は再導入せず、クライアントの JSON デコードは明示実装を維持する。
 - `gin` は `de.knightsoft-net:gin:4.0.0` を基準とし、Guice 更新時は GWT rebind 成否を先に確認する。
 - `gwt:compile` が失敗した場合はデプロイを中断し、`-SkipBuild` による回避配備を行わない。
+- GWT クライアント（`client` 配下）では JRE の汎用 API を無条件に使わず、`String.format` など GWT 非対応 API の利用前にエミュレーション対応可否を確認する。
 
 ### Jetty / Tomcat / クラスローダ
 - DevMode と Tomcat でクラスローダ挙動が異なる前提で検証する。

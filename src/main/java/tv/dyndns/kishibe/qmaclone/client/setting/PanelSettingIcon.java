@@ -69,7 +69,8 @@ public class PanelSettingIcon extends VerticalPanel implements SubmitCompleteHan
     addStyleName("settingIconPanel");
 
     HTML lead = new HTML("オリジナルアイコンをアップロードできます。<br/>"
-        + "ファイルサイズは64KBまで、画像形式はブラウザで表示可能なものに対応しています。<br/>"
+        + "ファイルサイズは" + (Constant.ICON_UPLOAD_MAX_FILE_SIZE / 1024L)
+        + "KBまで、画像形式はブラウザで表示可能なものに対応しています。<br/>"
         + "画像は自動的に正方形に圧縮されて表示されます。公序良俗に反する画像の使用はお止めください。");
     lead.addStyleName("settingIconLead");
     add(lead);
@@ -135,11 +136,11 @@ public class PanelSettingIcon extends VerticalPanel implements SubmitCompleteHan
   }
 
   private boolean checkForm() {
-    htmlMessage.setHTML("");
+    htmlMessage.setHTML(IconUploadMessagePolicy.decideMessageForCheckForm(
+        htmlMessage.getHTML(), fileUpload.getFilename()));
 
     if (fileUpload.getFilename().length() == 0) {
       buttonSubmit.setEnabled(false);
-      htmlMessage.setHTML("アップロードする画像を選択してください。");
       return false;
     }
 
@@ -166,6 +167,10 @@ public class PanelSettingIcon extends VerticalPanel implements SubmitCompleteHan
       SettingSaveToast.showSaved("アイコン");
     } else if (result.contains(Constant.ICON_UPLOAD_RESPONSE_FAILED_TO_DETECT_IMAGE_FILE_TYPE)) {
       htmlMessage.setHTML("画像ファイルを認識できませんでした。正しい画像ファイルであることを確認して再度アップロードしてください。");
+    } else if (result.contains(Constant.ICON_UPLOAD_RESPONSE_FILE_TOO_LARGE)) {
+      htmlMessage.setHTML("ファイルサイズが上限を超えています。"
+          + (Constant.ICON_UPLOAD_MAX_FILE_SIZE / 1024L)
+          + "KB以下にして再度アップロードしてください。");
     } else if (result.contains(Constant.ICON_UPLOAD_RESPONSE_FAILED_TO_PARSE_REQUEST)) {
       htmlMessage.setHTML("送信されたデータが不正です。ファイルサイズ等を確認して再度アップロードしてください。");
     } else if (result.contains(Constant.ICON_UPLOAD_RESPONSE_IMAGE_FILE_NAME_FORMAT_ERROR)) {
