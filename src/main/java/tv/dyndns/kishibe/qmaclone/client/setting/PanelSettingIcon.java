@@ -68,12 +68,20 @@ public class PanelSettingIcon extends VerticalPanel implements SubmitCompleteHan
     setHorizontalAlignment(ALIGN_CENTER);
     addStyleName("settingIconPanel");
 
+    VerticalPanel introCard = new VerticalPanel();
+    introCard.setWidth("100%");
+    introCard.addStyleName("settingIconIntroCard");
+
+    HTML title = new HTML("<h3 class='settingThemeModeTitle'>アイコン</h3>");
+    introCard.add(title);
+
     HTML lead = new HTML("オリジナルアイコンをアップロードできます。<br/>"
         + "ファイルサイズは" + (Constant.ICON_UPLOAD_MAX_FILE_SIZE / 1024L)
         + "KBまで、画像形式はブラウザで表示可能なものに対応しています。<br/>"
         + "画像は自動的に正方形に圧縮されて表示されます。公序良俗に反する画像の使用はお止めください。");
     lead.addStyleName("settingIconLead");
-    add(lead);
+    introCard.add(lead);
+    add(introCard);
 
     VerticalPanel card = new VerticalPanel();
     card.setWidth("100%");

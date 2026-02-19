@@ -10,7 +10,6 @@
 ## 参照ドキュメント
 - GWT 調査の起点: `docs/gwt-guide/README.md`
 - UI/UX スタイルガイド: `docs/ui-ux-style-guide.md`
-- UI/UX を検討・設計・実装する際は、必ず `docs/ui-ux-style-guide.md` を先に確認し、配色・余白・状態遷移・レイアウト基準を優先する。
 
 ## 過去の作業ミス（QMAClone 固有）と改善案
 - ミス: DevMode と Tomcat の差を考慮せず、クラスローダ起因の `NoClassDefFoundError` / `ClassCastException` を見落とした。
@@ -37,8 +36,7 @@
 - 依存関係は安定版のみ使用し、RC / alpha / milestone 版は採用しない。
 - `piriti` 依存は再導入せず、クライアントの JSON デコードは明示実装を維持する。
 - `gin` は `de.knightsoft-net:gin:4.0.0` を基準とし、Guice 更新時は GWT rebind 成否を先に確認する。
-- `gwt:compile` が失敗した場合はデプロイを中断し、`-SkipBuild` による回避配備を行わない。
-- GWT クライアント（`client` 配下）では JRE の汎用 API を無条件に使わず、`String.format` など GWT 非対応 API の利用前にエミュレーション対応可否を確認する。
+- GWT クライアント（`client` 配下）では JRE の汎用 API を無条件に使わず、`String.format` など GWT 非対応 API の利用前にエミュレーション対応可否を確認する。`gwt:compile` 失敗時はデプロイを中断し、`-SkipBuild` による回避配備を行わない。
 
 ### Jetty / Tomcat / クラスローダ
 - DevMode と Tomcat でクラスローダ挙動が異なる前提で検証する。
@@ -58,7 +56,7 @@
 - Tomcat 再配備時は、必要に応じて旧展開物削除とサービス再起動で静的状態を確実に破棄する。
 - Eclipse で不整合が疑われる場合は、`target` と `gwt-unitCache` のクリーンを実施する。
 - 検証（`build` / `test` / `gwt:compile`）が1つでも失敗した場合はデプロイを中断し、修正と再検証完了まで配備しない。
-- 実行成果物に影響する修正（サーバー/クライアント/CSS/配備スクリプト）を加えた場合は、原則として完了報告前に `deploy_qmaclone_tomcat9.ps1` を実行してデプロイする（ユーザーが不要と明示した場合を除く）。
+- ユーザー依頼で修正を加えた場合は、実行成果物に影響する修正（サーバー/クライアント/CSS/配備スクリプト）について完了報告前に `deploy_qmaclone_tomcat9.ps1` を実行してデプロイする（ユーザーが不要と明示した場合のみ省略可）。
 - デプロイ後は次を確認し、実行コマンドとHTTP結果を完了報告に残す。
 1. `/QMAClone-1.0-SNAPSHOT/` の `HTTP 200`
 2. `/tv.dyndns.kishibe.qmaclone.QMAClone/service` の `HTTP 405`
