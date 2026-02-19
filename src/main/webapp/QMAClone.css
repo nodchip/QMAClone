@@ -4005,7 +4005,7 @@ tr.newProblem td {
 	--chat-bg-shell: var(--color-surface-1);
 	--chat-bg-header: var(--color-surface-3);
 	--chat-bg-log: var(--color-surface-2);
-	--chat-bg-input: var(--color-surface-1);
+	--chat-bg-input: var(--color-surface-2);
 	--chat-border: var(--color-border-default);
 	--chat-text: var(--color-text-primary);
 	--chat-text-muted: var(--color-text-muted);
@@ -4498,13 +4498,21 @@ body {
 .app-chat-pane-realtime .app-chat-send-button {
 	min-width: 54px;
 	width: auto;
+	height: 30px;
 	padding-left: 10px;
 	padding-right: 10px;
 	justify-self: end;
+	border: 1px solid var(--chat-border);
+	border-radius: 8px;
 	border-color: var(--chat-border);
 	background: var(--chat-action);
 	color: var(--color-surface-1);
+	font-weight: 700;
+	white-space: nowrap;
+	cursor: pointer;
 	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 1px 2px rgba(0, 0, 0, 0.22);
+	transition: background-color 140ms ease, border-color 140ms ease, box-shadow 140ms ease,
+		transform 90ms ease;
 }
 
 .app-chat-pane-realtime .app-chat-send-button:hover {
@@ -4525,6 +4533,8 @@ body {
 	box-shadow: none;
 }
 
+.app-chat-pane-realtime .app-chat-name-input,
+.app-chat-pane-realtime .app-chat-message-input,
 .app-chat-pane-realtime .gwt-TextBox {
 	background: var(--color-surface-1);
 	border: 1px solid var(--color-border-default);
@@ -4532,6 +4542,11 @@ body {
 	color: var(--color-text-primary);
 	height: 30px;
 	padding: 4px 8px;
+}
+
+.app-chat-pane-realtime .app-chat-name-input,
+.app-chat-pane-realtime .app-chat-message-input {
+	background: var(--color-surface-2);
 }
 
 .app-chat-pane .gwt-TextBox {
@@ -4684,7 +4699,7 @@ body {
 	pointer-events: none;
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 1420px) {
 	.app-chat-panel {
 		left: 12px;
 		right: 12px;
@@ -4729,12 +4744,21 @@ body {
 	position: fixed;
 	right: 16px;
 	top: 86px;
+	min-width: 116px;
+	height: 34px;
 	padding: 6px 10px;
 	border: 1px solid var(--chat-border);
 	border-radius: 8px;
 	background: var(--chat-action) !important;
 	color: var(--color-surface-1);
+	font-size: 13px;
 	font-weight: 600;
+	line-height: 1;
+	white-space: nowrap;
+	writing-mode: horizontal-tb;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
 	cursor: pointer;
 	z-index: 45;
 	transition: background-color 140ms ease, border-color 140ms ease, box-shadow 140ms ease,
@@ -5691,8 +5715,17 @@ body {
 	box-shadow: inset 3px 0 0 var(--color-accent-primary);
 }
 
-.app-setting-panel .gwt-SimplePanel,
-.statisticsRoot .gwt-SimplePanel {
+.app-setting-panel .gwt-SimplePanel {
+	min-height: 480px;
+	width: 620px;
+	min-width: 620px;
+	max-width: 620px;
+	padding-left: 0;
+	box-sizing: border-box;
+}
+
+.statisticsRoot .gwt-SimplePanel,
+.rankingRootPanel .gwt-SimplePanel {
 	min-height: 480px;
 	width: 620px;
 	min-width: 620px;
