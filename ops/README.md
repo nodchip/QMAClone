@@ -8,9 +8,11 @@
 - `ops/notes/`: 作業メモや運用メモ
 - `ops/scripts/`: 運用補助スクリプト
 - `ops/scripts/monitoring/`: 監視プラグイン（例: Munin）
+- `ops/config/`: ローカル運用設定ファイル置き場（`live` は Git 除外）
 
 ## Git 方針
 - `ops/log/` と `ops/notes/` の実データは `.gitignore` で除外します。
+- `ops/config/live/` の実運用設定ファイルは `.gitignore` で除外します。
 - 追跡対象はテンプレート（`*.example`）と説明ファイルのみです。
 - `ops/scripts/` は再現性のため原則として追跡対象です。
 

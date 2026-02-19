@@ -13,4 +13,13 @@
 !/ops/notes/.gitkeep
 !/ops/log/*.example
 !/ops/notes/*.example
+/ops/config/live/**
+!/ops/config/live/
+!/ops/config/live/.gitkeep
+!/ops/config/live/nginx/
+!/ops/config/live/nginx/.gitkeep
+!/ops/config/live/nginx/sites-enabled/
+!/ops/config/live/nginx/sites-enabled/.gitkeep
+!/ops/config/live/tomcat9/
+!/ops/config/live/tomcat9/.gitkeep
 /dom.html
