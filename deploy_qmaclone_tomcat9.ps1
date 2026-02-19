@@ -198,8 +198,17 @@ function Get-HttpStatusCode {
     $response = Invoke-WebRequest -Uri $Uri -Method $Method -UseBasicParsing -TimeoutSec 10
     return [int]$response.StatusCode
   } catch {
-    if ($_.Exception.Response -and $_.Exception.Response.StatusCode) {
-      return [int]$_.Exception.Response.StatusCode.value__
+    # Exception type differs by PowerShell/.NET version. Avoid assuming .Response exists.
+    $ex = $_.Exception
+    if ($ex -and $ex.PSObject.Properties.Match('Response').Count -gt 0) {
+      $resp = $ex.Response
+      if ($resp -and $resp.PSObject.Properties.Match('StatusCode').Count -gt 0) {
+        try { return [int]$resp.StatusCode } catch { }
+        try { return [int]$resp.StatusCode.value__ } catch { }
+      }
+    }
+    if ($ex -and $ex.PSObject.Properties.Match('StatusCode').Count -gt 0 -and $ex.StatusCode) {
+      try { return [int]$ex.StatusCode } catch { }
     }
     return -1
   }
