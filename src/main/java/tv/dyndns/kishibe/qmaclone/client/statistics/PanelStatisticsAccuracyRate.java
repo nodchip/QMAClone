@@ -40,7 +40,9 @@ public class PanelStatisticsAccuracyRate extends VerticalPanel {
 			clear();
 			add(title);
 			gridAccuracyRate.setData(result);
-			add(new ChartAccuracyRate(result));
+			ChartAccuracyRate chartAccuracyRate = new ChartAccuracyRate(result);
+			chartAccuracyRate.addStyleName("statisticsAccuracyChart");
+			add(chartAccuracyRate);
 			add(gridAccuracyRate);
 		}
 

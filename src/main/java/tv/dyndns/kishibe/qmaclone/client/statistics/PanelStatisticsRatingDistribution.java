@@ -82,7 +82,9 @@ public class PanelStatisticsRatingDistribution extends VerticalPanel {
 		int min = ratingDistribution.min;
 		int max = ratingDistribution.max;
 
-		add(new RatingDistributionChart(distribution, min, max));
+		RatingDistributionChart chart = new RatingDistributionChart(distribution, min, max);
+		chart.addStyleName("statisticsRatingDistributionChart");
+		add(chart);
 		HTML description = new HTML(TEMPLATE.description(min, max));
 		description.addStyleName("statisticsDescription");
 		add(description);

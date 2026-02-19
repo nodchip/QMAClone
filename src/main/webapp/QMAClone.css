@@ -6100,6 +6100,17 @@ body {
 	box-sizing: border-box;
 }
 
+.statisticsRoot .statisticsAccuracyChart,
+.statisticsRoot .statisticsRatingDistributionChart {
+	width: 100%;
+	max-width: 100%;
+	border: 1px solid var(--color-border-subtle);
+	border-radius: 8px;
+	background: var(--color-surface-1);
+	padding: 6px;
+	box-sizing: border-box;
+}
+
 .loginPlayersTitle {
 	margin: 0 0 8px 0;
 	color: var(--color-text-primary);
