@@ -4193,7 +4193,7 @@ body {
 	overflow-y: auto;
 	border: 1px solid var(--color-border-default);
 	border-radius: 12px;
-	background: linear-gradient(180deg, #f9fcff 0%, #edf5fe 100%);
+	background: var(--color-surface-1);
 	box-shadow: 0 4px 12px rgba(12, 59, 105, 0.09);
 	box-sizing: border-box;
 }
@@ -4224,11 +4224,12 @@ body {
 	min-width: 100% !important;
 	height: 38px;
 	padding: 0 10px;
-	border: 1px solid #86aed3;
-	border-radius: 10px;
-	background: #eaf4ff !important;
+	margin: 0;
+	border: 1px solid var(--color-border-subtle) !important;
+	border-radius: 8px;
+	background: var(--color-surface-1) !important;
 	background-image: none !important;
-	color: #0d3b63;
+	color: var(--color-text-secondary) !important;
 	font-size: 13px;
 	font-weight: 700;
 	line-height: 1;
@@ -4248,8 +4249,10 @@ body {
 	width: 100% !important;
 	min-width: 100% !important;
 	max-width: 100% !important;
-	background: #eaf4ff !important;
+	background: var(--color-surface-1) !important;
 	background-image: none !important;
+	border-color: var(--color-border-subtle) !important;
+	color: var(--color-text-secondary) !important;
 	box-sizing: border-box;
 }
 
@@ -4261,9 +4264,9 @@ body {
 }
 
 .app-main-nav-button:hover {
-	background: linear-gradient(180deg, #f2f8ff 0%, #ddeeff 100%);
-	border-color: #7fa9ce;
-	color: #123351;
+	background: var(--color-surface-3) !important;
+	border-color: var(--color-border-strong) !important;
+	color: var(--color-accent-primary) !important;
 	box-shadow: 0 1px 4px rgba(12, 59, 105, 0.16);
 }
 
@@ -4284,22 +4287,22 @@ body {
 }
 
 .app-main-nav-button.app-main-nav-button-active {
-	border-color: var(--color-accent-primary);
-	background: linear-gradient(180deg, #1d5b94 0%, var(--color-accent-primary) 100%);
-	color: #fff;
-	box-shadow: 0 2px 8px rgba(12, 59, 105, 0.25);
+	border-color: var(--color-accent-primary) !important;
+	background: var(--color-surface-3) !important;
+	color: var(--color-accent-primary) !important;
+	box-shadow: inset 3px 0 0 var(--color-accent-primary), 0 1px 4px rgba(12, 59, 105, 0.12) !important;
 }
 
 .app-main-sidebar .gwt-Button.app-main-nav-button.app-main-nav-button-active,
 .app-main-sidebar td > .gwt-Button.app-main-nav-button.app-main-nav-button-active {
 	border-color: var(--color-accent-primary) !important;
-	background-color: var(--color-accent-primary) !important;
-	background-image: linear-gradient(180deg, #1d5b94 0%, var(--color-accent-primary) 100%) !important;
-	color: #fff !important;
-	-webkit-text-fill-color: #fff !important;
+	background-color: var(--color-surface-3) !important;
+	background-image: none !important;
+	color: var(--color-accent-primary) !important;
+	-webkit-text-fill-color: var(--color-accent-primary) !important;
 	opacity: 1 !important;
-	text-shadow: 0 1px 0 rgba(10, 33, 56, 0.28);
-	box-shadow: 0 2px 8px rgba(12, 59, 105, 0.25) !important;
+	text-shadow: none !important;
+	box-shadow: inset 3px 0 0 var(--color-accent-primary), 0 1px 4px rgba(12, 59, 105, 0.12) !important;
 }
 
 .chat-collapsed .app-root-panel {
@@ -5641,7 +5644,8 @@ body {
 }
 
 .app-setting-panel .settingLeftPanel,
-.statisticsRoot .settingLeftPanel {
+.statisticsRoot .settingLeftPanel,
+.rankingRootPanel .settingLeftPanel {
 	padding: 6px;
 	border: 1px solid var(--color-border-default);
 	border-radius: 10px;
@@ -5649,7 +5653,8 @@ body {
 }
 
 .app-setting-panel .settingLeftPanelItem,
-.statisticsRoot .settingLeftPanelItem {
+.statisticsRoot .settingLeftPanelItem,
+.rankingRootPanel .settingLeftPanelItem {
 	display: block;
 	margin: 4px 0;
 	padding: 8px 10px;
@@ -5663,13 +5668,15 @@ body {
 }
 
 .app-setting-panel .settingLeftPanelItem:hover,
-.statisticsRoot .settingLeftPanelItem:hover {
+.statisticsRoot .settingLeftPanelItem:hover,
+.rankingRootPanel .settingLeftPanelItem:hover {
 	border-color: var(--color-border-strong);
 	background: var(--color-surface-3);
 }
 
 .app-setting-panel .settingLeftPanelItem.settingLeftPanelItemSelected,
-.statisticsRoot .settingLeftPanelItem.settingLeftPanelItemSelected {
+.statisticsRoot .settingLeftPanelItem.settingLeftPanelItemSelected,
+.rankingRootPanel .settingLeftPanelItem.settingLeftPanelItemSelected {
 	border-color: var(--color-accent-primary);
 	background: var(--color-surface-3);
 	color: var(--color-accent-primary);
