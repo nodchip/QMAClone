@@ -13,6 +13,7 @@ public class RankingViewImpl extends TwoColumnSelectionPanel implements RankingP
 		super(170);
 		rankingPresenter.setView(this);
 		setWidth("100%");
+		addStyleName("rankingRootPanel");
 		setCenterPanelWidth(620);
 		setForceContentWidgetWidth(true);
 		add("総合ランキング", generalRankingPresenter.asWidget());

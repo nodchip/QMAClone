@@ -43,12 +43,14 @@ import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
 import javax.mail.MessagingException;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -146,6 +148,7 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
   private final ProblemCorrectCounterResetCounter problemCorrectCounterResetCounter;
   private final ProblemIndicationCounter problemIndicationCounter;
   private final BrokenImageLinkDetector brokenImageLinkDetector;
+  private final AtomicBoolean serviceWarmedUp = new AtomicBoolean(false);
 
   /**
    * Only for testing.
@@ -230,6 +233,37 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
       String responsePayload) {
     // nginx側で圧縮するためtomcat側で圧縮しないようにする
     return false;
+  }
+
+  @Override
+  protected void doGet(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
+    if ("1".equals(request.getParameter("warmup"))) {
+      warmUpServiceCaches();
+      response.setStatus(HttpServletResponse.SC_OK);
+      response.setContentType("text/plain; charset=UTF-8");
+      response.getWriter().write("warmed");
+      return;
+    }
+    super.doGet(request, response);
+  }
+
+  private void warmUpServiceCaches() {
+    if (!serviceWarmedUp.compareAndSet(false, true)) {
+      return;
+    }
+    try {
+      // テーマモード関連キャッシュを先読みする。
+      themeModeProblemManager.getThemes();
+      themeModeProblemManager.getThemesAndProblems();
+      // 主要統計キャッシュを参照して初期化完了を担保する。
+      ratingDistribution.get();
+
+      logger.info("サービスウォームアップが完了しました");
+    } catch (Throwable e) {
+      serviceWarmedUp.set(false);
+      logger.log(Level.WARNING, "サービスウォームアップに失敗しました", e);
+    }
   }
 
   @Override

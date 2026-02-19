@@ -103,7 +103,9 @@ function Restart-ServiceWithElevation {
 
   $escapedName = $Name.Replace("'", "''")
   [string[]]$elevatedArguments = @(
+    "-NoLogo",
     "-NoProfile",
+    "-NonInteractive",
     "-ExecutionPolicy",
     "Bypass",
     "-Command",
@@ -111,7 +113,7 @@ function Restart-ServiceWithElevation {
   )
 
   try {
-    $process = Start-Process -FilePath "powershell.exe" -ArgumentList $elevatedArguments -Verb RunAs -WindowStyle Minimized -Wait -PassThru
+    $process = Start-Process -FilePath "powershell.exe" -ArgumentList $elevatedArguments -Verb RunAs -WindowStyle Hidden -Wait -PassThru
   } catch {
     throw "Failed to restart service with UAC elevation. Elevation may have been canceled."
   }
@@ -245,6 +247,27 @@ function Wait-ForRpcServletReady {
   }
 }
 
+function Wait-ForServiceWarmup {
+  param(
+    [string]$Uri,
+    [int]$TimeoutSeconds
+  )
+
+  $deadline = (Get-Date).AddSeconds($TimeoutSeconds)
+  while ($true) {
+    $statusCode = Get-HttpStatusCode -Uri $Uri
+    if ($statusCode -eq 200) {
+      Write-Host "Service warmup completed: $Uri (HTTP $statusCode)"
+      return
+    }
+
+    if ((Get-Date) -ge $deadline) {
+      throw "Timed out waiting for service warmup: $Uri (last status: $statusCode)"
+    }
+    Start-Sleep -Seconds 1
+  }
+}
+
 $workspaceRoot = $PSScriptRoot
 Set-Location -LiteralPath $workspaceRoot
 
@@ -323,11 +346,15 @@ Copy-Item -LiteralPath $resolvedSourceWar -Destination $deployedWarPath -Force
 $contextPath = "/QMAClone-1.0-SNAPSHOT"
 $baseUri = "http://$($HostName):$resolvedTomcatHttpPort$contextPath/"
 $rpcUri = "http://$($HostName):$resolvedTomcatHttpPort$contextPath/tv.dyndns.kishibe.qmaclone.QMAClone/service"
+$warmupUri = "${rpcUri}?warmup=1"
 
 Write-Host "Wait until page stops returning 404: $baseUri"
 Wait-ForHttpStatusNot404 -Uri $baseUri -TimeoutSeconds $StartupWaitTimeoutSeconds
 
 Write-Host "Wait until RPC servlet is ready: $rpcUri"
 Wait-ForRpcServletReady -Uri $rpcUri -TimeoutSeconds $StartupWaitTimeoutSeconds
+
+Write-Host "Run service warmup: $warmupUri"
+Wait-ForServiceWarmup -Uri $warmupUri -TimeoutSeconds $StartupWaitTimeoutSeconds
 
 Write-Host "Done. Deployment is complete."
