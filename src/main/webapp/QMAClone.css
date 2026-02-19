@@ -382,6 +382,22 @@ a:active {
 	box-shadow: 0 0 0 2px rgba(79, 141, 200, 0.2);
 }
 
+.gwt-Button.linkPrimaryButton:active {
+	transform: translateY(1px);
+}
+
+.gwt-Button.linkPrimaryButton:focus-visible {
+	outline: 2px solid var(--color-focus-ring);
+	outline-offset: 2px;
+}
+
+.gwt-Button.linkPrimaryButton:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+	box-shadow: none;
+	transform: none;
+}
+
 .gwt-Button.linkSecondaryButton {
 	border: 1px solid var(--color-border-subtle);
 	background: var(--color-surface-1);
@@ -394,6 +410,22 @@ a:active {
 	color: var(--color-text-primary);
 }
 
+.gwt-Button.linkSecondaryButton:active {
+	transform: translateY(1px);
+}
+
+.gwt-Button.linkSecondaryButton:focus-visible {
+	outline: 2px solid var(--color-focus-ring);
+	outline-offset: 2px;
+}
+
+.gwt-Button.linkSecondaryButton:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+	box-shadow: none;
+	transform: none;
+}
+
 .gwt-Button.linkDangerButton {
 	border: 1px solid #d58585;
 	background: #fff1f1;
@@ -404,6 +436,22 @@ a:active {
 	border-color: #c15656;
 	background: #ffe6e6;
 	color: #7f1d1d;
+}
+
+.gwt-Button.linkDangerButton:active {
+	transform: translateY(1px);
+}
+
+.gwt-Button.linkDangerButton:focus-visible {
+	outline: 2px solid var(--color-focus-ring);
+	outline-offset: 2px;
+}
+
+.gwt-Button.linkDangerButton:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+	box-shadow: none;
+	transform: none;
 }
 
 /* マッチング画面 */
@@ -1848,6 +1896,11 @@ a:active {
 	opacity: 0.6;
 	cursor: default;
 	box-shadow: none;
+}
+
+.settingRatioReportDangerButton:focus-visible {
+	outline: 2px solid var(--color-focus-ring);
+	outline-offset: 2px;
 }
 
 .settingChatRoot {
@@ -4216,6 +4269,18 @@ body {
 	transform: translateY(1px);
 }
 
+.app-main-nav-button:focus-visible {
+	outline: 2px solid var(--color-focus-ring);
+	outline-offset: 2px;
+}
+
+.app-main-nav-button:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+	box-shadow: none;
+	transform: none;
+}
+
 .app-main-nav-button.app-main-nav-button-active {
 	border-color: var(--color-accent-primary);
 	background: linear-gradient(180deg, #1d5b94 0%, var(--color-accent-primary) 100%);
@@ -6213,6 +6278,17 @@ body {
 	border-radius: 8px;
 	background: var(--color-surface-1);
 	box-shadow: 0 1px 6px rgba(12, 59, 105, 0.14);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+		scroll-behavior: auto !important;
+	}
 }
 
 @media (max-width: 1100px) {
