@@ -107,6 +107,7 @@
 - `width: 100%` 要素へ `padding` を与える場合は、`box-sizing: border-box` をセットで指定する。
 - GWT 難読化クラス（例: `GG-*`）への直接依存を恒久対応にしない。`styleName` または安定クラスを使う。
 - レイアウト変更時は、デスクトップ通常幅・中間幅・モバイル幅の3状態で表示崩れと重なりを確認する。
+- 折り返し（`flex-wrap`）など div 前提のCSSを適用する場合、コンテナは `HorizontalPanel` / `VerticalPanel`（table生成）ではなく `FlowPanel` 等の div 生成ウィジットを使う。適用前に実DOM（`dom.html` 等）で table/div を確認する。
 
 ### チャット折りたたみ運用
 - 表示切替UIは CSS 固定非表示と Java 表示制御を重ねず、非表示条件を一方へ統一する。
