@@ -22,7 +22,7 @@
 package tv.dyndns.kishibe.qmaclone.client.game.panel;
 
 import tv.dyndns.kishibe.qmaclone.client.game.AnswerView;
-import tv.dyndns.kishibe.qmaclone.client.game.AnswerViewImpl;
+import tv.dyndns.kishibe.qmaclone.client.game.AnswerViewSlots;
 import tv.dyndns.kishibe.qmaclone.client.game.SessionData;
 import tv.dyndns.kishibe.qmaclone.client.game.input.InputWidget;
 import tv.dyndns.kishibe.qmaclone.client.game.input.InputWidgetMojiPanel;
@@ -48,7 +48,8 @@ public class QuestionPanelMojiPanel extends QuestionPanel {
 	@Override
 	protected AnswerView createAnswerView() {
 		int length = problem.shuffledAnswers[0].length();
-		return new AnswerViewImpl(length, length, true);
+		// 文字パネルは「指定文字数を選ぶ」形式のため、枠数は正解文字列の長さに合わせる。
+		return new AnswerViewSlots(length, length, length);
 	}
 
 	@Override

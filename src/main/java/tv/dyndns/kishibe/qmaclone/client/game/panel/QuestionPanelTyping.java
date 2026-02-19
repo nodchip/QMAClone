@@ -22,7 +22,7 @@
 package tv.dyndns.kishibe.qmaclone.client.game.panel;
 
 import tv.dyndns.kishibe.qmaclone.client.game.AnswerView;
-import tv.dyndns.kishibe.qmaclone.client.game.AnswerViewImpl;
+import tv.dyndns.kishibe.qmaclone.client.game.AnswerViewSlots;
 import tv.dyndns.kishibe.qmaclone.client.game.SessionData;
 import tv.dyndns.kishibe.qmaclone.client.game.input.InputWidget;
 import tv.dyndns.kishibe.qmaclone.client.game.input.InputWidgetTyping;
@@ -48,7 +48,7 @@ public class QuestionPanelTyping extends QuestionPanel {
 	@Override
 	protected AnswerView createAnswerView() {
 		// ローマ字入力のため一時的な表示文字数を10文字とする
-		return new AnswerViewImpl(8, 10, true);
+		return new AnswerViewSlots(8, 10, 8);
 	}
 
 	@Override
