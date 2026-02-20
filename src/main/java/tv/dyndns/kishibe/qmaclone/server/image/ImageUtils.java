@@ -14,8 +14,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -40,6 +42,8 @@ import tv.dyndns.kishibe.qmaclone.server.util.Downloader;
 import tv.dyndns.kishibe.qmaclone.server.util.DownloaderException;
 
 public class ImageUtils {
+  private static final int IPV4_BYTES = 4;
+  private static final int IPV6_BYTES = 16;
 
   /**
    * URLに含まれるパラメーターを保持する
@@ -238,7 +242,13 @@ public class ImageUtils {
       // http://kishibe.dyndns.tv/qmaclone/wiki/wiki.cgi?page=BugTrack%2DQMAClone%2F434#1330156832
       File tempFile = File.createTempFile("ImageUtils-download", null);
       try {
-        downloader.downloadToFile(url, tempFile);
+        downloader.downloadToFile(url, tempFile, candidate -> {
+          try {
+            validateDownloadTargetUrl(candidate);
+          } catch (IOException e) {
+            throw new DownloaderException("画像取得URLの安全性検証に失敗しました: url=" + candidate, e);
+          }
+        });
       } catch (DownloaderException e) {
         throw new IOException("ダウンロードに失敗しました: url=" + url, e);
       }
@@ -264,6 +274,66 @@ public class ImageUtils {
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     resizeImage(inputCacheFile, width, height, keepAspectRatio, outputStream);
     return outputStream.toByteArray();
+  }
+
+  /**
+   * 画像取得対象URLの安全性を検証する。
+   */
+  @VisibleForTesting
+  void validateDownloadTargetUrl(URL url) throws IOException {
+    String protocol = url.getProtocol();
+    if (!"http".equalsIgnoreCase(protocol) && !"https".equalsIgnoreCase(protocol)) {
+      throw new IOException("許可されていないスキームです: " + protocol);
+    }
+
+    InetAddress[] resolvedAddresses;
+    try {
+      resolvedAddresses = InetAddress.getAllByName(url.getHost());
+    } catch (UnknownHostException e) {
+      throw new IOException("ホスト名の解決に失敗しました: host=" + url.getHost(), e);
+    }
+
+    if (resolvedAddresses.length == 0) {
+      throw new IOException("ホスト名の解決結果が空です: host=" + url.getHost());
+    }
+
+    for (InetAddress resolvedAddress : resolvedAddresses) {
+      if (isBlockedAddress(resolvedAddress)) {
+        throw new IOException("内部向けアドレスへのアクセスは拒否されます: " + resolvedAddress.getHostAddress());
+      }
+    }
+  }
+
+  private boolean isBlockedAddress(InetAddress address) {
+    if (address.isAnyLocalAddress() || address.isLoopbackAddress() || address.isLinkLocalAddress()
+        || address.isSiteLocalAddress() || address.isMulticastAddress()) {
+      return true;
+    }
+    byte[] rawAddress = address.getAddress();
+    if (rawAddress.length == IPV4_BYTES) {
+      return isBlockedIpv4(rawAddress);
+    }
+    if (rawAddress.length == IPV6_BYTES) {
+      return isBlockedIpv6(rawAddress);
+    }
+    return false;
+  }
+
+  private boolean isBlockedIpv4(byte[] rawAddress) {
+    int first = rawAddress[0] & 0xFF;
+    int second = rawAddress[1] & 0xFF;
+    if (first == 169 && second == 254) {
+      return true;
+    }
+    if (first == 100 && second >= 64 && second <= 127) {
+      return true;
+    }
+    return false;
+  }
+
+  private boolean isBlockedIpv6(byte[] rawAddress) {
+    int first = rawAddress[0] & 0xFF;
+    return (first & 0xFE) == 0xFC;
   }
 
   public boolean isImage(File file) {

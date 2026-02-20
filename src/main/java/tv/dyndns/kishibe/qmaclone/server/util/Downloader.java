@@ -40,7 +40,16 @@ import com.google.inject.Inject;
 
 public class Downloader {
   private static Logger logger = Logger.getLogger(Downloader.class.getName());
+  private static final int MAX_REDIRECTS = 5;
   private final HttpTransport httpTransport;
+
+  /**
+   * ダウンロード対象URLの検証コールバック。
+   */
+  @FunctionalInterface
+  public interface UrlAccessValidator {
+    void validate(URL url) throws DownloaderException;
+  }
 
   @Inject
   public Downloader(HttpTransport httpTransport) {
@@ -90,22 +99,53 @@ public class Downloader {
    * @throws IOException
    */
   public void downloadToFile(URL url, File file) throws DownloaderException {
+    downloadToFile(url, file, null);
+  }
+
+  /**
+   * URL検証を挟みながら画像ファイルをダウンロードする。
+   * 
+   * @param url          ダウンロード元url
+   * @param file         出力先ファイル
+   * @param urlValidator URL検証コールバック
+   * @throws DownloaderException ダウンロード失敗時
+   */
+  public void downloadToFile(URL url, File file, UrlAccessValidator urlValidator) throws DownloaderException {
     logger.log(Level.INFO, String.format("Downloading: %s to %s", url.toString(), file.toString()));
 
     file.getParentFile().mkdirs();
 
     HttpRequestFactory requestFactory = httpTransport.createRequestFactory();
     try {
-      HttpRequest getRequest = requestFactory.buildGetRequest(new GenericUrl(url.toString()));
+      URL currentUrl = url;
+      for (int redirectCount = 0; redirectCount <= MAX_REDIRECTS; redirectCount++) {
+        if (urlValidator != null) {
+          urlValidator.validate(currentUrl);
+        }
+        HttpRequest getRequest = requestFactory.buildGetRequest(new GenericUrl(currentUrl.toString()));
+        getRequest.setFollowRedirects(false);
 
-      HttpResponse getResponse;
-      try {
-        getResponse = getRequest.execute();
-      } catch (IllegalArgumentException e) {
-        throw new DownloaderException(e);
+        HttpResponse getResponse;
+        try {
+          getResponse = getRequest.execute();
+        } catch (IllegalArgumentException e) {
+          throw new DownloaderException(e);
+        }
+
+        int statusCode = getResponse.getStatusCode();
+        if (statusCode >= 300 && statusCode < 400) {
+          String location = getResponse.getHeaders().getLocation();
+          if (location == null || location.trim().isEmpty()) {
+            throw new DownloaderException("リダイレクト先が不正です: url=" + currentUrl);
+          }
+          currentUrl = new URL(currentUrl, location);
+          continue;
+        }
+
+        Files.asByteSink(file).writeFrom(getResponse.getContent());
+        return;
       }
-
-      Files.asByteSink(file).writeFrom(getResponse.getContent());
+      throw new DownloaderException("リダイレクト回数が上限を超えました: url=" + url);
     } catch (HttpResponseException e) {
       String message = String.format("\"ファイルのダウンロードに失敗しました: url=%s e.getStatusCode()=%d e.getStatusMessage()=%s", url,
           e.getStatusCode(), e.getStatusMessage());
