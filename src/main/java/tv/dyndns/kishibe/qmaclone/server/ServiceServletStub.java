@@ -55,11 +55,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
-import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
@@ -130,6 +128,7 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
   private static final File PROBLEM_CREATION_LOG_FILE = new File(Constant.FILE_PATH_BASE + "problem.log");
   private static final Set<String> LOGGING_EXCLUDED_METHODS = ImmutableSet.of("keepAlive", "getServerStatus",
       "getGameStatus", "keepAliveGame", "waitForGame", "receiveMessageFromChat");
+  private static final String GENERIC_SERVICE_ERROR_MESSAGE = "処理中にエラーが発生しました。";
   private final Random random = new Random();
   private final ChatManager chatManager;
   private final NormalModeProblemManager normalModeProblemManager;
@@ -292,7 +291,7 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
       logger.log(Level.WARNING, message, e);
 
       try {
-        return RPC.encodeResponseForFailure(null, new ServiceException(Throwables.getStackTraceAsString(e)));
+        return RPC.encodeResponseForFailure(null, new ServiceException(GENERIC_SERVICE_ERROR_MESSAGE));
       } catch (SerializationException e1) {
         logger.log(Level.WARNING, "エラー情報の返信に失敗しました", e1);
       }
@@ -1407,7 +1406,7 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
       return accessor.access();
     } catch (DatabaseException e) {
       logger.log(Level.WARNING, message, e);
-      throw new ServiceException(Throwables.getStackTraceAsString(e));
+      throw new ServiceException(GENERIC_SERVICE_ERROR_MESSAGE);
     }
   }
 

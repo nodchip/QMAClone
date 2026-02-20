@@ -44,6 +44,7 @@ import tv.dyndns.kishibe.qmaclone.server.sns.SnsClient;
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 public class ServiceServletStubTest {
+  private static final String GENERIC_SERVICE_ERROR_MESSAGE = "処理中にエラーが発生しました。";
   private static final String QUERY = "query";
   private static final String CREATOR = "creator";
   private static final boolean CREATOR_PERFECT_MATCHING = true;
@@ -219,6 +220,19 @@ public class ServiceServletStubTest {
     assertThrows(
         ServiceException.class,
         () -> service.addRestrictedUserCode(USER_CODE, RESTRICTION_TYPE));
+  }
+
+  @Test
+  public void addRestrictedUserCodeShouldNotExposeStackTraceOnError() throws Exception {
+    doThrow(new DatabaseException("db failed")).when(mockDatabase).addRestrictedUserCode(USER_CODE,
+        RESTRICTION_TYPE);
+
+    ServiceException exception = assertThrows(
+        ServiceException.class,
+        () -> service.addRestrictedUserCode(USER_CODE, RESTRICTION_TYPE));
+
+    assertEquals(GENERIC_SERVICE_ERROR_MESSAGE, exception.getMessage());
+    assertTrue(!exception.getMessage().contains("DatabaseException"));
   }
 
   @Test
