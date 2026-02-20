@@ -2536,6 +2536,22 @@ a:active {
 	background: #e9f3ff;
 }
 
+.settingAdminThemeModeTable td {
+	background: transparent !important;
+}
+
+.settingAdminThemeModeTable tbody tr:nth-child(odd) td {
+	background: var(--color-surface-1) !important;
+}
+
+.settingAdminThemeModeTable tbody tr:nth-child(even) td {
+	background: #f9fcff !important;
+}
+
+.settingAdminThemeModeTable tbody tr:hover td {
+	background: #e9f3ff !important;
+}
+
 .settingAdminThemeModeTable .cellTableCell .gwt-Button {
 	padding: 4px 8px;
 	font-size: 11px;
@@ -2727,6 +2743,22 @@ a:active {
 
 .settingAdminRestrictedTable .cellTableOddRow {
 	background: var(--color-surface-1);
+}
+
+.settingAdminRestrictedTable td {
+	background: transparent !important;
+}
+
+.settingAdminRestrictedTable tbody tr:nth-child(odd) td {
+	background: var(--color-surface-1) !important;
+}
+
+.settingAdminRestrictedTable tbody tr:nth-child(even) td {
+	background: #f9fcff !important;
+}
+
+.settingAdminRestrictedTable tbody tr:hover td {
+	background: #e9f3ff !important;
 }
 
 .settingAdminRestrictedTable .cellTableEvenRow:hover,

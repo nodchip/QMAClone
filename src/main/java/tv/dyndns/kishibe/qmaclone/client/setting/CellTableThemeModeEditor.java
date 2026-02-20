@@ -7,6 +7,7 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.CellTable;
+import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.ui.HTML;
@@ -34,6 +35,7 @@ public class CellTableThemeModeEditor extends CellTable<PacketThemeModeEditor> {
 		super(100, GWT.<CellTable.BasicResources> create(CellTable.BasicResources.class));
 		setPageSize(100);
 		setWidth("100%");
+		setKeyboardSelectionPolicy(KeyboardSelectionPolicy.DISABLED);
 		setEmptyTableWidget(new HTML("<div class='settingAdminEmpty'>対象ユーザーはありません。</div>"));
 		setLoadingIndicator(new HTML("<div class='settingAdminLoading'>管理者データを読み込み中です...</div>"));
 		dataProvider.addDataDisplay(this);

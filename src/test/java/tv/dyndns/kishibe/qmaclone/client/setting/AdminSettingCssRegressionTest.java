@@ -30,6 +30,25 @@ public class AdminSettingCssRegressionTest {
 		assertTrue(css.contains("box-sizing: border-box;"));
 	}
 
+	@Test
+	public void themeModeEditorTableShouldNotUseDefaultSelectedCellBackground() throws IOException {
+		String css = readQmaCloneCss();
+
+		assertTrue(css.contains(".settingAdminThemeModeTable td {"));
+		assertTrue(css.contains("background: transparent !important;"));
+		assertTrue(css.contains(".settingAdminThemeModeTable tbody tr:hover td {"));
+		assertTrue(css.contains("background: #e9f3ff !important;"));
+	}
+
+	@Test
+	public void restrictedUserTableShouldNotUseDefaultSelectedCellBackground() throws IOException {
+		String css = readQmaCloneCss();
+
+		assertTrue(css.contains(".settingAdminRestrictedTable td {"));
+		assertTrue(css.contains(".settingAdminRestrictedTable tbody tr:hover td {"));
+		assertTrue(css.contains("background: #e9f3ff !important;"));
+	}
+
 	private String readQmaCloneCss() throws IOException {
 		Path cssPath = Paths.get("src", "main", "webapp", "QMAClone.css");
 		return Files.readString(cssPath, StandardCharsets.UTF_8);

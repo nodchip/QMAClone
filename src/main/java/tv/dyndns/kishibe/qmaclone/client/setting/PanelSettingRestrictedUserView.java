@@ -8,7 +8,6 @@ import tv.dyndns.kishibe.qmaclone.client.packet.RestrictionType;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
-import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -25,6 +24,8 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.view.client.ListDataProvider;
+import com.google.gwt.view.client.SelectionChangeEvent;
+import com.google.gwt.view.client.SingleSelectionModel;
 
 public class PanelSettingRestrictedUserView extends Composite implements
 		PanelSettingRestrictedUser.View {
@@ -62,9 +63,11 @@ public class PanelSettingRestrictedUserView extends Composite implements
 	private final CellTable<Integer> userCodeTable = new CellTable<Integer>(100,
 			GWT.<CellTable.BasicResources> create(CellTable.BasicResources.class));
 	private final ListDataProvider<Integer> userCodeDataProvider = new ListDataProvider<Integer>();
+	private final SingleSelectionModel<Integer> userCodeSelectionModel = new SingleSelectionModel<Integer>();
 	private final CellTable<String> remoteAddressTable = new CellTable<String>(100,
 			GWT.<CellTable.BasicResources> create(CellTable.BasicResources.class));
 	private final ListDataProvider<String> remoteAddressDataProvider = new ListDataProvider<String>();
+	private final SingleSelectionModel<String> remoteAddressSelectionModel = new SingleSelectionModel<String>();
 
 	public PanelSettingRestrictedUserView(PanelSettingRestrictedUser presenter) {
 		this.presenter = Preconditions.checkNotNull(presenter);
@@ -124,15 +127,17 @@ public class PanelSettingRestrictedUserView extends Composite implements
 				return object == null ? "" : Integer.toString(object);
 			}
 		};
-		column.setFieldUpdater(new FieldUpdater<Integer, String>() {
+		userCodeTable.addColumn(column, "ユーザーコード");
+		userCodeTable.setSelectionModel(userCodeSelectionModel);
+		userCodeSelectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
 			@Override
-			public void update(int index, Integer object, String value) {
+			public void onSelectionChange(SelectionChangeEvent event) {
+				Integer object = userCodeSelectionModel.getSelectedObject();
 				if (object != null) {
 					textBoxUserCode.setValue(Integer.toString(object));
 				}
 			}
 		});
-		userCodeTable.addColumn(column, "ユーザーコード");
 		userCodeDataProvider.addDataDisplay(userCodeTable);
 		panelUserCodes.setWidget(userCodeTable);
 	}
@@ -147,15 +152,17 @@ public class PanelSettingRestrictedUserView extends Composite implements
 				return object == null ? "" : object;
 			}
 		};
-		column.setFieldUpdater(new FieldUpdater<String, String>() {
+		remoteAddressTable.addColumn(column, "リモートアドレス");
+		remoteAddressTable.setSelectionModel(remoteAddressSelectionModel);
+		remoteAddressSelectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
 			@Override
-			public void update(int index, String object, String value) {
+			public void onSelectionChange(SelectionChangeEvent event) {
+				String object = remoteAddressSelectionModel.getSelectedObject();
 				if (object != null) {
 					textBoxRemoteAddress.setValue(object);
 				}
 			}
 		});
-		remoteAddressTable.addColumn(column, "リモートアドレス");
 		remoteAddressDataProvider.addDataDisplay(remoteAddressTable);
 		panelRemoteAddresses.setWidget(remoteAddressTable);
 	}
