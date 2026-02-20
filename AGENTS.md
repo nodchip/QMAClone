@@ -58,8 +58,8 @@
 - Tomcat 再配備時は、必要に応じて旧展開物削除とサービス再起動で静的状態を確実に破棄する。
 - Eclipse で不整合が疑われる場合は、`target` と `gwt-unitCache` のクリーンを実施する。
 - 検証（`build` / `test` / `gwt:compile`）が1つでも失敗した場合はデプロイを中断し、修正と再検証完了まで配備しない。
-- ユーザー依頼で修正を加えた場合は、実行成果物に影響する修正（サーバー/クライアント/CSS/配備スクリプト）について完了報告前に `deploy_qmaclone_tomcat9.ps1` を実行してデプロイする（ユーザーが不要と明示した場合のみ省略可）。
-- デプロイ後は次を確認し、実行コマンドとHTTP結果を完了報告に残す。
+- 修正を含む依頼では、実行成果物に影響する変更（サーバー/クライアント/CSS/配備スクリプト）を行ったら、完了報告前に `deploy_qmaclone_tomcat9.ps1` でデプロイする（ユーザーが「デプロイ不要」を明示した場合のみ省略可）。
+- デプロイ後は次のHTTP疎通を確認し、実行コマンドと結果を完了報告に残す。
 1. `/QMAClone-1.0-SNAPSHOT/` の `HTTP 200`
 2. `/tv.dyndns.kishibe.qmaclone.QMAClone/service` の `HTTP 405`
 3. `/tv.dyndns.kishibe.qmaclone.QMAClone/service?warmup=1` の `HTTP 200`
