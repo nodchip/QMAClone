@@ -7,6 +7,7 @@ import com.google.gwt.user.client.ui.TabPanel;
 public class PanelSettingAdministrator extends TabPanel {
 
 	public PanelSettingAdministrator() {
+		setStyleName("settingAdminTabPanel");
 		setAnimationEnabled(true);
 
 		// テーマモード編集権限

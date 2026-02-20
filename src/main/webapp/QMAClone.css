@@ -2470,6 +2470,300 @@ a:active {
 	border-right: 0;
 }
 
+.settingAdminRoot {
+	display: block;
+	width: 100%;
+}
+
+.settingAdminRoot>h3,
+.settingAdminRoot>p {
+	margin-left: 0;
+	margin-right: 0;
+}
+
+.settingAdminActionBar {
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+	margin: 0 0 8px 0;
+}
+
+.settingAdminTableScroll {
+	overflow-x: auto;
+	border: 1px solid var(--color-border-subtle);
+	border-radius: 10px;
+	background: var(--color-surface-1);
+	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75), 0 3px 12px rgba(14, 47, 75, 0.08);
+}
+
+.settingAdminThemeModeTable .cellTableWidget {
+	width: 100%;
+	min-width: 900px;
+	table-layout: fixed;
+	border-collapse: separate;
+	border-spacing: 0;
+}
+
+.settingAdminThemeModeTable .cellTableHeader {
+	padding: 9px 10px;
+	border-bottom: 1px solid var(--color-border-default);
+	background: linear-gradient(180deg, #f8fbff 0%, #ecf4fd 100%);
+	color: var(--color-text-primary);
+	font-size: 12px;
+	font-weight: 700;
+	white-space: nowrap;
+}
+
+.settingAdminThemeModeTable .cellTableCell {
+	padding: 8px 10px;
+	border-bottom: 1px solid rgba(19, 67, 106, 0.12);
+	color: var(--color-text-secondary);
+	font-size: 12px;
+	line-height: 1.5;
+	vertical-align: middle;
+}
+
+.settingAdminThemeModeTable .cellTableEvenRow {
+	background: #f9fcff;
+}
+
+.settingAdminThemeModeTable .cellTableOddRow {
+	background: var(--color-surface-1);
+}
+
+.settingAdminThemeModeTable .cellTableEvenRow:hover,
+.settingAdminThemeModeTable .cellTableOddRow:hover {
+	background: #e9f3ff;
+}
+
+.settingAdminThemeModeTable .cellTableCell .gwt-Button {
+	padding: 4px 8px;
+	font-size: 11px;
+	line-height: 1.2;
+	border-radius: 8px;
+}
+
+.settingAdminThemeModeTable td button,
+.settingAdminThemeModeTable .cellTableCell button {
+	height: 26px;
+	padding: 4px 8px;
+	border: 1px solid #7da8cf;
+	border-radius: 8px;
+	background: linear-gradient(180deg, #f6fbff 0%, #e5f1fd 100%);
+	color: #17466d;
+	font-size: 11px;
+	font-weight: 700;
+	line-height: 1.2;
+	white-space: nowrap;
+	cursor: pointer;
+	box-sizing: border-box;
+}
+
+.settingAdminThemeModeTable td button:hover,
+.settingAdminThemeModeTable .cellTableCell button:hover {
+	background: linear-gradient(180deg, #ebf5ff 0%, #d9ebfc 100%);
+	border-color: #6d99c3;
+}
+
+.settingAdminThemeModeTable td button:active,
+.settingAdminThemeModeTable .cellTableCell button:active {
+	background: linear-gradient(180deg, #dbeafb 0%, #cfe4f8 100%);
+}
+
+.settingAdminThemeModeTable td button:focus,
+.settingAdminThemeModeTable .cellTableCell button:focus {
+	outline: 2px solid rgba(17, 123, 205, 0.35);
+	outline-offset: 1px;
+}
+
+.settingAdminStatus {
+	display: inline-block;
+	padding: 2px 8px;
+	border-radius: 999px;
+	border: 1px solid #bdd2e6;
+	background: #edf4fb;
+	color: #1e4b73;
+	font-size: 11px;
+	font-weight: 700;
+	line-height: 1.4;
+	white-space: nowrap;
+}
+
+.settingAdminStatus--applying {
+	border-color: #f0dbb8;
+	background: #fff8ed;
+	color: #7a4f1b;
+}
+
+.settingAdminStatus--accepted {
+	border-color: #b6dfbc;
+	background: #ebf8ee;
+	color: #1f6b2c;
+}
+
+.settingAdminStatus--rejected {
+	border-color: #f0c3c3;
+	background: #fff1f1;
+	color: #8a1f1f;
+}
+
+.settingAdminEmpty,
+.settingAdminLoading {
+	padding: 22px 14px;
+	color: var(--color-text-muted);
+	font-size: 13px;
+	text-align: center;
+}
+
+.settingAdminRestrictedRoot {
+	display: block;
+	width: 100%;
+}
+
+.settingAdminRestrictedHeaderCard,
+.settingAdminRestrictedCard {
+	margin: 0 0 12px 0;
+	padding: 12px;
+	border: 1px solid var(--color-border-default);
+	border-radius: 12px;
+	background: var(--color-surface-2);
+	box-shadow: 0 4px 14px rgba(12, 59, 105, 0.1);
+	box-sizing: border-box;
+}
+
+.settingAdminRestrictedControlBar {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	margin: 0 0 12px 0;
+	padding: 10px 12px;
+	border: 1px solid var(--color-border-subtle);
+	border-radius: 10px;
+	background: var(--color-surface-1);
+}
+
+.settingAdminRestrictedTypeLabel {
+	font-size: 13px;
+	font-weight: 700;
+	color: var(--color-text-secondary);
+}
+
+.settingAdminRestrictedControlBar .gwt-ListBox {
+	min-width: 220px;
+	padding: 6px 8px;
+	border: 1px solid var(--color-border-default);
+	border-radius: 8px;
+	background: #fff;
+	color: var(--color-text-primary);
+}
+
+.settingAdminRestrictedCardTitle {
+	margin: 0 0 8px 0;
+	font-size: 16px;
+	color: var(--color-text-primary);
+}
+
+.settingAdminRestrictedInputRow {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin: 0 0 8px 0;
+}
+
+.settingAdminRestrictedInputRow td {
+	padding: 0;
+}
+
+.settingAdminRestrictedInputRow .gwt-TextBox {
+	padding: 7px 9px;
+	border: 1px solid var(--color-border-default);
+	border-radius: 8px;
+	background: #fff;
+	color: var(--color-text-primary);
+}
+
+.settingAdminRestrictedInputRow .gwt-TextBox,
+.settingAdminRestrictedInputRow .gwt-Button {
+	height: 34px;
+	box-sizing: border-box;
+	vertical-align: middle;
+}
+
+.settingAdminRestrictedInputRow .gwt-Button {
+	padding: 0 12px;
+	line-height: 1;
+}
+
+.settingAdminRestrictedTable .cellTableWidget {
+	width: 100%;
+	min-width: 520px;
+	table-layout: fixed;
+	border-collapse: separate;
+	border-spacing: 0;
+}
+
+.settingAdminRestrictedTable .cellTableHeader {
+	padding: 9px 10px;
+	border-bottom: 1px solid var(--color-border-default);
+	background: linear-gradient(180deg, #f8fbff 0%, #ecf4fd 100%);
+	color: var(--color-text-primary);
+	font-size: 12px;
+	font-weight: 700;
+	white-space: nowrap;
+}
+
+.settingAdminRestrictedTable .cellTableCell {
+	padding: 8px 10px;
+	border-bottom: 1px solid rgba(19, 67, 106, 0.12);
+	color: var(--color-text-secondary);
+	font-size: 12px;
+	line-height: 1.5;
+	vertical-align: middle;
+}
+
+.settingAdminRestrictedTable .cellTableEvenRow {
+	background: #f9fcff;
+}
+
+.settingAdminRestrictedTable .cellTableOddRow {
+	background: var(--color-surface-1);
+}
+
+.settingAdminRestrictedTable .cellTableEvenRow:hover,
+.settingAdminRestrictedTable .cellTableOddRow:hover {
+	background: #e9f3ff;
+	cursor: pointer;
+}
+
+.settingAdminTabPanel {
+	width: 100%;
+}
+
+.settingAdminTabPanel .gwt-TabBar {
+	margin: 0 0 10px 0;
+	border-bottom: 1px solid var(--color-border-default);
+}
+
+.settingAdminTabPanel .gwt-TabBar .gwt-TabBarItem {
+	padding: 8px 12px;
+	border: 1px solid transparent;
+	border-radius: 10px 10px 0 0;
+	color: var(--color-text-secondary);
+	cursor: pointer;
+}
+
+.settingAdminTabPanel .gwt-TabBar .gwt-TabBarItem-selected {
+	border-color: var(--color-border-default);
+	border-bottom-color: var(--color-surface-1);
+	background: var(--color-surface-1);
+	color: var(--color-text-primary);
+	font-weight: 700;
+}
+
+.settingAdminTabPanel .gwt-TabPanelBottom {
+	padding: 0;
+}
+
 @media (max-width: 960px) {
 	.settingImageLinkIntroCard,
 	.settingImageLinkTableCard {
@@ -2525,6 +2819,33 @@ a:active {
 
 	.settingThemeModeFormActions {
 		justify-content: flex-start;
+	}
+
+	.settingAdminThemeModeTable .cellTableWidget {
+		min-width: 760px;
+	}
+
+	.settingAdminRestrictedControlBar {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+
+	.settingAdminRestrictedControlBar .gwt-ListBox {
+		width: 100%;
+		min-width: 0;
+	}
+
+	.settingAdminRestrictedInputRow {
+		flex-wrap: wrap;
+	}
+
+	.settingAdminRestrictedTable .cellTableWidget {
+		min-width: 440px;
+	}
+
+	.settingAdminTabPanel .gwt-TabBar .gwt-TabBarItem {
+		padding: 7px 9px;
+		font-size: 12px;
 	}
 }
 

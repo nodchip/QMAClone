@@ -1,27 +1,37 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
-	<g:HTMLPanel>
-		<h2>制限ユーザー設定</h2>
-		制限タイプ
-		<g:ListBox ui:field="listBoxType"></g:ListBox>
+	<g:HTMLPanel styleName="settingAdminRoot settingAdminRestrictedRoot">
+		<g:HTMLPanel styleName="settingAdminRestrictedHeaderCard">
+			<h3 class="settingThemeModeTitle">制限ユーザー設定</h3>
+			<p class="settingThemeModeLead">制限タイプごとに、対象ユーザーコードとリモートアドレスを管理します。</p>
+		</g:HTMLPanel>
 
-		<h3>ユーザーコード</h3>
-		<g:FlowPanel ui:field="panelUserCodes"></g:FlowPanel>
-		<g:HorizontalPanel>
-			<g:TextBox ui:field="textBoxUserCode" width="200px"></g:TextBox>
-			<g:Button ui:field="buttonAddUserCode" text="追加"></g:Button>
-			<g:Button ui:field="buttonRemoveUserCode" text="削除"></g:Button>
-			<g:Button ui:field="buttonClearUserCode" text="クリア"></g:Button>
-		</g:HorizontalPanel>
+		<g:FlowPanel styleName="settingAdminRestrictedControlBar">
+			<g:Label styleName="settingAdminRestrictedTypeLabel">制限タイプ</g:Label>
+			<g:ListBox ui:field="listBoxType"></g:ListBox>
+		</g:FlowPanel>
 
-		<h3>リモートアドレス</h3>
-		<g:FlowPanel ui:field="panelRemoteAddresses"></g:FlowPanel>
-		<g:HorizontalPanel>
-			<g:TextBox ui:field="textBoxRemoteAddress" width="200px"></g:TextBox>
-			<g:Button ui:field="buttonAddRemoteAddress" text="追加"></g:Button>
-			<g:Button ui:field="buttonRemoveRemoteAddress" text="削除"></g:Button>
-			<g:Button ui:field="buttonClearRemoteAddress" text="クリア"></g:Button>
-		</g:HorizontalPanel>
+		<g:HTMLPanel styleName="settingAdminRestrictedCard">
+			<h4 class="settingAdminRestrictedCardTitle">ユーザーコード</h4>
+			<g:HorizontalPanel styleName="settingAdminRestrictedInputRow">
+				<g:TextBox ui:field="textBoxUserCode" width="220px"></g:TextBox>
+				<g:Button ui:field="buttonAddUserCode" text="追加"></g:Button>
+				<g:Button ui:field="buttonRemoveUserCode" text="削除"></g:Button>
+				<g:Button ui:field="buttonClearUserCode" text="クリア"></g:Button>
+			</g:HorizontalPanel>
+			<g:SimplePanel ui:field="panelUserCodes" styleName="settingAdminTableScroll"></g:SimplePanel>
+		</g:HTMLPanel>
+
+		<g:HTMLPanel styleName="settingAdminRestrictedCard">
+			<h4 class="settingAdminRestrictedCardTitle">リモートアドレス</h4>
+			<g:HorizontalPanel styleName="settingAdminRestrictedInputRow">
+				<g:TextBox ui:field="textBoxRemoteAddress" width="220px"></g:TextBox>
+				<g:Button ui:field="buttonAddRemoteAddress" text="追加"></g:Button>
+				<g:Button ui:field="buttonRemoveRemoteAddress" text="削除"></g:Button>
+				<g:Button ui:field="buttonClearRemoteAddress" text="クリア"></g:Button>
+			</g:HorizontalPanel>
+			<g:SimplePanel ui:field="panelRemoteAddresses" styleName="settingAdminTableScroll"></g:SimplePanel>
+		</g:HTMLPanel>
 	</g:HTMLPanel>
 </ui:UiBinder> 
