@@ -18,6 +18,8 @@
 - 改善: クライアント変更の完了条件に「GWT 再コンパイル成功」と「配備先で最新成果物が参照されること」を含める。
 - ミス: GWT クライアントで非対応 API（例: `String.format`）を使用し、デプロイ時の `gwt:compile` で停止した。
 - 改善: クライアント変更では GWT JRE エミュレーション非対応 API を使わず、`deploy_qmaclone_tomcat9.ps1` 実行前に `gwt:compile` 成功を確定する。
+- ミス: CellTable の見た目修正で `.cellTableCell` 固定セレクタを使い、実DOM（難読化クラス構成）に一致せずスタイルが未適用になった。
+- 改善: CellTable 系CSSは `styleName + 要素セレクタ(td/button など)` を基本にし、`dom.html` で実セレクタ一致を確認してから反映する。
 - ミス: WebSocket URL を環境固定値で扱い、接続先不一致（404/500）を誘発した。
 - 改善: URL は `protocol / host / contextPath` から導出し、クライアントログに接続先 URL を必ず含める。
 - ミス: WebSocket 障害をサーバーログ確認前に断定し、調査が遠回りになった。
@@ -136,6 +138,7 @@
 - `CellBrowser` / `CellList` の選択状態を CSS で調整する場合、GWT再コンパイルで変化する難読化クラス（例: `GG-*` / `*WCGB*`）を直接セレクタに使わない。
 - セル選択色は `CellList.Resources`（`CssResource`）や `setStyleName` で付与した安定クラスのみで制御し、`!important` 付きの難読化クラス上書きを恒久対応にしない。
 - スタイル不一致の切り分けでは、まず `dom.html` などに実DOMを保存し、`gwt-*` クラスか難読化クラスかを確認したうえで修正方針（安定クラス化 / 部品置換）を決める。
+- CellTable のボタン/セル装飾は `.cellTableCell` 前提で固定せず、`<table styleName> td button` のように実DOMに一致するセレクタを優先する。
 
 ### ゲーム画面プレイヤー一覧レイアウト
 - `AbsolutePanel` 配下のカードUIを変更する場合は、`親幅 = 子要素width + left余白 + right余白` を満たすように `setPixelSize` / `OFFSET_X` / CSS `width` を同時に見直す。
