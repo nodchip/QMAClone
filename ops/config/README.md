@@ -20,6 +20,7 @@
 ```properties
 admin.enforcement.enabled=true
 admin.google.sub.allowlist=sub1,sub2
+network.trusted.proxies=127.0.0.1,10.0.0.0/8
 ```
 
 ## Git 方針

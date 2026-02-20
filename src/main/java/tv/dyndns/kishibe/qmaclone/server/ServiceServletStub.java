@@ -1298,9 +1298,13 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
 
   @VisibleForTesting
   String getRemoteAddress() {
-    // Proxyを通すとlocalhostが帰ってくる場合があるので、X-Forwarded-Forを優先する
-    return MoreObjects.firstNonNull(getThreadLocalRequest().getHeader("X-Forwarded-For"),
-        getThreadLocalRequest().getRemoteAddr());
+    HttpServletRequest request = getThreadLocalRequest();
+    if (request == null) {
+      return "";
+    }
+    String remoteAddr = MoreObjects.firstNonNull(request.getRemoteAddr(), "");
+    String forwardedForHeader = request.getHeader("X-Forwarded-For");
+    return adminAccessManager.resolveClientIp(remoteAddr, forwardedForHeader);
   }
 
   @Override

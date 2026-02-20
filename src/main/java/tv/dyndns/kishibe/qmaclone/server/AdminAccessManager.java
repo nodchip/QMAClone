@@ -28,16 +28,20 @@ public class AdminAccessManager {
   private static final String DEFAULT_CONFIG_PATH = "ops/config/live/tomcat9/qmaclone-admin.properties";
   private static final String KEY_ENFORCEMENT_ENABLED = "admin.enforcement.enabled";
   private static final String KEY_GOOGLE_SUB_ALLOWLIST = "admin.google.sub.allowlist";
+  private static final String KEY_NETWORK_TRUSTED_PROXIES = "network.trusted.proxies";
   private static final String GOOGLE_PROVIDER = "google";
 
   private final boolean enforcementEnabled;
   private final Set<String> allowlist;
+  private final TrustedProxyResolver trustedProxyResolver;
 
   public AdminAccessManager() {
     Properties properties = loadProperties();
     this.enforcementEnabled = Boolean.parseBoolean(
         properties.getProperty(KEY_ENFORCEMENT_ENABLED, "true"));
     this.allowlist = parseAllowlist(properties.getProperty(KEY_GOOGLE_SUB_ALLOWLIST, ""));
+    this.trustedProxyResolver = TrustedProxyResolver
+        .fromCsv(properties.getProperty(KEY_NETWORK_TRUSTED_PROXIES, ""));
   }
 
   /**
@@ -99,5 +103,12 @@ public class AdminAccessManager {
         .trimResults()
         .omitEmptyStrings()
         .splitToList(value));
+  }
+
+  /**
+   * リモートアドレスとX-Forwarded-Forから採用するクライアントIPを返す。
+   */
+  public String resolveClientIp(String remoteAddr, String forwardedForHeader) {
+    return trustedProxyResolver.resolveClientIp(remoteAddr, forwardedForHeader);
   }
 }

@@ -30,6 +30,7 @@
 - キー:
   - `admin.enforcement.enabled=true|false`
   - `admin.google.sub.allowlist=sub1,sub2,...`
+  - `network.trusted.proxies=127.0.0.1,10.0.0.0/8,...`
 
 ## 実装方針
 - サーバに `AdminAccessManager` を追加し、設定読み込みと判定を集約する。
