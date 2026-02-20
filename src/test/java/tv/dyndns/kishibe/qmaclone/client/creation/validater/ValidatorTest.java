@@ -111,6 +111,20 @@ public class ValidatorTest extends ValidatorTestBase {
   }
 
   @Test
+  public void testCheckMovieUrlHttps() {
+    problem.genre = ProblemGenre.Anige;
+    problem.movieUrl = "https://www.youtube.com/watch?v=0mW-cu5wZYs";
+    assertFalse(validator.check(problem).hasWarning());
+  }
+
+  @Test
+  public void testCheckMovieUrlShort() {
+    problem.genre = ProblemGenre.Anige;
+    problem.movieUrl = "https://youtu.be/0mW-cu5wZYs?t=10";
+    assertFalse(validator.check(problem).hasWarning());
+  }
+
+  @Test
   public void testCheckDuplicatedAnswer() {
     problem.answers = new String[] { "a", "a", "b", "c", null, null, null, null };
     assertTrue(validator.check(problem).hasWarning());

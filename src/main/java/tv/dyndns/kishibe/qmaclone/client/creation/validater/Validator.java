@@ -169,7 +169,7 @@ public abstract class Validator {
 
     if (problem.movieUrl != null) {
       final String movieUrl = problem.movieUrl;
-      if (!isUrl(movieUrl) || !movieUrl.startsWith("http://www.youtube.com/watch?v=")) {
+      if (!isValidYouTubeUrl(movieUrl)) {
         warn.add("外部コンテンツのYouTubeのURLが正しくありません");
       }
     }
@@ -193,6 +193,83 @@ public abstract class Validator {
 
   protected boolean isUrl(String url) {
     return !Strings.isNullOrEmpty(url) && url.matches(regex);
+  }
+
+  /**
+   * YouTube URLとして妥当か判定する。
+   */
+  protected boolean isValidYouTubeUrl(String url) {
+    if (Strings.isNullOrEmpty(url)) {
+      return false;
+    }
+
+    String lower = url.toLowerCase();
+    if (lower.startsWith("http://www.youtube.com/watch?")
+        || lower.startsWith("https://www.youtube.com/watch?")
+        || lower.startsWith("http://youtube.com/watch?")
+        || lower.startsWith("https://youtube.com/watch?")) {
+      String query = url.substring(url.indexOf('?') + 1);
+      for (String pair : query.split("&")) {
+        int separator = pair.indexOf('=');
+        if (separator <= 0 || separator + 1 >= pair.length()) {
+          continue;
+        }
+        String key = pair.substring(0, separator);
+        if ("v".equals(key)) {
+          return isValidYouTubeVideoId(pair.substring(separator + 1));
+        }
+      }
+      return false;
+    }
+
+    if (lower.startsWith("http://youtu.be/") || lower.startsWith("https://youtu.be/")
+        || lower.startsWith("http://www.youtu.be/") || lower.startsWith("https://www.youtu.be/")) {
+      int pathStart = url.lastIndexOf('/') + 1;
+      if (pathStart <= 0 || pathStart >= url.length()) {
+        return false;
+      }
+      String id = url.substring(pathStart);
+      int queryStart = id.indexOf('?');
+      if (queryStart != -1) {
+        id = id.substring(0, queryStart);
+      }
+      int fragmentStart = id.indexOf('#');
+      if (fragmentStart != -1) {
+        id = id.substring(0, fragmentStart);
+      }
+      int ampersandStart = id.indexOf('&');
+      if (ampersandStart != -1) {
+        id = id.substring(0, ampersandStart);
+      }
+      return isValidYouTubeVideoId(id);
+    }
+    return false;
+  }
+
+  /**
+   * YouTube動画IDの形式を検証する。
+   */
+  private boolean isValidYouTubeVideoId(String id) {
+    if (Strings.isNullOrEmpty(id) || id.length() != 11) {
+      return false;
+    }
+    for (int i = 0; i < id.length(); i++) {
+      char ch = id.charAt(i);
+      if (ch >= 'A' && ch <= 'Z') {
+        continue;
+      }
+      if (ch >= 'a' && ch <= 'z') {
+        continue;
+      }
+      if (ch >= '0' && ch <= '9') {
+        continue;
+      }
+      if (ch == '_' || ch == '-') {
+        continue;
+      }
+      return false;
+    }
+    return true;
   }
 
   protected boolean consistsOfTheSameLetters(String a, String b) {
