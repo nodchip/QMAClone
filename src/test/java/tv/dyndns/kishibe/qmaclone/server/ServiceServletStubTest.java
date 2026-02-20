@@ -80,6 +80,8 @@ public class ServiceServletStubTest {
   @Mock
   private ThemeModeEditorManager mockThemeModeEditorManager;
   @Mock
+  private AdminAccessManager mockAdminAccessManager;
+  @Mock
   private ImageUtils mockImageManager;
   @Mock
   private Database mockDatabase;
@@ -114,10 +116,12 @@ public class ServiceServletStubTest {
     service = spy(new ServiceServletStub(mockChatManager, mockNormalModeProblemManager,
         mockThemeModeProblemManager, mockGameManager, mockServerStatusManager,
         mockPlayerHistoryManager, mockVoteManager, mockRecognizer, mockThemeModeEditorManager,
-        mockDatabase, mockPrefectureRanking, mockRatingDistribution,
+        mockAdminAccessManager, mockDatabase, mockPrefectureRanking, mockRatingDistribution,
         mockSnsClient, mockGameLogger, mockThreadPool, mockBadUserDetector,
         mockRestrictedUserUtils, mockProblemCorrectCounterResetCounter,
         mockProblemIndicationCounter, mockBrokenImageLinkDetector));
+    when(mockAdminAccessManager.isAdministrator(org.mockito.ArgumentMatchers.anyInt(),
+        org.mockito.ArgumentMatchers.eq(mockDatabase))).thenReturn(true);
     problem1 = TestDataProvider.getProblem();
     problem1.id = 1;
     problem2 = TestDataProvider.getProblem();

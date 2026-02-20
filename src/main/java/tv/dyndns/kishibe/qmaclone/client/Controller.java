@@ -304,6 +304,7 @@ public class Controller extends SimplePanel {
 	private final AsyncCallback<PacketLogin> callbackLogin = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<PacketLogin>() {
 		@Override
 		public void onSuccess(PacketLogin result) {
+			SharedData.get().setAdministoratorMode(result != null && result.administratorMode);
 		}
 
 		@Override

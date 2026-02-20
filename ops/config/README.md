@@ -13,6 +13,14 @@
 - `ops/config/live/nginx/sites-enabled/kishibe.dyndns.tv.conf`
 - `ops/config/live/tomcat9/server.xml`
 - `ops/config/live/tomcat9/web.xml`
+- `ops/config/live/tomcat9/qmaclone-admin.properties`
+
+`qmaclone-admin.properties` には管理者判定の設定を記述します。
+
+```properties
+admin.enforcement.enabled=true
+admin.google.sub.allowlist=sub1,sub2
+```
 
 ## Git 方針
 - `ops/config/live/**` は `.gitignore` で除外します。

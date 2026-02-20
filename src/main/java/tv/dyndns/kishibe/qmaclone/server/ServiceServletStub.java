@@ -53,6 +53,7 @@ import javax.mail.MessagingException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 
 import com.google.common.annotations.VisibleForTesting;
@@ -138,7 +139,9 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
   private final PlayerHistoryManager playerHistoryManager;
   private final VoteManager voteManager;
   private final Recognizable recognizer;
-  private final ThemeModeEditorManager themeModeEditorManager;  private final Database database;
+  private final ThemeModeEditorManager themeModeEditorManager;
+  private final AdminAccessManager adminAccessManager;
+  private final Database database;
   private final PrefectureRanking prefectureRanking;
   private final RatingDistribution ratingDistribution;
   private final SnsClient snsClient;
@@ -149,6 +152,7 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
   private final ProblemIndicationCounter problemIndicationCounter;
   private final BrokenImageLinkDetector brokenImageLinkDetector;
   private final AtomicBoolean serviceWarmedUp = new AtomicBoolean(false);
+  private static final String SESSION_KEY_LOGIN_USER_CODE = "loginUserCode";
 
   /**
    * Only for testing.
@@ -163,7 +167,9 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
     this.playerHistoryManager = injector.getInstance(PlayerHistoryManager.class);
     this.voteManager = injector.getInstance(VoteManager.class);
     this.recognizer = injector.getInstance(Recognizable.class);
-    this.themeModeEditorManager = injector.getInstance(ThemeModeEditorManager.class);    this.database = injector.getInstance(Database.class);
+    this.themeModeEditorManager = injector.getInstance(ThemeModeEditorManager.class);
+    this.adminAccessManager = injector.getInstance(AdminAccessManager.class);
+    this.database = injector.getInstance(Database.class);
     this.prefectureRanking = injector.getInstance(PrefectureRanking.class);
     this.ratingDistribution = injector.getInstance(RatingDistribution.class);
     this.snsClient = injector.getInstance(SnsClients.class);
@@ -179,7 +185,7 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
   public ServiceServletStub(ChatManager chatManager, NormalModeProblemManager normalModeProblemManager,
       ThemeModeProblemManager themeModeProblemManager, GameManager gameManager, ServerStatusManager serverStatusManager,
       PlayerHistoryManager playerHistoryManager, VoteManager voteManager, Recognizable recognizer,
-      ThemeModeEditorManager themeModeEditorManager, Database database,
+      ThemeModeEditorManager themeModeEditorManager, AdminAccessManager adminAccessManager, Database database,
       PrefectureRanking prefectureRanking, RatingDistribution ratingDistribution,
       @Named("SnsClients") SnsClient snsClient, GameLogger gameLogger, ThreadPool threadPool,
       BadUserDetector badUserDetector, RestrictedUserUtils restrictedUserUtils,
@@ -194,7 +200,9 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
     this.playerHistoryManager = playerHistoryManager;
     this.voteManager = voteManager;
     this.recognizer = recognizer;
-    this.themeModeEditorManager = themeModeEditorManager;    this.database = database;
+    this.themeModeEditorManager = themeModeEditorManager;
+    this.adminAccessManager = Preconditions.checkNotNull(adminAccessManager);
+    this.database = database;
     this.prefectureRanking = prefectureRanking;
     this.ratingDistribution = ratingDistribution;
     this.snsClient = snsClient;
@@ -309,14 +317,50 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
   public PacketLogin login(int userCode) {
     serverStatusManager.login();
     serverStatusManager.keepAlive(userCode);
+    HttpServletRequest request = getThreadLocalRequest();
+    if (request != null) {
+      HttpSession session = request.getSession(true);
+      session.setAttribute(SESSION_KEY_LOGIN_USER_CODE, userCode);
+    }
     PacketLogin login = new PacketLogin();
-    // login.removeAddress = getRemoteAddress();
+    try {
+      login.administratorMode = adminAccessManager.isAdministrator(userCode, database);
+    } catch (DatabaseException e) {
+      logger.log(Level.WARNING, "管理者判定に失敗しました", e);
+      login.administratorMode = false;
+    }
     return login;
   }
 
   @Override
   public void keepAlive(int userCode) {
     serverStatusManager.keepAlive(userCode);
+  }
+
+  /**
+   * 現在セッションの管理者権限を検証する。
+   */
+  private void requireAdministrator() throws ServiceException {
+    HttpServletRequest request = getThreadLocalRequest();
+    if (request == null) {
+      return;
+    }
+    HttpSession session = request.getSession(false);
+    if (session == null) {
+      throw new ServiceException("管理者権限が必要です");
+    }
+    Object userCodeObject = session.getAttribute(SESSION_KEY_LOGIN_USER_CODE);
+    if (!(userCodeObject instanceof Integer)) {
+      throw new ServiceException("管理者権限が必要です");
+    }
+    int userCode = (Integer) userCodeObject;
+    try {
+      if (!adminAccessManager.isAdministrator(userCode, database)) {
+        throw new ServiceException("管理者権限が必要です");
+      }
+    } catch (DatabaseException e) {
+      throw new ServiceException("管理者権限判定に失敗しました", e);
+    }
   }
 
   // プレイヤー情報を登録する
@@ -1193,6 +1237,7 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
 
   @Override
   public void applyThemeModeEditor(final int userCode, final String text) throws ServiceException {
+    requireAdministrator();
     wrap("テーマモード編集者の申請に失敗しました", new DatabaseAccessible<Void>() {
       @Override
       public Void access() throws DatabaseException {
@@ -1208,6 +1253,7 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
 
   @Override
   public void acceptThemeModeEditor(final int userCode) throws ServiceException {
+    requireAdministrator();
     wrap("テーマモード編集者の承認に失敗しました", new DatabaseAccessible<Void>() {
       @Override
       public Void access() throws DatabaseException {
@@ -1219,6 +1265,7 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
 
   @Override
   public void rejectThemeModeEditor(final int userCode) throws ServiceException {
+    requireAdministrator();
     wrap("テーマモード編集者の却下に失敗しました", new DatabaseAccessible<Void>() {
       @Override
       public Void access() throws DatabaseException {
@@ -1230,6 +1277,7 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
 
   @Override
   public List<PacketThemeModeEditor> getThemeModeEditors() throws ServiceException {
+    requireAdministrator();
     return wrap("テーマモード編集者の取得に失敗しました", new DatabaseAccessible<List<PacketThemeModeEditor>>() {
       @Override
       public List<PacketThemeModeEditor> access() throws DatabaseException {
@@ -1575,6 +1623,7 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
 
   @Override
   public void addRestrictedUserCode(final int userCode, final RestrictionType restrictionType) throws ServiceException {
+    requireAdministrator();
     wrap("制限ユーザーコードの追加に失敗しました", new DatabaseAccessible<Void>() {
       @Override
       public Void access() throws DatabaseException {
@@ -1587,6 +1636,7 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
   @Override
   public void removeRestrictedUserCode(final int userCode, final RestrictionType restrictionType)
       throws ServiceException {
+    requireAdministrator();
     wrap("制限ユーザーコードの削除に失敗しました", new DatabaseAccessible<Void>() {
       @Override
       public Void access() throws DatabaseException {
@@ -1598,6 +1648,7 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
 
   @Override
   public Set<Integer> getRestrictedUserCodes(final RestrictionType restrictionType) throws ServiceException {
+    requireAdministrator();
     return wrap("制限ユーザーコードの取得に失敗しました", new DatabaseAccessible<Set<Integer>>() {
       @Override
       public Set<Integer> access() throws DatabaseException {
@@ -1608,6 +1659,7 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
 
   @Override
   public void clearRestrictedUserCodes(final RestrictionType restrictionType) throws ServiceException {
+    requireAdministrator();
     wrap("制限ユーザーコードのクリアに失敗しました", new DatabaseAccessible<Void>() {
       @Override
       public Void access() throws DatabaseException {
@@ -1620,6 +1672,7 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
   @Override
   public void addRestrictedRemoteAddress(final String remoteAddress, final RestrictionType restrictionType)
       throws ServiceException {
+    requireAdministrator();
     wrap("制限リモートアドレスの追加に失敗しました", new DatabaseAccessible<Void>() {
       @Override
       public Void access() throws DatabaseException {
@@ -1632,6 +1685,7 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
   @Override
   public void removeRestrictedRemoteAddress(final String remoteAddress, final RestrictionType restrictionType)
       throws ServiceException {
+    requireAdministrator();
     wrap("制限リモートアドレスの削除に失敗しました", new DatabaseAccessible<Void>() {
       @Override
       public Void access() throws DatabaseException {
@@ -1643,6 +1697,7 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
 
   @Override
   public Set<String> getRestrictedRemoteAddresses(final RestrictionType restrictionType) throws ServiceException {
+    requireAdministrator();
     return wrap("制限リモートアドレスの取得に失敗しました", new DatabaseAccessible<Set<String>>() {
       @Override
       public Set<String> access() throws DatabaseException {
@@ -1653,6 +1708,7 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
 
   @Override
   public void clearRestrictedRemoteAddresses(final RestrictionType restrictionType) throws ServiceException {
+    requireAdministrator();
     wrap("制限リモートアドレスのクリアに失敗しました", new DatabaseAccessible<Void>() {
       @Override
       public Void access() throws DatabaseException {

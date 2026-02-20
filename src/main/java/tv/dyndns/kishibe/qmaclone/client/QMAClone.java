@@ -27,12 +27,10 @@ import java.util.logging.Logger;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.RootPanel;
 
 public class QMAClone implements EntryPoint {
 	private static final Logger logger = Logger.getLogger(QMAClone.class.getName());
-	private static final String ADMINISTRATOR_MODE = "administratormode";
 	private static final int MAX_NUMBER_OF_UNCAUGHT_EXCEPTIONS = 3;
 	private int numberOfUncaughtExceptions = 0;
 
@@ -61,10 +59,5 @@ public class QMAClone implements EntryPoint {
 	public void onModuleLoad2() {
 		RootPanel.get("slot").add(Controller.getInstance());
 		RootPanel.get("title").setVisible(false);
-
-		final String token = History.getToken();
-		if (token.equals(ADMINISTRATOR_MODE) || !GWT.isProdMode()) {
-			SharedData.get().setAdministoratorMode(true);
-		}
 	}
 }

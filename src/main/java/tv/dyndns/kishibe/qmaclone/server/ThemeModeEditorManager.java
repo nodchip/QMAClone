@@ -85,7 +85,7 @@ public class ThemeModeEditorManager {
 		sb.append("レーティング : ").append(userData.rating).append("\n");
 		sb.append("一言 : ").append(text).append("\n");
 		sb.append("以上、よろしくお願いいたします。\n\n");
-		sb.append("http://kishibe.dyndns.tv/QMAClone/#administratormode\n");
+		sb.append("http://kishibe.dyndns.tv/QMAClone/\n");
 
 		mimeMessage.setText(sb.toString(), "iso-2022-jp");
 		mimeMessage.setHeader("Content-Type", "text/plain");
