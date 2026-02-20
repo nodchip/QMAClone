@@ -136,9 +136,9 @@
 
 ### GWTセル系UIスタイル適用
 - `CellBrowser` / `CellList` の選択状態を CSS で調整する場合、GWT再コンパイルで変化する難読化クラス（例: `GG-*` / `*WCGB*`）を直接セレクタに使わない。
-- セル選択色は `CellList.Resources`（`CssResource`）や `setStyleName` で付与した安定クラスのみで制御し、`!important` 付きの難読化クラス上書きを恒久対応にしない。
+- セル選択色は `CellList.Resources`（`CssResource`）や `setStyleName` で付与した安定クラスで制御し、`!important` 付き難読化クラス上書きを恒久対応にしない。
 - スタイル不一致の切り分けでは、まず `dom.html` などに実DOMを保存し、`gwt-*` クラスか難読化クラスかを確認したうえで修正方針（安定クラス化 / 部品置換）を決める。
-- CellTable のボタン/セル装飾は `.cellTableCell` 前提で固定せず、`<table styleName> td button` のように実DOMに一致するセレクタを優先する。
+- CellTable のボタン/セル装飾は `.cellTableCell` 固定を避け、`<table styleName> td button` のように実DOMへ一致する安定セレクタを優先する。
 
 ### ゲーム画面プレイヤー一覧レイアウト
 - `AbsolutePanel` 配下のカードUIを変更する場合は、`親幅 = 子要素width + left余白 + right余白` を満たすように `setPixelSize` / `OFFSET_X` / CSS `width` を同時に見直す。
