@@ -114,9 +114,14 @@ function Restart-ServiceWithElevation {
   )
 
   try {
+    # 非表示起動を優先し、環境制約で失敗した場合は最小化起動へフォールバックする。
     $process = Start-Process -FilePath "powershell.exe" -ArgumentList $elevatedArguments -Verb RunAs -WindowStyle Hidden -Wait -PassThru
   } catch {
-    throw "Failed to restart service with UAC elevation. Elevation may have been canceled."
+    try {
+      $process = Start-Process -FilePath "powershell.exe" -ArgumentList $elevatedArguments -Verb RunAs -WindowStyle Minimized -Wait -PassThru
+    } catch {
+      throw "Failed to restart service with UAC elevation. Elevation may have been canceled."
+    }
   }
 
   if ($process.ExitCode -ne 0) {
