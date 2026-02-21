@@ -26,6 +26,8 @@ import tv.dyndns.kishibe.qmaclone.client.sound.SoundAsset;
 import tv.dyndns.kishibe.qmaclone.client.sound.SoundCatalog;
 import tv.dyndns.kishibe.qmaclone.client.sound.SoundEvent;
 import tv.dyndns.kishibe.qmaclone.client.sound.SoundManager;
+import tv.dyndns.kishibe.qmaclone.client.sound.SoundSettings;
+import tv.dyndns.kishibe.qmaclone.client.sound.SoundSettingsStore;
 import tv.dyndns.kishibe.qmaclone.client.constant.Constant;
 
 public class SoundPlayer {
@@ -46,12 +48,16 @@ public class SoundPlayer {
 
 	public void play(final String url) {
 		if (UserData.get().isPlaySound()) {
+			SoundSettings settings = SoundSettingsStore.loadFromLocalStorage();
+			if (settings.isMuted()) {
+				return;
+			}
 			SoundEvent event = toEvent(url);
 			if (event != null) {
 				play(event);
 				return;
 			}
-			audioEngine.playUrl(url, 1.0, 1.0, 1.0);
+			audioEngine.playUrl(url, settings.getMasterVolume(), settings.getUiVolume(), 1.0);
 		}
 	}
 
@@ -63,7 +69,12 @@ public class SoundPlayer {
 		if (asset == null) {
 			return;
 		}
-		audioEngine.playUrl(asset.getUrl(), 1.0, 1.0, asset.getBaseGain());
+		SoundSettings settings = SoundSettingsStore.loadFromLocalStorage();
+		if (settings.isMuted()) {
+			return;
+		}
+		audioEngine.playUrl(asset.getUrl(), settings.getMasterVolume(),
+				settings.getCategoryVolume(asset.getCategory()), asset.getBaseGain());
 	}
 
 	public static SoundEvent toEvent(String url) {

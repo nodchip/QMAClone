@@ -3,14 +3,19 @@ package tv.dyndns.kishibe.qmaclone.client.setting;
 import tv.dyndns.kishibe.qmaclone.client.UserData;
 import tv.dyndns.kishibe.qmaclone.client.lobby.LobbyUi;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketUserData.WebSocketUsage;
+import tv.dyndns.kishibe.qmaclone.client.sound.SoundSettings;
+import tv.dyndns.kishibe.qmaclone.client.sound.SoundSettingsStore;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -55,6 +60,16 @@ public class OtherUi extends Composite {
 	RadioButton radioButtonRegisterIndicatedProblemOn;
 	@UiField
 	RadioButton radioButtonRegisterIndicatedProblemOff;
+	@UiField
+	ListBox listBoxSoundMaster;
+	@UiField
+	ListBox listBoxSoundUi;
+	@UiField
+	ListBox listBoxSoundGameplay;
+	@UiField
+	ListBox listBoxSoundResult;
+	@UiField
+	CheckBox checkBoxSoundMuted;
 
 	public OtherUi() {
 		initWidget(uiBinder.createAndBindUi(this));
@@ -72,6 +87,7 @@ public class OtherUi extends Composite {
 				radioButtonRegisterCreatedProblemOn, radioButtonRegisterCreatedProblemOff);
 		applyBooleanSetting(UserData.get().isRegisterIndicatedProblem(),
 				radioButtonRegisterIndicatedProblemOn, radioButtonRegisterIndicatedProblemOff);
+		initSoundSettings();
 
 		switch (UserData.get().getWebSocketUsage()) {
 		case Default:
@@ -92,9 +108,102 @@ public class OtherUi extends Composite {
 		whenFalse.setValue(!value);
 	}
 
+	private void initSoundSettings() {
+		initVolumeList(listBoxSoundMaster);
+		initVolumeList(listBoxSoundUi);
+		initVolumeList(listBoxSoundGameplay);
+		initVolumeList(listBoxSoundResult);
+
+		SoundSettings settings = SoundSettingsStore.loadFromLocalStorage();
+		selectVolume(listBoxSoundMaster, settings.getMasterVolume());
+		selectVolume(listBoxSoundUi, settings.getUiVolume());
+		selectVolume(listBoxSoundGameplay, settings.getGameplayVolume());
+		selectVolume(listBoxSoundResult, settings.getResultVolume());
+		checkBoxSoundMuted.setValue(settings.isMuted());
+	}
+
+	private void initVolumeList(ListBox listBox) {
+		listBox.clear();
+		for (int i = 0; i <= 10; i++) {
+			int percent = i * 10;
+			listBox.addItem(percent + "%", Integer.toString(percent));
+		}
+	}
+
+	private void selectVolume(ListBox listBox, double volume) {
+		int percent = normalizeVolumePercent(volume);
+		for (int i = 0; i < listBox.getItemCount(); i++) {
+			if (Integer.toString(percent).equals(listBox.getValue(i))) {
+				listBox.setSelectedIndex(i);
+				return;
+			}
+		}
+		listBox.setSelectedIndex(10);
+	}
+
+	private int normalizeVolumePercent(double volume) {
+		int percent = (int) Math.round(volume * 100.0);
+		percent = (percent + 5) / 10 * 10;
+		if (percent < 0) {
+			return 0;
+		}
+		if (100 < percent) {
+			return 100;
+		}
+		return percent;
+	}
+
+	private double getSelectedVolume(ListBox listBox) {
+		int selectedIndex = listBox.getSelectedIndex();
+		if (selectedIndex < 0) {
+			return 1.0;
+		}
+		return Integer.parseInt(listBox.getValue(selectedIndex)) / 100.0;
+	}
+
+	private SoundSettings collectSoundSettings() {
+		return new SoundSettings(
+				getSelectedVolume(listBoxSoundMaster),
+				getSelectedVolume(listBoxSoundUi),
+				getSelectedVolume(listBoxSoundGameplay),
+				getSelectedVolume(listBoxSoundResult),
+				checkBoxSoundMuted.getValue() != null && checkBoxSoundMuted.getValue(),
+				SoundSettings.CURRENT_SCHEMA_VERSION);
+	}
+
+	private void saveSoundSettings(String itemName) {
+		SoundSettingsStore.saveToLocalStorage(collectSoundSettings());
+		saveSetting(itemName);
+	}
+
 	private void saveSetting(String itemName) {
 		UserData.get().save();
 		SettingSaveToast.showSaved(itemName);
+	}
+
+	@UiHandler("listBoxSoundMaster")
+	void onListBoxSoundMaster(ChangeEvent e) {
+		saveSoundSettings("効果音音量");
+	}
+
+	@UiHandler("listBoxSoundUi")
+	void onListBoxSoundUi(ChangeEvent e) {
+		saveSoundSettings("効果音音量");
+	}
+
+	@UiHandler("listBoxSoundGameplay")
+	void onListBoxSoundGameplay(ChangeEvent e) {
+		saveSoundSettings("効果音音量");
+	}
+
+	@UiHandler("listBoxSoundResult")
+	void onListBoxSoundResult(ChangeEvent e) {
+		saveSoundSettings("効果音音量");
+	}
+
+	@UiHandler("checkBoxSoundMuted")
+	void onCheckBoxSoundMuted(ClickEvent e) {
+		saveSoundSettings("効果音ミュート");
 	}
 
 	@UiHandler("radioButtonSeOn")
