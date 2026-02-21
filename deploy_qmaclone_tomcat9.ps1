@@ -5,6 +5,7 @@ param(
   [switch]$SkipBuild,
   [int]$GwtLocalWorkers = 0,
   [bool]$GwtDraftCompile = $true,
+  [switch]$ReleaseBuild,
   [string]$HostName = "localhost",
   [int]$StartupWaitTimeoutSeconds = 300
 )
@@ -283,13 +284,16 @@ Set-Location -LiteralPath $workspaceRoot
 if (-not $SkipBuild) {
   $maven = Resolve-MavenCommand
   $resolvedGwtLocalWorkers = Resolve-GwtLocalWorkers -RequestedWorkers $GwtLocalWorkers
-  $draftCompileValue = $GwtDraftCompile.ToString().ToLowerInvariant()
+  $effectiveGwtDraftCompile = if ($ReleaseBuild) { $false } else { $GwtDraftCompile }
+  $draftCompileValue = $effectiveGwtDraftCompile.ToString().ToLowerInvariant()
 
   Invoke-ExternalCommand -FilePath $maven -Arguments @("compile")
   Invoke-ExternalCommand -FilePath $maven -Arguments @(
     "-Dgwt.skipCompilation=false",
     "-Dgwt.localWorkers=$resolvedGwtLocalWorkers",
     "-Dgwt.draftCompile=$draftCompileValue",
+    "-Dgwt.style=PRETTY",
+    "-Dgwt.optimize=9",
     "gwt:compile"
   )
 
