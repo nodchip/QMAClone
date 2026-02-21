@@ -99,6 +99,12 @@ public class PanelSetting extends TwoColumnSelectionPanel {
 				return new OtherUi();
 			}
 		});
+		add("Help/About", new LazyPanel() {
+			@Override
+			protected Widget createWidget() {
+				return new PanelSettingAbout();
+			}
+		});
 
 		if (SharedData.get().isAdministoratorMode()) {
 			add("管理者用", new LazyPanel() {
