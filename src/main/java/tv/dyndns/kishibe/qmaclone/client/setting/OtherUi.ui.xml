@@ -14,16 +14,26 @@
 					<g:RadioButton ui:field="radioButtonSeOn" name="SE" styleName="settingOtherOption">オン</g:RadioButton>
 					<g:RadioButton ui:field="radioButtonSeOff" name="SE" styleName="settingOtherOption">オフ</g:RadioButton>
 				</g:HTMLPanel>
-				<g:HTMLPanel styleName="settingOtherOptionGroup">
+				<g:HTMLPanel styleName="settingOtherOptionGroup settingOtherSoundMuteGroup">
 					<g:CheckBox ui:field="checkBoxSoundMuted" styleName="settingOtherOption">ミュート</g:CheckBox>
-					<g:InlineLabel styleName="settingOtherOption">全体</g:InlineLabel>
-					<g:ListBox ui:field="listBoxSoundMaster" />
-					<g:InlineLabel styleName="settingOtherOption">UI</g:InlineLabel>
-					<g:ListBox ui:field="listBoxSoundUi" />
-					<g:InlineLabel styleName="settingOtherOption">ゲーム</g:InlineLabel>
-					<g:ListBox ui:field="listBoxSoundGameplay" />
-					<g:InlineLabel styleName="settingOtherOption">結果</g:InlineLabel>
-					<g:ListBox ui:field="listBoxSoundResult" />
+				</g:HTMLPanel>
+				<g:HTMLPanel styleName="settingOtherOptionGroup settingOtherSoundVolumeGroup">
+					<g:HTMLPanel styleName="settingOtherSoundVolumeItem">
+						<g:InlineLabel styleName="settingOtherOption">全体</g:InlineLabel>
+						<g:ListBox ui:field="listBoxSoundMaster" />
+					</g:HTMLPanel>
+					<g:HTMLPanel styleName="settingOtherSoundVolumeItem">
+						<g:InlineLabel styleName="settingOtherOption">UI</g:InlineLabel>
+						<g:ListBox ui:field="listBoxSoundUi" />
+					</g:HTMLPanel>
+					<g:HTMLPanel styleName="settingOtherSoundVolumeItem">
+						<g:InlineLabel styleName="settingOtherOption">ゲーム</g:InlineLabel>
+						<g:ListBox ui:field="listBoxSoundGameplay" />
+					</g:HTMLPanel>
+					<g:HTMLPanel styleName="settingOtherSoundVolumeItem">
+						<g:InlineLabel styleName="settingOtherOption">結果</g:InlineLabel>
+						<g:ListBox ui:field="listBoxSoundResult" />
+					</g:HTMLPanel>
 				</g:HTMLPanel>
 			</g:HTMLPanel>
 

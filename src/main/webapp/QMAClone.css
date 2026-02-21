@@ -1718,6 +1718,47 @@ a:active {
 	accent-color: var(--color-accent-primary);
 }
 
+.settingOtherOption input[type="checkbox"] {
+	margin: 0 5px 0 0;
+	accent-color: var(--color-accent-primary);
+}
+
+.settingOtherSoundVolumeItem {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	white-space: nowrap;
+}
+
+.settingOtherSoundMuteGroup {
+	margin-bottom: 2px;
+}
+
+.settingOtherSoundVolumeGroup {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(140px, max-content));
+	column-gap: 12px;
+	row-gap: 6px;
+	align-items: center;
+}
+
+.settingOtherSoundVolumeItem .settingOtherOption {
+	min-width: 3.2em;
+	justify-content: flex-end;
+	text-align: right;
+}
+
+.settingOtherSoundVolumeItem select {
+	width: 72px;
+	height: 28px;
+	padding: 2px 6px;
+	border: 1px solid var(--color-border-subtle);
+	border-radius: 6px;
+	background: var(--color-surface-1);
+	color: var(--color-text-primary);
+	box-sizing: border-box;
+}
+
 /* 設定画面 */
 .settingLeftPanel {
 	border: 1px solid var(--color-border-subtle);
