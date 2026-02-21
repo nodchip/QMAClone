@@ -37,6 +37,7 @@ import tv.dyndns.kishibe.qmaclone.client.game.WidgetTimeProgressBar;
 import tv.dyndns.kishibe.qmaclone.client.game.panel.QuestionPanel;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketGameStatus;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblem;
+import tv.dyndns.kishibe.qmaclone.client.sound.SoundEvent;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
@@ -100,7 +101,7 @@ public abstract class InputWidget extends VerticalPanel {
       return;
     }
 
-    playSound(Constant.SOUND_URL_BUTTON_OK);
+    playSound(SoundEvent.BUTTON_OK);
 
     int sessionId = sessionData.getSessionId();
     if (sessionId <= 0) {
@@ -162,6 +163,10 @@ public abstract class InputWidget extends VerticalPanel {
 
   protected void playSound(String url) {
     SoundPlayer.getInstance().play(url);
+  }
+
+  protected void playSound(SoundEvent event) {
+    SoundPlayer.getInstance().play(event);
   }
 
   public String getAnswerMark(String answer) {

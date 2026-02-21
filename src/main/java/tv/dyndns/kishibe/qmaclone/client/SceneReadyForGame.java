@@ -37,6 +37,7 @@ import tv.dyndns.kishibe.qmaclone.client.packet.PacketMatchingPlayer;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketMatchingStatus;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblem;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketReadyForGame;
+import tv.dyndns.kishibe.qmaclone.client.sound.SoundEvent;
 
 public class SceneReadyForGame extends SceneBase {
 
@@ -84,7 +85,7 @@ public class SceneReadyForGame extends SceneBase {
     this.updater = new ReadyForGameStatusUpdater(this, sessionData);
     Controller.getInstance().setGamePanel(panel);
 
-    SoundPlayer.getInstance().play(Constant.SOUND_URL_READY_FOR_GAME);
+    SoundPlayer.getInstance().play(SoundEvent.READY_FOR_GAME);
   }
 
   private final AsyncCallback<PacketReadyForGame> callbackWaitForGame = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<PacketReadyForGame>() {

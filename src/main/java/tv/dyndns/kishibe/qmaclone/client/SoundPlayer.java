@@ -22,14 +22,21 @@
 package tv.dyndns.kishibe.qmaclone.client;
 
 import tv.dyndns.kishibe.qmaclone.client.sound.AudioEngine;
+import tv.dyndns.kishibe.qmaclone.client.sound.SoundAsset;
+import tv.dyndns.kishibe.qmaclone.client.sound.SoundCatalog;
+import tv.dyndns.kishibe.qmaclone.client.sound.SoundEvent;
 import tv.dyndns.kishibe.qmaclone.client.sound.SoundManager;
+import tv.dyndns.kishibe.qmaclone.client.constant.Constant;
 
 public class SoundPlayer {
-	private static final SoundPlayer INSTANCE = new SoundPlayer();
 	private final AudioEngine audioEngine;
 
+	private static class Holder {
+		private static final SoundPlayer INSTANCE = new SoundPlayer();
+	}
+
 	public static SoundPlayer getInstance() {
-		return INSTANCE;
+		return Holder.INSTANCE;
 	}
 
 	private SoundPlayer() {
@@ -39,7 +46,45 @@ public class SoundPlayer {
 
 	public void play(final String url) {
 		if (UserData.get().isPlaySound()) {
+			SoundEvent event = toEvent(url);
+			if (event != null) {
+				play(event);
+				return;
+			}
 			audioEngine.playUrl(url, 1.0, 1.0, 1.0);
 		}
+	}
+
+	public void play(SoundEvent event) {
+		if (!UserData.get().isPlaySound()) {
+			return;
+		}
+		SoundAsset asset = SoundCatalog.getAsset(event);
+		if (asset == null) {
+			return;
+		}
+		audioEngine.playUrl(asset.getUrl(), 1.0, 1.0, asset.getBaseGain());
+	}
+
+	public static SoundEvent toEvent(String url) {
+		if (Constant.SOUND_URL_BUTTON_PUSH.equals(url)) {
+			return SoundEvent.BUTTON_PUSH;
+		}
+		if (Constant.SOUND_URL_BUTTON_OK.equals(url)) {
+			return SoundEvent.BUTTON_OK;
+		}
+		if (Constant.SOUND_URL_TIME_UP.equals(url)) {
+			return SoundEvent.TIME_UP;
+		}
+		if (Constant.SOUND_URL_GOOD.equals(url)) {
+			return SoundEvent.CORRECT;
+		}
+		if (Constant.SOUND_URL_BAD.equals(url)) {
+			return SoundEvent.INCORRECT;
+		}
+		if (Constant.SOUND_URL_READY_FOR_GAME.equals(url)) {
+			return SoundEvent.READY_FOR_GAME;
+		}
+		return null;
 	}
 }

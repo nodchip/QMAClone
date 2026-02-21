@@ -55,6 +55,7 @@ import tv.dyndns.kishibe.qmaclone.client.packet.PacketGameStatus.GamePlayerStatu
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketMatchingPlayer;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketPlayerSummary;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblem;
+import tv.dyndns.kishibe.qmaclone.client.sound.SoundEvent;
 
 public class SceneGame extends SceneBase implements ClosingHandler, CloseHandler<Window> {
 
@@ -296,11 +297,11 @@ public class SceneGame extends SceneBase implements ClosingHandler, CloseHandler
 
 					// サウンド再生
 					if (Strings.isNullOrEmpty(player.answer)) {
-						SoundPlayer.getInstance().play(Constant.SOUND_URL_TIME_UP);
+						SoundPlayer.getInstance().play(SoundEvent.TIME_UP);
 					} else if (problem.isCorrect(player.answer)) {
-						SoundPlayer.getInstance().play(Constant.SOUND_URL_GOOD);
+						SoundPlayer.getInstance().play(SoundEvent.CORRECT);
 					} else {
-						SoundPlayer.getInstance().play(Constant.SOUND_URL_BAD);
+						SoundPlayer.getInstance().play(SoundEvent.INCORRECT);
 					}
 
 					if (problemCounter + 1 < problems.size()) {

@@ -39,6 +39,7 @@ import tv.dyndns.kishibe.qmaclone.client.lobby.SceneLobby;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketLogin;
 import tv.dyndns.kishibe.qmaclone.client.setting.PanelSetting;
 import tv.dyndns.kishibe.qmaclone.client.statistics.PanelStatistics;
+import tv.dyndns.kishibe.qmaclone.client.sound.SoundEvent;
 import tv.dyndns.kishibe.qmaclone.client.util.DetailRemoteLogger;
 
 import com.google.gwt.core.shared.GWT;
@@ -232,7 +233,7 @@ public class Controller extends SimplePanel {
 			Service.Util.getInstance().login(UserData.get().getUserCode(), callbackLogin);
 
 			// サウンドマネージャ初期化
-			SoundPlayer.getInstance().play(Constant.SOUND_URL_BUTTON_PUSH);
+			SoundPlayer.getInstance().play(SoundEvent.BUTTON_PUSH);
 
 			// ログイン通知インスタンスの開始
 			loginReporter.start();
