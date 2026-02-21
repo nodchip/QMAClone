@@ -66,11 +66,11 @@ public abstract class MessageSender<T> implements Closeable {
     sessions.clear();
   }
 
-  public void join(javax.websocket.Session session) {
+  public void join(jakarta.websocket.Session session) {
     sessions.put(session, new JavaxConnection(session));
   }
 
-  public void bye(javax.websocket.Session session) {
+  public void bye(jakarta.websocket.Session session) {
     sessions.remove(session);
   }
 
@@ -93,12 +93,12 @@ public abstract class MessageSender<T> implements Closeable {
   }
 
   private final class JavaxConnection implements Connection {
-    private final javax.websocket.Session session;
+    private final jakarta.websocket.Session session;
     private final Queue<String> pendingMessages = new ConcurrentLinkedQueue<>();
     private final AtomicBoolean sending = new AtomicBoolean(false);
     private final AtomicBoolean closed = new AtomicBoolean(false);
 
-    private JavaxConnection(javax.websocket.Session session) {
+    private JavaxConnection(jakarta.websocket.Session session) {
       this.session = Preconditions.checkNotNull(session);
     }
 

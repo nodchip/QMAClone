@@ -11,7 +11,7 @@ import tv.dyndns.kishibe.qmaclone.server.database.Database;
 import tv.dyndns.kishibe.qmaclone.server.database.DatabaseException;
 
 import com.google.common.base.Preconditions;
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.google.gwt.user.server.rpc.jakarta.RemoteServiceServlet;
 import com.google.inject.Inject;
 
 @SuppressWarnings("serial")

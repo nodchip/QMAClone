@@ -3,11 +3,11 @@ package tv.dyndns.kishibe.qmaclone.server.websocket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.websocket.OnClose;
-import javax.websocket.OnError;
-import javax.websocket.OnOpen;
-import javax.websocket.Session;
-import javax.websocket.server.ServerEndpoint;
+import jakarta.websocket.OnClose;
+import jakarta.websocket.OnError;
+import jakarta.websocket.OnOpen;
+import jakarta.websocket.Session;
+import jakarta.websocket.server.ServerEndpoint;
 
 import tv.dyndns.kishibe.qmaclone.server.Game;
 import tv.dyndns.kishibe.qmaclone.server.GameManager;

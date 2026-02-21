@@ -1,6 +1,6 @@
 package tv.dyndns.kishibe.qmaclone.server;
 
-import javax.servlet.annotation.WebServlet;
+import jakarta.servlet.annotation.WebServlet;
 
 import com.google.gwt.logging.server.RemoteLoggingServiceImpl;
 

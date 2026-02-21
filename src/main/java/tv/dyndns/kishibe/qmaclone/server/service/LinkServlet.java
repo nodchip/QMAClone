@@ -1,6 +1,6 @@
 package tv.dyndns.kishibe.qmaclone.server.service;
 
-import javax.servlet.annotation.WebServlet;
+import jakarta.servlet.annotation.WebServlet;
 
 import tv.dyndns.kishibe.qmaclone.server.DelegatingWebServlet;
 import tv.dyndns.kishibe.qmaclone.server.Injectors;

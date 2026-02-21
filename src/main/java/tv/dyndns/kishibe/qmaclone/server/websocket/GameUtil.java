@@ -13,7 +13,7 @@ public class GameUtil {
   /**
    * JSR-356 WebSocket セッションからゲームセッションIDを抽出する。
    */
-  public static int extractGameSessionId(javax.websocket.Session session)
+  public static int extractGameSessionId(jakarta.websocket.Session session)
       throws InvalidGameSessionIdException {
     return extractGameSessionId(session.getRequestParameterMap());
   }

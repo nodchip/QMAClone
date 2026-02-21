@@ -1,6 +1,6 @@
 package tv.dyndns.kishibe.qmaclone.server;
 
-import javax.servlet.annotation.WebServlet;
+import jakarta.servlet.annotation.WebServlet;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = { "/image/*" })

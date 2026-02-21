@@ -3,7 +3,7 @@ package tv.dyndns.kishibe.qmaclone.server;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import javax.servlet.annotation.WebServlet;
+import jakarta.servlet.annotation.WebServlet;
 
 import org.junit.jupiter.api.Test;
 

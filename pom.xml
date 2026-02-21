@@ -228,7 +228,7 @@
     </dependency>
     <dependency>
     	<groupId>org.gwtproject</groupId>
-    	<artifactId>gwt-servlet</artifactId>
+    	<artifactId>gwt-servlet-jakarta</artifactId>
     </dependency>
     <dependency>
     	<groupId>org.gwtproject</groupId>
@@ -386,9 +386,21 @@
     	<version>1.6.2</version>
     </dependency>
     <dependency>
-    	<groupId>javax.websocket</groupId>
-    	<artifactId>javax.websocket-api</artifactId>
-    	<version>1.1</version>
+    	<groupId>jakarta.websocket</groupId>
+    	<artifactId>jakarta.websocket-api</artifactId>
+    	<version>2.1.1</version>
+    	<scope>provided</scope>
+    </dependency>
+    <dependency>
+    	<groupId>jakarta.websocket</groupId>
+    	<artifactId>jakarta.websocket-client-api</artifactId>
+    	<version>2.1.1</version>
+    	<scope>provided</scope>
+    </dependency>
+    <dependency>
+    	<groupId>jakarta.servlet</groupId>
+    	<artifactId>jakarta.servlet-api</artifactId>
+    	<version>6.1.0</version>
     	<scope>provided</scope>
     </dependency>
     <dependency>
@@ -445,6 +457,10 @@
             <!-- Ask GWT to create the Story of Your Compile (SOYC) (gwt:compile) -->
             <arg>-compileReport</arg>
             <arg>-XcompilerMetrics</arg>
+            <arg>-style</arg>
+            <arg>PRETTY</arg>
+            <arg>-optimize</arg>
+            <arg>9</arg>
           </compilerArgs>
           <!-- DevMode configuration -->
           <warDir>${project.build.directory}/${project.build.finalName}</warDir>

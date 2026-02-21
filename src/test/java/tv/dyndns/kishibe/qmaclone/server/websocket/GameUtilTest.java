@@ -15,7 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
-import javax.websocket.Session;
+import jakarta.websocket.Session;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;

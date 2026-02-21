@@ -37,16 +37,17 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
-import javax.servlet.Servlet;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.Servlet;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.FileUploadBase.SizeLimitExceededException;
+import org.apache.commons.fileupload.RequestContext;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
@@ -84,7 +85,7 @@ public class IconUploadServletStub extends HttpServlet implements Servlet {
     List<FileItem> items = null;
 
     try {
-      List<FileItem> temp = upload.parseRequest(request);
+      List<FileItem> temp = upload.parseRequest(new JakartaRequestContext(request));
       items = temp;
     } catch (FileUploadException e) {
       writeResponse(response, resolveUploadParseFailureResponse(e));
@@ -204,5 +205,36 @@ public class IconUploadServletStub extends HttpServlet implements Servlet {
     }
     logger.log(Level.WARNING, "アイコンアップロードリクエストの解析に失敗しました", e);
     return Constant.ICON_UPLOAD_RESPONSE_FAILED_TO_PARSE_REQUEST;
+  }
+
+  /**
+   * commons-fileupload 1.x の RequestContext へ jakarta servlet request を橋渡しする。
+   */
+  private static final class JakartaRequestContext implements RequestContext {
+    private final HttpServletRequest request;
+
+    private JakartaRequestContext(HttpServletRequest request) {
+      this.request = request;
+    }
+
+    @Override
+    public String getCharacterEncoding() {
+      return request.getCharacterEncoding();
+    }
+
+    @Override
+    public String getContentType() {
+      return request.getContentType();
+    }
+
+    @Override
+    public int getContentLength() {
+      return request.getContentLength();
+    }
+
+    @Override
+    public InputStream getInputStream() throws IOException {
+      return request.getInputStream();
+    }
   }
 }
