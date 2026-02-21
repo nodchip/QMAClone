@@ -12,6 +12,8 @@ import com.google.common.base.Preconditions;
  * 効果音クレジット情報を管理する。
  */
 public final class SoundCreditsCatalog {
+  private static final String CREDIT_SOURCE = "ザ・マッチメイカァズ2nd (https://osabisi.sakura.ne.jp/m2/)";
+  private static final String CREDIT_LICENSE = "配布サイトの利用条件に従う";
 
   /**
    * クレジット1件分の情報。
@@ -87,17 +89,17 @@ public final class SoundCreditsCatalog {
 
   private static List<SoundCreditEntry> createEntries() {
     List<SoundCreditEntry> entries = new ArrayList<SoundCreditEntry>();
-    entries.add(new SoundCreditEntry("correct", "Correct", "QMAClone Legacy Sound", "Project Internal"));
-    entries.add(new SoundCreditEntry("incorrect", "Incorrect", "QMAClone Legacy Sound", "Project Internal"));
-    entries.add(new SoundCreditEntry("timeUp", "Time Up", "QMAClone Legacy Sound", "Project Internal"));
-    entries.add(new SoundCreditEntry("buttonPush", "Button Push", "QMAClone Legacy Sound", "Project Internal"));
-    entries.add(new SoundCreditEntry("buttonOk", "Button OK", "QMAClone Legacy Sound", "Project Internal"));
-    entries.add(new SoundCreditEntry("readyForGame", "Ready For Game", "QMAClone Legacy Sound", "Project Internal"));
-    entries.add(new SoundCreditEntry("resultWin", "Result Win", "QMAClone Legacy Sound", "Project Internal"));
-    entries.add(new SoundCreditEntry("resultLose", "Result Lose", "QMAClone Legacy Sound", "Project Internal"));
-    entries.add(new SoundCreditEntry("uiTabSwitch", "UI Tab Switch", "QMAClone Legacy Sound", "Project Internal"));
-    entries.add(new SoundCreditEntry("uiModalOpen", "UI Modal Open", "QMAClone Legacy Sound", "Project Internal"));
-    entries.add(new SoundCreditEntry("uiModalClose", "UI Modal Close", "QMAClone Legacy Sound", "Project Internal"));
+    entries.add(new SoundCreditEntry("correct", "Correct", CREDIT_SOURCE, CREDIT_LICENSE));
+    entries.add(new SoundCreditEntry("incorrect", "Incorrect", CREDIT_SOURCE, CREDIT_LICENSE));
+    entries.add(new SoundCreditEntry("timeUp", "Time Up", CREDIT_SOURCE, CREDIT_LICENSE));
+    entries.add(new SoundCreditEntry("buttonPush", "Button Push", CREDIT_SOURCE, CREDIT_LICENSE));
+    entries.add(new SoundCreditEntry("buttonOk", "Button OK", CREDIT_SOURCE, CREDIT_LICENSE));
+    entries.add(new SoundCreditEntry("readyForGame", "Ready For Game", CREDIT_SOURCE, CREDIT_LICENSE));
+    entries.add(new SoundCreditEntry("resultWin", "Result Win", CREDIT_SOURCE, CREDIT_LICENSE));
+    entries.add(new SoundCreditEntry("resultLose", "Result Lose", CREDIT_SOURCE, CREDIT_LICENSE));
+    entries.add(new SoundCreditEntry("uiTabSwitch", "UI Tab Switch", CREDIT_SOURCE, CREDIT_LICENSE));
+    entries.add(new SoundCreditEntry("uiModalOpen", "UI Modal Open", CREDIT_SOURCE, CREDIT_LICENSE));
+    entries.add(new SoundCreditEntry("uiModalClose", "UI Modal Close", CREDIT_SOURCE, CREDIT_LICENSE));
     return Collections.unmodifiableList(entries);
   }
 

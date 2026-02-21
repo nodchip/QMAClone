@@ -4,14 +4,14 @@
 
 | assetId | title | source | license |
 | --- | --- | --- | --- |
-| correct | Correct | QMAClone Legacy Sound | Project Internal |
-| incorrect | Incorrect | QMAClone Legacy Sound | Project Internal |
-| timeUp | Time Up | QMAClone Legacy Sound | Project Internal |
-| buttonPush | Button Push | QMAClone Legacy Sound | Project Internal |
-| buttonOk | Button OK | QMAClone Legacy Sound | Project Internal |
-| readyForGame | Ready For Game | QMAClone Legacy Sound | Project Internal |
-| resultWin | Result Win | QMAClone Legacy Sound | Project Internal |
-| resultLose | Result Lose | QMAClone Legacy Sound | Project Internal |
-| uiTabSwitch | UI Tab Switch | QMAClone Legacy Sound | Project Internal |
-| uiModalOpen | UI Modal Open | QMAClone Legacy Sound | Project Internal |
-| uiModalClose | UI Modal Close | QMAClone Legacy Sound | Project Internal |
+| correct | Correct | ザ・マッチメイカァズ2nd (https://osabisi.sakura.ne.jp/m2/) | 配布サイトの利用条件に従う |
+| incorrect | Incorrect | ザ・マッチメイカァズ2nd (https://osabisi.sakura.ne.jp/m2/) | 配布サイトの利用条件に従う |
+| timeUp | Time Up | ザ・マッチメイカァズ2nd (https://osabisi.sakura.ne.jp/m2/) | 配布サイトの利用条件に従う |
+| buttonPush | Button Push | ザ・マッチメイカァズ2nd (https://osabisi.sakura.ne.jp/m2/) | 配布サイトの利用条件に従う |
+| buttonOk | Button OK | ザ・マッチメイカァズ2nd (https://osabisi.sakura.ne.jp/m2/) | 配布サイトの利用条件に従う |
+| readyForGame | Ready For Game | ザ・マッチメイカァズ2nd (https://osabisi.sakura.ne.jp/m2/) | 配布サイトの利用条件に従う |
+| resultWin | Result Win | ザ・マッチメイカァズ2nd (https://osabisi.sakura.ne.jp/m2/) | 配布サイトの利用条件に従う |
+| resultLose | Result Lose | ザ・マッチメイカァズ2nd (https://osabisi.sakura.ne.jp/m2/) | 配布サイトの利用条件に従う |
+| uiTabSwitch | UI Tab Switch | ザ・マッチメイカァズ2nd (https://osabisi.sakura.ne.jp/m2/) | 配布サイトの利用条件に従う |
+| uiModalOpen | UI Modal Open | ザ・マッチメイカァズ2nd (https://osabisi.sakura.ne.jp/m2/) | 配布サイトの利用条件に従う |
+| uiModalClose | UI Modal Close | ザ・マッチメイカァズ2nd (https://osabisi.sakura.ne.jp/m2/) | 配布サイトの利用条件に従う |
