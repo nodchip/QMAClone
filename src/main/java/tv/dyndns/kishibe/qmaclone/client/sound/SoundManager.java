@@ -34,7 +34,6 @@ public class SoundManager {
 
 	public static final int EMBED_TYPE_WAV = 0;
 	public static final int EMBED_TYPE_FLASH = 1;
-	private static final String[] htmlTag = { "<embed width='0' height='0' src='__URL__' autostart='true' loop='__LOOP__' repeat='__REPEAT__' hidden='true'></embed>", "<object classid='clsid:d27cdb6e-ae6d-11cf-96b8-444553540000' codebase='http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,0,0' width='0' height='0' id='SoundUnit'><param name='movie' value='__URL__' /><embed src='__URL__' width='0' height='0' name='SoundUnit' type='application/x-shockwave-flash' pluginspage='http://www.macromedia.com/go/getflashplayer' /></object>" };
 	private final static int MAX_SOUND = 4;
 	private final Element[] element = new Element[MAX_SOUND];
 	private int index = 0;
@@ -57,18 +56,73 @@ public class SoundManager {
 	}
 
 	public void play(String url, boolean loop, int repeat) {
-		String tag = htmlTag[embedType];
-		tag = tag.replaceAll("__URL__", url);
-		tag = tag.replaceAll("__LOOP__", loop ? "true" : "false");
-		tag = tag.replaceAll("__REPEAT__", "" + repeat);
-		final String html = tag;
-		DOM.setInnerHTML(element[index++ % MAX_SOUND], html);
+		String sanitizedUrl = SoundUrlSanitizer.sanitizeSoundUrl(url);
+		if (sanitizedUrl == null) {
+			return;
+		}
+		Element channel = element[index++ % MAX_SOUND];
+		clearChannel(channel);
+		Element audioElement = createAudioElement(sanitizedUrl, loop);
+		DOM.appendChild(channel, audioElement);
+		playAudio(audioElement, loop, repeat);
 	}
 
 	public void clear() {
 		for (int i = 0; i < MAX_SOUND; ++i) {
-			element[i] = DOM.createDiv();
-			DOM.setInnerHTML(element[index++ % MAX_SOUND], "");
+			clearChannel(element[i]);
 		}
 	}
+
+	/**
+	 * 再生チャンネルの子要素をクリアする。
+	 */
+	private void clearChannel(Element channel) {
+		while (DOM.getFirstChild(channel) != null) {
+			DOM.removeChild(channel, DOM.getFirstChild(channel));
+		}
+	}
+
+	/**
+	 * audio要素を生成する。
+	 */
+	private Element createAudioElement(String url, boolean loop) {
+		Element audioElement = DOM.createElement("audio");
+		DOM.setElementAttribute(audioElement, "src", url);
+		DOM.setElementAttribute(audioElement, "preload", "auto");
+		if (loop) {
+			DOM.setElementAttribute(audioElement, "loop", "loop");
+		}
+		return audioElement;
+	}
+
+	/**
+	 * 音声再生を開始し、必要に応じて繰り返す。
+	 */
+	private static native void playAudio(Element audioElement, boolean loop, int repeat) /*-{
+		if (!audioElement) {
+			return;
+		}
+		try {
+			var playCount = repeat > 0 ? repeat : 1;
+			if (!loop && playCount > 1 && audioElement.addEventListener) {
+				var played = 1;
+				audioElement.addEventListener("ended", function() {
+					played++;
+					if (played <= playCount) {
+						try {
+							audioElement.currentTime = 0;
+						} catch (e) {
+						}
+						if (audioElement.play) {
+							audioElement.play();
+						}
+					}
+				}, false);
+			}
+			if (audioElement.play) {
+				audioElement.play();
+			}
+		} catch (e) {
+		}
+	}-*/;
 }
