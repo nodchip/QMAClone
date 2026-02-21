@@ -461,6 +461,8 @@
             <arg>PRETTY</arg>
             <arg>-optimize</arg>
             <arg>9</arg>
+            <arg>-XnoclassMetadata</arg>
+            <arg>-XnocheckCasts</arg>
           </compilerArgs>
           <!-- DevMode configuration -->
           <warDir>${project.build.directory}/${project.build.finalName}</warDir>
