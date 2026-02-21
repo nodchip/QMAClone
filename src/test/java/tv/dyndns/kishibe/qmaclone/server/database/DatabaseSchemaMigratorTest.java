@@ -6,7 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
@@ -51,21 +53,60 @@ public class DatabaseSchemaMigratorTest {
     assertTrue(runner.getUpdates().isEmpty());
   }
 
+  @Test
+  public void migratePlayerSoundColumnsShouldAddColumnsWhenMissing() throws Exception {
+    RecordingQueryRunner runner = new RecordingQueryRunner();
+    runner.setColumnCount("SOUND_MASTER_VOLUME", 0L);
+    runner.setColumnCount("SOUND_UI_VOLUME", 0L);
+    runner.setColumnCount("SOUND_GAMEPLAY_VOLUME", 0L);
+    runner.setColumnCount("SOUND_RESULT_VOLUME", 0L);
+    runner.setColumnCount("SOUND_MUTED", 0L);
+    runner.setColumnCount("SOUND_SETTINGS_VERSION", 0L);
+
+    DatabaseSchemaMigrator migrator = new DatabaseSchemaMigrator(runner, "qmaclone");
+    migrator.migratePlayerSoundColumns();
+
+    assertEquals(6, runner.getUpdates().size());
+    assertTrue(
+        runner.getUpdates().contains("ALTER TABLE player ADD COLUMN SOUND_MASTER_VOLUME DOUBLE NOT NULL DEFAULT 1.0"));
+    assertTrue(
+        runner.getUpdates().contains("ALTER TABLE player ADD COLUMN SOUND_UI_VOLUME DOUBLE NOT NULL DEFAULT 1.0"));
+    assertTrue(
+        runner.getUpdates().contains("ALTER TABLE player ADD COLUMN SOUND_GAMEPLAY_VOLUME DOUBLE NOT NULL DEFAULT 1.0"));
+    assertTrue(
+        runner.getUpdates().contains("ALTER TABLE player ADD COLUMN SOUND_RESULT_VOLUME DOUBLE NOT NULL DEFAULT 1.0"));
+    assertTrue(
+        runner.getUpdates().contains("ALTER TABLE player ADD COLUMN SOUND_MUTED BOOLEAN NOT NULL DEFAULT FALSE"));
+    assertTrue(
+        runner.getUpdates().contains("ALTER TABLE player ADD COLUMN SOUND_SETTINGS_VERSION INT NOT NULL DEFAULT 1"));
+  }
+
+  @Test
+  public void migratePlayerSoundColumnsShouldSkipWhenColumnsAlreadyExist() throws Exception {
+    RecordingQueryRunner runner = new RecordingQueryRunner();
+    runner.setColumnCount("SOUND_MASTER_VOLUME", 1L);
+    runner.setColumnCount("SOUND_UI_VOLUME", 1L);
+    runner.setColumnCount("SOUND_GAMEPLAY_VOLUME", 1L);
+    runner.setColumnCount("SOUND_RESULT_VOLUME", 1L);
+    runner.setColumnCount("SOUND_MUTED", 1L);
+    runner.setColumnCount("SOUND_SETTINGS_VERSION", 1L);
+
+    DatabaseSchemaMigrator migrator = new DatabaseSchemaMigrator(runner, "qmaclone");
+    migrator.migratePlayerSoundColumns();
+
+    assertTrue(runner.getUpdates().isEmpty());
+  }
+
   /**
    * QueryRunner の呼び出しを記録するテストダブル。
    */
   private static class RecordingQueryRunner extends QueryRunner {
-    private long authProviderColumnCount;
-    private long authSubColumnCount;
+    private final Map<String, Long> columnCounts = new HashMap<String, Long>();
     private long indexCount;
     private final List<String> updates = new ArrayList<>();
 
     void setColumnCount(String columnName, long count) {
-      if ("AUTH_PROVIDER".equals(columnName)) {
-        authProviderColumnCount = count;
-      } else if ("AUTH_SUB".equals(columnName)) {
-        authSubColumnCount = count;
-      }
+      columnCounts.put(columnName, count);
     }
 
     void setIndexCount(long count) {
@@ -81,12 +122,7 @@ public class DatabaseSchemaMigratorTest {
     public <T> T query(String sql, ResultSetHandler<T> rsh, Object... params) throws SQLException {
       if (sql.contains("INFORMATION_SCHEMA.COLUMNS")) {
         String columnName = (String) params[2];
-        if ("AUTH_PROVIDER".equals(columnName)) {
-          return (T) Long.valueOf(authProviderColumnCount);
-        }
-        if ("AUTH_SUB".equals(columnName)) {
-          return (T) Long.valueOf(authSubColumnCount);
-        }
+        return (T) Long.valueOf(columnCounts.containsKey(columnName) ? columnCounts.get(columnName) : 0L);
       }
       if (sql.contains("INFORMATION_SCHEMA.STATISTICS")) {
         return (T) Long.valueOf(indexCount);

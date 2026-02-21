@@ -90,6 +90,12 @@ public class PacketUserData implements IsSerializable {
   public boolean qwertyAlphabet;
   public boolean registerCreatedProblem;
   public boolean registerIndicatedProblem;
+  public double soundMasterVolume;
+  public double soundUiVolume;
+  public double soundGameplayVolume;
+  public double soundResultVolume;
+  public boolean soundMuted;
+  public int soundSettingsVersion;
   public String googlePlusId;
   public String authProvider;
   public String authSubject;
@@ -120,6 +126,12 @@ public class PacketUserData implements IsSerializable {
     theme = "";
     registerCreatedProblem = true;
     registerIndicatedProblem = true;
+    soundMasterVolume = 1.0;
+    soundUiVolume = 1.0;
+    soundGameplayVolume = 1.0;
+    soundResultVolume = 1.0;
+    soundMuted = false;
+    soundSettingsVersion = 1;
   }
 
   public void setReflectEventResult(boolean reflectEventResult) {
@@ -149,6 +161,11 @@ public class PacketUserData implements IsSerializable {
         .add("qwertyAlphabet", qwertyAlphabet)
         .add("registerCreatedProblem", registerCreatedProblem)
         .add("registerIndicatedProblem", registerIndicatedProblem)
+        .add("soundMasterVolume", soundMasterVolume)
+        .add("soundUiVolume", soundUiVolume)
+        .add("soundGameplayVolume", soundGameplayVolume)
+        .add("soundResultVolume", soundResultVolume).add("soundMuted", soundMuted)
+        .add("soundSettingsVersion", soundSettingsVersion)
         .add("googlePlusId", googlePlusId).add("authProvider", authProvider)
         .add("authSubject", authSubject).add("THEME", theme).toString();
   }
@@ -178,6 +195,10 @@ public class PacketUserData implements IsSerializable {
         && qwertyKatakana == rh.qwertyKatakana && qwertyAlphabet == rh.qwertyAlphabet
         && registerCreatedProblem == rh.registerCreatedProblem
         && registerIndicatedProblem == rh.registerIndicatedProblem
+        && soundMasterVolume == rh.soundMasterVolume && soundUiVolume == rh.soundUiVolume
+        && soundGameplayVolume == rh.soundGameplayVolume
+        && soundResultVolume == rh.soundResultVolume && soundMuted == rh.soundMuted
+        && soundSettingsVersion == rh.soundSettingsVersion
         && equal(googlePlusId, rh.googlePlusId) && equal(authProvider, rh.authProvider)
         && equal(authSubject, rh.authSubject) && equal(theme, rh.theme);
   }
@@ -190,6 +211,8 @@ public class PacketUserData implements IsSerializable {
         rankingMove, bbsDispInfo, bbsAge, chat, newAndOldProblems, ignoreUserCodes, timerMode,
         publicEvent, hideAnswer, showInfo, reflectEventResult, webSocketUsage, volatility,
         qwertyHiragana, qwertyKatakana, qwertyAlphabet, registerCreatedProblem,
-        registerIndicatedProblem, googlePlusId, authProvider, authSubject, theme);
+        registerIndicatedProblem, soundMasterVolume, soundUiVolume, soundGameplayVolume,
+        soundResultVolume, soundMuted, soundSettingsVersion, googlePlusId, authProvider,
+        authSubject, theme);
   }
 }

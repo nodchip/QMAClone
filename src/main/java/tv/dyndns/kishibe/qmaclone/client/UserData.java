@@ -34,6 +34,8 @@ import tv.dyndns.kishibe.qmaclone.client.packet.NewAndOldProblems;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketUserData;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketUserData.WebSocketUsage;
 import tv.dyndns.kishibe.qmaclone.client.setting.PanelSettingChat;
+import tv.dyndns.kishibe.qmaclone.client.sound.SoundSettings;
+import tv.dyndns.kishibe.qmaclone.client.sound.SoundSettingsStore;
 
 import com.google.common.base.Strings;
 import com.google.gwt.core.client.Scheduler;
@@ -107,6 +109,7 @@ public class UserData implements CloseHandler<Window> {
   private final AsyncCallback<PacketUserData> callbackLoadFromServer = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<PacketUserData>() {
     public void onSuccess(PacketUserData result) {
       data = result;
+      syncSoundSettingsToLocalStorage();
       Cookies.setCookie(KEY_USER_CODE, Integer.toString(data.userCode), getExpireTime());
       save();
 
@@ -145,6 +148,7 @@ public class UserData implements CloseHandler<Window> {
 
   public void save(final AsyncCallback<Void> callback) {
     Cookies.setCookie(KEY_USER_CODE, Integer.toString(data.userCode), getExpireTime());
+    syncSoundSettingsFromLocalStorage();
     Service.Util.getInstance().saveUserData(data, callback == null ? callbackSaveUserData : callback);
   }
 
@@ -452,6 +456,54 @@ public class UserData implements CloseHandler<Window> {
     data.registerIndicatedProblem = registerIndicatedProblem;
   }
 
+  public double getSoundMasterVolume() {
+    return data.soundMasterVolume;
+  }
+
+  public void setSoundMasterVolume(double soundMasterVolume) {
+    data.soundMasterVolume = soundMasterVolume;
+  }
+
+  public double getSoundUiVolume() {
+    return data.soundUiVolume;
+  }
+
+  public void setSoundUiVolume(double soundUiVolume) {
+    data.soundUiVolume = soundUiVolume;
+  }
+
+  public double getSoundGameplayVolume() {
+    return data.soundGameplayVolume;
+  }
+
+  public void setSoundGameplayVolume(double soundGameplayVolume) {
+    data.soundGameplayVolume = soundGameplayVolume;
+  }
+
+  public double getSoundResultVolume() {
+    return data.soundResultVolume;
+  }
+
+  public void setSoundResultVolume(double soundResultVolume) {
+    data.soundResultVolume = soundResultVolume;
+  }
+
+  public boolean isSoundMuted() {
+    return data.soundMuted;
+  }
+
+  public void setSoundMuted(boolean soundMuted) {
+    data.soundMuted = soundMuted;
+  }
+
+  public int getSoundSettingsVersion() {
+    return data.soundSettingsVersion;
+  }
+
+  public void setSoundSettingsVersion(int soundSettingsVersion) {
+    data.soundSettingsVersion = soundSettingsVersion;
+  }
+
   public String getGooglePlusId() {
     return data.googlePlusId;
   }
@@ -487,6 +539,28 @@ public class UserData implements CloseHandler<Window> {
   @Override
   public void onClose(CloseEvent<Window> event) {
     // save();
+  }
+
+  private void syncSoundSettingsFromLocalStorage() {
+    SoundSettings settings = SoundSettingsStore.loadFromLocalStorage();
+    data.soundMasterVolume = settings.getMasterVolume();
+    data.soundUiVolume = settings.getUiVolume();
+    data.soundGameplayVolume = settings.getGameplayVolume();
+    data.soundResultVolume = settings.getResultVolume();
+    data.soundMuted = settings.isMuted();
+    data.soundSettingsVersion = settings.getSchemaVersion();
+  }
+
+  private void syncSoundSettingsToLocalStorage() {
+    SoundSettings settings =
+        new SoundSettings(
+            data.soundMasterVolume,
+            data.soundUiVolume,
+            data.soundGameplayVolume,
+            data.soundResultVolume,
+            data.soundMuted,
+            data.soundSettingsVersion);
+    SoundSettingsStore.saveToLocalStorage(settings);
   }
 }
 

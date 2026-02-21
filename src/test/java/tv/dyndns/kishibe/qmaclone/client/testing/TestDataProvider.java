@@ -85,6 +85,12 @@ public class TestDataProvider {
     data.qwertyHiragana = true;
     data.qwertyKatakana = true;
     data.qwertyAlphabet = true;
+    data.soundMasterVolume = 1.0;
+    data.soundUiVolume = 1.0;
+    data.soundGameplayVolume = 1.0;
+    data.soundResultVolume = 1.0;
+    data.soundMuted = false;
+    data.soundSettingsVersion = 1;
     data.theme = "ガンダム";
     return data;
   }
