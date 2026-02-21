@@ -21,10 +21,12 @@
 //THE SOFTWARE.
 package tv.dyndns.kishibe.qmaclone.client;
 
+import tv.dyndns.kishibe.qmaclone.client.sound.AudioEngine;
 import tv.dyndns.kishibe.qmaclone.client.sound.SoundManager;
 
 public class SoundPlayer {
 	private static final SoundPlayer INSTANCE = new SoundPlayer();
+	private final AudioEngine audioEngine;
 
 	public static SoundPlayer getInstance() {
 		return INSTANCE;
@@ -32,11 +34,12 @@ public class SoundPlayer {
 
 	private SoundPlayer() {
 		SoundManager.getInstance().setEmbedType(SoundManager.EMBED_TYPE_WAV);
+		audioEngine = new AudioEngine(SoundManager.getInstance());
 	}
 
 	public void play(final String url) {
 		if (UserData.get().isPlaySound()) {
-			SoundManager.getInstance().play(url);
+			audioEngine.playUrl(url, 1.0, 1.0, 1.0);
 		}
 	}
 }

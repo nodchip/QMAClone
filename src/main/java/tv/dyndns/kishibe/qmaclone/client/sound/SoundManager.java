@@ -51,11 +51,19 @@ public class SoundManager {
 		play(url, false, 0);
 	}
 
+	public void play(String url, double volume) {
+		play(url, false, 0, volume);
+	}
+
 	public void setEmbedType(int type) {
 		embedType = type;
 	}
 
 	public void play(String url, boolean loop, int repeat) {
+		play(url, loop, repeat, 1.0);
+	}
+
+	public void play(String url, boolean loop, int repeat, double volume) {
 		String sanitizedUrl = SoundUrlSanitizer.sanitizeSoundUrl(url);
 		if (sanitizedUrl == null) {
 			return;
@@ -64,7 +72,7 @@ public class SoundManager {
 		clearChannel(channel);
 		Element audioElement = createAudioElement(sanitizedUrl, loop);
 		DOM.appendChild(channel, audioElement);
-		playAudio(audioElement, loop, repeat);
+		playAudio(audioElement, loop, repeat, clampVolume(volume));
 	}
 
 	public void clear() {
@@ -98,11 +106,12 @@ public class SoundManager {
 	/**
 	 * 音声再生を開始し、必要に応じて繰り返す。
 	 */
-	private static native void playAudio(Element audioElement, boolean loop, int repeat) /*-{
+	private static native void playAudio(Element audioElement, boolean loop, int repeat, double volume) /*-{
 		if (!audioElement) {
 			return;
 		}
 		try {
+			audioElement.volume = volume;
 			var playCount = repeat > 0 ? repeat : 1;
 			if (!loop && playCount > 1 && audioElement.addEventListener) {
 				var played = 1;
@@ -125,4 +134,17 @@ public class SoundManager {
 		} catch (e) {
 		}
 	}-*/;
+
+	/**
+	 * ボリューム値を0..1に正規化する。
+	 */
+	private double clampVolume(double volume) {
+		if (volume < 0) {
+			return 0;
+		}
+		if (1 < volume) {
+			return 1;
+		}
+		return volume;
+	}
 }
