@@ -25,7 +25,7 @@ public class DatabaseModule extends AbstractModule {
   static final String PROPERTY_DB_USERNAME = "qmaclone.db.username";
   static final String PROPERTY_DB_PASSWORD = "qmaclone.db.password";
   static final String PROPERTY_ADMIN_CONFIG_PATH = "qmaclone.admin.config";
-  static final String DEFAULT_ADMIN_CONFIG_PATH = "ops/config/live/tomcat9/qmaclone-admin.properties";
+  static final String DEFAULT_ADMIN_CONFIG_PATH = "ops/config/live/tomcat10/qmaclone-admin.properties";
   private static final String DRIVER_CLASS_NAME = "com.mysql.cj.jdbc.Driver";
   private static final String VALIDATION_QUERY = "SELECT 1";
 

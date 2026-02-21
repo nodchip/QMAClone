@@ -46,6 +46,8 @@ public class BadUserDetector implements Runnable {
 	private static final Pattern NOTIFY_TIME_UP_PATTERN = Pattern
 			.compile("\\{method=notifyTimeUp, sessionId=([0-9]+?), .+?userCode=([0-9]+?),");
 	private static final int MAX_INDICATED_PROBLEM_PER_USER = 10;
+	private static final String PRIMARY_TOMCAT_LOG_DIR = "/var/log/tomcat10";
+	private static final String LEGACY_TOMCAT_LOG_DIR = "/var/log/tomcat9";
 	private final Database database;
 
 	@Inject
@@ -72,7 +74,7 @@ public class BadUserDetector implements Runnable {
 		// ゲーム開始回数とゲーム終了回数をカウントする
 		// ゲーム開始カウントは2人以上でゲームを開始した場合
 		// ゲーム終了カウントは常時
-		for (File file : new File("/var/log/tomcat9").listFiles(LOG_FILENAME_FILTER)) {
+		for (File file : findTomcatLogFiles()) {
 			System.out.println(file);
 			String body;
 			try {
@@ -137,6 +139,23 @@ public class BadUserDetector implements Runnable {
 		}
 
 		logger.info("悪質な対戦ユーザーの追加が完了しました");
+	}
+
+	private File[] findTomcatLogFiles() {
+		File primaryTomcatLogDir = new File(PRIMARY_TOMCAT_LOG_DIR);
+		File[] primaryTomcatLogFiles = primaryTomcatLogDir.listFiles(LOG_FILENAME_FILTER);
+		if (primaryTomcatLogFiles != null) {
+			return primaryTomcatLogFiles;
+		}
+
+		File legacyTomcatLogDir = new File(LEGACY_TOMCAT_LOG_DIR);
+		File[] legacyTomcatLogFiles = legacyTomcatLogDir.listFiles(LOG_FILENAME_FILTER);
+		if (legacyTomcatLogFiles != null) {
+			return legacyTomcatLogFiles;
+		}
+
+		logger.warning("Tomcatログディレクトリが見つかりません: /var/log/tomcat10, /var/log/tomcat9");
+		return new File[0];
 	}
 
 	/**

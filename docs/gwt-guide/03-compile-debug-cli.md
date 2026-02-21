@@ -12,7 +12,7 @@
 ## QMAClone推奨運用
 - 日常: `mvn compile`
 - クライアント変更後: `mvn "-Dgwt.skipCompilation=false" gwt:compile`
-- 配備: `deploy_qmaclone_tomcat9.ps1`（200/405確認まで）
+- 配備: `deploy_qmaclone_tomcat10.ps1`（200/405確認まで）
 
 ## 注意点
 - `gwt:compile` 失敗時はデプロイを止める。

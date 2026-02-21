@@ -23,5 +23,5 @@
 - 今後の新規/更新分は、必ず `ops/` 配下へ配置します。
 
 ## レガシー運用ファイル
-- ルート直下に残る運用スクリプトは `deploy_qmaclone_tomcat9.ps1` のみです。
-- `deploy_qmaclone_tomcat9.ps1` は参照箇所が多いため、参照更新計画を確定してから移行します。
+- ルート直下の標準運用スクリプトは `deploy_qmaclone_tomcat10.ps1` です。
+- `deploy_qmaclone_tomcat9.ps1` は互換ラッパーとして残置しています。

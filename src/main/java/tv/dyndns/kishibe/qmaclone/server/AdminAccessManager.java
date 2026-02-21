@@ -25,7 +25,7 @@ import tv.dyndns.kishibe.qmaclone.server.database.DatabaseException;
 public class AdminAccessManager {
   private static final Logger logger = Logger.getLogger(AdminAccessManager.class.getName());
   private static final String KEY_CONFIG_PATH = "qmaclone.admin.config";
-  private static final String DEFAULT_CONFIG_PATH = "ops/config/live/tomcat9/qmaclone-admin.properties";
+  private static final String DEFAULT_CONFIG_PATH = "ops/config/live/tomcat10/qmaclone-admin.properties";
   private static final String KEY_ENFORCEMENT_ENABLED = "admin.enforcement.enabled";
   private static final String KEY_GOOGLE_SUB_ALLOWLIST = "admin.google.sub.allowlist";
   private static final String KEY_NETWORK_TRUSTED_PROXIES = "network.trusted.proxies";

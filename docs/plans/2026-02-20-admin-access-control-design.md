@@ -23,10 +23,10 @@
 - `clearRestrictedRemoteAddresses`
 
 ## 設定ファイル
-- 配置: `ops/config/live/tomcat9/qmaclone-admin.properties`（Git管理外）
+- 配置: `ops/config/live/tomcat10/qmaclone-admin.properties`（Git管理外）
 - 読み込み優先順:
   1. `-Dqmaclone.admin.config=<path>`
-  2. 既定 `ops/config/live/tomcat9/qmaclone-admin.properties`
+  2. 既定 `ops/config/live/tomcat10/qmaclone-admin.properties`
 - キー:
   - `admin.enforcement.enabled=true|false`
   - `admin.google.sub.allowlist=sub1,sub2,...`

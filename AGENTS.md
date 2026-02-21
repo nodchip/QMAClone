@@ -17,7 +17,7 @@
 - ミス: GWT 再コンパイル失敗後に古い `cache.js` が配信され、画面不整合が起きた。
 - 改善: クライアント変更の完了条件に「GWT 再コンパイル成功」と「配備先で最新成果物が参照されること」を含める。
 - ミス: GWT クライアントで非対応 API（例: `String.format`）を使用し、デプロイ時の `gwt:compile` で停止した。
-- 改善: クライアント変更では GWT JRE エミュレーション非対応 API を使わず、`deploy_qmaclone_tomcat9.ps1` 実行前に `gwt:compile` 成功を確定する。
+- 改善: クライアント変更では GWT JRE エミュレーション非対応 API を使わず、`deploy_qmaclone_tomcat10.ps1` 実行前に `gwt:compile` 成功を確定する。
 - ミス: CellTable の見た目修正で `.cellTableCell` 固定セレクタを使い、実DOM（難読化クラス構成）に一致せずスタイルが未適用になった。
 - 改善: CellTable 系CSSは `styleName + 要素セレクタ(td/button など)` を基本にし、`dom.html` で実セレクタ一致を確認してから反映する。
 - ミス: WebSocket URL を環境固定値で扱い、接続先不一致（404/500）を誘発した。
@@ -58,7 +58,7 @@
 - Tomcat 再配備時は、必要に応じて旧展開物削除とサービス再起動で静的状態を確実に破棄する。
 - Eclipse で不整合が疑われる場合は、`target` と `gwt-unitCache` のクリーンを実施する。
 - 検証（`build` / `test` / `gwt:compile`）が1つでも失敗した場合はデプロイを中断し、修正と再検証完了まで配備しない。
-- 修正を含む依頼では、実行成果物に影響する変更（サーバー/クライアント/CSS/配備スクリプト）を行ったら、完了報告前に `deploy_qmaclone_tomcat9.ps1` でデプロイする（ユーザーが「デプロイ不要」を明示した場合のみ省略可）。
+- 修正を含む依頼では、実行成果物に影響する変更（サーバー/クライアント/CSS/配備スクリプト）を行ったら、完了報告前に `deploy_qmaclone_tomcat10.ps1` でデプロイする（ユーザーが「デプロイ不要」を明示した場合のみ省略可）。旧 `deploy_qmaclone_tomcat9.ps1` は互換ラッパーとしてのみ使用する。
 - デプロイ後は次のHTTP疎通を確認し、実行コマンドと結果を完了報告に残す。
 1. `/QMAClone-1.0-SNAPSHOT/` の `HTTP 200`
 2. `/tv.dyndns.kishibe.qmaclone.QMAClone/service` の `HTTP 405`

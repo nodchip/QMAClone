@@ -6,14 +6,14 @@
 ## 構成
 - `ops/config/live/nginx/`: nginx 設定ファイル
 - `ops/config/live/nginx/sites-enabled/`: nginx 仮想ホスト設定
-- `ops/config/live/tomcat9/`: tomcat9 設定ファイル
+- `ops/config/live/tomcat10/`: tomcat10 設定ファイル
 
 ## 配置例
 - `ops/config/live/nginx/nginx.conf`
 - `ops/config/live/nginx/sites-enabled/kishibe.dyndns.tv.conf`
-- `ops/config/live/tomcat9/server.xml`
-- `ops/config/live/tomcat9/web.xml`
-- `ops/config/live/tomcat9/qmaclone-admin.properties`
+- `ops/config/live/tomcat10/server.xml`
+- `ops/config/live/tomcat10/web.xml`
+- `ops/config/live/tomcat10/qmaclone-admin.properties`
 
 `qmaclone-admin.properties` には管理者判定の設定を記述します。
 
