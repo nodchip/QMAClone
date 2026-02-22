@@ -1,0 +1,41 @@
+2026-02-22 nighthawk release verification log
+
+[host]
+nighthawk
+PRETTY_NAME="Ubuntu 24.04.4 LTS"
+VERSION_ID="24.04"
+
+[runtime]
+java version "25.0.2" 2026-01-20 LTS
+Java(TM) SE Runtime Environment (build 25.0.2+10-LTS-69)
+tomcat10: active
+nginx: active
+apache2: active
+
+[http checks]
+https / -> 200
+https /qmaclone/ -> 200
+https /QMAClone/ -> 200
+https /QMAClone/service(GET) -> 400
+https /QMAClone/service?warmup=1 -> 200
+
+[tomcat direct checks]
+http://127.0.0.1:8080/QMAClone/ -> 200
+http://127.0.0.1:8080/QMAClone/.../service(GET) -> 405
+http://127.0.0.1:8080/QMAClone/.../service?warmup=1 -> 200
+
+[db quick counts]
+theme_mode_editor=516
+restricted_user_code=785
+restricted_remote_address=779
+
+[port checks]
+listen: 80,443 (nginx), 8080 (tomcat10), 48080 (apache2), 10000 (miniserv), 139/445 (smbd), 137/138 udp (nmbd)
+
+[ufw]
+10000/tcp, 137/udp, 138/udp, 139/tcp, 445/tcp are allowed only from 192.168.1.0/24
+
+[notes]
+- Theme mode editor list / restricted user list rendering issue was resolved.
+- Canonical public path for the game is https://kishibe.dyndns.tv/QMAClone/
+- Landing site path is https://kishibe.dyndns.tv/qmaclone/ (proxied to apache 48080)
