@@ -24,6 +24,27 @@
 
 ---
 
+## 進捗メモ（2026-02-22 本番反映）
+
+- 完了:
+1. nighthawk を `Ubuntu 24.04.4 LTS` へ更新完了。
+2. `Oracle Java 25.0.2` + `tomcat10` で QMAClone を稼働。
+3. 公開URLを `https://kishibe.dyndns.tv/QMAClone/` に統一。
+4. ランディングサイト `https://kishibe.dyndns.tv/qmaclone/` を Apache(`48080`) 経由で提供。
+5. nginx / SSH / UFW のセキュリティ是正を反映。
+6. 不要サービスの公開停止を反映。
+7. 管理画面「テーマモード編集権限」「制限ユーザー」の表示不具合を解消。
+
+- 検証ログ:
+1. `ops/log/2026-02-22-nighthawk-release-verification.log`
+2. `ops/notes/2026-02-22-nighthawk-security-remediation.md`
+
+- 備考:
+1. `https://kishibe.dyndns.tv/QMAClone/.../service` への GET は nginx 経由で `400`、Tomcat直では `405`。
+2. 実運用のRPCは `POST` のため、画面機能への影響は現時点で確認されていない。
+
+---
+
 ### Task 1: 事前棚卸しとバックアップ固定
 
 **Files:**
