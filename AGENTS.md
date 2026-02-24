@@ -26,6 +26,8 @@
 - 改善: `netstat -> HTTP GET -> Upgrade ハンドシェイク -> サーバーログ` の順で切り分ける。
 - ミス: Tomcat 再配備時に旧状態が残り、修正結果を誤判定した。
 - 改善: 必要時は旧展開物削除とサービス再起動を行い、静的状態を破棄する。
+- ミス: nighthawk の reverse proxy 先サービス停止を見落とし、`502 Bad Gateway` を nginx 設定起因と誤認した。
+- 改善: `nginx error.log` と upstream 待受/サービス状態を先に確認し、停止サービスを復旧してから設定変更要否を判断する。
 
 ## プロジェクト固有ルール
 
@@ -59,12 +61,18 @@
 - Eclipse で不整合が疑われる場合は、`target` と `gwt-unitCache` のクリーンを実施する。
 - 検証（`build` / `test` / `gwt:compile`）が1つでも失敗した場合はデプロイを中断し、修正と再検証完了まで配備しない。
 - 修正を含む依頼では、実行成果物に影響する変更（サーバー/クライアント/CSS/配備スクリプト）を行ったら、完了報告前に `deploy_qmaclone_tomcat10.ps1` でデプロイする（ユーザーが「デプロイ不要」を明示した場合のみ省略可）。旧 `deploy_qmaclone_tomcat9.ps1` は互換ラッパーとしてのみ使用する。
-- デプロイ後は次のHTTP疎通を確認し、実行コマンドと結果を完了報告に残す。
-1. `/QMAClone-1.0-SNAPSHOT/` の `HTTP 200`
-2. `/tv.dyndns.kishibe.qmaclone.QMAClone/service` の `HTTP 405`
-3. `/tv.dyndns.kishibe.qmaclone.QMAClone/service?warmup=1` の `HTTP 200`
+- デプロイ後は公開経路のHTTP疎通を確認し、実行コマンドと結果を完了報告に残す。
+1. `/` の `HTTP 200`（nginx -> apache 経路）
+2. `/QMAClone/` の `HTTP 200`（nginx -> tomcat 経路）
+3. `/QMAClone/tv.dyndns.kishibe.qmaclone.QMAClone/service` の `HTTP 405`
+4. `/QMAClone/tv.dyndns.kishibe.qmaclone.QMAClone/service?warmup=1` の `HTTP 200`
+5. `/QMAClone/websocket` の Upgrade 疎通（`101 Switching Protocols` もしくはサーバーログで Upgrade 成功を確認）
 - 新規の運用ログ/メモはルート直下へ置かず、`ops/log/` と `ops/notes/` 配下へ配置する。
 - 新規/更新の運用補助スクリプトは `ops/scripts/` 配下へ配置し、既存ルートスクリプトは段階移行で扱う。
+
+### Nginx / Upstream 運用（nighthawk）
+- `502/504` 調査は `nginx error.log` -> upstream 待受 (`ss -ltnp`) -> upstream サービス状態 (`systemctl status`) の順で実施する。
+- Python/Node などアプリ系 upstream 復旧時は依存ランタイム（`venv` / パッケージ / 実行ユーザー）まで確認し、`systemctl restart` のみで終わらせない。
 
 ### Git / worktree 運用
 - worktree ブランチを `master` に取り込むときは、必ず fast-forward merge（`git merge --ff-only`）を使用する。
