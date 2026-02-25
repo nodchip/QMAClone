@@ -103,9 +103,9 @@
 					<g:VerticalPanel ui:field="panelWarning" />
 					<g:HTML ui:field="htmlTypeCaution" />
 					<g:SimplePanel ui:field="panelChangeHistory" />
-					<g:HTMLPanel ui:field="htmlPanelWrongAnswer"
+					<g:HTMLPanel ui:field="htmlPanelWrongAnswer" styleName="creationWrongAnswerSection"
 						visible="false">
-						<h1>誤答例</h1>
+						<h1 class="creationWrongAnswerTitle">誤答例</h1>
 						<g:SimplePanel ui:field="panelWrongAnswer" />
 					</g:HTMLPanel>
 					<g:HTMLPanel ui:field="htmlPanelBbs" visible="false">

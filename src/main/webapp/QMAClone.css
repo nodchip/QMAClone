@@ -5647,6 +5647,92 @@ body {
   line-height: 1.45;
 }
 
+.creationWrongAnswerSection {
+  margin-top: 14px;
+  padding: 12px;
+  border: 1px solid var(--color-border-default);
+  border-radius: 10px;
+  background: linear-gradient(180deg, var(--color-surface-1) 0%, var(--color-surface-2) 100%);
+}
+
+.creationWrongAnswerTitle {
+  margin: 0 0 10px 0;
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--color-text-primary);
+}
+
+.creationWrongAnswerCard {
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 8px;
+  background: var(--color-card-shared);
+  overflow: hidden;
+}
+
+.creationWrongAnswerBody {
+  overflow-x: auto;
+}
+
+.creationWrongAnswerTable {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.creationWrongAnswerTable thead th {
+  padding: 8px 10px;
+  background: var(--color-surface-3);
+  border-bottom: 1px solid var(--color-border-default);
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  font-weight: 700;
+  text-align: left;
+  letter-spacing: 0.04em;
+}
+
+.creationWrongAnswerTable tbody td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--color-border-subtle);
+  color: var(--color-text-primary);
+  vertical-align: middle;
+}
+
+.creationWrongAnswerTable tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.creationWrongAnswerTable tbody tr:hover td {
+  background: var(--color-surface-2);
+}
+
+.creationWrongAnswerRank {
+  width: 68px;
+  text-align: center;
+  color: var(--color-text-secondary);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.creationWrongAnswerAnswer {
+  white-space: pre-wrap;
+  word-break: break-word;
+  line-height: 1.45;
+}
+
+.creationWrongAnswerCount {
+  width: 88px;
+  text-align: right;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-secondary);
+}
+
+.creationWrongAnswerEmpty {
+  padding: 14px 12px;
+  color: var(--color-text-secondary);
+}
+
 .creationSummaryCardHeader {
   display: flex;
   align-items: center;
