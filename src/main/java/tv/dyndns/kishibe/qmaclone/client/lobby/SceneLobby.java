@@ -50,7 +50,8 @@ public class SceneLobby extends SceneBase {
 	public static final int SESSION_TYPE_WHOLE = 1;
 	public static final int SESSION_TYPE_EVENT = 2;
 	public static final int SESSION_TYPE_THEME = 3;
-	private static final int UPDATE_INTERVAL = 10 * 1000;
+	// WebSocketフォールバック時の体感遅延を抑える。
+	private static final int UPDATE_INTERVAL = 3 * 1000;
 	private LobbyUi lobbyUi = new LobbyUi(this);
 	private final StatusUpdater<PacketServerStatus> updater = new StatusUpdater<PacketServerStatus>(
 			PacketServerStatus.class.getName(), UPDATE_INTERVAL) {

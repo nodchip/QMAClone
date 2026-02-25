@@ -130,6 +130,71 @@ function Restart-ServiceWithElevation {
   }
 }
 
+function Remove-ItemWithElevationFallback {
+  param(
+    [string]$Path,
+    [bool]$Recurse = $false
+  )
+
+  if (-not (Test-Path -LiteralPath $Path)) {
+    return
+  }
+
+  try {
+    if ($Recurse) {
+      Remove-Item -LiteralPath $Path -Recurse -Force
+    } else {
+      Remove-Item -LiteralPath $Path -Force
+    }
+    return
+  } catch {
+    $exception = $_.Exception
+    $isUnauthorized = $exception -is [System.UnauthorizedAccessException]
+    $isAccessDeniedMessage = $false
+    if ($exception -and $exception.Message) {
+      $isAccessDeniedMessage = $exception.Message -match "Access to the path .* is denied|アクセスが拒否されました"
+    }
+
+    if (Test-IsAdministrator -or (-not ($isUnauthorized -or $isAccessDeniedMessage))) {
+      throw
+    }
+  }
+
+  Write-Warning "Access denied while removing path. Retry with UAC elevation: $Path"
+  $escapedPath = $Path.Replace("'", "''")
+  $recurseOption = if ($Recurse) { "-Recurse" } else { "" }
+  $removeCommand = "Remove-Item -LiteralPath '$escapedPath' -Force $recurseOption"
+  [string[]]$elevatedArguments = @(
+    "-NoLogo",
+    "-NoProfile",
+    "-NonInteractive",
+    "-ExecutionPolicy",
+    "Bypass",
+    "-Command",
+    $removeCommand
+  )
+
+  try {
+    # 非表示起動を優先し、環境制約で失敗した場合は最小化起動へフォールバックする。
+    $process = Start-Process -FilePath "powershell.exe" -ArgumentList $elevatedArguments -Verb RunAs -WindowStyle Hidden -Wait -PassThru
+  } catch {
+    try {
+      $process = Start-Process -FilePath "powershell.exe" -ArgumentList $elevatedArguments -Verb RunAs -WindowStyle Minimized -Wait -PassThru
+    } catch {
+      throw "Failed to remove path with UAC elevation. Elevation may have been canceled: $Path"
+    }
+  }
+
+  # 昇格側が非0終了でも、対象が消えていれば削除成功として扱う。
+  if ($process.ExitCode -ne 0 -and (Test-Path -LiteralPath $Path)) {
+    throw "Failed to remove path with UAC elevation. Exit code: $($process.ExitCode) path=$Path"
+  }
+
+  if (Test-Path -LiteralPath $Path) {
+    throw "Failed to remove path even after UAC elevation: $Path"
+  }
+}
+
 function Sync-GwtArtifacts {
   param(
     [string]$SourceDir,
@@ -331,32 +396,46 @@ Write-Host "HTTP Port:  $resolvedTomcatHttpPort"
 
 if (Test-Path -LiteralPath $deployedWarPath) {
   Write-Host "Remove existing WAR: $deployedWarPath"
-  Remove-Item -LiteralPath $deployedWarPath -Force
+  Remove-ItemWithElevationFallback -Path $deployedWarPath
 }
 
 if (Test-Path -LiteralPath $deployedDirPath) {
   Write-Host "Remove exploded app dir: $deployedDirPath"
-  Remove-Item -LiteralPath $deployedDirPath -Recurse -Force
+  Remove-ItemWithElevationFallback -Path $deployedDirPath -Recurse $true
 }
 
 Write-Host "Restart service: $ServiceName"
+$restartPerformed = $false
 if (Test-IsAdministrator) {
   Restart-Service -Name $ServiceName -Force
+  $restartPerformed = $true
 } else {
   Write-Host "Run as non-admin user. Restart service with UAC elevation."
-  Restart-ServiceWithElevation -Name $ServiceName
+  try {
+    Restart-ServiceWithElevation -Name $ServiceName
+    $restartPerformed = $true
+  } catch {
+    # UAC昇格に失敗しても、サービス稼働中ならWAR差し替えを継続する。
+    $service = Get-Service -Name $ServiceName -ErrorAction SilentlyContinue
+    if (-not $service -or $service.Status -ne [System.ServiceProcess.ServiceControllerStatus]::Running) {
+      throw
+    }
+    Write-Warning "Service restart with UAC elevation failed, but service is running. Continue deployment without restart."
+  }
 }
 
-$deadline = (Get-Date).AddSeconds(60)
-while ($true) {
-  $service = Get-Service -Name $ServiceName
-  if ($service.Status -eq [System.ServiceProcess.ServiceControllerStatus]::Running) {
-    break
+if ($restartPerformed) {
+  $deadline = (Get-Date).AddSeconds(60)
+  while ($true) {
+    $service = Get-Service -Name $ServiceName
+    if ($service.Status -eq [System.ServiceProcess.ServiceControllerStatus]::Running) {
+      break
+    }
+    if ((Get-Date) -ge $deadline) {
+      throw "Service did not reach Running state within timeout: $ServiceName"
+    }
+    Start-Sleep -Seconds 1
   }
-  if ((Get-Date) -ge $deadline) {
-    throw "Service did not reach Running state within timeout: $ServiceName"
-  }
-  Start-Sleep -Seconds 1
 }
 
 Write-Host "Deploy WAR to: $deployedWarPath"

@@ -2,6 +2,7 @@ package tv.dyndns.kishibe.qmaclone.client.packet;
 
 import tv.dyndns.kishibe.qmaclone.client.constant.Constant;
 
+import com.google.common.base.Objects;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
@@ -14,6 +15,9 @@ public class PacketPlayerSummary implements IsSerializable {
 	public String prefecture;
 	public String imageFileName;
 	public int rating;
+	public transient int userCode;
+	public String recentMode;
+	public String recentState;
 	private transient SafeHtml html;
 	private transient SafeHtml resultHtml;
 	private transient SafeHtml gameHtml;
@@ -65,6 +69,22 @@ public class PacketPlayerSummary implements IsSerializable {
 		return DEFAULT_PLAYER_SUMMARY;
 	}
 
+	/**
+	 * インスタンスを複製する。
+	 */
+	public PacketPlayerSummary copy() {
+		PacketPlayerSummary copy = new PacketPlayerSummary();
+		copy.level = level;
+		copy.name = name;
+		copy.prefecture = prefecture;
+		copy.imageFileName = imageFileName;
+		copy.rating = rating;
+		copy.userCode = userCode;
+		copy.recentMode = recentMode;
+		copy.recentState = recentState;
+		return copy;
+	}
+
 	public static PacketPlayerSummary fromJsonObject(JSONObject object) {
 		PacketPlayerSummary summary = new PacketPlayerSummary();
 		summary.level = PacketJsonParser.getString(object, "level");
@@ -72,7 +92,31 @@ public class PacketPlayerSummary implements IsSerializable {
 		summary.prefecture = PacketJsonParser.getString(object, "prefecture");
 		summary.imageFileName = PacketJsonParser.getString(object, "imageFileName");
 		summary.rating = PacketJsonParser.getInt(object, "rating");
+		summary.recentMode = PacketJsonParser.getString(object, "recentMode");
+		summary.recentState = PacketJsonParser.getString(object, "recentState");
 		return summary;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof PacketPlayerSummary)) {
+			return false;
+		}
+		PacketPlayerSummary rh = (PacketPlayerSummary) obj;
+		return Objects.equal(level, rh.level)
+				&& Objects.equal(name, rh.name)
+				&& Objects.equal(prefecture, rh.prefecture)
+				&& Objects.equal(imageFileName, rh.imageFileName)
+				&& rating == rh.rating
+				&& userCode == rh.userCode
+				&& Objects.equal(recentMode, rh.recentMode)
+				&& Objects.equal(recentState, rh.recentState);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(level, name, prefecture, imageFileName, rating, userCode, recentMode,
+				recentState);
 	}
 
 	@Override

@@ -52,9 +52,13 @@ public class PacketPlayerSummaryTest extends QMACloneGWTTestCaseBase {
     object.put("name", new JSONString("テスト"));
     object.put("prefecture", new JSONString("東京"));
     object.put("imageFileName", new JSONString("avatar.png"));
+    object.put("recentMode", new JSONString("全体対戦"));
+    object.put("recentState", new JSONString("ゲーム中"));
 
     PacketPlayerSummary summary = PacketPlayerSummary.fromJsonObject(object);
 
     assertEquals("avatar.png", summary.imageFileName);
+    assertEquals("全体対戦", summary.recentMode);
+    assertEquals("ゲーム中", summary.recentState);
   }
 }

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -15,6 +16,9 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
+import tv.dyndns.kishibe.qmaclone.client.game.GameMode;
+import tv.dyndns.kishibe.qmaclone.client.game.Transition;
+import tv.dyndns.kishibe.qmaclone.client.packet.PacketPlayerSummary;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketServerStatus;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketUserData;
 import tv.dyndns.kishibe.qmaclone.server.database.Database;
@@ -24,6 +28,7 @@ import tv.dyndns.kishibe.qmaclone.server.websocket.MessageSender;
 public class ServerStatusManager {
   private static final Logger logger = Logger.getLogger(ServerStatusManager.class.getName());
   private static final int UPDATE_DURATION = 10; // 秒
+  private static final long DEBOUNCE_MILLISECONDS = 300L;
   private final Database database;
   @VisibleForTesting
   final AtomicInteger numberOfPageView = new AtomicInteger();
@@ -38,6 +43,8 @@ public class ServerStatusManager {
   private final NormalModeProblemManager normalModeProblemManager;
   private final PlayerHistoryManager playerHistoryManager;
   private final MessageSender<PacketServerStatus> serverStatusMessageSender;
+  private final ThreadPool threadPool;
+  private final AtomicBoolean updateServerStatusScheduled = new AtomicBoolean(false);
   private volatile PacketServerStatus serverStatus;
   private final Runnable saveServerStatusRunner = new Runnable() {
     public void run() {
@@ -59,6 +66,17 @@ public class ServerStatusManager {
       }
     }
   };
+  private final Runnable updateServerStatusDebouncedRunner = new Runnable() {
+    @Override
+    public void run() {
+      updateServerStatusScheduled.set(false);
+      try {
+        updateServerStatus();
+      } catch (DatabaseException e) {
+        logger.log(Level.WARNING, "サーバーステータスの更新に失敗しました", e);
+      }
+    }
+  };
 
   @Inject
   public ServerStatusManager(Database database, GameManager gameManager,
@@ -69,6 +87,7 @@ public class ServerStatusManager {
     this.normalModeProblemManager = Preconditions.checkNotNull(normalModeProblemManager);
     this.playerHistoryManager = Preconditions.checkNotNull(playerHistoryManager);
     this.serverStatusMessageSender = Preconditions.checkNotNull(serverStatusMessageSender);
+    this.threadPool = Preconditions.checkNotNull(threadPool);
 
     threadPool.addMinuteTasks(saveServerStatusRunner);
     threadPool.addMinuteTasks(updateLoginUsersRunner);
@@ -99,10 +118,11 @@ public class ServerStatusManager {
 
   public void login() {
     numberOfPageView.getAndIncrement();
+    requestUpdateDebounced();
   }
 
   @VisibleForTesting
-  void updateServerStatus() throws DatabaseException {
+  synchronized void updateServerStatus() throws DatabaseException {
     PacketServerStatus status = new PacketServerStatus();
     status.numberOfCurrentSessions = numberOfCurrentSessions.get();
     status.numberOfTotalSessions = numberOfTotalSessions.get();
@@ -114,7 +134,7 @@ public class ServerStatusManager {
     status.numberOfLoginPlayers = Math.max(loginUsers.size(), loginUserCodes.size());
     status.numberOfActivePlayers = database.getNumberOfActiveUsers();
     status.numberOfPlayersInWhole = gameManager.getNumberOfPlayersInWhole();
-    status.lastestPlayers = playerHistoryManager.get();
+    status.lastestPlayers = buildLatestPlayers();
     if (Objects.equal(serverStatus, status)) {
       return;
     }
@@ -148,6 +168,7 @@ public class ServerStatusManager {
 
   public void keepAlive(int userCode) {
     loginUserCodes.add(userCode);
+    requestUpdateDebounced();
   }
 
   public List<PacketUserData> getLoginUsers() {
@@ -168,6 +189,7 @@ public class ServerStatusManager {
     }
 
     loginUsers = list;
+    requestUpdateDebounced();
   }
 
   public void changeStatics(int sessionDelta, int playDelta) {
@@ -175,9 +197,75 @@ public class ServerStatusManager {
     numberOfCurrentPlayers.set(gameManager.getNumberOfPlayers());
     numberOfTotalSessions.addAndGet(sessionDelta);
     numberOfTotalPlayers.addAndGet(playDelta);
+    requestUpdateDebounced();
   }
 
   public MessageSender<PacketServerStatus> getServerStatusMessageSender() {
     return serverStatusMessageSender;
+  }
+
+  /**
+   * サーバーステータス更新を遅延実行し、短時間の連続更新を集約する。
+   */
+  public void requestUpdateDebounced() {
+    if (!updateServerStatusScheduled.compareAndSet(false, true)) {
+      return;
+    }
+    threadPool.schedule(updateServerStatusDebouncedRunner, DEBOUNCE_MILLISECONDS, TimeUnit.MILLISECONDS);
+  }
+
+  private List<PacketPlayerSummary> buildLatestPlayers() {
+    List<PacketPlayerSummary> original = playerHistoryManager.get();
+    if (original == null || original.isEmpty()) {
+      return Lists.newArrayList();
+    }
+    List<PacketPlayerSummary> enriched = Lists.newArrayListWithCapacity(original.size());
+    for (PacketPlayerSummary playerSummary : original) {
+      PacketPlayerSummary summary = playerSummary.copy();
+      GameManager.RecentPlayerStatus recentStatus = gameManager.findRecentPlayerStatus(summary.userCode);
+      if (recentStatus == null) {
+        summary.recentMode = "-";
+        summary.recentState = "未参加";
+      } else {
+        summary.recentMode = toModeLabel(recentStatus.getGameMode());
+        summary.recentState = toStateLabel(recentStatus.getTransition());
+      }
+      enriched.add(summary);
+    }
+    return enriched;
+  }
+
+  private String toModeLabel(GameMode mode) {
+    switch (mode) {
+    case VS_COM:
+      return "COM対戦";
+    case WHOLE:
+      return "全体対戦";
+    case EVENT:
+      return "イベント対戦";
+    case THEME:
+      return "テーマモード";
+    case LIMITED:
+      return "制限対戦";
+    default:
+      return "-";
+    }
+  }
+
+  private String toStateLabel(Transition transition) {
+    switch (transition) {
+    case Matching:
+      return "マッチング中";
+    case Ready:
+      return "ゲーム待機中";
+    case Problem:
+    case Answer:
+      return "ゲーム中";
+    case Result:
+      return "結果表示中";
+    case Finished:
+    default:
+      return "未参加";
+    }
   }
 }

@@ -2,10 +2,13 @@ package tv.dyndns.kishibe.qmaclone.server;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -16,6 +19,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.google.common.collect.ImmutableList;
 
+import tv.dyndns.kishibe.qmaclone.client.game.GameMode;
+import tv.dyndns.kishibe.qmaclone.client.game.Transition;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketPlayerSummary;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketServerStatus;
 import tv.dyndns.kishibe.qmaclone.server.database.Database;
@@ -118,5 +123,44 @@ public class ServerStatusManagerTest {
   @Test
   public void getServerStatusMessageSenderReturnsInstance() {
     assertThat(manager.getServerStatusMessageSender()).isNotNull();
+  }
+
+  @Test
+  public void updateServerStatusShouldSetRecentPlayerModeAndState() throws Exception {
+    PacketPlayerSummary player = new PacketPlayerSummary();
+    player.name = "プレイヤー";
+    player.userCode = 12345678;
+    when(mockPlayerHistoryManager.get()).thenReturn(ImmutableList.of(player));
+    when(mockGameManager.findRecentPlayerStatus(12345678)).thenReturn(
+        new GameManager.RecentPlayerStatus(GameMode.WHOLE, Transition.Ready));
+
+    manager.updateServerStatus();
+
+    PacketPlayerSummary actual = manager.getServerStatus().lastestPlayers.get(0);
+    assertThat(actual.recentMode).isEqualTo("全体対戦");
+    assertThat(actual.recentState).isEqualTo("ゲーム待機中");
+  }
+
+  @Test
+  public void updateServerStatusShouldSetIdleStateWhenPlayerIsNotInGame() throws Exception {
+    PacketPlayerSummary player = new PacketPlayerSummary();
+    player.name = "プレイヤー";
+    player.userCode = 87654321;
+    when(mockPlayerHistoryManager.get()).thenReturn(ImmutableList.of(player));
+    when(mockGameManager.findRecentPlayerStatus(87654321)).thenReturn(null);
+
+    manager.updateServerStatus();
+
+    PacketPlayerSummary actual = manager.getServerStatus().lastestPlayers.get(0);
+    assertThat(actual.recentMode).isEqualTo("-");
+    assertThat(actual.recentState).isEqualTo("未参加");
+  }
+
+  @Test
+  public void requestUpdateDebouncedShouldScheduleOnlyOneTaskPerBurst() {
+    manager.requestUpdateDebounced();
+    manager.requestUpdateDebounced();
+
+    verify(mockThreadPool).schedule(isA(Runnable.class), eq(300L), eq(TimeUnit.MILLISECONDS));
   }
 }

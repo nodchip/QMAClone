@@ -2,6 +2,7 @@ package tv.dyndns.kishibe.qmaclone.client.lobby;
 
 import static java.lang.String.valueOf;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -27,13 +28,13 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.resources.client.CssResource;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -119,6 +120,8 @@ public class LobbyUi extends Composite {
   Style style;
   @VisibleForTesting
   boolean specialLevelName = false;
+  private final List<PlayerHistoryDom> playerHistoryDoms = new ArrayList<PlayerHistoryDom>();
+  private SpanElement playerHistoryEmptyElement = null;
   private final CommandRunner initializers = new CommandRunner(Arrays.asList(new Runnable() {
     @Override
     public void run() {
@@ -140,7 +143,53 @@ public class LobbyUi extends Composite {
 
     String lobbyPlayerHistoryName();
 
+    String lobbyPlayerHistoryMeta();
+
+    String lobbyPlayerHistoryMetaMode();
+
+    String lobbyPlayerHistoryMetaState();
+
     String lobbyPlayerHistoryEmpty();
+  }
+
+  /**
+   * 最近のプレイヤー表示用のデータを保持します。
+   */
+  private static class PlayerHistoryEntry {
+    private final String displayName;
+    private final String iconUrl;
+    private final String recentMode;
+    private final String recentState;
+
+    private PlayerHistoryEntry(String displayName, String iconUrl, String recentMode,
+        String recentState) {
+      this.displayName = displayName;
+      this.iconUrl = iconUrl;
+      this.recentMode = recentMode;
+      this.recentState = recentState;
+    }
+  }
+
+  /**
+   * 最近のプレイヤー表示で再利用するDOM要素を保持します。
+   */
+  private static class PlayerHistoryDom {
+    private final SpanElement root;
+    private final ImageElement icon;
+    private final SpanElement name;
+    private final SpanElement meta;
+    private final SpanElement metaMode;
+    private final SpanElement metaState;
+
+    private PlayerHistoryDom(SpanElement root, ImageElement icon, SpanElement name, SpanElement meta,
+        SpanElement metaMode, SpanElement metaState) {
+      this.root = root;
+      this.icon = icon;
+      this.name = name;
+      this.meta = meta;
+      this.metaMode = metaMode;
+      this.metaState = metaState;
+    }
   }
 
   public LobbyUi(SceneLobby sceneRegistration) {
@@ -415,14 +464,24 @@ public class LobbyUi extends Composite {
   }
 
   public void setLastestPlayers(List<PacketPlayerSummary> playerSummaries) {
-    if (playerSummaries == null || playerSummaries.isEmpty()) {
+    List<PlayerHistoryEntry> entries = buildPlayerHistoryEntries(playerSummaries);
+    if (entries.isEmpty()) {
       setPlayerHistoryEmptyMessage();
       return;
     }
 
-    String fallbackIconUrl = SafeHtmlUtils
-        .htmlEscape(Constant.ICON_URL_PREFIX + Constant.ICON_NO_IMAGE);
-    SafeHtmlBuilder builder = new SafeHtmlBuilder();
+    renderPlayerHistory(entries);
+  }
+
+  /**
+   * 表示対象のプレイヤー情報を正規化します。
+   */
+  private List<PlayerHistoryEntry> buildPlayerHistoryEntries(List<PacketPlayerSummary> playerSummaries) {
+    if (playerSummaries == null || playerSummaries.isEmpty()) {
+      return ImmutableList.of();
+    }
+
+    List<PlayerHistoryEntry> entries = new ArrayList<PlayerHistoryEntry>();
     int itemCount = 0;
     for (PacketPlayerSummary playerSummary : playerSummaries) {
       if (itemCount >= MAX_PLAYER_HISTORY_DISPLAY_COUNT) {
@@ -444,32 +503,124 @@ public class LobbyUi extends Composite {
       if (imageFileName.isEmpty()) {
         imageFileName = Constant.ICON_NO_IMAGE;
       }
-      String iconUrl = SafeHtmlUtils.htmlEscape(Constant.ICON_URL_PREFIX + imageFileName);
+      String iconUrl = Constant.ICON_URL_PREFIX + imageFileName;
 
-      builder.appendHtmlConstant("<span class='" + style.lobbyPlayerHistoryItem() + "'>");
-      builder.appendHtmlConstant("<img class='" + style.lobbyPlayerHistoryIcon()
-          + "' onerror=\"this.onerror=null;this.src='" + fallbackIconUrl + "'\" src=\"" + iconUrl
-          + "\">");
-      builder.appendHtmlConstant("<span class='" + style.lobbyPlayerHistoryName() + "'>");
-      builder.appendEscaped(displayName);
-      builder.appendHtmlConstant("</span></span>");
+      String recentMode = Strings.nullToEmpty(playerSummary.recentMode).trim();
+      String recentState = Strings.nullToEmpty(playerSummary.recentState).trim();
+      if (recentMode.isEmpty()) {
+        recentMode = "-";
+      }
+      if (recentState.isEmpty()) {
+        recentState = "未参加";
+      }
+      entries.add(new PlayerHistoryEntry(displayName, iconUrl, recentMode, recentState));
       itemCount++;
     }
 
-    if (itemCount == 0) {
-      setPlayerHistoryEmptyMessage();
-      return;
+    return entries;
+  }
+
+  /**
+   * 最近のプレイヤーDOMを差分更新します。
+   */
+  private void renderPlayerHistory(List<PlayerHistoryEntry> entries) {
+    clearPlayerHistoryEmptyMessage();
+
+    while (playerHistoryDoms.size() < entries.size()) {
+      PlayerHistoryDom playerHistoryDom = createPlayerHistoryDom();
+      playerHistoryDoms.add(playerHistoryDom);
+      spanPlayerHistory.appendChild(playerHistoryDom.root);
+    }
+    while (playerHistoryDoms.size() > entries.size()) {
+      int lastIndex = playerHistoryDoms.size() - 1;
+      PlayerHistoryDom removed = playerHistoryDoms.remove(lastIndex);
+      spanPlayerHistory.removeChild(removed.root);
     }
 
-    spanPlayerHistory.setInnerHTML(builder.toSafeHtml().asString());
+    for (int i = 0; i < entries.size(); i++) {
+      updatePlayerHistoryDom(playerHistoryDoms.get(i), entries.get(i));
+    }
+  }
+
+  /**
+   * プレイヤー表示1件分のDOMを生成します。
+   */
+  private PlayerHistoryDom createPlayerHistoryDom() {
+    SpanElement root = Document.get().createSpanElement();
+    root.setClassName(style.lobbyPlayerHistoryItem());
+
+    ImageElement icon = Document.get().createImageElement();
+    icon.setClassName(style.lobbyPlayerHistoryIcon());
+    icon.setAttribute("onerror",
+        "this.onerror=null;this.src='" + Constant.ICON_URL_PREFIX + Constant.ICON_NO_IMAGE + "'");
+    root.appendChild(icon);
+
+    SpanElement name = Document.get().createSpanElement();
+    name.setClassName(style.lobbyPlayerHistoryName());
+    root.appendChild(name);
+
+    SpanElement meta = Document.get().createSpanElement();
+    meta.setClassName(style.lobbyPlayerHistoryMeta());
+    SpanElement metaMode = Document.get().createSpanElement();
+    metaMode.setClassName(style.lobbyPlayerHistoryMetaMode());
+    meta.appendChild(metaMode);
+    SpanElement metaState = Document.get().createSpanElement();
+    metaState.setClassName(style.lobbyPlayerHistoryMetaState());
+    meta.appendChild(metaState);
+    root.appendChild(meta);
+
+    return new PlayerHistoryDom(root, icon, name, meta, metaMode, metaState);
+  }
+
+  /**
+   * プレイヤー表示1件分のDOM内容を更新します。
+   */
+  private void updatePlayerHistoryDom(PlayerHistoryDom playerHistoryDom, PlayerHistoryEntry entry) {
+    String currentIconUrl = Strings.nullToEmpty(playerHistoryDom.icon.getAttribute("data-icon-url"));
+    if (!entry.iconUrl.equals(currentIconUrl)) {
+      playerHistoryDom.icon.setSrc(entry.iconUrl);
+      playerHistoryDom.icon.setAttribute("data-icon-url", entry.iconUrl);
+    }
+
+    if (!entry.displayName.equals(playerHistoryDom.name.getInnerText())) {
+      playerHistoryDom.name.setInnerText(entry.displayName);
+    }
+
+    String modeText = entry.recentMode;
+    if (!modeText.equals(playerHistoryDom.metaMode.getInnerText())) {
+      playerHistoryDom.metaMode.setInnerText(modeText);
+    }
+    if (!entry.recentState.equals(playerHistoryDom.metaState.getInnerText())) {
+      playerHistoryDom.metaState.setInnerText(entry.recentState);
+    }
   }
 
   private void setPlayerHistoryEmptyMessage() {
-    SafeHtmlBuilder builder = new SafeHtmlBuilder();
-    builder.appendHtmlConstant("<span class='" + style.lobbyPlayerHistoryEmpty() + "'>");
-    builder.appendEscaped(PLAYER_HISTORY_EMPTY_MESSAGE);
-    builder.appendHtmlConstant("</span>");
-    spanPlayerHistory.setInnerHTML(builder.toSafeHtml().asString());
+    while (!playerHistoryDoms.isEmpty()) {
+      int lastIndex = playerHistoryDoms.size() - 1;
+      PlayerHistoryDom removed = playerHistoryDoms.remove(lastIndex);
+      spanPlayerHistory.removeChild(removed.root);
+    }
+
+    if (playerHistoryEmptyElement == null) {
+      playerHistoryEmptyElement = Document.get().createSpanElement();
+      playerHistoryEmptyElement.setClassName(style.lobbyPlayerHistoryEmpty());
+    }
+    if (playerHistoryEmptyElement.getParentElement() == null) {
+      spanPlayerHistory.appendChild(playerHistoryEmptyElement);
+    }
+    if (!PLAYER_HISTORY_EMPTY_MESSAGE.equals(playerHistoryEmptyElement.getInnerText())) {
+      playerHistoryEmptyElement.setInnerText(PLAYER_HISTORY_EMPTY_MESSAGE);
+    }
+  }
+
+  /**
+   * 空メッセージ表示を解除します。
+   */
+  private void clearPlayerHistoryEmptyMessage() {
+    if (playerHistoryEmptyElement != null && playerHistoryEmptyElement.getParentElement() != null) {
+      spanPlayerHistory.removeChild(playerHistoryEmptyElement);
+    }
   }
 
   private boolean checkContents() {

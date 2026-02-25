@@ -1,6 +1,8 @@
 package tv.dyndns.kishibe.qmaclone.server;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
@@ -206,6 +208,38 @@ public class GameManagerTest {
         mockServerStatusManager, 12345678, "192.168.0.1");
 
     assertEquals(3, gameManager.getNumberOfPlayers());
+  }
+
+  @Test
+  public void findRecentPlayerStatusShouldReturnNullWhenUserIsNotInAnySession() {
+    when(mockGameFactory.create(anyInt(), anyInt(), anyBoolean(), anyBoolean(), any(), anyBoolean(), any()))
+        .thenReturn(mockGame1);
+    when(mockGame1.hasUserCode(anyInt())).thenReturn(false);
+
+    gameManager.getOrCreateMatchingSession(GameMode.WHOLE, null, 0, null,
+        EnumSet.of(ProblemGenre.Anige), EnumSet.of(ProblemType.Marubatsu), false,
+        mockServerStatusManager, 12345678, "192.168.0.1");
+
+    assertNull(gameManager.findRecentPlayerStatus(7654321));
+  }
+
+  @Test
+  public void findRecentPlayerStatusShouldReturnModeAndTransitionWhenUserIsInSession() {
+    when(mockGameFactory.create(anyInt(), anyInt(), anyBoolean(), anyBoolean(), any(), anyBoolean(), any()))
+        .thenReturn(mockGame1);
+    when(mockGame1.hasUserCode(12345678)).thenReturn(true);
+    when(mockGame1.getGameMode()).thenReturn(GameMode.WHOLE);
+    when(mockGame1.getTransition()).thenReturn(Transition.Ready);
+
+    gameManager.getOrCreateMatchingSession(GameMode.WHOLE, null, 0, null,
+        EnumSet.of(ProblemGenre.Anige), EnumSet.of(ProblemType.Marubatsu), false,
+        mockServerStatusManager, 12345678, "192.168.0.1");
+
+    GameManager.RecentPlayerStatus status = gameManager.findRecentPlayerStatus(12345678);
+
+    assertNotNull(status);
+    assertEquals(GameMode.WHOLE, status.getGameMode());
+    assertEquals(Transition.Ready, status.getTransition());
   }
 
 }

@@ -13,6 +13,7 @@ import tv.dyndns.kishibe.qmaclone.client.packet.PacketRankingData;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import com.google.gwt.dom.client.Element;
 
 public class LobbyUiTest extends QMACloneGWTTestCaseBase {
   private LobbyUi ui;
@@ -114,11 +115,15 @@ public class LobbyUiTest extends QMACloneGWTTestCaseBase {
     first.level = "賢者";
     first.name = "ノドチップ";
     first.imageFileName = "first.png";
+    first.recentMode = "全体対戦";
+    first.recentState = "ゲーム中";
 
     PacketPlayerSummary second = new PacketPlayerSummary();
     second.level = "大賢者";
     second.name = "テスト";
     second.imageFileName = "";
+    second.recentMode = "-";
+    second.recentState = "未参加";
 
     ui.setLastestPlayers(ImmutableList.of(first, second));
 
@@ -127,6 +132,10 @@ public class LobbyUiTest extends QMACloneGWTTestCaseBase {
     assertTrue(historyHtml.contains("<span"));
     assertTrue(historyHtml.contains("ノドチップ"));
     assertTrue(historyHtml.contains("テスト"));
+    assertTrue(historyHtml.contains("全体対戦"));
+    assertTrue(historyHtml.contains("ゲーム中"));
+    assertTrue(historyHtml.contains("-"));
+    assertTrue(historyHtml.contains("未参加"));
     assertTrue(historyHtml.contains(Constant.ICON_URL_PREFIX + "first.png"));
     assertTrue(historyHtml.contains(Constant.ICON_URL_PREFIX + Constant.ICON_NO_IMAGE));
     assertTrue(historyHtml.indexOf("ノドチップ") < historyHtml.indexOf("テスト"));
@@ -164,6 +173,73 @@ public class LobbyUiTest extends QMACloneGWTTestCaseBase {
     for (int i = 10; i <= 12; i++) {
       assertFalse(historyHtml.contains("player_" + i));
     }
+  }
+
+  public void testSetLastestPlayersShouldNotRecreateIconWhenInputIsUnchanged() {
+    PacketPlayerSummary player = new PacketPlayerSummary();
+    player.level = "賢者";
+    player.name = "ノドチップ";
+    player.imageFileName = "first.png";
+    player.recentMode = "全体対戦";
+    player.recentState = "ゲーム中";
+
+    ui.setLastestPlayers(ImmutableList.of(player));
+    Element firstImageElement = ui.spanPlayerHistory.getFirstChildElement().getFirstChildElement();
+
+    PacketPlayerSummary samePlayer = new PacketPlayerSummary();
+    samePlayer.level = "賢者";
+    samePlayer.name = "ノドチップ";
+    samePlayer.imageFileName = "first.png";
+    samePlayer.recentMode = "全体対戦";
+    samePlayer.recentState = "ゲーム中";
+    ui.setLastestPlayers(ImmutableList.of(samePlayer));
+
+    Element secondImageElement = ui.spanPlayerHistory.getFirstChildElement().getFirstChildElement();
+    assertSame(firstImageElement, secondImageElement);
+  }
+
+  public void testSetLastestPlayersShouldNotRecreateIconWhenOnlyStateChanges() {
+    PacketPlayerSummary player = new PacketPlayerSummary();
+    player.level = "賢者";
+    player.name = "ノドチップ";
+    player.imageFileName = "first.png";
+    player.recentMode = "全体対戦";
+    player.recentState = "マッチング中";
+
+    ui.setLastestPlayers(ImmutableList.of(player));
+    Element firstImageElement = ui.spanPlayerHistory.getFirstChildElement().getFirstChildElement();
+
+    PacketPlayerSummary changedState = new PacketPlayerSummary();
+    changedState.level = "賢者";
+    changedState.name = "ノドチップ";
+    changedState.imageFileName = "first.png";
+    changedState.recentMode = "全体対戦";
+    changedState.recentState = "ゲーム中";
+    ui.setLastestPlayers(ImmutableList.of(changedState));
+
+    Element secondImageElement = ui.spanPlayerHistory.getFirstChildElement().getFirstChildElement();
+    assertSame(firstImageElement, secondImageElement);
+  }
+
+  public void testSetLastestPlayersShouldRenderModeAndStateInSeparateLines() {
+    PacketPlayerSummary player = new PacketPlayerSummary();
+    player.level = "賢者";
+    player.name = "ノドチップ";
+    player.imageFileName = "first.png";
+    player.recentMode = "イベント対戦";
+    player.recentState = "マッチング中";
+
+    ui.setLastestPlayers(ImmutableList.of(player));
+
+    Element playerElement = ui.spanPlayerHistory.getFirstChildElement();
+    Element nameElement = playerElement.getFirstChildElement().getNextSiblingElement();
+    Element metaElement = nameElement.getNextSiblingElement();
+    Element modeElement = metaElement.getFirstChildElement();
+    assertNotNull(modeElement);
+    Element stateElement = modeElement.getNextSiblingElement();
+    assertNotNull(stateElement);
+    assertEquals("イベント対戦", modeElement.getInnerText());
+    assertEquals("マッチング中", stateElement.getInnerText());
   }
 
   public void testPlayerHistoryShouldBeDisplayedBetweenGameButtonsAndMainSettings() {

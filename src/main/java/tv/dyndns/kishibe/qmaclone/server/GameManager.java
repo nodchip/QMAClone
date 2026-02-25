@@ -60,6 +60,27 @@ public class GameManager {
 	private final Random random = new Random();
 	private final RestrictedUserUtils restrictedUserUtils;
 
+	/**
+	 * 最近のプレイヤー表示用のモード/状態。
+	 */
+	public static final class RecentPlayerStatus {
+		private final GameMode gameMode;
+		private final Transition transition;
+
+		public RecentPlayerStatus(GameMode gameMode, Transition transition) {
+			this.gameMode = Preconditions.checkNotNull(gameMode);
+			this.transition = Preconditions.checkNotNull(transition);
+		}
+
+		public GameMode getGameMode() {
+			return gameMode;
+		}
+
+		public Transition getTransition() {
+			return transition;
+		}
+	}
+
 	@Inject
 	public GameManager(Game.Factory gameFactory, RestrictedUserUtils restrictedUserUtils) {
 		this.gameFactory = Preconditions.checkNotNull(gameFactory);
@@ -233,5 +254,22 @@ public class GameManager {
 			problemIds.addAll(game.getTestingProblemIds());
 		}
 		return problemIds;
+	}
+
+	/**
+	 * 指定ユーザーの最新ゲーム状態を返す。参加中のゲームがない場合はnullを返す。
+	 */
+	public RecentPlayerStatus findRecentPlayerStatus(int userCode) {
+		for (Game game : sessions.asMap().values()) {
+			if (!game.hasUserCode(userCode)) {
+				continue;
+			}
+			Transition transition = game.getTransition();
+			if (transition == Transition.Finished) {
+				continue;
+			}
+			return new RecentPlayerStatus(game.getGameMode(), transition);
+		}
+		return null;
 	}
 }

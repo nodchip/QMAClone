@@ -217,11 +217,21 @@ public class Game {
 			break;
 		}
 
-		transition.set(next);
+		setTransition(next);
 
 		updateMatchingStatus();
 		updateReadyForGame();
 		updateGameStatus();
+	}
+
+	/**
+	 * 状態遷移を更新し、変更時にサーバーステータス更新を予約する。
+	 */
+	private void setTransition(Transition next) {
+		Transition previous = transition.getAndSet(next);
+		if (previous != next) {
+			serverStatusManager.requestUpdateDebounced();
+		}
 	}
 
 	private synchronized Transition updateMatchingState() {
@@ -322,7 +332,7 @@ public class Game {
 		// 人数が集まったらReady状態へ遷移する
 		if (playerStatuses.size() >= Constant.MAX_PLAYER_PER_SESSION || alone) {
 			// 時間経過による状態遷移でないため特別扱いする
-			transition.set(transitFromMachingToReady());
+			setTransition(transitFromMachingToReady());
 		}
 
 		return status;
@@ -383,7 +393,7 @@ public class Game {
 		// すべてのプレイヤーがゲーム開始ボタンを押したらゲーム状態へ移行する
 		if (numberOfRequestStartingGame.incrementAndGet() >= playerStatuses.size()) {
 			// 時間経過による状態遷移でないため特別扱いする
-			transition.set(transitFromMachingToReady());
+			setTransition(transitFromMachingToReady());
 		}
 	}
 
@@ -640,7 +650,7 @@ public class Game {
 			}
 		}
 		if (allHumAnswered) {
-			transition.set(transitFromProblemToAnswer());
+			setTransition(transitFromProblemToAnswer());
 		}
 		return true;
 	}
@@ -1186,6 +1196,25 @@ public class Game {
 		return summaries;
 	}
 
+	/**
+	 * 最近プレイヤー表示用に、ユーザーがこのゲームに参加しているか判定する。
+	 */
+	public synchronized boolean hasUserCode(int userCode) {
+		for (PlayerStatus playerStatus : playerStatuses) {
+			if (!playerStatus.isHuman()) {
+				continue;
+			}
+			if (playerStatus.getUserCode() == userCode) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public GameMode getGameMode() {
+		return gameMode;
+	}
+
 	public int getSessionId() {
 		// sessionIdは変更されないのでsynchronized不要
 		return sessionId;
@@ -1221,7 +1250,7 @@ public class Game {
 		return Sets.newHashSet();
 	}
 
-	public PlayerStatus findPlayer(int userCode) {
+	public synchronized PlayerStatus findPlayer(int userCode) {
 		for (PlayerStatus playerStatus : playerStatuses) {
 			if (playerStatus.getUserCode() == userCode) {
 				return playerStatus;

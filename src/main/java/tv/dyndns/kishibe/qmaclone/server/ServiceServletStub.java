@@ -383,7 +383,9 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
         String safeImageFileName = Strings.isNullOrEmpty(imageFileName) ? Constant.ICON_NO_IMAGE
             : imageFileName;
         playerSummary.imageFileName = safeImageFileName;
+        playerSummary.userCode = userCode;
         playerHistoryManager.push(playerSummary);
+        serverStatusManager.requestUpdateDebounced();
 
         PlayerStatus status;
         Game session = gameManager.getOrCreateMatchingSession(gameMode, roomName, classLevel, theme, genres, types,
