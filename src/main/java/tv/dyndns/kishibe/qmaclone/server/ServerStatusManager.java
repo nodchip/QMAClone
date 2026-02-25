@@ -225,7 +225,9 @@ public class ServerStatusManager {
     List<PacketPlayerSummary> enriched = Lists.newArrayListWithCapacity(original.size());
     for (PacketPlayerSummary playerSummary : original) {
       PacketPlayerSummary summary = playerSummary.copy();
-      GameManager.RecentPlayerStatus recentStatus = gameManager.findRecentPlayerStatus(summary.userCode);
+      GameMode preferredMode = parseModeLabel(summary.recentMode);
+      GameManager.RecentPlayerStatus recentStatus = gameManager.findRecentPlayerStatus(summary.userCode,
+          preferredMode);
       if (recentStatus == null) {
         applyNoSessionFallback(summary);
       } else {
@@ -279,5 +281,27 @@ public class ServerStatusManager {
     default:
       return RECENT_STATE_FINISHED;
     }
+  }
+
+  /**
+   * 最近プレイヤー表示のモード文言からGameModeへ変換する。
+   */
+  private GameMode parseModeLabel(String modeLabel) {
+    if ("COM対戦".equals(modeLabel)) {
+      return GameMode.VS_COM;
+    }
+    if ("全体対戦".equals(modeLabel)) {
+      return GameMode.WHOLE;
+    }
+    if ("イベント対戦".equals(modeLabel)) {
+      return GameMode.EVENT;
+    }
+    if ("テーマモード".equals(modeLabel)) {
+      return GameMode.THEME;
+    }
+    if ("制限対戦".equals(modeLabel)) {
+      return GameMode.LIMITED;
+    }
+    return null;
   }
 }

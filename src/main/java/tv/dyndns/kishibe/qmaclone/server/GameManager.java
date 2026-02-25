@@ -30,6 +30,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.annotation.Nullable;
+
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 import com.google.common.cache.Cache;
@@ -260,6 +262,14 @@ public class GameManager {
 	 * 指定ユーザーの最新ゲーム状態を返す。参加中のゲームがない場合はnullを返す。
 	 */
 	public RecentPlayerStatus findRecentPlayerStatus(int userCode) {
+		return findRecentPlayerStatus(userCode, null);
+	}
+
+	/**
+	 * 指定ユーザーの最新ゲーム状態を返す。preferredModeが指定された場合は一致モードを優先する。
+	 */
+	public RecentPlayerStatus findRecentPlayerStatus(int userCode, @Nullable GameMode preferredMode) {
+		RecentPlayerStatus fallback = null;
 		for (Game game : sessions.asMap().values()) {
 			if (!game.hasUserCode(userCode)) {
 				continue;
@@ -268,8 +278,14 @@ public class GameManager {
 			if (transition == Transition.Finished) {
 				continue;
 			}
-			return new RecentPlayerStatus(game.getGameMode(), transition);
+			RecentPlayerStatus status = new RecentPlayerStatus(game.getGameMode(), transition);
+			if (preferredMode != null && status.getGameMode() == preferredMode) {
+				return status;
+			}
+			if (fallback == null || fallback.getTransition().compareTo(status.getTransition()) < 0) {
+				fallback = status;
+			}
 		}
-		return null;
+		return fallback;
 	}
 }

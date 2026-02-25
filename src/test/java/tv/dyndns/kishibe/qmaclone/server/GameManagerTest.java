@@ -242,4 +242,29 @@ public class GameManagerTest {
     assertEquals(Transition.Ready, status.getTransition());
   }
 
+  @Test
+  public void findRecentPlayerStatusShouldPreferSpecifiedModeWhenMultipleSessionsExist() {
+    when(mockGameFactory.create(anyInt(), anyInt(), anyBoolean(), anyBoolean(), any(), anyBoolean(), any()))
+        .thenReturn(mockGame1, mockGame2);
+    when(mockGame1.hasUserCode(12345678)).thenReturn(true);
+    when(mockGame1.getGameMode()).thenReturn(GameMode.WHOLE);
+    when(mockGame1.getTransition()).thenReturn(Transition.Ready);
+    when(mockGame2.hasUserCode(12345678)).thenReturn(true);
+    when(mockGame2.getGameMode()).thenReturn(GameMode.VS_COM);
+    when(mockGame2.getTransition()).thenReturn(Transition.Matching);
+
+    gameManager.getOrCreateMatchingSession(GameMode.WHOLE, null, 0, null,
+        EnumSet.of(ProblemGenre.Anige), EnumSet.of(ProblemType.Marubatsu), false,
+        mockServerStatusManager, 12345678, "192.168.0.1");
+    gameManager.getOrCreateMatchingSession(GameMode.VS_COM, null, 0, null,
+        EnumSet.of(ProblemGenre.Anige), EnumSet.of(ProblemType.Marubatsu), false,
+        mockServerStatusManager, 12345678, "192.168.0.1");
+
+    GameManager.RecentPlayerStatus status = gameManager.findRecentPlayerStatus(12345678, GameMode.VS_COM);
+
+    assertNotNull(status);
+    assertEquals(GameMode.VS_COM, status.getGameMode());
+    assertEquals(Transition.Matching, status.getTransition());
+  }
+
 }

@@ -130,8 +130,9 @@ public class ServerStatusManagerTest {
     PacketPlayerSummary player = new PacketPlayerSummary();
     player.name = "プレイヤー";
     player.userCode = 12345678;
+    player.recentMode = "全体対戦";
     when(mockPlayerHistoryManager.get()).thenReturn(ImmutableList.of(player));
-    when(mockGameManager.findRecentPlayerStatus(12345678)).thenReturn(
+    when(mockGameManager.findRecentPlayerStatus(12345678, GameMode.WHOLE)).thenReturn(
         new GameManager.RecentPlayerStatus(GameMode.WHOLE, Transition.Ready));
 
     manager.updateServerStatus();
@@ -147,7 +148,7 @@ public class ServerStatusManagerTest {
     player.name = "プレイヤー";
     player.userCode = 87654321;
     when(mockPlayerHistoryManager.get()).thenReturn(ImmutableList.of(player));
-    when(mockGameManager.findRecentPlayerStatus(87654321)).thenReturn(null);
+    when(mockGameManager.findRecentPlayerStatus(87654321, null)).thenReturn(null);
 
     manager.updateServerStatus();
 
@@ -164,7 +165,7 @@ public class ServerStatusManagerTest {
     player.recentMode = "イベント対戦";
     player.recentState = "マッチング中";
     when(mockPlayerHistoryManager.get()).thenReturn(ImmutableList.of(player));
-    when(mockGameManager.findRecentPlayerStatus(12345678)).thenReturn(null);
+    when(mockGameManager.findRecentPlayerStatus(12345678, GameMode.EVENT)).thenReturn(null);
 
     manager.updateServerStatus();
 
