@@ -5578,6 +5578,55 @@ body {
   align-items: center;
 }
 
+.creationIndicateRow {
+  flex-wrap: wrap;
+}
+
+.gwt-Button.creationIndicateButton {
+  min-height: 32px;
+  padding: 6px 14px;
+  border: 1px solid #bc6e4d;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #fff1e8 0%, #ffe0cf 100%);
+  color: #8a3412;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition: border-color 170ms ease, background-color 170ms ease, box-shadow 170ms ease,
+    transform 120ms ease;
+}
+
+.gwt-Button.creationIndicateButton:hover:not(:disabled) {
+  border-color: #a84f2b;
+  background: linear-gradient(180deg, #ffe4d6 0%, #ffd1bb 100%);
+  box-shadow: 0 3px 10px rgba(168, 79, 43, 0.2);
+}
+
+.gwt-Button.creationIndicateButton:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: 0 1px 5px rgba(168, 79, 43, 0.24);
+}
+
+.gwt-Button.creationIndicateButton:focus-visible {
+  outline: none;
+  border-color: #8a3412;
+  box-shadow: 0 0 0 3px rgba(224, 130, 87, 0.35);
+}
+
+.gwt-Button.creationIndicateButton:disabled {
+  border-color: #d5c5be;
+  background: #f3edea;
+  color: #9c8f88;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+.creationUnindicateCheck {
+  color: var(--color-text-secondary);
+}
+
 .creationFormRoot .gwt-CheckBox,
 .creationFormRoot .gwt-RadioButton,
 .searchProblemPanel .gwt-CheckBox,

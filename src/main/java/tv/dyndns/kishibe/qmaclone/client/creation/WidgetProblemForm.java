@@ -327,6 +327,9 @@ public class WidgetProblemForm extends VerticalPanel implements ClickHandler, Ch
     grid.setText(row, 0, "指摘");
     HorizontalPanel panelIndicate = new HorizontalPanel();
     panelIndicate.addStyleName("creationFormInlineRow");
+    panelIndicate.addStyleName("creationIndicateRow");
+    buttonIndicate.addStyleName("creationIndicateButton");
+    checkBoxUnindicate.addStyleName("creationUnindicateCheck");
     buttonIndicate.setVisible(false);
     checkBoxUnindicate.setVisible(false);
     panelIndicate.add(buttonIndicate);
@@ -807,6 +810,11 @@ textAreaNote.setText(problem.note.trim());
   @VisibleForTesting
   boolean hasEmptyProblemFeedbackMessage() {
     return panelProblemFeedback.getElement().getInnerText().contains(PROBLEM_FEEDBACK_EMPTY_MESSAGE);
+  }
+
+  @VisibleForTesting
+  boolean hasIndicateButtonStyle() {
+    return buttonIndicate.getStyleName().contains("creationIndicateButton");
   }
 
   private final AsyncCallback<Void> callbackClearProblemFeedback = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Void>() {

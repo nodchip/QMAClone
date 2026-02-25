@@ -209,4 +209,9 @@ public class WidgetProblemFormTest extends QMACloneGWTTestCaseBase {
     assertEquals("有効な問題評価", normalized.get(0));
     assertEquals("  評価2  ", normalized.get(1));
   }
+
+  @Test
+  public void testIndicateButtonShouldHaveModernStyleHook() {
+    assertTrue(form.hasIndicateButtonStyle());
+  }
 }
