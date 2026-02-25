@@ -511,7 +511,7 @@ public class LobbyUi extends Composite {
         recentMode = "-";
       }
       if (recentState.isEmpty()) {
-        recentState = "未参加";
+        recentState = "対戦していない";
       }
       entries.add(new PlayerHistoryEntry(displayName, iconUrl, recentMode, recentState));
       itemCount++;

@@ -123,7 +123,7 @@ public class LobbyUiTest extends QMACloneGWTTestCaseBase {
     second.name = "テスト";
     second.imageFileName = "";
     second.recentMode = "-";
-    second.recentState = "未参加";
+    second.recentState = "対戦していない";
 
     ui.setLastestPlayers(ImmutableList.of(first, second));
 
@@ -135,7 +135,7 @@ public class LobbyUiTest extends QMACloneGWTTestCaseBase {
     assertTrue(historyHtml.contains("全体対戦"));
     assertTrue(historyHtml.contains("ゲーム中"));
     assertTrue(historyHtml.contains("-"));
-    assertTrue(historyHtml.contains("未参加"));
+    assertTrue(historyHtml.contains("対戦していない"));
     assertTrue(historyHtml.contains(Constant.ICON_URL_PREFIX + "first.png"));
     assertTrue(historyHtml.contains(Constant.ICON_URL_PREFIX + Constant.ICON_NO_IMAGE));
     assertTrue(historyHtml.indexOf("ノドチップ") < historyHtml.indexOf("テスト"));

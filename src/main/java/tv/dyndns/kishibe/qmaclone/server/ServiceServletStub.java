@@ -392,6 +392,7 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
             publicEvent, serverStatusManager, userCode, getRemoteAddress());
         status = session.addPlayer(playerSummary, genres, types, greeting, safeImageFileName, classLevel, difficultSelect,
             rating, userCode, volatility, playCount, newAndOldProblems);
+        serverStatusManager.requestUpdateDebounced();
 
         PacketRegistrationData data = new PacketRegistrationData();
         data.playerListIndex = status.getPlayerListId();

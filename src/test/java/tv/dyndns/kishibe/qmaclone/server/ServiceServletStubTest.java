@@ -4,10 +4,13 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -17,6 +20,7 @@ import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
@@ -28,7 +32,12 @@ import com.google.common.collect.ImmutableSet;
 import tv.dyndns.kishibe.qmaclone.client.game.ProblemGenre;
 import tv.dyndns.kishibe.qmaclone.client.game.ProblemType;
 import tv.dyndns.kishibe.qmaclone.client.game.RandomFlag;
+import tv.dyndns.kishibe.qmaclone.client.game.GameMode;
+import tv.dyndns.kishibe.qmaclone.client.constant.Constant;
+import tv.dyndns.kishibe.qmaclone.client.packet.NewAndOldProblems;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblem;
+import tv.dyndns.kishibe.qmaclone.client.packet.PacketPlayerSummary;
+import tv.dyndns.kishibe.qmaclone.client.packet.PacketRegistrationData;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketUserData;
 import tv.dyndns.kishibe.qmaclone.client.packet.ProblemIndicationEligibility;
 import tv.dyndns.kishibe.qmaclone.client.packet.RestrictionType;
@@ -551,5 +560,36 @@ public class ServiceServletStubTest {
     String html = service.generateDiffHtml(summary, summary);
 
     assertThat(html).contains("変更はありません。");
+  }
+
+  @Test
+  public void registerShouldRequestServerStatusUpdateBeforeAndAfterPlayerJoin() throws Exception {
+    PacketPlayerSummary playerSummary = new PacketPlayerSummary();
+    playerSummary.name = "プレイヤー";
+    PlayerStatus status = new PlayerStatus(playerSummary, 1, 2, 3, true, "greeting",
+        Constant.ICON_NO_IMAGE, 5, 1200, USER_CODE, 100, 20);
+
+    doReturn(REMOTE_ADDRESS).when(service).getRemoteAddress();
+    when(mockGameManager.getOrCreateMatchingSession(eq(GameMode.WHOLE), eq("room"), eq(5), eq("theme"), eq(GENRES),
+        eq(TYPES), eq(true), eq(mockServerStatusManager), eq(USER_CODE), eq(REMOTE_ADDRESS))).thenReturn(mockGame);
+    when(mockGame.addPlayer(eq(playerSummary), eq(GENRES), eq(TYPES), eq("greeting"),
+        eq(Constant.ICON_NO_IMAGE), eq(5), eq(0), eq(1200), eq(USER_CODE), eq(100), eq(20),
+        eq(NewAndOldProblems.Both))).thenReturn(status);
+
+    PacketRegistrationData actual = service.register(playerSummary, GENRES, TYPES, "greeting",
+        GameMode.WHOLE, "room", "theme", "", 5, 0, 1200, USER_CODE, 100, 20,
+        NewAndOldProblems.Both, true);
+
+    assertThat(actual.playerListIndex).isEqualTo(2);
+    assertThat(actual.sessionId).isEqualTo(3);
+    verify(mockServerStatusManager, times(2)).requestUpdateDebounced();
+
+    InOrder inOrder = inOrder(mockPlayerHistoryManager, mockServerStatusManager, mockGame);
+    inOrder.verify(mockPlayerHistoryManager).push(playerSummary);
+    inOrder.verify(mockServerStatusManager).requestUpdateDebounced();
+    inOrder.verify(mockGame).addPlayer(eq(playerSummary), eq(GENRES), eq(TYPES), eq("greeting"),
+        eq(Constant.ICON_NO_IMAGE), eq(5), eq(0), eq(1200), eq(USER_CODE), eq(100), eq(20),
+        eq(NewAndOldProblems.Both));
+    inOrder.verify(mockServerStatusManager).requestUpdateDebounced();
   }
 }

@@ -153,7 +153,7 @@ public class ServerStatusManagerTest {
 
     PacketPlayerSummary actual = manager.getServerStatus().lastestPlayers.get(0);
     assertThat(actual.recentMode).isEqualTo("-");
-    assertThat(actual.recentState).isEqualTo("未参加");
+    assertThat(actual.recentState).isEqualTo("対戦していない");
   }
 
   @Test

@@ -225,7 +225,7 @@ public class ServerStatusManager {
       GameManager.RecentPlayerStatus recentStatus = gameManager.findRecentPlayerStatus(summary.userCode);
       if (recentStatus == null) {
         summary.recentMode = "-";
-        summary.recentState = "未参加";
+        summary.recentState = "対戦していない";
       } else {
         summary.recentMode = toModeLabel(recentStatus.getGameMode());
         summary.recentState = toStateLabel(recentStatus.getTransition());
@@ -265,7 +265,7 @@ public class ServerStatusManager {
       return "結果表示中";
     case Finished:
     default:
-      return "未参加";
+      return "対戦していない";
     }
   }
 }
