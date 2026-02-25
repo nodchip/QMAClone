@@ -40,6 +40,7 @@ import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblem;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketPlayerSummary;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketRegistrationData;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketUserData;
+import tv.dyndns.kishibe.qmaclone.client.packet.PacketWrongAnswer;
 import tv.dyndns.kishibe.qmaclone.client.packet.ProblemIndicationEligibility;
 import tv.dyndns.kishibe.qmaclone.client.packet.RestrictionType;
 import tv.dyndns.kishibe.qmaclone.client.service.ServiceException;
@@ -163,6 +164,19 @@ public class ServiceServletStubTest {
         GENRES, TYPES, RANDOM_FLAGS);
 
     assertEquals(ImmutableList.of(expected1, expected2, expected3), problems);
+  }
+
+  @Test
+  public void getWrongAnswersShouldReturnRpcSerializableList() throws Exception {
+    List<PacketWrongAnswer> wrongAnswers = ImmutableList.of(new PacketWrongAnswer().setAnswer("孤独")
+        .setCount(42));
+    when(mockDatabase.getPlayerAnswers(PROBLEM_ID)).thenReturn(wrongAnswers);
+
+    List<PacketWrongAnswer> actual = service.getWrongAnswers(PROBLEM_ID);
+
+    assertThat(actual).containsExactlyElementsIn(wrongAnswers).inOrder();
+    assertThat(actual).isNotSameInstanceAs(wrongAnswers);
+    assertThat(actual).isInstanceOf(java.util.ArrayList.class);
   }
 
   @Test

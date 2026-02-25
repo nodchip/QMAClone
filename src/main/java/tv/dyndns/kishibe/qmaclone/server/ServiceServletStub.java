@@ -876,7 +876,8 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
     return wrap("プレイヤー解答の読み込みに失敗しました", new DatabaseAccessible<List<PacketWrongAnswer>>() {
       @Override
       public List<PacketWrongAnswer> access() throws DatabaseException {
-        return database.getPlayerAnswers(problemID);
+        // GWT RPC で Guava ImmutableList を返さないよう、境界で可変Listへ変換する。
+        return Lists.newArrayList(database.getPlayerAnswers(problemID));
       }
     });
   }

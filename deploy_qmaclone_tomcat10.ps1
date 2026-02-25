@@ -115,7 +115,7 @@ function Restart-ServiceWithElevation {
   )
 
   try {
-    # 非表示起動を優先し、環境制約で失敗した場合は最小化起動へフォールバックする。
+    # Prefer hidden launch and fall back to minimized window if needed.
     $process = Start-Process -FilePath "powershell.exe" -ArgumentList $elevatedArguments -Verb RunAs -WindowStyle Hidden -Wait -PassThru
   } catch {
     try {
@@ -142,9 +142,9 @@ function Remove-ItemWithElevationFallback {
 
   try {
     if ($Recurse) {
-      Remove-Item -LiteralPath $Path -Recurse -Force
+      Remove-Item -LiteralPath $Path -Recurse -Force -ErrorAction Stop
     } else {
-      Remove-Item -LiteralPath $Path -Force
+      Remove-Item -LiteralPath $Path -Force -ErrorAction Stop
     }
     return
   } catch {
@@ -152,10 +152,10 @@ function Remove-ItemWithElevationFallback {
     $isUnauthorized = $exception -is [System.UnauthorizedAccessException]
     $isAccessDeniedMessage = $false
     if ($exception -and $exception.Message) {
-      $isAccessDeniedMessage = $exception.Message -match "Access to the path .* is denied|アクセスが拒否されました"
+      $isAccessDeniedMessage = $exception.Message -match "Access to the path .* is denied"
     }
 
-    if (Test-IsAdministrator -or (-not ($isUnauthorized -or $isAccessDeniedMessage))) {
+    if ((Test-IsAdministrator) -or (-not ($isUnauthorized -or $isAccessDeniedMessage))) {
       throw
     }
   }
@@ -175,7 +175,7 @@ function Remove-ItemWithElevationFallback {
   )
 
   try {
-    # 非表示起動を優先し、環境制約で失敗した場合は最小化起動へフォールバックする。
+    # Prefer hidden launch and fall back to minimized window if needed.
     $process = Start-Process -FilePath "powershell.exe" -ArgumentList $elevatedArguments -Verb RunAs -WindowStyle Hidden -Wait -PassThru
   } catch {
     try {
@@ -185,7 +185,7 @@ function Remove-ItemWithElevationFallback {
     }
   }
 
-  # 昇格側が非0終了でも、対象が消えていれば削除成功として扱う。
+  # Treat as success if the target is already gone, even when elevated process returned non-zero.
   if ($process.ExitCode -ne 0 -and (Test-Path -LiteralPath $Path)) {
     throw "Failed to remove path with UAC elevation. Exit code: $($process.ExitCode) path=$Path"
   }
@@ -384,8 +384,11 @@ if (-not (Test-Path -LiteralPath $webappsPath)) {
   throw "Tomcat webapps directory was not found: $webappsPath"
 }
 
-$deployedWarPath = Join-Path -Path $webappsPath -ChildPath "QMAClone-1.0-SNAPSHOT.war"
-$deployedDirPath = Join-Path -Path $webappsPath -ChildPath "QMAClone-1.0-SNAPSHOT"
+$webAppName = "QMAClone"
+$deployedWarPath = Join-Path -Path $webappsPath -ChildPath "$webAppName.war"
+$deployedDirPath = Join-Path -Path $webappsPath -ChildPath $webAppName
+$legacyWarPath = Join-Path -Path $webappsPath -ChildPath "QMAClone-1.0-SNAPSHOT.war"
+$legacyDirPath = Join-Path -Path $webappsPath -ChildPath "QMAClone-1.0-SNAPSHOT"
 
 Write-Host "TomcatBase: $resolvedTomcatBase"
 Write-Host "Webapps:    $webappsPath"
@@ -404,6 +407,16 @@ if (Test-Path -LiteralPath $deployedDirPath) {
   Remove-ItemWithElevationFallback -Path $deployedDirPath -Recurse $true
 }
 
+if (Test-Path -LiteralPath $legacyWarPath) {
+  Write-Host "Remove legacy WAR: $legacyWarPath"
+  Remove-ItemWithElevationFallback -Path $legacyWarPath
+}
+
+if (Test-Path -LiteralPath $legacyDirPath) {
+  Write-Host "Remove legacy exploded app dir: $legacyDirPath"
+  Remove-ItemWithElevationFallback -Path $legacyDirPath -Recurse $true
+}
+
 Write-Host "Restart service: $ServiceName"
 $restartPerformed = $false
 if (Test-IsAdministrator) {
@@ -415,7 +428,7 @@ if (Test-IsAdministrator) {
     Restart-ServiceWithElevation -Name $ServiceName
     $restartPerformed = $true
   } catch {
-    # UAC昇格に失敗しても、サービス稼働中ならWAR差し替えを継続する。
+    # Continue WAR deployment when service restart elevation fails but service is still running.
     $service = Get-Service -Name $ServiceName -ErrorAction SilentlyContinue
     if (-not $service -or $service.Status -ne [System.ServiceProcess.ServiceControllerStatus]::Running) {
       throw
@@ -441,7 +454,7 @@ if ($restartPerformed) {
 Write-Host "Deploy WAR to: $deployedWarPath"
 Copy-Item -LiteralPath $resolvedSourceWar -Destination $deployedWarPath -Force
 
-$contextPath = "/QMAClone-1.0-SNAPSHOT"
+$contextPath = "/$webAppName"
 $baseUri = "http://$($HostName):$resolvedTomcatHttpPort$contextPath/"
 $rpcUri = "http://$($HostName):$resolvedTomcatHttpPort$contextPath/tv.dyndns.kishibe.qmaclone.QMAClone/service"
 $warmupUri = "${rpcUri}?warmup=1"
