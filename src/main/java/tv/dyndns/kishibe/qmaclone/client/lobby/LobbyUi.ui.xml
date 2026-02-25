@@ -263,7 +263,7 @@
   .lobbyPlayerHistoryBody {
     display: flex;
     flex-wrap: nowrap;
-    justify-content: flex-start;
+    justify-content: center;
     align-items: center;
     gap: 4px;
     overflow: hidden;
@@ -334,6 +334,10 @@
   }
 
   .lobbyPlayerHistoryEmpty {
+    display: block;
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
     color: #45617c;
     line-height: 28px;
   }
@@ -385,13 +389,6 @@
           </td>
         </tr>
       </table>
-
-      <g:HTMLPanel styleName="{style.lobbySettingsSection}">
-        <g:HTMLPanel styleName="{style.lobbySectionTitle}">最近のプレイヤー</g:HTMLPanel>
-        <g:HTMLPanel styleName="{style.lobbyPlayerHistory}">
-          <span class="{style.lobbyPlayerHistoryBody}" ui:field="spanPlayerHistory" />
-        </g:HTMLPanel>
-      </g:HTMLPanel>
 
       <g:HTMLPanel styleName="{style.lobbySettingsSection}">
         <g:HTMLPanel styleName="{style.lobbySectionTitle}">主要設定</g:HTMLPanel>
@@ -479,6 +476,13 @@
               </td>
             </tr>
           </table>
+        </g:HTMLPanel>
+      </g:HTMLPanel>
+
+      <g:HTMLPanel styleName="{style.lobbySettingsSection}">
+        <g:HTMLPanel styleName="{style.lobbySectionTitle}">最近のプレイヤー</g:HTMLPanel>
+        <g:HTMLPanel styleName="{style.lobbyPlayerHistory}">
+          <span class="{style.lobbyPlayerHistoryBody}" ui:field="spanPlayerHistory" />
         </g:HTMLPanel>
       </g:HTMLPanel>
     </g:HTMLPanel>

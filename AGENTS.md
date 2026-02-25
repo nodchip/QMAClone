@@ -11,31 +11,20 @@
 - GWT 調査の起点: `docs/gwt-guide/README.md`
 - UI/UX スタイルガイド: `docs/ui-ux-style-guide.md`
 
-## 過去の作業ミス（QMAClone 固有）と改善案
-- ミス: DevMode と Tomcat の差を考慮せず、クラスローダ起因の `NoClassDefFoundError` / `ClassCastException` を見落とした。
-- 改善: Jetty 関連変更時は両例外をセットで確認し、DevMode と Tomcat で個別に起動検証する。
-- ミス: GWT 再コンパイル失敗後に古い `cache.js` が配信され、画面不整合が起きた。
-- 改善: クライアント変更の完了条件に「GWT 再コンパイル成功」と「配備先で最新成果物が参照されること」を含める。
-- ミス: GWT クライアントで非対応 API（例: `String.format`）を使用し、デプロイ時の `gwt:compile` で停止した。
-- 改善: クライアント変更では GWT JRE エミュレーション非対応 API を使わず、`deploy_qmaclone_tomcat10.ps1` 実行前に `gwt:compile` 成功を確定する。
-- ミス: CellTable の見た目修正で `.cellTableCell` 固定セレクタを使い、実DOM（難読化クラス構成）に一致せずスタイルが未適用になった。
-- 改善: CellTable 系CSSは `styleName + 要素セレクタ(td/button など)` を基本にし、`dom.html` で実セレクタ一致を確認してから反映する。
-- ミス: WebSocket URL を環境固定値で扱い、接続先不一致（404/500）を誘発した。
-- 改善: URL は `protocol / host / contextPath` から導出し、クライアントログに接続先 URL を必ず含める。
-- ミス: WebSocket 障害をサーバーログ確認前に断定し、調査が遠回りになった。
-- 改善: `netstat -> HTTP GET -> Upgrade ハンドシェイク -> サーバーログ` の順で切り分ける。
-- ミス: Tomcat 再配備時に旧状態が残り、修正結果を誤判定した。
-- 改善: 必要時は旧展開物削除とサービス再起動を行い、静的状態を破棄する。
-- ミス: nighthawk の reverse proxy 先サービス停止を見落とし、`502 Bad Gateway` を nginx 設定起因と誤認した。
-- 改善: `nginx error.log` と upstream 待受/サービス状態を先に確認し、停止サービスを復旧してから設定変更要否を判断する。
+## 過去の作業ミス（要約）
+- DevMode と Tomcat の差を見落とし、クラスローダ例外の検知が遅れた。
+- GWT 再コンパイルや成果物同期の漏れで、古い `cache.js` を配信した。
+- GWT 非対応 API（例: `String.format`）の利用で `gwt:compile` が停止した。
+- CellTable で実DOMに一致しないセレクタを使い、スタイルが未適用になった。
+- WebSocket の接続先導出や障害切り分け順を誤り、原因特定が遅れた。
+- Tomcat 再配備時に旧展開物が残り、修正反映を誤判定した。
+- reverse proxy 障害で upstream 停止確認より先に設定変更を疑い、調査が遠回りになった。
 
 ## プロジェクト固有ルール
 
 ### GWT / クライアント
-- クライアント変更後は GWT 再コンパイル成功を完了条件に含める。
-- 依存更新時は `mvn "-Dgwt.skipCompilation=false" gwt:compile` を単独実行して成否を先に確定する。
+- クライアント変更（依存更新を含む）では `mvn "-Dgwt.skipCompilation=false" gwt:compile` を先行実行し、`cache.js` を含む最新成果物が配備先で参照されることまで完了条件に含める。
 - 基盤クラス（例: `StatusUpdater`）変更時は、`@Override` エラー連鎖を関連画面まで確認する。
-- `cache.js` を更新した場合、配備先が最新成果物を参照していることを確認する。
 - キーボード入力の制御キー（Backspace/Enter など）は `keypress` に依存せず `keydown` で拾う（環境差で `keypress` が発火しない場合がある）。
 - 依存関係は安定版のみ使用し、RC / alpha / milestone 版は採用しない。
 - `piriti` 依存は再導入せず、クライアントの JSON デコードは明示実装を維持する。
@@ -56,11 +45,13 @@
 4. サーバーログの例外確認（500/503、初期化失敗）
 - クライアントログには接続先 URL を含め、追跡可能な形で出力する。
 
-### デプロイ / ローカル運用
+### デプロイ / 配備運用
+- 配備コンテキストはローカル開発環境・本番（自宅サーバー）ともに `QMAClone`（`/QMAClone/`）で統一し、`QMAClone.war` を基準に運用する。
+- ローカル配備では `http://localhost:8080/QMAClone/` を使用し、`http://localhost:8080/QMAClone-1.0-SNAPSHOT/` へは配備しない。
 - Tomcat 再配備時は、必要に応じて旧展開物削除とサービス再起動で静的状態を確実に破棄する。
 - Eclipse で不整合が疑われる場合は、`target` と `gwt-unitCache` のクリーンを実施する。
 - 検証（`build` / `test` / `gwt:compile`）が1つでも失敗した場合はデプロイを中断し、修正と再検証完了まで配備しない。
-- 修正を含む依頼では、実行成果物に影響する変更（サーバー/クライアント/CSS/配備スクリプト）を行ったら、完了報告前に `deploy_qmaclone_tomcat10.ps1` でデプロイする（ユーザーが「デプロイ不要」を明示した場合のみ省略可）。旧 `deploy_qmaclone_tomcat9.ps1` は互換ラッパーとしてのみ使用する。
+- 修正を含む依頼では、実行成果物に影響する変更（サーバー/クライアント/CSS/配備スクリプト）を行ったら、完了報告前に `deploy_qmaclone_tomcat10.ps1` で `QMAClone` コンテキストへデプロイする（ユーザーが「デプロイ不要」を明示した場合のみ省略可）。旧 `deploy_qmaclone_tomcat9.ps1` は互換ラッパーとしてのみ使用する。
 - デプロイ後は公開経路のHTTP疎通を確認し、実行コマンドと結果を完了報告に残す。
 1. `/` の `HTTP 200`（nginx -> apache 経路）
 2. `/QMAClone/` の `HTTP 200`（nginx -> tomcat 経路）

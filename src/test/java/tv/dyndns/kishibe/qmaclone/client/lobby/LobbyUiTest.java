@@ -242,12 +242,16 @@ public class LobbyUiTest extends QMACloneGWTTestCaseBase {
     assertEquals("マッチング中", stateElement.getInnerText());
   }
 
-  public void testPlayerHistoryShouldBeDisplayedBetweenGameButtonsAndMainSettings() {
+  public void testPlayerHistoryShouldBeDisplayedAfterDetailedSettingsAndBeforeSummary() {
     String renderedHtml = ui.getElement().getInnerHTML();
     assertTrue(renderedHtml.contains("最近のプレイヤー"));
     assertTrue(renderedHtml.contains("COM対戦"));
     assertTrue(renderedHtml.contains("主要設定"));
-    assertTrue(renderedHtml.indexOf("COM対戦") < renderedHtml.indexOf("最近のプレイヤー"));
-    assertTrue(renderedHtml.indexOf("最近のプレイヤー") < renderedHtml.indexOf("主要設定"));
+    assertTrue(renderedHtml.contains("詳細設定"));
+    assertTrue(renderedHtml.contains("レーティング"));
+    assertTrue(renderedHtml.indexOf("COM対戦") < renderedHtml.indexOf("主要設定"));
+    assertTrue(renderedHtml.indexOf("主要設定") < renderedHtml.indexOf("詳細設定"));
+    assertTrue(renderedHtml.indexOf("詳細設定") < renderedHtml.indexOf("最近のプレイヤー"));
+    assertTrue(renderedHtml.indexOf("最近のプレイヤー") < renderedHtml.indexOf("レーティング"));
   }
 }
