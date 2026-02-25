@@ -23,9 +23,9 @@ mvn package -DskipTests
 デプロイ後の確認:
 
 ```powershell
-curl.exe -i http://localhost:8080/QMAClone-1.0-SNAPSHOT/
-curl.exe -i http://localhost:8080/QMAClone-1.0-SNAPSHOT/tv.dyndns.kishibe.qmaclone.QMAClone/service
-curl.exe -i "http://localhost:8080/QMAClone-1.0-SNAPSHOT/tv.dyndns.kishibe.qmaclone.QMAClone/service?warmup=1"
+curl.exe -i http://localhost:8080/QMAClone/
+curl.exe -i http://localhost:8080/QMAClone/tv.dyndns.kishibe.qmaclone.QMAClone/service
+curl.exe -i "http://localhost:8080/QMAClone/tv.dyndns.kishibe.qmaclone.QMAClone/service?warmup=1"
 ```
 
 ## 動作要件
@@ -84,7 +84,7 @@ mvn "-Dsurefire.skip=false" -Pwith-db-tests test
 - `gwt:compile` が失敗する場合: GWT 非対応 API 使用有無を確認し、修正後に再実行
 - デプロイ後に古い画面が表示される場合: `target` / `gwt-unitCache` をクリーンし再ビルド
 - WebSocket 接続失敗時: `netstat -> HTTP GET -> Upgrade ハンドシェイク -> サーバーログ` の順で切り分け
-- 404 が継続する場合: Tomcat の `webapps/QMAClone-1.0-SNAPSHOT` 展開状態と起動ログを確認
+- 404 が継続する場合: Tomcat の `webapps/QMAClone` 展開状態と起動ログを確認
 
 ## リポジトリ運用
 
