@@ -58,6 +58,7 @@
 3. `/QMAClone/tv.dyndns.kishibe.qmaclone.QMAClone/service` の `HTTP 405`
 4. `/QMAClone/tv.dyndns.kishibe.qmaclone.QMAClone/service?warmup=1` の `HTTP 200`
 5. `/QMAClone/websocket` の Upgrade 疎通（`101 Switching Protocols` もしくはサーバーログで Upgrade 成功を確認）
+6. ローカル配備時は `/QMAClone-1.0-SNAPSHOT/` の `HTTP 404`（誤配備なし）を確認する
 - 新規の運用ログ/メモはルート直下へ置かず、`ops/log/` と `ops/notes/` 配下へ配置する。
 - 新規/更新の運用補助スクリプトは `ops/scripts/` 配下へ配置し、既存ルートスクリプトは段階移行で扱う。
 
