@@ -1,5 +1,7 @@
 package tv.dyndns.kishibe.qmaclone.client.packet;
 
+import tv.dyndns.kishibe.qmaclone.client.constant.Constant;
+
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
@@ -10,6 +12,7 @@ public class PacketPlayerSummary implements IsSerializable {
 	public String level;
 	public String name;
 	public String prefecture;
+	public String imageFileName;
 	public int rating;
 	private transient SafeHtml html;
 	private transient SafeHtml resultHtml;
@@ -53,6 +56,7 @@ public class PacketPlayerSummary implements IsSerializable {
 		summary.level = "(COM)";
 		summary.name = "未初期化です";
 		summary.prefecture = "東京";
+		summary.imageFileName = Constant.ICON_NO_IMAGE;
 		summary.rating = 1300;
 		return summary;
 	}
@@ -66,6 +70,7 @@ public class PacketPlayerSummary implements IsSerializable {
 		summary.level = PacketJsonParser.getString(object, "level");
 		summary.name = PacketJsonParser.getString(object, "name");
 		summary.prefecture = PacketJsonParser.getString(object, "prefecture");
+		summary.imageFileName = PacketJsonParser.getString(object, "imageFileName");
 		summary.rating = PacketJsonParser.getInt(object, "rating");
 		return summary;
 	}

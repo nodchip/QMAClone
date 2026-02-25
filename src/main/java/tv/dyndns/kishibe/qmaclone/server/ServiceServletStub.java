@@ -380,12 +380,15 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
             .add("newAndOldProblems", newAndOldProblems).add("publicEvent", publicEvent)
             .add("remoteAddress", getRemoteAddress()).toString());
 
+        String safeImageFileName = Strings.isNullOrEmpty(imageFileName) ? Constant.ICON_NO_IMAGE
+            : imageFileName;
+        playerSummary.imageFileName = safeImageFileName;
         playerHistoryManager.push(playerSummary);
 
         PlayerStatus status;
         Game session = gameManager.getOrCreateMatchingSession(gameMode, roomName, classLevel, theme, genres, types,
             publicEvent, serverStatusManager, userCode, getRemoteAddress());
-        status = session.addPlayer(playerSummary, genres, types, greeting, imageFileName, classLevel, difficultSelect,
+        status = session.addPlayer(playerSummary, genres, types, greeting, safeImageFileName, classLevel, difficultSelect,
             rating, userCode, volatility, playCount, newAndOldProblems);
 
         PacketRegistrationData data = new PacketRegistrationData();

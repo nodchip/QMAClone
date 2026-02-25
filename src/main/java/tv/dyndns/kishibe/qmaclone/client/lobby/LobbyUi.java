@@ -31,6 +31,9 @@ import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -56,6 +59,8 @@ public class LobbyUi extends Composite {
   @VisibleForTesting
   static final List<String> LEVEL_NAMES = ImmutableList.of("修練", "見習", "初級", "中級", "上級", "魔導",
       "大魔導", "賢者", "大賢者", "青銅", "白銀", "黄金", "白金", "金剛", "天青", "紅玉", "翡翠", "黄玉", "紫宝", "琥珀", "瑠璃");
+  private static final String PLAYER_HISTORY_EMPTY_MESSAGE = "最近のプレイヤー表示はまだありません。";
+  private static final int MAX_PLAYER_HISTORY_DISPLAY_COUNT = 9;
   private static final String[][] DIFFICULTIES = {
       { "全難易度から出題する", valueOf(Constant.DIFFICULT_SELECT_NORMAL) },
       { "難問を出題する", valueOf(Constant.DIFFICULT_SELECT_DIFFICULT) },
@@ -110,6 +115,8 @@ public class LobbyUi extends Composite {
   SpanElement spanAverageRank;
   @UiField
   SpanElement spanPlayerHistory;
+  @UiField
+  Style style;
   @VisibleForTesting
   boolean specialLevelName = false;
   private final CommandRunner initializers = new CommandRunner(Arrays.asList(new Runnable() {
@@ -124,6 +131,16 @@ public class LobbyUi extends Composite {
   }));
 
   interface LobbyUiUiBinder extends UiBinder<Widget, LobbyUi> {
+  }
+
+  interface Style extends CssResource {
+    String lobbyPlayerHistoryItem();
+
+    String lobbyPlayerHistoryIcon();
+
+    String lobbyPlayerHistoryName();
+
+    String lobbyPlayerHistoryEmpty();
   }
 
   public LobbyUi(SceneLobby sceneRegistration) {
@@ -398,8 +415,61 @@ public class LobbyUi extends Composite {
   }
 
   public void setLastestPlayers(List<PacketPlayerSummary> playerSummaries) {
-    // ロビー刷新後はプレイヤー履歴を表示しない。
-    spanPlayerHistory.setInnerText("");
+    if (playerSummaries == null || playerSummaries.isEmpty()) {
+      setPlayerHistoryEmptyMessage();
+      return;
+    }
+
+    String fallbackIconUrl = SafeHtmlUtils
+        .htmlEscape(Constant.ICON_URL_PREFIX + Constant.ICON_NO_IMAGE);
+    SafeHtmlBuilder builder = new SafeHtmlBuilder();
+    int itemCount = 0;
+    for (PacketPlayerSummary playerSummary : playerSummaries) {
+      if (itemCount >= MAX_PLAYER_HISTORY_DISPLAY_COUNT) {
+        break;
+      }
+
+      if (playerSummary == null) {
+        continue;
+      }
+
+      String level = Strings.nullToEmpty(playerSummary.level).trim();
+      String name = Strings.nullToEmpty(playerSummary.name).trim();
+      if (level.isEmpty() && name.isEmpty()) {
+        continue;
+      }
+
+      String displayName = name.isEmpty() ? level : name;
+      String imageFileName = Strings.nullToEmpty(playerSummary.imageFileName).trim();
+      if (imageFileName.isEmpty()) {
+        imageFileName = Constant.ICON_NO_IMAGE;
+      }
+      String iconUrl = SafeHtmlUtils.htmlEscape(Constant.ICON_URL_PREFIX + imageFileName);
+
+      builder.appendHtmlConstant("<span class='" + style.lobbyPlayerHistoryItem() + "'>");
+      builder.appendHtmlConstant("<img class='" + style.lobbyPlayerHistoryIcon()
+          + "' onerror=\"this.onerror=null;this.src='" + fallbackIconUrl + "'\" src=\"" + iconUrl
+          + "\">");
+      builder.appendHtmlConstant("<span class='" + style.lobbyPlayerHistoryName() + "'>");
+      builder.appendEscaped(displayName);
+      builder.appendHtmlConstant("</span></span>");
+      itemCount++;
+    }
+
+    if (itemCount == 0) {
+      setPlayerHistoryEmptyMessage();
+      return;
+    }
+
+    spanPlayerHistory.setInnerHTML(builder.toSafeHtml().asString());
+  }
+
+  private void setPlayerHistoryEmptyMessage() {
+    SafeHtmlBuilder builder = new SafeHtmlBuilder();
+    builder.appendHtmlConstant("<span class='" + style.lobbyPlayerHistoryEmpty() + "'>");
+    builder.appendEscaped(PLAYER_HISTORY_EMPTY_MESSAGE);
+    builder.appendHtmlConstant("</span>");
+    spanPlayerHistory.setInnerHTML(builder.toSafeHtml().asString());
   }
 
   private boolean checkContents() {

@@ -2,7 +2,7 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
   xmlns:g="urn:import:com.google.gwt.user.client.ui"
   xmlns:k="urn:import:tv.dyndns.kishibe.qmaclone.client.ui">
-  <ui:style>
+  <ui:style type="tv.dyndns.kishibe.qmaclone.client.lobby.LobbyUi.Style">
   .lobbyRoot {
     width: 100%;
     max-width: 980px;
@@ -36,10 +36,12 @@
     min-height: 0;
     display: flex;
     flex-direction: column;
+    align-items: start;
     gap: 12px;
   }
 
   .lobbySummaryLine {
+    width: 100%;
     text-align: center;
     font-size: 18px;
     color: #2f4358;
@@ -53,7 +55,7 @@
 
   .lobbyStartButton {
     width: 100%;
-    min-width: 260px;
+    min-width: 0;
     height: 62px;
     border: 1px solid #7fb0df;
     border-radius: 10px;
@@ -132,10 +134,24 @@
     box-shadow: 0 8px 18px rgba(15, 53, 90, 0.1);
   }
 
+  .lobbyPrimarySettingsGrid {
+    table-layout: fixed;
+  }
+
+  .lobbyPrimarySettingsGrid col.lobbyPrimaryLabelCol {
+    width: 24%;
+  }
+
+  .lobbyPrimarySettingsGrid col.lobbyPrimaryValueCol {
+    width: 76%;
+  }
+
   .lobbySettingsSection {
     display: flex;
     flex-direction: column;
     gap: 8px;
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .lobbySectionTitle {
@@ -230,7 +246,72 @@
   }
 
   .lobbyPlayerHistory {
-    display: none;
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #9ec4e6;
+    border-radius: 10px;
+    background: #eaf4ff;
+    color: #102840;
+    padding: 8px 10px;
+    text-align: center;
+    line-height: 1.5;
+    font-size: 13px;
+    height: 96px;
+    overflow: hidden;
+  }
+
+  .lobbyPlayerHistoryBody {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    overflow: hidden;
+    min-height: 80px;
+  }
+
+  .lobbyPlayerHistoryItem {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    margin-right: 0;
+    padding: 4px 6px;
+    border: 1px solid #b9d3ea;
+    border-radius: 9px;
+    background: #f3f8ff;
+    color: #143652;
+    font-size: 11px;
+    line-height: 1.1;
+    vertical-align: middle;
+    width: auto;
+    min-width: 56px;
+    box-sizing: border-box;
+  }
+
+  .lobbyPlayerHistoryIcon {
+    width: 56px;
+    height: 56px;
+    border-radius: 10px;
+    border: 1px solid #9ec4e6;
+    background: #ffffff;
+    margin-right: 0;
+    margin-bottom: 4px;
+    flex: 0 0 auto;
+  }
+
+  .lobbyPlayerHistoryName {
+    display: block;
+    width: auto;
+    overflow: visible;
+    white-space: nowrap;
+    text-align: center;
+    font-weight: bold;
+  }
+
+  .lobbyPlayerHistoryEmpty {
+    color: #45617c;
+    line-height: 28px;
   }
 
   .lobbyDetailSettingsGrid {
@@ -244,6 +325,7 @@
   .lobbyDetailSettingsGrid col.lobbyDetailValueCol {
     width: 32%;
   }
+
   </ui:style>
   <g:HTMLPanel styleName="{style.lobbyRoot}">
     <g:HTMLPanel styleName="{style.lobbyStatusRow}">
@@ -281,14 +363,27 @@
       </table>
 
       <g:HTMLPanel styleName="{style.lobbySettingsSection}">
+        <g:HTMLPanel styleName="{style.lobbySectionTitle}">最近のプレイヤー</g:HTMLPanel>
+        <g:HTMLPanel styleName="{style.lobbyPlayerHistory}">
+          <span class="{style.lobbyPlayerHistoryBody}" ui:field="spanPlayerHistory" />
+        </g:HTMLPanel>
+      </g:HTMLPanel>
+
+      <g:HTMLPanel styleName="{style.lobbySettingsSection}">
         <g:HTMLPanel styleName="{style.lobbySectionTitle}">主要設定</g:HTMLPanel>
         <g:HTMLPanel styleName="{style.lobbyConditionCard} {style.lobbyPrimaryConditionCard}">
-          <table class="{style.lobbyConditionGrid}">
+          <table class="{style.lobbyConditionGrid} {style.lobbyPrimarySettingsGrid}">
+            <colgroup>
+              <col class="{style.lobbyPrimaryLabelCol}" />
+              <col class="{style.lobbyPrimaryValueCol}" />
+            </colgroup>
             <tr>
               <td class="{style.lobbyLabelCell}">ジャンル</td>
               <td class="{style.lobbyValueCell}">
                 <k:WidgetMultiItemSelector ui:field="multiItemSelectorGenre" />
               </td>
+            </tr>
+            <tr>
               <td class="{style.lobbyLabelCell}">出題形式</td>
               <td class="{style.lobbyValueCell}">
                 <k:WidgetMultiItemSelector ui:field="multiItemSelectorType" />
@@ -299,6 +394,8 @@
               <td class="{style.lobbyValueCell}">
                 <g:ListBox ui:field="listBoxDifficultSelect" />
               </td>
+            </tr>
+            <tr>
               <td class="{style.lobbyLabelCell}">プレイヤー名</td>
               <td class="{style.lobbyValueCell}">
                 <g:TextBox ui:field="textBoxPlayerName" maxLength="8" />
@@ -311,53 +408,53 @@
       <g:HTMLPanel styleName="{style.lobbySettingsSection}">
         <g:HTMLPanel styleName="{style.lobbySectionTitle}">詳細設定</g:HTMLPanel>
         <g:HTMLPanel styleName="{style.lobbyConditionCard}">
-        <table class="{style.lobbyConditionGrid} {style.lobbyDetailSettingsGrid}">
-          <colgroup>
-            <col class="{style.lobbyDetailLabelCol}" />
-            <col class="{style.lobbyDetailValueCol}" />
-            <col class="{style.lobbyDetailLabelCol}" />
-            <col class="{style.lobbyDetailValueCol}" />
-          </colgroup>
-          <tr>
-            <td class="{style.lobbyLabelCell}">階級(自己申告)</td>
-            <td class="{style.lobbyValueCell}">
-              <g:ListBox ui:field="listBoxLevelName" />
-              <g:ListBox ui:field="listBoxLevelNumber" />
-            </td>
-            <td class="{style.lobbyLabelCell}">地域</td>
-            <td class="{style.lobbyValueCell}">
-              <g:ListBox ui:field="listBoxPrefecture" />
-            </td>
-          </tr>
-          <tr>
-            <td class="{style.lobbyLabelCell}">対戦前の挨拶</td>
-            <td class="{style.lobbyValueCell}">
-              <g:TextBox ui:field="textBoxGreeting" maxLength="10" text="よろしく～！" />
-            </td>
-            <td class="{style.lobbyLabelCell}">新問設定</td>
-            <td class="{style.lobbyValueCell}">
-              <g:ListBox ui:field="listBoxNewProblem">
-                <g:item>新問と旧問を出題する</g:item>
-                <g:item>旧問のみ出題する</g:item>
-                <g:item>新問のみ出題する</g:item>
-              </g:ListBox>
-            </td>
-          </tr>
-          <tr>
-            <td class="{style.lobbyLabelCell}">イベント名</td>
-            <td class="{style.lobbyValueCell}">
-              <g:TextBox ui:field="textBoxEventName" maxLength="16" />
-              <g:Button ui:field="buttonShowEventRooms" text="参照"
-                styleName="{style.lobbySubButton}" />
-              <g:CheckBox ui:field="checkBoxPublicEvent" text="イベント戦を公開する"
-                styleName="{style.lobbyPublicEventCheck}" />
-            </td>
-            <td class="{style.lobbyLabelCell}">テーマ</td>
-            <td class="{style.lobbyValueCell}">
-              <g:ListBox ui:field="listBoxTheme" />
-            </td>
-          </tr>
-        </table>
+          <table class="{style.lobbyConditionGrid} {style.lobbyDetailSettingsGrid}">
+            <colgroup>
+              <col class="{style.lobbyDetailLabelCol}" />
+              <col class="{style.lobbyDetailValueCol}" />
+              <col class="{style.lobbyDetailLabelCol}" />
+              <col class="{style.lobbyDetailValueCol}" />
+            </colgroup>
+            <tr>
+              <td class="{style.lobbyLabelCell}">階級(自己申告)</td>
+              <td class="{style.lobbyValueCell}">
+                <g:ListBox ui:field="listBoxLevelName" />
+                <g:ListBox ui:field="listBoxLevelNumber" />
+              </td>
+              <td class="{style.lobbyLabelCell}">地域</td>
+              <td class="{style.lobbyValueCell}">
+                <g:ListBox ui:field="listBoxPrefecture" />
+              </td>
+            </tr>
+            <tr>
+              <td class="{style.lobbyLabelCell}">対戦前の挨拶</td>
+              <td class="{style.lobbyValueCell}">
+                <g:TextBox ui:field="textBoxGreeting" maxLength="10" text="よろしく～！" />
+              </td>
+              <td class="{style.lobbyLabelCell}">新問設定</td>
+              <td class="{style.lobbyValueCell}">
+                <g:ListBox ui:field="listBoxNewProblem">
+                  <g:item>新問と旧問を出題する</g:item>
+                  <g:item>旧問のみ出題する</g:item>
+                  <g:item>新問のみ出題する</g:item>
+                </g:ListBox>
+              </td>
+            </tr>
+            <tr>
+              <td class="{style.lobbyLabelCell}">イベント名</td>
+              <td class="{style.lobbyValueCell}">
+                <g:TextBox ui:field="textBoxEventName" maxLength="16" />
+                <g:Button ui:field="buttonShowEventRooms" text="参照"
+                  styleName="{style.lobbySubButton}" />
+                <g:CheckBox ui:field="checkBoxPublicEvent" text="イベント戦を公開する"
+                  styleName="{style.lobbyPublicEventCheck}" />
+              </td>
+              <td class="{style.lobbyLabelCell}">テーマ</td>
+              <td class="{style.lobbyValueCell}">
+                <g:ListBox ui:field="listBoxTheme" />
+              </td>
+            </tr>
+          </table>
         </g:HTMLPanel>
       </g:HTMLPanel>
     </g:HTMLPanel>
@@ -389,9 +486,6 @@
       </span>
     </g:HTMLPanel>
 
-    <g:HTMLPanel styleName="{style.lobbyPlayerHistory}">
-      <span ui:field="spanPlayerHistory" />
-    </g:HTMLPanel>
   </g:HTMLPanel>
 </ui:UiBinder>
 

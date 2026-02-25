@@ -5,6 +5,7 @@ import java.util.List;
 
 import tv.dyndns.kishibe.qmaclone.client.QMACloneGWTTestCaseBase;
 import tv.dyndns.kishibe.qmaclone.client.UserData;
+import tv.dyndns.kishibe.qmaclone.client.constant.Constant;
 import tv.dyndns.kishibe.qmaclone.client.game.ProblemGenre;
 import tv.dyndns.kishibe.qmaclone.client.game.ProblemType;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketPlayerSummary;
@@ -106,5 +107,71 @@ public class LobbyUiTest extends QMACloneGWTTestCaseBase {
     ui.updateThemeMode(themeLists);
 
     assertEquals("テーマ2", UserData.get().getTheme());
+  }
+
+  public void testSetLastestPlayersShouldRenderPlayerHistory() {
+    PacketPlayerSummary first = new PacketPlayerSummary();
+    first.level = "賢者";
+    first.name = "ノドチップ";
+    first.imageFileName = "first.png";
+
+    PacketPlayerSummary second = new PacketPlayerSummary();
+    second.level = "大賢者";
+    second.name = "テスト";
+    second.imageFileName = "";
+
+    ui.setLastestPlayers(ImmutableList.of(first, second));
+
+    String historyHtml = ui.spanPlayerHistory.getInnerHTML();
+    assertTrue(historyHtml.contains("<img"));
+    assertTrue(historyHtml.contains("<span"));
+    assertTrue(historyHtml.contains("ノドチップ"));
+    assertTrue(historyHtml.contains("テスト"));
+    assertTrue(historyHtml.contains(Constant.ICON_URL_PREFIX + "first.png"));
+    assertTrue(historyHtml.contains(Constant.ICON_URL_PREFIX + Constant.ICON_NO_IMAGE));
+    assertTrue(historyHtml.indexOf("ノドチップ") < historyHtml.indexOf("テスト"));
+    assertFalse(historyHtml.contains("<br"));
+  }
+
+  public void testSetLastestPlayersShouldShowEmptyMessageWhenNoPlayers() {
+    ui.setLastestPlayers(ImmutableList.<PacketPlayerSummary> of());
+
+    assertEquals("最近のプレイヤー表示はまだありません。", ui.spanPlayerHistory.getInnerText());
+  }
+
+  public void testSetLastestPlayersShouldShowEmptyMessageWhenInputIsNull() {
+    ui.setLastestPlayers(null);
+
+    assertEquals("最近のプレイヤー表示はまだありません。", ui.spanPlayerHistory.getInnerText());
+  }
+
+  public void testSetLastestPlayersShouldShowAtMostNinePlayers() {
+    List<PacketPlayerSummary> players = Lists.newArrayList();
+    for (int i = 1; i <= 12; i++) {
+      PacketPlayerSummary player = new PacketPlayerSummary();
+      player.level = "賢者";
+      player.name = "player_" + i;
+      player.imageFileName = "icon" + i + ".png";
+      players.add(player);
+    }
+
+    ui.setLastestPlayers(players);
+
+    String historyHtml = ui.spanPlayerHistory.getInnerHTML();
+    for (int i = 1; i <= 9; i++) {
+      assertTrue(historyHtml.contains("player_" + i));
+    }
+    for (int i = 10; i <= 12; i++) {
+      assertFalse(historyHtml.contains("player_" + i));
+    }
+  }
+
+  public void testPlayerHistoryShouldBeDisplayedBetweenGameButtonsAndMainSettings() {
+    String renderedHtml = ui.getElement().getInnerHTML();
+    assertTrue(renderedHtml.contains("最近のプレイヤー"));
+    assertTrue(renderedHtml.contains("COM対戦"));
+    assertTrue(renderedHtml.contains("主要設定"));
+    assertTrue(renderedHtml.indexOf("COM対戦") < renderedHtml.indexOf("最近のプレイヤー"));
+    assertTrue(renderedHtml.indexOf("最近のプレイヤー") < renderedHtml.indexOf("主要設定"));
   }
 }

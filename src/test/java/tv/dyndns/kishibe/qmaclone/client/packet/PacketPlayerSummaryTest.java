@@ -1,7 +1,10 @@
 package tv.dyndns.kishibe.qmaclone.client.packet;
 
 import tv.dyndns.kishibe.qmaclone.client.QMACloneGWTTestCaseBase;
+import tv.dyndns.kishibe.qmaclone.client.constant.Constant;
 
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONString;
 import com.google.gwt.safehtml.shared.SafeHtml;
 
 public class PacketPlayerSummaryTest extends QMACloneGWTTestCaseBase {
@@ -34,11 +37,24 @@ public class PacketPlayerSummaryTest extends QMACloneGWTTestCaseBase {
 				html.asString());
 	}
 
-	public void testGetDefaultPlayerSummary() {
-		player = PacketPlayerSummary.getDefaultPlayerSummary();
-		assertEquals("(COM)", player.level);
-		assertEquals("未初期化です", player.name);
-		assertEquals("東京", player.prefecture);
-		assertEquals(1300, player.rating);
-	}
+  public void testGetDefaultPlayerSummary() {
+    player = PacketPlayerSummary.getDefaultPlayerSummary();
+    assertEquals("(COM)", player.level);
+    assertEquals("未初期化です", player.name);
+    assertEquals("東京", player.prefecture);
+    assertEquals(Constant.ICON_NO_IMAGE, player.imageFileName);
+    assertEquals(1300, player.rating);
+  }
+
+  public void testFromJsonObjectShouldReadImageFileName() {
+    JSONObject object = new JSONObject();
+    object.put("level", new JSONString("中級"));
+    object.put("name", new JSONString("テスト"));
+    object.put("prefecture", new JSONString("東京"));
+    object.put("imageFileName", new JSONString("avatar.png"));
+
+    PacketPlayerSummary summary = PacketPlayerSummary.fromJsonObject(object);
+
+    assertEquals("avatar.png", summary.imageFileName);
+  }
 }
