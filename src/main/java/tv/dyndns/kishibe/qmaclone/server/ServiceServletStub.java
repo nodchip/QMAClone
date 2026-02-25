@@ -129,6 +129,7 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
   private static final Set<String> LOGGING_EXCLUDED_METHODS = ImmutableSet.of("keepAlive", "getServerStatus",
       "getGameStatus", "keepAliveGame", "waitForGame", "receiveMessageFromChat");
   private static final String GENERIC_SERVICE_ERROR_MESSAGE = "処理中にエラーが発生しました。";
+  private static final String RECENT_STATE_MATCHING = "マッチング中";
   private final Random random = new Random();
   private final ChatManager chatManager;
   private final NormalModeProblemManager normalModeProblemManager;
@@ -365,6 +366,26 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
   // プレイヤー情報を登録する
   private Object lockObjectRegister = new Object();
 
+  /**
+   * 最近のプレイヤー表示向けのモード文言を返す。
+   */
+  private String toRecentModeLabel(GameMode mode) {
+    switch (mode) {
+    case VS_COM:
+      return "COM対戦";
+    case WHOLE:
+      return "全体対戦";
+    case EVENT:
+      return "イベント対戦";
+    case THEME:
+      return "テーマモード";
+    case LIMITED:
+      return "制限対戦";
+    default:
+      return "-";
+    }
+  }
+
   @Override
   public PacketRegistrationData register(PacketPlayerSummary playerSummary, Set<ProblemGenre> genres,
       Set<ProblemType> types, String greeting, GameMode gameMode, String roomName, String theme, String imageFileName,
@@ -384,7 +405,9 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
             : imageFileName;
         playerSummary.imageFileName = safeImageFileName;
         playerSummary.userCode = userCode;
-        playerHistoryManager.push(playerSummary);
+        playerSummary.recentMode = toRecentModeLabel(gameMode);
+        playerSummary.recentState = RECENT_STATE_MATCHING;
+        playerHistoryManager.push(playerSummary.copy());
         serverStatusManager.requestUpdateDebounced();
 
         PlayerStatus status;

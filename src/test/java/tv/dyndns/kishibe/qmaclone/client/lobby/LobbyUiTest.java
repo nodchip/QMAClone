@@ -123,7 +123,7 @@ public class LobbyUiTest extends QMACloneGWTTestCaseBase {
     second.name = "テスト";
     second.imageFileName = "";
     second.recentMode = "-";
-    second.recentState = "対戦していない";
+    second.recentState = "ゲーム終了";
 
     ui.setLastestPlayers(ImmutableList.of(first, second));
 
@@ -135,7 +135,7 @@ public class LobbyUiTest extends QMACloneGWTTestCaseBase {
     assertTrue(historyHtml.contains("全体対戦"));
     assertTrue(historyHtml.contains("ゲーム中"));
     assertTrue(historyHtml.contains("-"));
-    assertTrue(historyHtml.contains("対戦していない"));
+    assertTrue(historyHtml.contains("ゲーム終了"));
     assertTrue(historyHtml.contains(Constant.ICON_URL_PREFIX + "first.png"));
     assertTrue(historyHtml.contains(Constant.ICON_URL_PREFIX + Constant.ICON_NO_IMAGE));
     assertTrue(historyHtml.indexOf("ノドチップ") < historyHtml.indexOf("テスト"));
@@ -154,7 +154,7 @@ public class LobbyUiTest extends QMACloneGWTTestCaseBase {
     assertEquals("最近のプレイヤー表示はまだありません。", ui.spanPlayerHistory.getInnerText());
   }
 
-  public void testSetLastestPlayersShouldShowAtMostNinePlayers() {
+  public void testSetLastestPlayersShouldShowAtMostTenPlayers() {
     List<PacketPlayerSummary> players = Lists.newArrayList();
     for (int i = 1; i <= 12; i++) {
       PacketPlayerSummary player = new PacketPlayerSummary();
@@ -167,10 +167,10 @@ public class LobbyUiTest extends QMACloneGWTTestCaseBase {
     ui.setLastestPlayers(players);
 
     String historyHtml = ui.spanPlayerHistory.getInnerHTML();
-    for (int i = 1; i <= 9; i++) {
+    for (int i = 1; i <= 10; i++) {
       assertTrue(historyHtml.contains("player_" + i));
     }
-    for (int i = 10; i <= 12; i++) {
+    for (int i = 11; i <= 12; i++) {
       assertFalse(historyHtml.contains("player_" + i));
     }
   }

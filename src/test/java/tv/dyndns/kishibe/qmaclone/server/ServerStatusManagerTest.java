@@ -153,7 +153,24 @@ public class ServerStatusManagerTest {
 
     PacketPlayerSummary actual = manager.getServerStatus().lastestPlayers.get(0);
     assertThat(actual.recentMode).isEqualTo("-");
-    assertThat(actual.recentState).isEqualTo("対戦していない");
+    assertThat(actual.recentState).isEqualTo("ゲーム終了");
+  }
+
+  @Test
+  public void updateServerStatusShouldKeepModeAndSetFinishedWhenSessionIsGone() throws Exception {
+    PacketPlayerSummary player = new PacketPlayerSummary();
+    player.name = "プレイヤー";
+    player.userCode = 12345678;
+    player.recentMode = "イベント対戦";
+    player.recentState = "マッチング中";
+    when(mockPlayerHistoryManager.get()).thenReturn(ImmutableList.of(player));
+    when(mockGameManager.findRecentPlayerStatus(12345678)).thenReturn(null);
+
+    manager.updateServerStatus();
+
+    PacketPlayerSummary actual = manager.getServerStatus().lastestPlayers.get(0);
+    assertThat(actual.recentMode).isEqualTo("イベント対戦");
+    assertThat(actual.recentState).isEqualTo("ゲーム終了");
   }
 
   @Test

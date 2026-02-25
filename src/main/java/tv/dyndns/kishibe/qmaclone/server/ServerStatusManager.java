@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
@@ -29,6 +30,8 @@ public class ServerStatusManager {
   private static final Logger logger = Logger.getLogger(ServerStatusManager.class.getName());
   private static final int UPDATE_DURATION = 10; // 秒
   private static final long DEBOUNCE_MILLISECONDS = 300L;
+  private static final String RECENT_MODE_UNKNOWN = "-";
+  private static final String RECENT_STATE_FINISHED = "ゲーム終了";
   private final Database database;
   @VisibleForTesting
   final AtomicInteger numberOfPageView = new AtomicInteger();
@@ -224,8 +227,7 @@ public class ServerStatusManager {
       PacketPlayerSummary summary = playerSummary.copy();
       GameManager.RecentPlayerStatus recentStatus = gameManager.findRecentPlayerStatus(summary.userCode);
       if (recentStatus == null) {
-        summary.recentMode = "-";
-        summary.recentState = "対戦していない";
+        applyNoSessionFallback(summary);
       } else {
         summary.recentMode = toModeLabel(recentStatus.getGameMode());
         summary.recentState = toStateLabel(recentStatus.getTransition());
@@ -233,6 +235,16 @@ public class ServerStatusManager {
       enriched.add(summary);
     }
     return enriched;
+  }
+
+  /**
+   * 参加中セッションがない場合の表示を補完する。
+   */
+  private void applyNoSessionFallback(PacketPlayerSummary summary) {
+    if (Strings.isNullOrEmpty(summary.recentMode)) {
+      summary.recentMode = RECENT_MODE_UNKNOWN;
+    }
+    summary.recentState = RECENT_STATE_FINISHED;
   }
 
   private String toModeLabel(GameMode mode) {
@@ -265,7 +277,7 @@ public class ServerStatusManager {
       return "結果表示中";
     case Finished:
     default:
-      return "対戦していない";
+      return RECENT_STATE_FINISHED;
     }
   }
 }

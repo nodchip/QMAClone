@@ -31,17 +31,32 @@ import tv.dyndns.kishibe.qmaclone.client.packet.PacketPlayerSummary;
 import com.google.common.collect.Lists;
 
 public class PlayerHistoryManager {
-	private static final int MAX_PLAYERS = 8;
+	private static final int MAX_PLAYERS = 10;
 	private final Queue<PacketPlayerSummary> deque = new ConcurrentLinkedQueue<PacketPlayerSummary>();
 
-	public void push(PacketPlayerSummary player) {
+	public synchronized void push(PacketPlayerSummary player) {
+		if (player == null) {
+			return;
+		}
+		if (0 < player.userCode) {
+			Queue<PacketPlayerSummary> filtered = new ConcurrentLinkedQueue<PacketPlayerSummary>();
+			for (PacketPlayerSummary existing : deque) {
+				if (existing != null && existing.userCode == player.userCode) {
+					continue;
+				}
+				filtered.offer(existing);
+			}
+			deque.clear();
+			deque.addAll(filtered);
+		}
+
 		deque.offer(player);
 		while (deque.size() > MAX_PLAYERS) {
 			deque.poll();
 		}
 	}
 
-	public List<PacketPlayerSummary> get() {
+	public synchronized List<PacketPlayerSummary> get() {
 		final List<PacketPlayerSummary> list = Lists.newArrayList(deque);
 		Collections.reverse(list);
 		return list;

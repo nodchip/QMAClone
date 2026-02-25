@@ -61,7 +61,7 @@ public class LobbyUi extends Composite {
   static final List<String> LEVEL_NAMES = ImmutableList.of("修練", "見習", "初級", "中級", "上級", "魔導",
       "大魔導", "賢者", "大賢者", "青銅", "白銀", "黄金", "白金", "金剛", "天青", "紅玉", "翡翠", "黄玉", "紫宝", "琥珀", "瑠璃");
   private static final String PLAYER_HISTORY_EMPTY_MESSAGE = "最近のプレイヤー表示はまだありません。";
-  private static final int MAX_PLAYER_HISTORY_DISPLAY_COUNT = 9;
+  private static final int MAX_PLAYER_HISTORY_DISPLAY_COUNT = 10;
   private static final String[][] DIFFICULTIES = {
       { "全難易度から出題する", valueOf(Constant.DIFFICULT_SELECT_NORMAL) },
       { "難問を出題する", valueOf(Constant.DIFFICULT_SELECT_DIFFICULT) },
@@ -511,7 +511,7 @@ public class LobbyUi extends Composite {
         recentMode = "-";
       }
       if (recentState.isEmpty()) {
-        recentState = "対戦していない";
+        recentState = "ゲーム終了";
       }
       entries.add(new PlayerHistoryEntry(displayName, iconUrl, recentMode, recentState));
       itemCount++;

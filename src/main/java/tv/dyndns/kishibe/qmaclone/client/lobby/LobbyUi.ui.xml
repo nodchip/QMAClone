@@ -252,7 +252,7 @@
     border-radius: 10px;
     background: #eaf4ff;
     color: #102840;
-    padding: 6px 10px;
+    padding: 6px;
     text-align: center;
     line-height: 1.5;
     font-size: 13px;
@@ -263,11 +263,12 @@
   .lobbyPlayerHistoryBody {
     display: flex;
     flex-wrap: nowrap;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
-    gap: 6px;
+    gap: 4px;
     overflow: hidden;
     min-height: 90px;
+    width: 100%;
   }
 
   .lobbyPlayerHistoryItem {

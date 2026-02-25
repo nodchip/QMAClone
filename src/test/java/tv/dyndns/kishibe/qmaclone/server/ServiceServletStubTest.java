@@ -20,6 +20,7 @@ import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -585,11 +586,19 @@ public class ServiceServletStubTest {
     verify(mockServerStatusManager, times(2)).requestUpdateDebounced();
 
     InOrder inOrder = inOrder(mockPlayerHistoryManager, mockServerStatusManager, mockGame);
-    inOrder.verify(mockPlayerHistoryManager).push(playerSummary);
+    ArgumentCaptor<PacketPlayerSummary> historyCaptor = ArgumentCaptor.forClass(PacketPlayerSummary.class);
+    inOrder.verify(mockPlayerHistoryManager).push(historyCaptor.capture());
     inOrder.verify(mockServerStatusManager).requestUpdateDebounced();
     inOrder.verify(mockGame).addPlayer(eq(playerSummary), eq(GENRES), eq(TYPES), eq("greeting"),
         eq(Constant.ICON_NO_IMAGE), eq(5), eq(0), eq(1200), eq(USER_CODE), eq(100), eq(20),
         eq(NewAndOldProblems.Both));
     inOrder.verify(mockServerStatusManager).requestUpdateDebounced();
+
+    PacketPlayerSummary pushedHistory = historyCaptor.getValue();
+    assertThat(pushedHistory).isNotSameInstanceAs(playerSummary);
+    assertThat(pushedHistory.recentMode).isEqualTo("全体対戦");
+    assertThat(pushedHistory.recentState).isEqualTo("マッチング中");
+    assertThat(pushedHistory.userCode).isEqualTo(USER_CODE);
+    assertThat(pushedHistory.imageFileName).isEqualTo(Constant.ICON_NO_IMAGE);
   }
 }
