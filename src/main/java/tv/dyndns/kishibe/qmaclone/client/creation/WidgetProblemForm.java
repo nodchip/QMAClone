@@ -51,7 +51,6 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Lists;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -76,6 +75,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class WidgetProblemForm extends VerticalPanel implements ClickHandler, ChangeHandler {
   private static final Logger logger = Logger.getLogger(WidgetProblemForm.class.getName());
   private static final int MAX_PROBLEM_NOTE_LENGTH = 1024;
+  private static final String PROBLEM_FEEDBACK_EMPTY_MESSAGE = "問題評価はまだありません。";
   private static final int STEP_BASIC_INFORMATION = 2;
   private static final int STEP_SENTENCE = 3;
   private static final int STEP_ANSWER = 4;
@@ -343,7 +343,9 @@ public class WidgetProblemForm extends VerticalPanel implements ClickHandler, Ch
 
     // 問題評価
     grid.setText(row, 0, "問題評価");
-    panelProblemFeedback.addStyleName("creationFormGroup");
+    panelProblemFeedback.addStyleName("creationProblemFeedbackPanel");
+    buttonClearProblemFeedback.addStyleName("creationProblemFeedbackClearButton");
+    showEmptyProblemFeedbackMessage();
     grid.setWidget(row++, 1, panelProblemFeedback);
 
     for (int rowIndex = 0; rowIndex < grid.getRowCount(); ++rowIndex) {
@@ -575,7 +577,7 @@ textAreaNote.setText(problem.note.trim());
     checkBoxImageAnswer.setValue(false);
 
     // 問題評価文
-    panelProblemFeedback.clear();
+    showEmptyProblemFeedbackMessage();
     if (problemId != PacketProblem.CREATING_PROBLEM_ID) {
       Service.Util.getInstance().getProblemFeedback(problemId, callbackGetProblemFeedback);
     }
@@ -585,11 +587,14 @@ textAreaNote.setText(problem.note.trim());
 
   private final AsyncCallback<List<String>> callbackGetProblemFeedback = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<List<String>>() {
     public void onSuccess(List<String> result) {
-      panelProblemFeedback.add(new HTML(new SafeHtmlBuilder().appendEscapedLines(
-          Joiner.on('\n').join(result)).toSafeHtml()));
-
-      if (!result.isEmpty()) {
+      List<String> normalized = normalizeProblemFeedbackLines(result);
+      panelProblemFeedback.clear();
+      if (!normalized.isEmpty()) {
+        panelProblemFeedback.add(new HTML(new SafeHtmlBuilder().appendEscapedLines(
+            Joiner.on('\n').join(normalized)).toSafeHtml()));
         panelProblemFeedback.add(buttonClearProblemFeedback);
+      } else {
+        showEmptyProblemFeedbackMessage();
       }
     }
 
@@ -768,7 +773,40 @@ textAreaNote.setText(problem.note.trim());
     }
 
     panelProblemFeedback.clear();
+    showEmptyProblemFeedbackMessage();
     Service.Util.getInstance().clearProblemFeedback(problemId, callbackClearProblemFeedback);
+  }
+
+  /**
+   * 問題評価が未登録の場合に、空状態メッセージを表示する。
+   */
+  private void showEmptyProblemFeedbackMessage() {
+    panelProblemFeedback.clear();
+    HTML empty = new HTML(PROBLEM_FEEDBACK_EMPTY_MESSAGE);
+    empty.addStyleName("creationProblemFeedbackEmpty");
+    panelProblemFeedback.add(empty);
+  }
+
+  /**
+   * 問題評価文から空行・空文字のみの要素を取り除く。
+   */
+  @VisibleForTesting
+  static List<String> normalizeProblemFeedbackLines(List<String> lines) {
+    List<String> normalized = Lists.newArrayList();
+    if (lines == null) {
+      return normalized;
+    }
+    for (String line : lines) {
+      if (!Strings.isNullOrEmpty(Strings.nullToEmpty(line).trim())) {
+        normalized.add(line);
+      }
+    }
+    return normalized;
+  }
+
+  @VisibleForTesting
+  boolean hasEmptyProblemFeedbackMessage() {
+    return panelProblemFeedback.getElement().getInnerText().contains(PROBLEM_FEEDBACK_EMPTY_MESSAGE);
   }
 
   private final AsyncCallback<Void> callbackClearProblemFeedback = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<Void>() {

@@ -5517,6 +5517,61 @@ body {
   background: var(--color-surface-2);
 }
 
+.creationProblemFeedbackPanel {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 8px;
+  background: var(--color-surface-2);
+  box-sizing: border-box;
+}
+
+.creationProblemFeedbackEmpty {
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.gwt-Button.creationProblemFeedbackClearButton {
+  margin-top: 8px;
+  padding: 5px 12px;
+  border: 1px solid #c58f6f;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #fff5ef 0%, #ffe8db 100%);
+  color: #7f3e1f;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color 160ms ease, background-color 160ms ease, box-shadow 160ms ease,
+    transform 120ms ease;
+}
+
+.gwt-Button.creationProblemFeedbackClearButton:hover {
+  border-color: #b97958;
+  background: linear-gradient(180deg, #ffe9dc 0%, #ffd9c6 100%);
+  box-shadow: 0 2px 8px rgba(127, 62, 31, 0.16);
+}
+
+.gwt-Button.creationProblemFeedbackClearButton:active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 4px rgba(127, 62, 31, 0.2);
+}
+
+.gwt-Button.creationProblemFeedbackClearButton:focus-visible {
+  outline: none;
+  border-color: #a95f3d;
+  box-shadow: 0 0 0 3px rgba(222, 154, 108, 0.35);
+}
+
+.gwt-Button.creationProblemFeedbackClearButton:disabled {
+  border-color: #d8c2b7;
+  background: #f2ece9;
+  color: #9d8b82;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
 .creationFormInlineRow {
   gap: 8px;
   margin-bottom: 4px;

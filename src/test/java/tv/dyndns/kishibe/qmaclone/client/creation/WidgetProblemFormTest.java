@@ -2,6 +2,7 @@ package tv.dyndns.kishibe.qmaclone.client.creation;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
@@ -11,6 +12,8 @@ import tv.dyndns.kishibe.qmaclone.client.game.ProblemGenre;
 import tv.dyndns.kishibe.qmaclone.client.game.ProblemType;
 import tv.dyndns.kishibe.qmaclone.client.game.RandomFlag;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblem;
+
+import com.google.common.collect.Lists;
 
 public class WidgetProblemFormTest extends QMACloneGWTTestCaseBase {
   private static final String INDICATION_MESSAGE = "indication message";
@@ -191,5 +194,19 @@ public class WidgetProblemFormTest extends QMACloneGWTTestCaseBase {
     assertTrue(form.getStyleName().contains("creationFormRoot"));
     assertTrue(form.textBoxAnswer[0].getStyleName().contains("creationFormInput"));
     assertTrue(form.listBoxType.getStyleName().contains("creationFormInput"));
+  }
+
+  @Test
+  public void testProblemFeedbackShouldShowEmptyMessageByDefault() {
+    assertTrue(form.hasEmptyProblemFeedbackMessage());
+  }
+
+  @Test
+  public void testNormalizeProblemFeedbackLinesShouldDropBlankLines() {
+    List<String> normalized = WidgetProblemForm.normalizeProblemFeedbackLines(Lists.newArrayList(
+        "", " ", "\n", "有効な問題評価", "\t", "  評価2  "));
+    assertEquals(2, normalized.size());
+    assertEquals("有効な問題評価", normalized.get(0));
+    assertEquals("  評価2  ", normalized.get(1));
   }
 }
