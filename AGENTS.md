@@ -47,6 +47,7 @@
 
 ### デプロイ / 配備運用
 - 配備コンテキストはローカル開発環境・本番（自宅サーバー）ともに `QMAClone`（`/QMAClone/`）へ統一し、`QMAClone.war` を基準に運用する。ローカルでは `http://localhost:8080/QMAClone/` を使用し、`http://localhost:8080/QMAClone-1.0-SNAPSHOT/` へは配備しない。
+- `tomcat10` と `nginx` の再起動は影響範囲が広いため、実行前にユーザーの明示許可を取得する。
 - Tomcat 再配備時は、必要に応じて旧展開物削除とサービス再起動で静的状態を確実に破棄する。
 - Eclipse で不整合が疑われる場合は、`target` と `gwt-unitCache` のクリーンを実施する。
 - 検証（`build` / `test` / `gwt:compile`）が1つでも失敗した場合はデプロイを中断し、修正と再検証完了まで配備しない。
