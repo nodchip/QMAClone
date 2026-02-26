@@ -7,6 +7,11 @@ import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.net.URL;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -114,6 +119,66 @@ public class ImageLinkCheckerTest {
     expectedImageLink.statusCode = ImageLinkChecker.STATUS_CODE_DOWNLOAD_FAILURE;
     assertThat(imageLinkChecker.getImageLinks()).isEqualTo(
         ImmutableList.of(expectedImageLink, expectedImageLink));
+  }
+
+  @Test
+  public void processWaitsBetweenRequestsToSameHost() throws Exception {
+    String sameHostUrl1 = "https://same.example.com/a.png";
+    String sameHostUrl2 = "https://same.example.com/b.png";
+    File file1 = File.createTempFile("QMAClone", ".png");
+    File file2 = File.createTempFile("QMAClone", ".png");
+    when(imageUtils.getInputCacheFile(sameHostUrl1)).thenReturn(file1);
+    when(imageUtils.getInputCacheFile(sameHostUrl2)).thenReturn(file2);
+    when(imageUtils.isImage(file1)).thenReturn(true);
+    when(imageUtils.isImage(file2)).thenReturn(true);
+
+    List<Long> startedAtNanos = new CopyOnWriteArrayList<>();
+    org.mockito.Mockito.doAnswer(invocation -> {
+      startedAtNanos.add(System.nanoTime());
+      return null;
+    }).when(downloader).downloadToFile(any(URL.class), any(File.class));
+
+    ImageLinkChecker imageLinkChecker = new ImageLinkChecker(imageUtils, downloader, 120, 2);
+    imageLinkChecker.process(createProblem(sameHostUrl1));
+    imageLinkChecker.process(createProblem(sameHostUrl2));
+    imageLinkChecker.getImageLinks();
+
+    assertThat(startedAtNanos).hasSize(2);
+    Collections.sort(startedAtNanos);
+    long elapsedMillis = TimeUnit.NANOSECONDS.toMillis(startedAtNanos.get(1) - startedAtNanos.get(0));
+    assertThat(elapsedMillis).isAtLeast(100L);
+  }
+
+  @Test
+  public void processAllowsParallelRequestsToDifferentHosts() throws Exception {
+    String url1 = "https://host-a.example.com/a.png";
+    String url2 = "https://host-b.example.com/b.png";
+    File file1 = File.createTempFile("QMAClone", ".png");
+    File file2 = File.createTempFile("QMAClone", ".png");
+    when(imageUtils.getInputCacheFile(url1)).thenReturn(file1);
+    when(imageUtils.getInputCacheFile(url2)).thenReturn(file2);
+    when(imageUtils.isImage(file1)).thenReturn(true);
+    when(imageUtils.isImage(file2)).thenReturn(true);
+
+    AtomicInteger activeDownloads = new AtomicInteger();
+    AtomicInteger maxActiveDownloads = new AtomicInteger();
+    org.mockito.Mockito.doAnswer(invocation -> {
+      int current = activeDownloads.incrementAndGet();
+      maxActiveDownloads.updateAndGet(value -> Math.max(value, current));
+      try {
+        Thread.sleep(120L);
+      } finally {
+        activeDownloads.decrementAndGet();
+      }
+      return null;
+    }).when(downloader).downloadToFile(any(URL.class), any(File.class));
+
+    ImageLinkChecker imageLinkChecker = new ImageLinkChecker(imageUtils, downloader, 120, 2);
+    imageLinkChecker.process(createProblem(url1));
+    imageLinkChecker.process(createProblem(url2));
+    imageLinkChecker.getImageLinks();
+
+    assertThat(maxActiveDownloads.get()).isAtLeast(2);
   }
 
   private static PacketProblem createProblem(String url) {
