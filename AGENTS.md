@@ -48,19 +48,27 @@
 ### デプロイ / 配備運用
 - 配備コンテキストはローカル開発環境・本番（自宅サーバー）ともに `QMAClone`（`/QMAClone/`）へ統一し、`QMAClone.war` を基準に運用する。ローカルでは `http://localhost:8080/QMAClone/` を使用し、`http://localhost:8080/QMAClone-1.0-SNAPSHOT/` へは配備しない。
 - `tomcat10` と `nginx` の再起動は影響範囲が広いため、実行前にユーザーの明示許可を取得する。
+- 自宅サーバーでは `/var/www/html/qmaclone` が `/home/nodchip/QMAClone/landing-site/` へのシンボリックリンクで配信される。`landing-site/icon` などの Git 管理外ファイルも運用に必要なため、リポジトリルートで `git clean -fd` を実行しない。
+- 本番環境へデプロイした後は、ランディングサイト配信内容を最新化するため `ssh nighthawk "cd /home/nodchip/QMAClone && git pull --ff-only"` を実行する。
+- サーバー作業でワークツリー初期化が必要な場合は、`landing-site` を除外（例: `git clean -fd -e landing-site/`）するか、別ディレクトリにクリーン clone/worktree を作成して実施する。
 - Tomcat 再配備時は、必要に応じて旧展開物削除とサービス再起動で静的状態を確実に破棄する。
 - Eclipse で不整合が疑われる場合は、`target` と `gwt-unitCache` のクリーンを実施する。
 - 検証（`build` / `test` / `gwt:compile`）が1つでも失敗した場合はデプロイを中断し、修正と再検証完了まで配備しない。
+- 本番へ WAR を配備する前に、`target/QMAClone-1.0-SNAPSHOT.war` のサイズが通常値から極端に乖離していないことと、`jar tf` で `tv.dyndns.kishibe.qmaclone.QMAClone/*.cache.js` が含まれることを確認する。満たさない場合は配備を中止する。
 - 修正を含む依頼では、実行成果物に影響する変更（サーバー/クライアント/CSS/配備スクリプト）を行ったら、完了報告前に `deploy_qmaclone_tomcat10.ps1` でローカル `QMAClone` へ必ずデプロイする（ユーザーが「デプロイ不要」を明示した場合のみ省略可）。旧 `deploy_qmaclone_tomcat9.ps1` は互換ラッパーとしてのみ使用する。
-- デプロイ後は公開経路のHTTP疎通を確認し、実行コマンドと結果を完了報告に残す。
+- デプロイ後は公開経路のHTTP疎通を確認し、実行コマンドと結果を完了報告に残す。本番サーバーで変更した場合は `https://kishibe.dyndns.tv/...` の公開URLで確認し、`127.0.0.1` / `localhost` の確認だけで完了扱いにしない。
 1. `/` の `HTTP 200`（nginx -> apache 経路）
 2. `/QMAClone/` の `HTTP 200`（nginx -> tomcat 経路）
-3. `/QMAClone/tv.dyndns.kishibe.qmaclone.QMAClone/service` の `HTTP 405`
+3. `/QMAClone/tv.dyndns.kishibe.qmaclone.QMAClone/service` の `HTTP 405`（Tomcat直）または `HTTP 400`（nginx 公開経路の GET）
 4. `/QMAClone/tv.dyndns.kishibe.qmaclone.QMAClone/service?warmup=1` の `HTTP 200`
 5. `/QMAClone/websocket` の Upgrade 疎通（`101 Switching Protocols` もしくはサーバーログで Upgrade 成功を確認）
 6. ローカル配備時は `/QMAClone-1.0-SNAPSHOT/` の `HTTP 404`（誤配備なし）を確認する
 - 新規の運用ログ/メモはルート直下へ置かず、`ops/log/` と `ops/notes/` 配下へ配置する。
 - 新規/更新の運用補助スクリプトは `ops/scripts/` 配下へ配置し、既存ルートスクリプトは段階移行で扱う。
+
+### リリース情報運用
+- `landing-site/history-data.js` の更新履歴はプレイヤー目線で記述し、プレイ時に体感できる変化（何が便利になったか、何が直ったか）を優先して書く。
+- `landing-site/index.html` の `history-data.js` 読み込みは `history-data.js?v=<バージョン>` 形式を維持し、`landing-site/history-data.js` を更新した場合はクエリ値も同時に更新して配信キャッシュを明示的に切り替える。
 
 ### Nginx / Upstream 運用（nighthawk）
 - `502/504` 調査は `nginx error.log` -> upstream 待受 (`ss -ltnp`) -> upstream サービス状態 (`systemctl status`) の順で実施する。
