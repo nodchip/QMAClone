@@ -110,6 +110,29 @@ public class DownloaderTest {
     verify(request, times(1)).execute();
   }
 
+  @Test
+  public void downloadToFileShouldDisableExecuteErrorException() throws Exception {
+    HttpTransport transport = Mockito.mock(HttpTransport.class);
+    HttpRequestFactory factory = Mockito.mock(HttpRequestFactory.class);
+    HttpRequest request = Mockito.mock(HttpRequest.class);
+    HttpResponse response = Mockito.mock(HttpResponse.class);
+
+    when(transport.createRequestFactory()).thenReturn(factory);
+    when(factory.buildGetRequest(any(GenericUrl.class))).thenReturn(request);
+    when(request.execute()).thenReturn(response);
+    when(response.getStatusCode()).thenReturn(200);
+    when(response.getContent()).thenReturn(new ByteArrayInputStream("OK".getBytes(StandardCharsets.UTF_8)));
+
+    Downloader downloader = new Downloader(transport);
+    File file = File.createTempFile("QMAClone", null);
+    file.deleteOnExit();
+
+    downloader.downloadToFile(new URL("https://example.com/image.png"), file);
+
+    verify(request).setFollowRedirects(false);
+    verify(request).setThrowExceptionOnExecuteError(false);
+  }
+
   private static Downloader newDownloader(byte[] body, HttpResponseException exception) throws Exception {
     HttpTransport transport = Mockito.mock(HttpTransport.class);
     HttpRequestFactory factory = Mockito.mock(HttpRequestFactory.class);

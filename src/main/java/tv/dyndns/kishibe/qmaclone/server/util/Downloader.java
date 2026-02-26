@@ -124,6 +124,7 @@ public class Downloader {
         }
         HttpRequest getRequest = requestFactory.buildGetRequest(new GenericUrl(currentUrl.toString()));
         getRequest.setFollowRedirects(false);
+        getRequest.setThrowExceptionOnExecuteError(false);
 
         HttpResponse getResponse;
         try {
