@@ -304,9 +304,9 @@
   .lobbyPlayerHistoryName {
     display: block;
     width: 100%;
-    white-space: normal;
-    word-break: break-all;
-    overflow-wrap: anywhere;
+    white-space: nowrap;
+    word-break: normal;
+    overflow-wrap: normal;
     text-align: center;
     font-weight: bold;
     font-size: 11px;
