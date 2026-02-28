@@ -47,15 +47,15 @@
 
 ### デプロイ / 配備運用
 - 配備コンテキストはローカル開発環境・本番（自宅サーバー）ともに `QMAClone`（`/QMAClone/`）へ統一し、`QMAClone.war` を基準に運用する。ローカルでは `http://localhost:8080/QMAClone/` を使用し、`http://localhost:8080/QMAClone-1.0-SNAPSHOT/` へは配備しない。
-- `tomcat10` と `nginx` の再起動は影響範囲が広いため、実行前にユーザーの明示許可を取得する。
-- 自宅サーバーでは `/var/www/html/qmaclone` が `/home/nodchip/QMAClone/landing-site/` へのシンボリックリンクで配信される。`landing-site/icon` などの Git 管理外ファイルも運用に必要なため、リポジトリルートで `git clean -fd` を実行しない。
+- 本番環境（`nighthawk`）で `tomcat10` または `nginx` を再起動する前に、必ずユーザーへ「再起動してよいか」を確認し、許可が出るまで実行しない。
+- ローカル開発環境の Tomcat 再起動は、事前確認なしで実行してよい。
+- 自宅サーバーでは `/var/www/html/qmaclone` が `/home/nodchip/QMAClone/landing-site/` へのシンボリックリンクで配信される。`landing-site/icon` などの運用ファイルを保護するため、サーバー作業でクリーンアップが必要でも `git clean -fd` を直接実行せず、`git clean -fd -e landing-site/` か別ディレクトリのクリーン clone/worktree を使う。
 - 本番環境へデプロイした後は、ランディングサイト配信内容を最新化するため `ssh nighthawk "cd /home/nodchip/QMAClone && git pull --ff-only"` を実行する。
-- サーバー作業でワークツリー初期化が必要な場合は、`landing-site` を除外（例: `git clean -fd -e landing-site/`）するか、別ディレクトリにクリーン clone/worktree を作成して実施する。
-- Tomcat 再配備時は、必要に応じて旧展開物削除とサービス再起動で静的状態を確実に破棄する。
+- Tomcat 再配備時は、旧展開物削除とサービス再起動で静的状態を破棄する。本番で再起動が必要な場合は上記の許可を先に取得する。
 - Eclipse で不整合が疑われる場合は、`target` と `gwt-unitCache` のクリーンを実施する。
 - 検証（`build` / `test` / `gwt:compile`）が1つでも失敗した場合はデプロイを中断し、修正と再検証完了まで配備しない。
 - 本番へ WAR を配備する前に、`target/QMAClone-1.0-SNAPSHOT.war` のサイズが通常値から極端に乖離していないことと、`jar tf` で `tv.dyndns.kishibe.qmaclone.QMAClone/*.cache.js` が含まれることを確認する。満たさない場合は配備を中止する。
-- 修正を含む依頼では、実行成果物に影響する変更（サーバー/クライアント/CSS/配備スクリプト）を行ったら、完了報告前に `deploy_qmaclone_tomcat10.ps1` でローカル `QMAClone` へ必ずデプロイする（ユーザーが「デプロイ不要」を明示した場合のみ省略可）。旧 `deploy_qmaclone_tomcat9.ps1` は互換ラッパーとしてのみ使用する。
+- 修正を含む依頼では、実行成果物に影響する変更（サーバー/クライアント/CSS/配備スクリプト）を行ったら、完了報告前に `deploy_qmaclone_tomcat10.ps1` でローカル `QMAClone` へデプロイする（ユーザーが「デプロイ不要」を明示した場合のみ省略可）。旧 `deploy_qmaclone_tomcat9.ps1` は互換ラッパーとしてのみ使用する。
 - デプロイ後は公開経路のHTTP疎通を確認し、実行コマンドと結果を完了報告に残す。本番サーバーで変更した場合は `https://kishibe.dyndns.tv/...` の公開URLで確認し、`127.0.0.1` / `localhost` の確認だけで完了扱いにしない。
 1. `/` の `HTTP 200`（nginx -> apache 経路）
 2. `/QMAClone/` の `HTTP 200`（nginx -> tomcat 経路）
