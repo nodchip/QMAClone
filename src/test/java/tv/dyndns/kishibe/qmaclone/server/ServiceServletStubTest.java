@@ -578,6 +578,15 @@ public class ServiceServletStubTest {
   }
 
   @Test
+  public void generateDiffHtmlShouldHandleNullInputs() throws Exception {
+    String html = service.generateDiffHtml(null, null);
+
+    assertThat(html).contains("項目差分");
+    assertThat(html).contains("全文差分");
+    assertThat(html).contains("変更はありません。");
+  }
+
+  @Test
   public void registerShouldRequestServerStatusUpdateBeforeAndAfterPlayerJoin() throws Exception {
     PacketPlayerSummary playerSummary = new PacketPlayerSummary();
     playerSummary.name = "プレイヤー";

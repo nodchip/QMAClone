@@ -1475,11 +1475,13 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
 
   @Override
   public String generateDiffHtml(String before, String after) throws ServiceException {
+    String beforeSafe = Strings.nullToEmpty(before);
+    String afterSafe = Strings.nullToEmpty(after);
     diff_match_patch differ = new diff_match_patch();
-    LinkedList<Diff> diffs = differ.diff_main(before, after);
+    LinkedList<Diff> diffs = differ.diff_main(beforeSafe, afterSafe);
     differ.diff_cleanupSemantic(diffs);
     String fullDiffHtml = differ.diff_prettyHtml(diffs).replaceAll("&para;", "");
-    String summaryDiffHtml = generateSummaryDiff(before, after);
+    String summaryDiffHtml = generateSummaryDiff(beforeSafe, afterSafe);
     StringBuilder builder = new StringBuilder();
     builder.append("<style>");
     builder.append(
