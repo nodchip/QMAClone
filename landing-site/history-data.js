@@ -2,7 +2,7 @@ window.QMA_UPDATE_HISTORY = [
   {
     "date": "26/02/28",
     "version": "2.003",
-    "detail": "・画面デザインと導線を見直し、対戦開始までの操作をわかりやすくした ・ロビーや管理系画面の表示不整合を修正し、設定内容が正しく見えるようにした ・公開環境の配信経路を整理し、HTTPS経由でのアクセス安定性を改善した"
+    "detail": "・手書き認識で handwriting-ja.model 欠落時にエラーになる不具合を修正した ・generateDiffHtml で Null inputs 例外が発生する不具合を修正した"
   },
   {
     "date": "26/02/26",
