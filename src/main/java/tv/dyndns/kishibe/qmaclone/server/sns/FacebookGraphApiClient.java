@@ -5,6 +5,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.List;
+import java.util.logging.Logger;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -18,6 +19,7 @@ import tv.dyndns.kishibe.qmaclone.server.util.DownloaderException;
  * Graph APIアクセスを集約するクライアント。
  */
 public class FacebookGraphApiClient {
+  private static final Logger logger = Logger.getLogger(FacebookGraphApiClient.class.getName());
   private final Downloader downloader;
 
   @Inject
@@ -29,14 +31,26 @@ public class FacebookGraphApiClient {
       throws DownloaderException {
     String url = "https://graph.facebook.com/v22.0/oauth/access_token?client_id=" + encode(appId)
         + "&client_secret=" + encode(appSecret) + "&redirect_uri=" + encode(redirectUri) + "&code=" + encode(code);
-    return extractJsonValue(downloadAsString(url), "access_token");
+    String responseJson = downloadAsString(url);
+    String accessToken = extractJsonValue(responseJson, "access_token");
+    if (Strings.isNullOrEmpty(accessToken)) {
+      logger.warning("Facebook code交換レスポンスにaccess_tokenが含まれていません: "
+          + trimForLog(responseJson));
+    }
+    return accessToken;
   }
 
   public String exchangeToLongLivedUserToken(String appId, String appSecret, String shortLivedToken)
       throws DownloaderException {
     String url = "https://graph.facebook.com/v22.0/oauth/access_token?grant_type=fb_exchange_token&client_id="
         + encode(appId) + "&client_secret=" + encode(appSecret) + "&fb_exchange_token=" + encode(shortLivedToken);
-    return extractJsonValue(downloadAsString(url), "access_token");
+    String responseJson = downloadAsString(url);
+    String accessToken = extractJsonValue(responseJson, "access_token");
+    if (Strings.isNullOrEmpty(accessToken)) {
+      logger.warning("Facebook long-lived交換レスポンスにaccess_tokenが含まれていません: "
+          + trimForLog(responseJson));
+    }
+    return accessToken;
   }
 
   public String extractExpiresIn(String accessTokenResponseJson) {
@@ -47,9 +61,19 @@ public class FacebookGraphApiClient {
     String url = "https://graph.facebook.com/v22.0/me/accounts?access_token=" + encode(userAccessToken);
     String json = downloadAsString(url);
     if (Strings.isNullOrEmpty(pageId)) {
-      return extractJsonValue(json, "access_token");
+      String pageAccessToken = extractJsonValue(json, "access_token");
+      if (Strings.isNullOrEmpty(pageAccessToken)) {
+        logger.warning("Facebook /me/accounts レスポンスにaccess_tokenが見つかりません: "
+            + trimForLog(json));
+      }
+      return pageAccessToken;
     }
-    return extractPageAccessTokenById(json, pageId);
+    String pageAccessToken = extractPageAccessTokenById(json, pageId);
+    if (Strings.isNullOrEmpty(pageAccessToken)) {
+      logger.warning("Facebook /me/accounts に指定ページIDのaccess_tokenが見つかりません: pageId=" + pageId
+          + " response=" + trimForLog(json));
+    }
+    return pageAccessToken;
   }
 
   private String extractPageAccessTokenById(String json, String pageId) {
@@ -101,5 +125,13 @@ public class FacebookGraphApiClient {
     } catch (UnsupportedEncodingException e) {
       throw new IllegalStateException(e);
     }
+  }
+
+  private String trimForLog(String value) {
+    if (Strings.isNullOrEmpty(value)) {
+      return "";
+    }
+    String compact = value.replaceAll("\\s+", " ");
+    return compact.length() > 400 ? compact.substring(0, 400) + "..." : compact;
   }
 }
