@@ -100,10 +100,12 @@ function Test-IsAdministrator {
   return $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 }
 
-function Restart-ServiceWithElevation {
-  param([string]$Name)
+function Invoke-ElevatedPowerShell {
+  param(
+    [string]$Command,
+    [string]$FailureMessage
+  )
 
-  $escapedName = $Name.Replace("'", "''")
   [string[]]$elevatedArguments = @(
     "-NoLogo",
     "-NoProfile",
@@ -111,23 +113,57 @@ function Restart-ServiceWithElevation {
     "-ExecutionPolicy",
     "Bypass",
     "-Command",
-    "Restart-Service -Name '$escapedName' -Force"
+    $Command
   )
 
   try {
-    # Prefer hidden launch and fall back to minimized window if needed.
     $process = Start-Process -FilePath "powershell.exe" -ArgumentList $elevatedArguments -Verb RunAs -WindowStyle Hidden -Wait -PassThru
   } catch {
     try {
       $process = Start-Process -FilePath "powershell.exe" -ArgumentList $elevatedArguments -Verb RunAs -WindowStyle Minimized -Wait -PassThru
     } catch {
-      throw "Failed to restart service with UAC elevation. Elevation may have been canceled."
+      throw $FailureMessage
     }
   }
 
   if ($process.ExitCode -ne 0) {
-    throw "Failed to restart service with UAC elevation. Exit code: $($process.ExitCode)"
+    throw "$FailureMessage Exit code: $($process.ExitCode)"
   }
+}
+
+function Test-IsAccessDeniedError {
+  param([System.Exception]$Exception)
+
+  if ($null -eq $Exception) {
+    return $false
+  }
+
+  if ($Exception -is [System.UnauthorizedAccessException]) {
+    return $true
+  }
+
+  $messages = @()
+  if ($Exception.Message) {
+    $messages += $Exception.Message
+  }
+  if ($Exception.InnerException -and $Exception.InnerException.Message) {
+    $messages += $Exception.InnerException.Message
+  }
+
+  foreach ($message in $messages) {
+    if ($message -match "(?i)access.+denied" -or $message -match "アクセス.+拒否") {
+      return $true
+    }
+  }
+  return $false
+}
+
+function Restart-ServiceWithElevation {
+  param([string]$Name)
+
+  $escapedName = $Name.Replace("'", "''")
+  Invoke-ElevatedPowerShell -Command "Restart-Service -Name '$escapedName' -Force" `
+    -FailureMessage "Failed to restart service with UAC elevation. Elevation may have been canceled."
 }
 
 function Remove-ItemWithElevationFallback {
@@ -148,14 +184,7 @@ function Remove-ItemWithElevationFallback {
     }
     return
   } catch {
-    $exception = $_.Exception
-    $isUnauthorized = $exception -is [System.UnauthorizedAccessException]
-    $isAccessDeniedMessage = $false
-    if ($exception -and $exception.Message) {
-      $isAccessDeniedMessage = $exception.Message -match "Access to the path .* is denied"
-    }
-
-    if ((Test-IsAdministrator) -or (-not ($isUnauthorized -or $isAccessDeniedMessage))) {
+    if ((Test-IsAdministrator) -or (-not (Test-IsAccessDeniedError -Exception $_.Exception))) {
       throw
     }
   }
@@ -164,35 +193,35 @@ function Remove-ItemWithElevationFallback {
   $escapedPath = $Path.Replace("'", "''")
   $recurseOption = if ($Recurse) { "-Recurse" } else { "" }
   $removeCommand = "Remove-Item -LiteralPath '$escapedPath' -Force $recurseOption"
-  [string[]]$elevatedArguments = @(
-    "-NoLogo",
-    "-NoProfile",
-    "-NonInteractive",
-    "-ExecutionPolicy",
-    "Bypass",
-    "-Command",
-    $removeCommand
-  )
-
-  try {
-    # Prefer hidden launch and fall back to minimized window if needed.
-    $process = Start-Process -FilePath "powershell.exe" -ArgumentList $elevatedArguments -Verb RunAs -WindowStyle Hidden -Wait -PassThru
-  } catch {
-    try {
-      $process = Start-Process -FilePath "powershell.exe" -ArgumentList $elevatedArguments -Verb RunAs -WindowStyle Minimized -Wait -PassThru
-    } catch {
-      throw "Failed to remove path with UAC elevation. Elevation may have been canceled: $Path"
-    }
-  }
-
-  # Treat as success if the target is already gone, even when elevated process returned non-zero.
-  if ($process.ExitCode -ne 0 -and (Test-Path -LiteralPath $Path)) {
-    throw "Failed to remove path with UAC elevation. Exit code: $($process.ExitCode) path=$Path"
-  }
+  Invoke-ElevatedPowerShell -Command $removeCommand `
+    -FailureMessage "Failed to remove path with UAC elevation. Elevation may have been canceled: $Path"
 
   if (Test-Path -LiteralPath $Path) {
     throw "Failed to remove path even after UAC elevation: $Path"
   }
+}
+
+function Copy-ItemWithElevationFallback {
+  param(
+    [string]$SourcePath,
+    [string]$DestinationPath
+  )
+
+  try {
+    Copy-Item -LiteralPath $SourcePath -Destination $DestinationPath -Force -ErrorAction Stop
+    return
+  } catch {
+    if ((Test-IsAdministrator) -or (-not (Test-IsAccessDeniedError -Exception $_.Exception))) {
+      throw
+    }
+  }
+
+  Write-Warning "Access denied while copying WAR. Retry with UAC elevation: $DestinationPath"
+  $escapedSource = $SourcePath.Replace("'", "''")
+  $escapedDestination = $DestinationPath.Replace("'", "''")
+  $copyCommand = "Copy-Item -LiteralPath '$escapedSource' -Destination '$escapedDestination' -Force"
+  Invoke-ElevatedPowerShell -Command $copyCommand `
+    -FailureMessage "Failed to copy WAR with UAC elevation. Elevation may have been canceled: $DestinationPath"
 }
 
 function Sync-GwtArtifacts {
@@ -452,7 +481,7 @@ if ($restartPerformed) {
 }
 
 Write-Host "Deploy WAR to: $deployedWarPath"
-Copy-Item -LiteralPath $resolvedSourceWar -Destination $deployedWarPath -Force
+Copy-ItemWithElevationFallback -SourcePath $resolvedSourceWar -DestinationPath $deployedWarPath
 
 $contextPath = "/$webAppName"
 $baseUri = "http://$($HostName):$resolvedTomcatHttpPort$contextPath/"
