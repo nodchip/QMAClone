@@ -1,5 +1,10 @@
 window.QMA_UPDATE_HISTORY = [
   {
+    "date": "26/03/03",
+    "version": "2.004",
+    "detail": "・Facebook連携の更新フローを改善し、連携設定を更新しやすくした ・Facebook投稿のトークン更新処理を見直し、連携切れ時の復旧性を改善した"
+  },
+  {
     "date": "26/02/28",
     "version": "2.003",
     "detail": "・手書き認識で handwriting-ja.model 欠落時にエラーになる不具合を修正した ・generateDiffHtml で Null inputs 例外が発生する不具合を修正した"
