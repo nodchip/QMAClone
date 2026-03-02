@@ -1,6 +1,7 @@
 package tv.dyndns.kishibe.qmaclone.server.sns;
 
 import com.google.common.base.Preconditions;
+import com.google.common.cache.CacheLoader.InvalidCacheLoadException;
 import com.google.inject.Inject;
 
 import tv.dyndns.kishibe.qmaclone.server.database.Database;
@@ -25,9 +26,9 @@ public class FacebookTokenRepository {
   }
 
   public FacebookTokenState load() throws DatabaseException {
-    return new FacebookTokenState(database.getPassword(KEY_USER_ACCESS_TOKEN),
-        database.getPassword(KEY_USER_ACCESS_TOKEN_EXPIRES_AT), database.getPassword(KEY_PAGE_ID),
-        database.getPassword(KEY_PAGE_ACCESS_TOKEN));
+    return new FacebookTokenState(loadOptionalPassword(KEY_USER_ACCESS_TOKEN),
+        loadOptionalPassword(KEY_USER_ACCESS_TOKEN_EXPIRES_AT), loadOptionalPassword(KEY_PAGE_ID),
+        loadOptionalPassword(KEY_PAGE_ACCESS_TOKEN));
   }
 
   public void saveUserToken(String userAccessToken, String expiresAtEpochSecond) throws DatabaseException {
@@ -41,11 +42,18 @@ public class FacebookTokenRepository {
   }
 
   public String loadAppId() throws DatabaseException {
-    return database.getPassword(KEY_APP_ID);
+    return loadOptionalPassword(KEY_APP_ID);
   }
 
   public String loadAppSecret() throws DatabaseException {
-    return database.getPassword(KEY_APP_SECRET);
+    return loadOptionalPassword(KEY_APP_SECRET);
+  }
+
+  private String loadOptionalPassword(String key) throws DatabaseException {
+    try {
+      return database.getPassword(key);
+    } catch (InvalidCacheLoadException e) {
+      return null;
+    }
   }
 }
-

@@ -1,11 +1,14 @@
 package tv.dyndns.kishibe.qmaclone.server.sns;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.Test;
+
+import com.google.common.cache.CacheLoader.InvalidCacheLoadException;
 
 import tv.dyndns.kishibe.qmaclone.server.database.Database;
 
@@ -40,5 +43,15 @@ public class FacebookTokenRepositoryTest {
     verify(database).setPassword(FacebookTokenRepository.KEY_PAGE_ID, "page-id");
     verify(database).setPassword(FacebookTokenRepository.KEY_PAGE_ACCESS_TOKEN, "page-token");
   }
-}
 
+  @Test
+  public void loadAppSecretShouldReturnNullWhenPasswordIsMissing() throws Exception {
+    Database database = mock(Database.class);
+    when(database.getPassword(FacebookTokenRepository.KEY_APP_SECRET))
+        .thenThrow(new InvalidCacheLoadException("missing"));
+
+    FacebookTokenRepository repository = new FacebookTokenRepository(database);
+
+    assertNull(repository.loadAppSecret());
+  }
+}
