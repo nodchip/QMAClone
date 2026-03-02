@@ -19,6 +19,9 @@ public class PanelSettingAdministrator extends TabPanel {
 		presenter.setView(new PanelSettingRestrictedUserView(presenter));
 		add(presenter, "制限ユーザー");
 
+		// Facebook連携
+		add(new PanelSettingFacebookAuth(), "Facebook連携");
+
 		selectTab(0);
 	}
 

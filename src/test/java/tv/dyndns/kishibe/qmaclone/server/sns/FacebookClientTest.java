@@ -2,16 +2,11 @@ package tv.dyndns.kishibe.qmaclone.server.sns;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.net.URL;
-
 import org.junit.jupiter.api.Test;
-
-import tv.dyndns.kishibe.qmaclone.server.database.Database;
-import tv.dyndns.kishibe.qmaclone.server.util.Downloader;
 
 /**
  * {@link FacebookClient} のテスト。
@@ -22,13 +17,10 @@ public class FacebookClientTest {
    */
   @Test
   public void getPageAccessTokenShouldReturnAccessToken() throws Exception {
-    Database mockDatabase = mock(Database.class);
-    Downloader mockDownloader = mock(Downloader.class);
-    when(mockDatabase.getPassword("facebook_access_token")).thenReturn("token");
-    when(mockDownloader.downloadAsString(any(URL.class)))
-        .thenReturn("{\"data\":[{\"access_token\":\"page-token\"}]}");
+    FacebookAuthService authService = mock(FacebookAuthService.class);
+    when(authService.getValidPageAccessToken()).thenReturn("page-token");
 
-    FacebookClient client = new FacebookClient(mockDatabase, mockDownloader);
+    FacebookClient client = new FacebookClient(authService);
 
     assertEquals("page-token", client.getPageAccessToken());
   }
@@ -38,15 +30,38 @@ public class FacebookClientTest {
    */
   @Test
   public void getPageAccessTokenShouldReturnNullWhenTokenDoesNotExist() throws Exception {
-    Database mockDatabase = mock(Database.class);
-    Downloader mockDownloader = mock(Downloader.class);
-    when(mockDatabase.getPassword("facebook_access_token")).thenReturn("token");
-    when(mockDownloader.downloadAsString(any(URL.class)))
-        .thenReturn("{\"data\":[]}");
+    FacebookAuthService authService = mock(FacebookAuthService.class);
+    when(authService.getValidPageAccessToken()).thenReturn(null);
 
-    FacebookClient client = new FacebookClient(mockDatabase, mockDownloader);
+    FacebookClient client = new FacebookClient(authService);
 
     assertNull(client.getPageAccessToken());
+  }
+
+  /**
+   * 投稿時に初回失敗した場合はページトークン再取得を試みることを確認する。
+   */
+  @Test
+  public void postThemeModeUpdateShouldRetryWithRefreshedTokenWhenFirstPostFails() {
+    FacebookAuthService authService = mock(FacebookAuthService.class);
+    when(authService.getValidPageAccessToken()).thenReturn("first-token");
+    when(authService.refreshPageAccessTokenFromUserToken()).thenReturn("second-token");
+
+    FacebookClient client = new FacebookClient(authService) {
+      private int publishCount = 0;
+
+      @Override
+      void publishWithAccessToken(String accessToken, String message) {
+        publishCount++;
+        if (publishCount == 1) {
+          throw new RuntimeException("first publish failed");
+        }
+      }
+    };
+
+    client.postThemeModeUpdate("test");
+    verify(authService).getValidPageAccessToken();
+    verify(authService).refreshPageAccessTokenFromUserToken();
   }
 }
 
