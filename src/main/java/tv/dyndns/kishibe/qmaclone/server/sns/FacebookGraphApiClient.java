@@ -4,8 +4,13 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.security.GeneralSecurityException;
 import java.util.List;
 import java.util.logging.Logger;
+
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -57,8 +62,10 @@ public class FacebookGraphApiClient {
     return extractJsonValue(accessTokenResponseJson, "expires_in");
   }
 
-  public String fetchPageAccessToken(String userAccessToken, String pageId) throws DownloaderException {
-    String url = "https://graph.facebook.com/v22.0/me/accounts?access_token=" + encode(userAccessToken);
+  public String fetchPageAccessToken(String userAccessToken, String pageId, String appSecret)
+      throws DownloaderException {
+    String url = "https://graph.facebook.com/v22.0/me/accounts?access_token=" + encode(userAccessToken)
+        + "&appsecret_proof=" + encode(createAppSecretProof(userAccessToken, appSecret));
     String json = downloadAsString(url);
     if (Strings.isNullOrEmpty(pageId)) {
       String pageAccessToken = extractJsonValue(json, "access_token");
@@ -133,5 +140,21 @@ public class FacebookGraphApiClient {
     }
     String compact = value.replaceAll("\\s+", " ");
     return compact.length() > 400 ? compact.substring(0, 400) + "..." : compact;
+  }
+
+  String createAppSecretProof(String accessToken, String appSecret) {
+    try {
+      Mac mac = Mac.getInstance("HmacSHA256");
+      mac.init(new SecretKeySpec(Strings.nullToEmpty(appSecret).getBytes(StandardCharsets.UTF_8),
+          "HmacSHA256"));
+      byte[] digest = mac.doFinal(Strings.nullToEmpty(accessToken).getBytes(StandardCharsets.UTF_8));
+      StringBuilder builder = new StringBuilder(digest.length * 2);
+      for (byte b : digest) {
+        builder.append(String.format("%02x", b));
+      }
+      return builder.toString();
+    } catch (GeneralSecurityException e) {
+      throw new IllegalStateException("appsecret_proof の生成に失敗しました", e);
+    }
   }
 }

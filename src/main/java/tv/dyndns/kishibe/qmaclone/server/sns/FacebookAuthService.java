@@ -46,7 +46,13 @@ public class FacebookAuthService {
       if (Strings.isNullOrEmpty(state.getUserAccessToken())) {
         return null;
       }
-      String pageToken = graphApiClient.fetchPageAccessToken(state.getUserAccessToken(), state.getPageId());
+      String appSecret = repository.loadAppSecret();
+      if (Strings.isNullOrEmpty(appSecret)) {
+        logger.warning("Facebookページトークン更新に必要なappSecretが未設定です。");
+        return null;
+      }
+      String pageToken =
+          graphApiClient.fetchPageAccessToken(state.getUserAccessToken(), state.getPageId(), appSecret);
       if (Strings.isNullOrEmpty(pageToken)) {
         return null;
       }

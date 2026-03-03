@@ -28,7 +28,9 @@ public class FacebookAuthServiceTest {
     FacebookTokenRepository repository = mock(FacebookTokenRepository.class);
     FacebookGraphApiClient graphApiClient = mock(FacebookGraphApiClient.class);
     when(repository.load()).thenReturn(new FacebookTokenState("user-token", "0", "page-id", null));
-    when(graphApiClient.fetchPageAccessToken("user-token", "page-id")).thenReturn("new-page-token");
+    when(repository.loadAppSecret()).thenReturn("app-secret");
+    when(graphApiClient.fetchPageAccessToken("user-token", "page-id", "app-secret"))
+        .thenReturn("new-page-token");
 
     FacebookAuthService service = new FacebookAuthService(repository, graphApiClient);
     String token = service.refreshPageAccessTokenFromUserToken();
@@ -47,7 +49,7 @@ public class FacebookAuthServiceTest {
         .thenReturn("short");
     when(graphApiClient.exchangeToLongLivedUserToken("app-id", "app-secret", "short")).thenReturn("long");
     when(repository.load()).thenReturn(new FacebookTokenState("long", "0", "page-id", null));
-    when(graphApiClient.fetchPageAccessToken("long", "page-id")).thenReturn("page-token");
+    when(graphApiClient.fetchPageAccessToken("long", "page-id", "app-secret")).thenReturn("page-token");
 
     FacebookAuthService service = new FacebookAuthService(repository, graphApiClient);
     boolean result = service.refreshTokensByAuthorizationCode("code", "https://callback");
