@@ -1,0 +1,5 @@
+[client]
+# 利用ユーザーに合わせて設定する
+user=root
+password=CHANGE_ME
+host=127.0.0.1

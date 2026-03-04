@@ -25,3 +25,7 @@
 ## レガシー運用ファイル
 - ルート直下の標準運用スクリプトは `deploy_qmaclone_tomcat10.ps1` です。
 - `deploy_qmaclone_tomcat9.ps1` は互換ラッパーとして残置しています。
+
+## バックアップ補助
+- DB バックアップは `ops/scripts/backup/backup_qmaclone_db.sh` を使用します。
+- 認証情報は `ops/scripts/backup/mysql-client.cnf.example` を複製して配置し、`MYSQL_CNF` 環境変数で指定します。
