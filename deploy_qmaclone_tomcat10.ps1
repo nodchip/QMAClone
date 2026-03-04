@@ -84,13 +84,27 @@ function Resolve-MavenCommand {
 function Invoke-ExternalCommand {
   param(
     [string]$FilePath,
-    [string[]]$Arguments
+    [string[]]$Arguments,
+    [string[]]$ForbiddenOutputPatterns = @()
   )
 
   Write-Host "Run: $FilePath $($Arguments -join ' ')"
-  & $FilePath @Arguments
+  $commandOutput = & $FilePath @Arguments 2>&1
+  if ($null -ne $commandOutput) {
+    $commandOutput | ForEach-Object { Write-Host $_ }
+  }
+
   if ($LASTEXITCODE -ne 0) {
     throw "Command failed with exit code ${LASTEXITCODE}: $FilePath $($Arguments -join ' ')"
+  }
+
+  if ($ForbiddenOutputPatterns.Count -gt 0) {
+    $outputText = ($commandOutput | Out-String)
+    foreach ($pattern in $ForbiddenOutputPatterns) {
+      if ($outputText -match $pattern) {
+        throw "Command output matched forbidden pattern '$pattern': $FilePath $($Arguments -join ' ')"
+      }
+    }
   }
 }
 
@@ -395,6 +409,8 @@ if (-not $SkipBuild) {
     "-Dgwt.style=PRETTY",
     "-Dgwt.optimize=9",
     "gwt:compile"
+  ) -ForbiddenOutputPatterns @(
+    "Ignored\\s+\\d+\\s+units\\s+with\\s+compilation errors"
   )
 
   $gwtOutputDir = Join-Path -Path $workspaceRoot -ChildPath "target\QMAClone-1.0-SNAPSHOT\tv.dyndns.kishibe.qmaclone.QMAClone"
