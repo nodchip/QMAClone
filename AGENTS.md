@@ -45,6 +45,12 @@
 4. サーバーログの例外確認（500/503、初期化失敗）
 - クライアントログには接続先 URL を含め、追跡可能な形で出力する。
 
+### Facebook連携運用
+- `password` テーブルは `type varchar(32)` / `password NOT NULL` の制約がある前提で扱い、保存キー名は32文字以内、保存値は `null` を許可しない。
+- Facebook Graph API のサーバーサイド呼び出し（例: `/me/accounts`）では `appsecret_proof` を必ず付与する。
+- Facebook連携失敗時は `auth/start` / `auth/callback` のアクセスログ時刻と同時刻の `tomcat10` ログを突き合わせ、`oauth/access_token` と `/me/accounts` のどちらで失敗したかを切り分ける。
+- `/me/accounts` が `400` の場合は、保存済み `facebook_user_access_token` を使った直接呼び出しでエラー本文を取得し、権限不足かリクエスト不足かを確定してから修正する。
+
 ### デプロイ / 配備運用
 - 配備コンテキストはローカル開発環境・本番（自宅サーバー）ともに `QMAClone`（`/QMAClone/`）へ統一し、`QMAClone.war` を基準に運用する。ローカルでは `http://localhost:8080/QMAClone/` を使用し、`http://localhost:8080/QMAClone-1.0-SNAPSHOT/` へは配備しない。
 - 本番環境（`nighthawk`）で `tomcat10` または `nginx` を再起動する前に、必ずユーザーへ「再起動してよいか」を確認し、許可が出るまで実行しない。
