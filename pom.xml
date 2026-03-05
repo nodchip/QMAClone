@@ -22,7 +22,7 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <third.party.dir>${project.basedir}/third_party</third.party.dir>
     <zinnia.library.dir>C:/home/nodchip/zinnia/zinnia</zinnia.library.dir>
-    <jetty.version>9.4.58.v20250814</jetty.version>
+    <jetty.version>12.0.31</jetty.version>
     <gwt.skipCompilation>true</gwt.skipCompilation>
     <surefire.skip>true</surefire.skip>
     <surefire.dbtest.excludes>**/tv/dyndns/kishibe/qmaclone/server/database/**/*Test.java</surefire.dbtest.excludes>
