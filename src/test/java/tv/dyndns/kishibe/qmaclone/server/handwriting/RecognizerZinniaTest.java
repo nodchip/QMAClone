@@ -6,9 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.util.Random;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,8 +19,7 @@ public class RecognizerZinniaTest {
 
 	@BeforeEach
 	public void requireZinniaNative() {
-		boolean exists = Files.exists(Paths.get("C:/home/nodchip/zinnia/zinnia/zinnia.dll"));
-		assumeTrue(exists, "zinnia.dll が見つからないためスキップ");
+		assumeTrue(ZinniaTestEnvironment.isReady(), ZinniaTestEnvironment.getSkipReason());
 	}
 
 	@Inject
