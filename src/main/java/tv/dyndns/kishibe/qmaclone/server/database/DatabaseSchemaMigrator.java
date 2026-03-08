@@ -15,6 +15,8 @@ import com.google.common.base.Strings;
  */
 public class DatabaseSchemaMigrator {
   private static final String PLAYER_TABLE = "player";
+  private static final String PROBLEM_TABLE = "problem";
+  private static final String PROBLEM_ID_COLUMN = "ID";
   private static final String AUTH_PROVIDER_COLUMN = "AUTH_PROVIDER";
   private static final String AUTH_SUB_COLUMN = "AUTH_SUB";
   private static final String AUTH_INDEX_NAME = "UQ_PLAYER_AUTH_PROVIDER_SUB";
@@ -68,6 +70,33 @@ public class DatabaseSchemaMigrator {
     ensureColumnExists(activeSchema, SOUND_RESULT_VOLUME_COLUMN, "DOUBLE NOT NULL DEFAULT 1.0");
     ensureColumnExists(activeSchema, SOUND_MUTED_COLUMN, "BOOLEAN NOT NULL DEFAULT FALSE");
     ensureColumnExists(activeSchema, SOUND_SETTINGS_VERSION_COLUMN, "INT NOT NULL DEFAULT 1");
+  }
+
+  /**
+   * problem.ID 列を不足時のみ自動採番へ移行する。
+   */
+  public void migrateProblemIdAutoIncrement() throws DatabaseException {
+    String activeSchema = Strings.isNullOrEmpty(schemaName) ? loadSchemaName() : schemaName;
+    if (Strings.isNullOrEmpty(activeSchema)) {
+      return;
+    }
+
+    try {
+      long count =
+          runner.query(
+              "SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ? AND COLUMN_NAME = ? AND EXTRA = 'auto_increment'",
+              new ScalarHandler<Long>(),
+              activeSchema,
+              PROBLEM_TABLE,
+              PROBLEM_ID_COLUMN);
+      if (count != 0) {
+        return;
+      }
+
+      runner.update("ALTER TABLE problem MODIFY COLUMN ID INT NOT NULL AUTO_INCREMENT");
+    } catch (SQLException e) {
+      throw new DatabaseException(e);
+    }
   }
 
   private String loadSchemaName() throws DatabaseException {

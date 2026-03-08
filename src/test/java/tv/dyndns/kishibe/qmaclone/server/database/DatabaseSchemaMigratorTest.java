@@ -97,6 +97,32 @@ public class DatabaseSchemaMigratorTest {
     assertTrue(runner.getUpdates().isEmpty());
   }
 
+  @Test
+  public void migrateProblemIdAutoIncrementShouldAlterWhenMissing() throws Exception {
+    RecordingQueryRunner runner = new RecordingQueryRunner();
+    runner.setColumnCount("ID:auto_increment", 0L);
+
+    DatabaseSchemaMigrator migrator = new DatabaseSchemaMigrator(runner, "qmaclone");
+    migrator.migrateProblemIdAutoIncrement();
+
+    assertEquals(1, runner.getUpdates().size());
+    assertTrue(
+        runner
+            .getUpdates()
+            .contains("ALTER TABLE problem MODIFY COLUMN ID INT NOT NULL AUTO_INCREMENT"));
+  }
+
+  @Test
+  public void migrateProblemIdAutoIncrementShouldSkipWhenAlreadyEnabled() throws Exception {
+    RecordingQueryRunner runner = new RecordingQueryRunner();
+    runner.setColumnCount("ID:auto_increment", 1L);
+
+    DatabaseSchemaMigrator migrator = new DatabaseSchemaMigrator(runner, "qmaclone");
+    migrator.migrateProblemIdAutoIncrement();
+
+    assertTrue(runner.getUpdates().isEmpty());
+  }
+
   /**
    * QueryRunner の呼び出しを記録するテストダブル。
    */
@@ -122,7 +148,11 @@ public class DatabaseSchemaMigratorTest {
     public <T> T query(String sql, ResultSetHandler<T> rsh, Object... params) throws SQLException {
       if (sql.contains("INFORMATION_SCHEMA.COLUMNS")) {
         String columnName = (String) params[2];
-        return (T) Long.valueOf(columnCounts.containsKey(columnName) ? columnCounts.get(columnName) : 0L);
+        String key = columnName;
+        if (sql.contains("EXTRA = 'auto_increment'")) {
+          key = columnName + ":auto_increment";
+        }
+        return (T) Long.valueOf(columnCounts.containsKey(key) ? columnCounts.get(key) : 0L);
       }
       if (sql.contains("INFORMATION_SCHEMA.STATISTICS")) {
         return (T) Long.valueOf(indexCount);

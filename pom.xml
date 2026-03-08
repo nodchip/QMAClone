@@ -454,11 +454,8 @@
           <sourceLevel>11</sourceLevel>
           <!-- Compiler configuration -->
           <compilerArgs>
-            <!-- Ask GWT to create the Story of Your Compile (SOYC) (gwt:compile) -->
-            <arg>-compileReport</arg>
-            <arg>-XcompilerMetrics</arg>
             <arg>-style</arg>
-            <arg>PRETTY</arg>
+            <arg>OBF</arg>
             <arg>-optimize</arg>
             <arg>9</arg>
             <arg>-XnoclassMetadata</arg>
@@ -513,6 +510,29 @@
                 <jvmArg>--add-opens=java.base/java.lang.reflect=ALL-UNNAMED</jvmArg>
                 <jvmArg>--add-opens=java.base/java.io=ALL-UNNAMED</jvmArg>
               </jvmArgs>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>gwt-compile-analyze</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>net.ltgt.gwt.maven</groupId>
+            <artifactId>gwt-maven-plugin</artifactId>
+            <configuration>
+              <compilerArgs>
+                <arg>-compileReport</arg>
+                <arg>-XcompilerMetrics</arg>
+                <arg>-style</arg>
+                <arg>PRETTY</arg>
+                <arg>-optimize</arg>
+                <arg>9</arg>
+                <arg>-XnoclassMetadata</arg>
+                <arg>-XnocheckCasts</arg>
+              </compilerArgs>
             </configuration>
           </plugin>
         </plugins>

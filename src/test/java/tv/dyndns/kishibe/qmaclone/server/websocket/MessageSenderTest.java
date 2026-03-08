@@ -1,7 +1,9 @@
 package tv.dyndns.kishibe.qmaclone.server.websocket;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -44,12 +46,16 @@ public class MessageSenderTest {
   @Mock
   private ScheduledFuture mockScheduledFuture;
   private MessageSender<FakeMessage> sender;
+  private Runnable pingTask;
 
   @SuppressWarnings("unchecked")
   @BeforeEach
   public void setUp() throws Exception {
-    when(mockThreadPool.scheduleAtFixedRate(any(Runnable.class), eq(25L), eq(25L),
-        eq(TimeUnit.SECONDS))).thenReturn(mockScheduledFuture);
+    doAnswer(invocation -> {
+      pingTask = invocation.getArgument(0);
+      return mockScheduledFuture;
+    }).when(mockThreadPool).scheduleAtFixedRate(any(Runnable.class), eq(25L), eq(25L),
+        eq(TimeUnit.SECONDS));
 
     sender = new MessageSender<MessageSenderTest.FakeMessage>(mockThreadPool) {
       @Override
@@ -105,5 +111,43 @@ public class MessageSenderTest {
     handlers.get(0).onResult(new SendResult());
 
     verify(mockAsyncRemoteEndpoint, times(2)).sendText(eq(MESSAGE), any(SendHandler.class));
+  }
+
+  @Test
+  public void pingShouldNotBeQueuedMoreThanOnceWhileSending() {
+    when(mockSession.getAsyncRemote()).thenReturn(mockAsyncRemoteEndpoint);
+    List<String> sentMessages = new ArrayList<>();
+    List<SendHandler> handlers = new ArrayList<>();
+    doAnswer(invocation -> {
+      sentMessages.add(invocation.getArgument(0));
+      handlers.add(invocation.getArgument(1));
+      return null;
+    }).when(mockAsyncRemoteEndpoint).sendText(anyString(), any(SendHandler.class));
+
+    sender.join(mockSession);
+    sender.send(new FakeMessage());
+    pingTask.run();
+    pingTask.run();
+
+    verify(mockAsyncRemoteEndpoint, times(1)).sendText(anyString(), any(SendHandler.class));
+
+    handlers.get(0).onResult(new SendResult());
+
+    verify(mockAsyncRemoteEndpoint, times(2)).sendText(anyString(), any(SendHandler.class));
+    org.junit.jupiter.api.Assertions.assertEquals(List.of(MESSAGE, ""), sentMessages);
+  }
+
+  @Test
+  public void sendShouldCloseSessionWhenPendingMessagesExceedLimit() throws Exception {
+    when(mockSession.getAsyncRemote()).thenReturn(mockAsyncRemoteEndpoint);
+    doAnswer(invocation -> null).when(mockAsyncRemoteEndpoint).sendText(eq(MESSAGE), any(SendHandler.class));
+
+    sender.join(mockSession);
+    sender.send(new FakeMessage());
+    for (int i = 0; i < 300; ++i) {
+      sender.send(new FakeMessage());
+    }
+
+    verify(mockSession, atLeastOnce()).close();
   }
 }

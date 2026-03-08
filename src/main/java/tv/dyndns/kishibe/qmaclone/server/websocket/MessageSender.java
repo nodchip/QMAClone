@@ -18,6 +18,7 @@ import tv.dyndns.kishibe.qmaclone.server.ThreadPool;
 
 public abstract class MessageSender<T> implements Closeable {
   private static final Logger logger = Logger.getLogger(MessageSender.class.getName());
+  private static final int MAX_PENDING_MESSAGES = 256;
   private final Map<Object, Connection> sessions = new ConcurrentHashMap<>();
   private final ThreadPool threadPool;
   private final ScheduledFuture<?> futurePing;
@@ -31,19 +32,19 @@ public abstract class MessageSender<T> implements Closeable {
   private final Runnable runnablePing = new Runnable() {
     @Override
     public void run() {
-      send("");
+      send("", true);
     }
   };
 
   public void send(T data) {
     String json = encode(data);
-    send(json);
+    send(json, false);
   }
 
-  private void send(String json) {
+  private void send(String json, boolean ping) {
     for (Connection connection : sessions.values()) {
       try {
-        connection.send(json);
+        connection.send(json, ping);
       } catch (Exception e) {
         logger.log(Level.WARNING,
             "WebSocket でのデータ送信に失敗しました。接続を閉じます。remoteAddress="
@@ -83,7 +84,7 @@ public abstract class MessageSender<T> implements Closeable {
   protected abstract String encode(T data);
 
   private interface Connection {
-    void send(String json);
+    void send(String json, boolean ping);
 
     void close();
 
@@ -97,14 +98,26 @@ public abstract class MessageSender<T> implements Closeable {
     private final Queue<String> pendingMessages = new ConcurrentLinkedQueue<>();
     private final AtomicBoolean sending = new AtomicBoolean(false);
     private final AtomicBoolean closed = new AtomicBoolean(false);
+    private final AtomicBoolean pingQueued = new AtomicBoolean(false);
 
     private JavaxConnection(jakarta.websocket.Session session) {
       this.session = Preconditions.checkNotNull(session);
     }
 
     @Override
-    public void send(String json) {
+    public void send(String json, boolean ping) {
       if (closed.get()) {
+        return;
+      }
+      if (ping) {
+        if (!pingQueued.compareAndSet(false, true)) {
+          return;
+        }
+      } else if (pendingMessages.size() >= MAX_PENDING_MESSAGES) {
+        logger.log(Level.WARNING,
+            "WebSocket の送信キューが上限を超えたため接続を閉じます。remoteAddress="
+                + getRemoteAddress());
+        closeAndRemove();
         return;
       }
       pendingMessages.offer(json);
@@ -135,19 +148,27 @@ public abstract class MessageSender<T> implements Closeable {
       }
 
       session.getAsyncRemote().sendText(next, result -> {
+        if (next.isEmpty()) {
+          pingQueued.set(false);
+        }
         if (!result.isOK()) {
           logger.log(Level.WARNING,
               "WebSocket でのデータ送信に失敗しました。接続を閉じます。remoteAddress="
                   + getRemoteAddress(),
               result.getException());
           sending.set(false);
-          pendingMessages.clear();
-          close();
-          sessions.remove(getSessionKey());
+          closeAndRemove();
           return;
         }
         sendNext();
       });
+    }
+
+    private void closeAndRemove() {
+      pendingMessages.clear();
+      pingQueued.set(false);
+      close();
+      sessions.remove(getSessionKey());
     }
 
     @Override
@@ -155,6 +176,7 @@ public abstract class MessageSender<T> implements Closeable {
       if (!closed.compareAndSet(false, true)) {
         return;
       }
+      pingQueued.set(false);
       try {
         session.close();
       } catch (IOException e) {

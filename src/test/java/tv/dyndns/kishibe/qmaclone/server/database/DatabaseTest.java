@@ -14,9 +14,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.math.BigInteger;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -53,6 +54,7 @@ import tv.dyndns.kishibe.qmaclone.client.packet.PacketMonth;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblem;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblemCreationLog;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblemMinimum;
+import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblemSearchResult;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketRankingData;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketSimilarProblem;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketThemeModeEditLog;
@@ -69,6 +71,7 @@ import tv.dyndns.kishibe.qmaclone.server.testing.GuiceInjectionExtension;
 import tv.dyndns.kishibe.qmaclone.server.util.Normalizer;
 
 import com.google.common.base.MoreObjects;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -484,6 +487,57 @@ public class DatabaseTest {
   }
 
   @Test
+  public void searchProblemShouldReturnIdAscendingOrder() throws Exception {
+    List<PacketProblem> problems = database.searchProblem("クイズ", null, false,
+        EnumSet.noneOf(ProblemGenre.class), EnumSet.noneOf(ProblemType.class),
+        EnumSet.noneOf(RandomFlag.class));
+
+    assertFalse(problems.isEmpty());
+    for (int i = 1; i < problems.size(); ++i) {
+      assertTrue(
+          "problems[" + (i - 1) + "].id=" + problems.get(i - 1).id
+              + " problems[" + i + "].id=" + problems.get(i).id,
+          problems.get(i - 1).id <= problems.get(i).id);
+    }
+  }
+
+  @Test
+  public void searchProblemPageShouldReturnRequestedSlice() throws Exception {
+    List<PacketProblem> allProblems = database.searchProblem("クイズ", null, false,
+        EnumSet.noneOf(ProblemGenre.class), EnumSet.noneOf(ProblemType.class),
+        EnumSet.noneOf(RandomFlag.class));
+
+    PacketProblemSearchResult page = database.searchProblemPage("クイズ", null, false,
+        EnumSet.noneOf(ProblemGenre.class), EnumSet.noneOf(ProblemType.class),
+        EnumSet.noneOf(RandomFlag.class), 5, 7);
+
+    assertEquals(allProblems.size(), page.totalCount);
+    assertEquals(5, page.offset);
+    assertEquals(7, page.limit);
+    assertEquals(allProblems.subList(5, 12), page.problems);
+  }
+
+  @Test
+  public void searchProblemPageShouldReturnIdAscendingSlice() throws Exception {
+    List<PacketProblem> allProblems = database.searchProblem("クイズ", null, false,
+        EnumSet.noneOf(ProblemGenre.class), EnumSet.noneOf(ProblemType.class),
+        EnumSet.noneOf(RandomFlag.class));
+
+    PacketProblemSearchResult page = database.searchProblemPage("クイズ", null, false,
+        EnumSet.noneOf(ProblemGenre.class), EnumSet.noneOf(ProblemType.class),
+        EnumSet.noneOf(RandomFlag.class), 5, 7);
+
+    assertEquals(allProblems.size(), page.totalCount);
+    assertEquals(5, page.offset);
+    assertEquals(7, page.limit);
+    assertEquals(allProblems.subList(5, 12), page.problems);
+
+    for (int i = 1; i < page.problems.size(); ++i) {
+      assertTrue(page.problems.get(i - 1).id <= page.problems.get(i).id);
+    }
+  }
+
+  @Test
   public void testSearchProblemNot() throws Exception {
     List<PacketProblem> problems;
 
@@ -702,6 +756,32 @@ public class DatabaseTest {
   }
 
   @Test
+  public void getLatestChatDataShouldNotDependOnCachedDatabaseUserLookup() throws Exception {
+    final int userCode = 87654321;
+    runner.update("DELETE FROM chat_log WHERE USER_CODE = ?", userCode);
+
+    PacketChatMessage message = new PacketChatMessage();
+    message.userCode = userCode;
+    message.name = "name";
+    message.body = "body";
+    message.classLevel = 1;
+    message.remoteAddress = FAKE_REMOTE_ADDRESS;
+    database.addChatLog(message);
+
+    Database failingCachedDatabase = mock(Database.class);
+    when(failingCachedDatabase.getUserData(anyInt()))
+        .thenThrow(new AssertionError("cachedDatabase.getUserData should not be called"));
+    when(failingCachedDatabase.getServerIgnoreUserCode()).thenReturn(ImmutableSet.of());
+
+    DirectDatabase directDatabase =
+        new DirectDatabase(runner, failingCachedDatabase, null, wrongAnswerHandler);
+
+    Map<Integer, PacketChatMessage> latestChatData = directDatabase.getLatestChatData();
+
+    assertThat(latestChatData.keySet(), not(empty()));
+  }
+
+  @Test
   public void testGetProblemCreationHistory() throws Exception {
     long countUserCode = (long) runner.query(
         "SELECT COUNT(*) FROM creation_log WHERE USER_CODE = 111", new ScalarHandler<Long>());
@@ -743,10 +823,10 @@ public class DatabaseTest {
     database.buildBbsThread(FAKE_BBS_ID, thread, response);
     assertEquals(count + 1, database.getBbsThreads(FAKE_BBS_ID, 0, Integer.MAX_VALUE).size());
     assertEquals(count + 1, database.getNumberOfBbsThread(FAKE_BBS_ID));
+    assertEquals(thread.id, response.threadId);
+    assertTrue(0 < thread.id);
 
-    int threadId = runner.query("SELECT MAX(id) FROM bbs_thread", new ScalarHandler<BigInteger>())
-        .intValue();
-    List<PacketBbsResponse> responses = database.getBbsResponses(threadId, 10);
+    List<PacketBbsResponse> responses = database.getBbsResponses((int) thread.id, 10);
     assertThat(responses.size(), greaterThan(0));
     assertThat(responses.size(), lessThanOrEqualTo(11));
   }

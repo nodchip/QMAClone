@@ -28,7 +28,7 @@ import java.util.logging.Logger;
 import tv.dyndns.kishibe.qmaclone.client.game.ProblemGenre;
 import tv.dyndns.kishibe.qmaclone.client.game.ProblemType;
 import tv.dyndns.kishibe.qmaclone.client.game.RandomFlag;
-import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblem;
+import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblemSearchResult;
 import tv.dyndns.kishibe.qmaclone.client.report.ProblemReportUi;
 import tv.dyndns.kishibe.qmaclone.client.ui.WidgetMultiItemSelector;
 
@@ -64,8 +64,38 @@ public class PanelSearchProblem extends VerticalPanel implements ClickHandler, K
   private final WidgetMultiItemSelector<RandomFlag> multiItemSelectorRandomFlag = new WidgetMultiItemSelector<RandomFlag>(
       "ランダム", RandomFlag.values(), 3);;
   private final ListBox listBoxMaxProblemsPerPage = new ListBox();
+  private final HorizontalPanel panelPager = new HorizontalPanel();
+  private final Button buttonPreviousPage = new Button("前へ", this);
+  private final Button buttonNextPage = new Button("次へ", this);
+  private final HTML htmlPageStatus = new HTML();
+  private final VerticalPanel panelResults = new VerticalPanel();
   private final SimplePanel panelGrid = new SimplePanel();
   private int maxProblemsPerPage;
+  private SearchCriteria currentSearchCriteria;
+  private int currentOffset;
+  private int currentTotalCount;
+
+  /**
+   * 検索条件を保持します。
+   */
+  private static class SearchCriteria {
+    private final String query;
+    private final String creator;
+    private final boolean creatorPerfectMatching;
+    private final Set<ProblemGenre> genres;
+    private final Set<ProblemType> types;
+    private final Set<RandomFlag> randomFlags;
+
+    private SearchCriteria(String query, String creator, boolean creatorPerfectMatching,
+        Set<ProblemGenre> genres, Set<ProblemType> types, Set<RandomFlag> randomFlags) {
+      this.query = query;
+      this.creator = creator;
+      this.creatorPerfectMatching = creatorPerfectMatching;
+      this.genres = genres;
+      this.types = types;
+      this.randomFlags = randomFlags;
+    }
+  }
 
   public PanelSearchProblem() {
     setWidth("800px");
@@ -137,7 +167,15 @@ public class PanelSearchProblem extends VerticalPanel implements ClickHandler, K
     buttonSearch.addStyleName("searchProblemSearchButton");
 
     add(buttonSearch);
-    add(panelGrid);
+    panelPager.addStyleName("searchProblemPager");
+    panelPager.setSpacing(8);
+    panelPager.add(buttonPreviousPage);
+    panelPager.add(htmlPageStatus);
+    panelPager.add(buttonNextPage);
+    panelResults.add(panelPager);
+    panelResults.add(panelGrid);
+    add(panelResults);
+    updatePager();
   }
 
   private void search() {
@@ -162,29 +200,70 @@ public class PanelSearchProblem extends VerticalPanel implements ClickHandler, K
 
     setEnabled(false);
 
-    final Set<ProblemGenre> genres = multiItemSelectorGenre.get();
-    final Set<ProblemType> types = multiItemSelectorType.get();
-    final Set<RandomFlag> randomFlags = multiItemSelectorRandomFlag.get();
-    final boolean creatorPerfectMatching = listBoxCreatorMatching.getSelectedIndex() == 0;
-
-    Service.Util.getInstance().searchProblem(query, creator, creatorPerfectMatching, genres, types,
-        randomFlags, callbackSearchProblem);
+    currentSearchCriteria = new SearchCriteria(query, creator, listBoxCreatorMatching.getSelectedIndex() == 0,
+        multiItemSelectorGenre.get(), multiItemSelectorType.get(), multiItemSelectorRandomFlag.get());
+    loadPage(0);
   }
 
-  private final AsyncCallback<List<PacketProblem>> callbackSearchProblem = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<List<PacketProblem>>() {
-    public void onSuccess(List<PacketProblem> result) {
-      panelGrid.setWidget(new ProblemReportUi(result, true, true, maxProblemsPerPage));
+  private void loadPage(int offset) {
+    if (currentSearchCriteria == null) {
+      return;
+    }
+    currentOffset = Math.max(0, offset);
+    updatePager();
+    Service.Util.getInstance().searchProblemPage(currentSearchCriteria.query, currentSearchCriteria.creator,
+        currentSearchCriteria.creatorPerfectMatching, currentSearchCriteria.genres, currentSearchCriteria.types,
+        currentSearchCriteria.randomFlags, currentOffset, maxProblemsPerPage, callbackSearchProblemPage);
+  }
+
+  private final AsyncCallback<PacketProblemSearchResult> callbackSearchProblemPage = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<PacketProblemSearchResult>() {
+    public void onSuccess(PacketProblemSearchResult result) {
+      currentOffset = result.offset;
+      currentTotalCount = result.totalCount;
+      panelGrid.setWidget(new ProblemReportUi(result.problems, true, true, maxProblemsPerPage,
+          buildHitsText(result), false));
+      updatePager();
       setEnabled(true);
     }
 
     public void onFailureRpc(Throwable caught) {
       logger.log(Level.WARNING, "問題の検索に失敗しました", caught);
+      updatePager();
       setEnabled(true);
     }
   };
 
+  private String buildHitsText(PacketProblemSearchResult result) {
+    if (result.totalCount == 0) {
+      return "該当する問題はありません";
+    }
+    int begin = result.offset + 1;
+    int end = Math.min(result.totalCount, result.offset + result.problems.size());
+    return result.totalCount + "件見つかりました（" + begin + " - " + end + "件を表示）";
+  }
+
+  private void updatePager() {
+    boolean hasSearch = currentSearchCriteria != null;
+    buttonPreviousPage.setEnabled(hasSearch && currentOffset > 0);
+    buttonNextPage.setEnabled(hasSearch && currentOffset + maxProblemsPerPage < currentTotalCount);
+    if (!hasSearch) {
+      htmlPageStatus.setHTML("");
+      return;
+    }
+    if (currentTotalCount == 0) {
+      htmlPageStatus.setHTML("0 / 0");
+      return;
+    }
+    int page = currentOffset / Math.max(1, maxProblemsPerPage) + 1;
+    int totalPages = (currentTotalCount + Math.max(1, maxProblemsPerPage) - 1) / Math.max(1, maxProblemsPerPage);
+    htmlPageStatus.setHTML(page + " / " + totalPages);
+  }
+
   private void setEnabled(boolean enabled) {
     buttonSearch.setEnabled(enabled);
+    buttonPreviousPage.setEnabled(enabled && currentSearchCriteria != null && currentOffset > 0);
+    buttonNextPage.setEnabled(
+        enabled && currentSearchCriteria != null && currentOffset + maxProblemsPerPage < currentTotalCount);
     textBoxQuery.setEnabled(enabled);
     textBoxCreator.setEnabled(enabled);
     multiItemSelectorGenre.setEnabled(enabled);
@@ -212,6 +291,12 @@ public class PanelSearchProblem extends VerticalPanel implements ClickHandler, K
     final Object sender = event.getSource();
     if (sender == buttonSearch) {
       search();
+    } else if (sender == buttonPreviousPage) {
+      loadPage(Math.max(0, currentOffset - maxProblemsPerPage));
+      setEnabled(false);
+    } else if (sender == buttonNextPage) {
+      loadPage(currentOffset + maxProblemsPerPage);
+      setEnabled(false);
     }
   }
 

@@ -46,13 +46,19 @@ public class ProblemReportUi extends Composite {
 	public ProblemReportUi(List<PacketProblem> problems, boolean regist, boolean initialSort,
 			int maxProblemsPerPage) {
 		this(ProblemReportRowSorter.fromProblems(problems), regist, initialSort, maxProblemsPerPage,
-				ProblemReportViewOptions.defaults(), true);
+				ProblemReportViewOptions.defaults(), null, regist, true);
 	}
 
 	public ProblemReportUi(List<PacketProblem> problems, boolean regist, boolean initialSort,
 			int maxProblemsPerPage, ProblemReportViewOptions options) {
 		this(ProblemReportRowSorter.fromProblems(problems), regist, initialSort, maxProblemsPerPage,
-				options, true);
+				options, null, regist, true);
+	}
+
+	public ProblemReportUi(List<PacketProblem> problems, boolean regist, boolean initialSort,
+			int maxProblemsPerPage, String hitsTextOverride, boolean showRegisterAll) {
+		this(ProblemReportRowSorter.fromProblems(problems), regist, initialSort, maxProblemsPerPage,
+				ProblemReportViewOptions.defaults(), hitsTextOverride, showRegisterAll, true);
 	}
 
 	/**
@@ -66,11 +72,12 @@ public class ProblemReportUi extends Composite {
 	public static ProblemReportUi fromSimilarProblems(List<PacketSimilarProblem> similarProblems,
 			boolean regist, int maxProblemsPerPage) {
 		return new ProblemReportUi(ProblemReportRowSorter.fromSimilarProblems(similarProblems),
-				regist, false, maxProblemsPerPage, ProblemReportViewOptions.defaults(), true);
+				regist, false, maxProblemsPerPage, ProblemReportViewOptions.defaults(), null, regist, true);
 	}
 
 	private ProblemReportUi(List<ProblemReportRow> rows, boolean regist, boolean initialSort,
-			int maxProblemsPerPage, ProblemReportViewOptions options, boolean rowsModel) {
+			int maxProblemsPerPage, ProblemReportViewOptions options, String hitsTextOverride,
+			boolean showRegisterAll, boolean rowsModel) {
 		this.rows = rows;
 		if (options.useRatioDefaultSort) {
 			ProblemReportRowSorter.sortForRatioReport(rows);
@@ -102,11 +109,12 @@ public class ProblemReportUi extends Composite {
 			htmlHits.setHTML(SafeHtmlUtils.fromString("該当する問題はありません"));
 			htmlHits.addStyleName("problemReportHitsEmpty");
 		} else {
-			htmlHits.setHTML(SafeHtmlUtils.fromString(count + "件見つかりました"));
+			String hitsText = hitsTextOverride == null ? count + "件見つかりました" : hitsTextOverride;
+			htmlHits.setHTML(SafeHtmlUtils.fromString(hitsText));
 			htmlHits.removeStyleName("problemReportHitsEmpty");
 		}
 
-		if (!regist) {
+		if (!regist || !showRegisterAll) {
 			buttonRegisterAll.setVisible(false);
 		}
 	}

@@ -44,6 +44,7 @@ import tv.dyndns.kishibe.qmaclone.client.packet.PacketMonth;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketPlayerSummary;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblem;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblemCreationLog;
+import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblemSearchResult;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketRankingData;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketRatingDistribution;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketReadyForGame;
@@ -247,6 +248,24 @@ public interface Service extends RemoteService {
 	// 問題の検索を行う
 	List<PacketProblem> searchProblem(String query, String creator, boolean creatorPerfectMatching,
 			Set<ProblemGenre> genres, Set<ProblemType> types, Set<RandomFlag> randomFlag) throws ServiceException;
+
+	/**
+	 * 問題の検索を行い、ページング情報付きで返す。
+	 *
+	 * @param query 検索クエリ
+	 * @param creator 問題作成者
+	 * @param creatorPerfectMatching 作成者完全一致フラグ
+	 * @param genres ジャンル
+	 * @param types 出題形式
+	 * @param randomFlag ランダムフラグ
+	 * @param offset 取得開始位置
+	 * @param limit 取得件数
+	 * @return 検索結果
+	 * @throws ServiceException エラー時
+	 */
+	PacketProblemSearchResult searchProblemPage(String query, String creator, boolean creatorPerfectMatching,
+			Set<ProblemGenre> genres, Set<ProblemType> types, Set<RandomFlag> randomFlag, int offset, int limit)
+			throws ServiceException;
 
 	// 類似問題を検索する
 	List<PacketSimilarProblem> searchSimilarProblem(PacketProblem problem) throws ServiceException;

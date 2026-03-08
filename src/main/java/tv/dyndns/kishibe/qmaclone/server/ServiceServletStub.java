@@ -93,6 +93,7 @@ import tv.dyndns.kishibe.qmaclone.client.packet.PacketMonth;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketPlayerSummary;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblem;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblemCreationLog;
+import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblemSearchResult;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketRankingData;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketRatingDistribution;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketReadyForGame;
@@ -784,6 +785,25 @@ public class ServiceServletStub extends RemoteServiceServlet implements Service 
       @Override
       public List<PacketSimilarProblem> access() throws DatabaseException {
         return database.searchSimilarProblemFromDatabase(problem);
+      }
+    });
+  }
+
+  @Override
+  public PacketProblemSearchResult searchProblemPage(final String query, final String creator,
+      final boolean creatorPerfectMatching, final Set<ProblemGenre> genres, final Set<ProblemType> types,
+      final Set<RandomFlag> randomFlags, final int offset, final int limit) throws ServiceException {
+    return wrap("問題の検索に失敗しました", new DatabaseAccessible<PacketProblemSearchResult>() {
+      @Override
+      public PacketProblemSearchResult access() throws DatabaseException {
+        PacketProblemSearchResult result =
+            database.searchProblemPage(query, creator, creatorPerfectMatching, genres, types, randomFlags, offset,
+                limit);
+        ImmutableSet<Integer> usedProblems = ImmutableSet.copyOf(gameManager.getTestingProblemIds());
+        for (PacketProblem problem : result.problems) {
+          problem.testing = usedProblems.contains(problem.id);
+        }
+        return result;
       }
     });
   }

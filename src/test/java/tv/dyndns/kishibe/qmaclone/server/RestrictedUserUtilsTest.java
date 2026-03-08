@@ -1,10 +1,13 @@
 package tv.dyndns.kishibe.qmaclone.server;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import java.lang.reflect.Method;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -78,6 +81,25 @@ public class RestrictedUserUtilsTest {
     verify(mockDatabase, never()).addRestrictedUserCode(FAKE_USER_CODE, FAKE_RESTRICTION_TYPE);
     verify(mockDatabase, never()).addRestrictedRemoteAddress(anyString(),
         any(RestrictionType.class));
+  }
+
+  @Test
+  public void isRestrictedUserShouldReturnTrueIfUserCodeMatchWithoutSaving() throws Exception {
+    when(mockDatabase.getRestrictedUserCodes(FAKE_RESTRICTION_TYPE)).thenReturn(
+        ImmutableSet.of(FAKE_USER_CODE));
+    when(mockDatabase.getRestrictedRemoteAddresses(FAKE_RESTRICTION_TYPE)).thenReturn(
+        ImmutableSet.<String>of());
+
+    Method method = RestrictedUserUtils.class.getMethod(
+        "isRestrictedUser", int.class, String.class, RestrictionType.class);
+    boolean actual =
+        (Boolean) method.invoke(
+            restrictedUserUtils, FAKE_USER_CODE, FAKE_REMOTE_ADDRESS, FAKE_RESTRICTION_TYPE);
+
+    assertTrue(actual);
+    verify(mockDatabase, never()).addRestrictedUserCode(FAKE_USER_CODE, FAKE_RESTRICTION_TYPE);
+    verify(mockDatabase, never()).addRestrictedRemoteAddress(
+        FAKE_REMOTE_ADDRESS, FAKE_RESTRICTION_TYPE);
   }
 
 }

@@ -18,6 +18,24 @@ public class RestrictedUserUtils {
   }
 
   /**
+   * 制限ユーザーかどうかを副作用なしで判定する。
+   *
+   * @param userCode ユーザーコード
+   * @param remoteAddress リモートアドレス
+   * @param restrictionType 制限種別
+   * @return 制限ユーザーなら{@code true}、そうでなければ{@code false}
+   * @throws DatabaseException エラー発生時
+   */
+  public boolean isRestrictedUser(int userCode, String remoteAddress,
+      RestrictionType restrictionType) throws DatabaseException {
+    boolean restrictedUserCode = database.getRestrictedUserCodes(restrictionType)
+        .contains(userCode);
+    boolean restrictedRemoteAddress = !remoteAddress.equals(LOCALHOST)
+        && database.getRestrictedRemoteAddresses(restrictionType).contains(remoteAddress);
+    return restrictedUserCode || restrictedRemoteAddress;
+  }
+
+  /**
    * 制限ユーザーかどうかを調べる。 制限ユーザーの場合はユーザーコードとリモートアドレスのペアが保存される。
    *
    * @param userCode

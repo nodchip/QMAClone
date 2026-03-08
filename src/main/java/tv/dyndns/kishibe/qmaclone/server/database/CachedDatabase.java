@@ -44,6 +44,7 @@ import tv.dyndns.kishibe.qmaclone.client.packet.PacketMonth;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblem;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblemCreationLog;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblemMinimum;
+import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblemSearchResult;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketRankingData;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketSimilarProblem;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketThemeModeEditLog;
@@ -833,6 +834,14 @@ public class CachedDatabase implements Database {
 			Set<RandomFlag> randomFlags) throws DatabaseException {
 		return database.searchProblem(query, creator, creatorPerfectMatching, genres, types,
 				randomFlags);
+	}
+
+	@Override
+	public PacketProblemSearchResult searchProblemPage(String query, String creator,
+			boolean creatorPerfectMatching, Set<ProblemGenre> genres, Set<ProblemType> types,
+			Set<RandomFlag> randomFlags, int offset, int limit) throws DatabaseException {
+		return database.searchProblemPage(query, creator, creatorPerfectMatching, genres, types,
+				randomFlags, offset, limit);
 	}
 
 	@Override

@@ -26,7 +26,6 @@ import static tv.dyndns.kishibe.qmaclone.client.constant.Constant.MAX_NUMBER_OF_
 import static tv.dyndns.kishibe.qmaclone.client.constant.Constant.MAX_NUMBER_OF_CHOICES;
 
 import java.io.IOException;
-import java.math.BigInteger;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -80,6 +79,7 @@ import tv.dyndns.kishibe.qmaclone.client.packet.PacketMonth;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblem;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblemCreationLog;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblemMinimum;
+import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblemSearchResult;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketRankingData;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketSimilarProblem;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketThemeModeEditLog;
@@ -113,8 +113,9 @@ public class DirectDatabase implements Database {
 		try {
 			new DatabaseSchemaMigrator(this.runner).migratePlayerAuthColumns();
 			new DatabaseSchemaMigrator(this.runner).migratePlayerSoundColumns();
+			new DatabaseSchemaMigrator(this.runner).migrateProblemIdAutoIncrement();
 		} catch (DatabaseException e) {
-			throw new IllegalStateException("playerテーブル列の移行に失敗しました", e);
+			throw new IllegalStateException("データベーススキーマの移行に失敗しました", e);
 		}
 	}
 
@@ -458,38 +459,33 @@ public class DirectDatabase implements Database {
 		return fullTextSearch.getThemeModeProblemMinimums(themeAndQueryStrings);
 	}
 
-	private final Object lockAddProblem = new Object();
-
 	// 戻り値は問題番号
 	@Override
 	public int addProblem(PacketProblem problem) throws DatabaseException {
-		synchronized (lockAddProblem) {
-			try {
-				problem.id = runner.query("SELECT MAX(ID) FROM problem", new ScalarHandler<Integer>()) + 1;
-
-				String[] answers = Arrays.copyOf(problem.answers, MAX_NUMBER_OF_ANSWERS);
-				String[] choices = Arrays.copyOf(problem.choices, MAX_NUMBER_OF_CHOICES);
-				for (int i = 0; i < MAX_NUMBER_OF_ANSWERS; ++i) {
-					answers[i] = emptyToNull(answers[i]);
-					choices[i] = emptyToNull(choices[i]);
-				}
-
-				long indication = problem.indication == null ? 0 : problem.indication.getTime();
-				long indicationResolved = problem.indicationResolved == null ? 0 : problem.indicationResolved.getTime();
-				runner.update(
-						"INSERT INTO problem (ID, GENRE, TYPE, SENTENCE, ANSWER0, ANSWER1, ANSWER2, ANSWER3, ANSWER4, ANSWER5, ANSWER6, ANSWER7, CHOICE0, CHOICE1, CHOICE2, CHOICE3, CHOICE4, CHOICE5, CHOICE6, CHOICE7, GOOD, BAD, CREATER, NOTE, IMAGE_ANSWER, IMAGE_CHOICE, RANDOM_FLAG, IMAGE_URL, MOVIE_URL, INDICATION, INDICATION_MESSAGE, INDICATION_RESOLVED, NUMBER_OF_DISPLAYED_CHOICES) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-						problem.id, problem.genre.getIndex(), problem.type.getIndex(), problem.sentence, answers[0],
-						answers[1], answers[2], answers[3], answers[4], answers[5], answers[6], answers[7], choices[0],
-						choices[1], choices[2], choices[3], choices[4], choices[5], choices[6], choices[7],
-						problem.good, problem.bad, problem.creator, problem.note, problem.imageAnswer,
-						problem.imageChoice, problem.randomFlag.getIndex(), problem.imageUrl, problem.movieUrl,
-						indication, problem.indicationMessage, indicationResolved, problem.numberOfDisplayedChoices);
-
-				fullTextSearch.addProblem(problem);
-				return problem.id;
-			} catch (SQLException | IOException e) {
-				throw new DatabaseException(e);
+		try {
+			String[] answers = Arrays.copyOf(problem.answers, MAX_NUMBER_OF_ANSWERS);
+			String[] choices = Arrays.copyOf(problem.choices, MAX_NUMBER_OF_CHOICES);
+			for (int i = 0; i < MAX_NUMBER_OF_ANSWERS; ++i) {
+				answers[i] = emptyToNull(answers[i]);
+				choices[i] = emptyToNull(choices[i]);
 			}
+
+			long indication = problem.indication == null ? 0 : problem.indication.getTime();
+			long indicationResolved = problem.indicationResolved == null ? 0 : problem.indicationResolved.getTime();
+			Number generatedId = runner.insert(
+					"INSERT INTO problem (GENRE, TYPE, SENTENCE, ANSWER0, ANSWER1, ANSWER2, ANSWER3, ANSWER4, ANSWER5, ANSWER6, ANSWER7, CHOICE0, CHOICE1, CHOICE2, CHOICE3, CHOICE4, CHOICE5, CHOICE6, CHOICE7, GOOD, BAD, CREATER, NOTE, IMAGE_ANSWER, IMAGE_CHOICE, RANDOM_FLAG, IMAGE_URL, MOVIE_URL, INDICATION, INDICATION_MESSAGE, INDICATION_RESOLVED, NUMBER_OF_DISPLAYED_CHOICES) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+					new ScalarHandler<Number>(), problem.genre.getIndex(), problem.type.getIndex(), problem.sentence,
+					answers[0], answers[1], answers[2], answers[3], answers[4], answers[5], answers[6], answers[7],
+					choices[0], choices[1], choices[2], choices[3], choices[4], choices[5], choices[6], choices[7],
+					problem.good, problem.bad, problem.creator, problem.note, problem.imageAnswer,
+					problem.imageChoice, problem.randomFlag.getIndex(), problem.imageUrl, problem.movieUrl, indication,
+					problem.indicationMessage, indicationResolved, problem.numberOfDisplayedChoices);
+			problem.id = Preconditions.checkNotNull(generatedId).intValue();
+
+			fullTextSearch.addProblem(problem);
+			return problem.id;
+		} catch (SQLException | IOException e) {
+			throw new DatabaseException(e);
 		}
 	}
 
@@ -543,6 +539,7 @@ public class DirectDatabase implements Database {
 		sb.append(" WHERE ID IN (");
 		sb.append(concat(ids));
 		sb.append(')');
+		sb.append(" ORDER BY ID");
 		try {
 			return runner.query(sb.toString(), problemHandler);
 		} catch (SQLException e) {
@@ -586,6 +583,30 @@ public class DirectDatabase implements Database {
 		List<Integer> problemIds = fullTextSearch.searchProblem(query, creator, creatorPerfectMatching, genres, types,
 				randomFlags);
 		return getProblem(problemIds);
+	}
+
+	@Override
+	public PacketProblemSearchResult searchProblemPage(String query, String creator,
+			boolean creatorPerfectMatching, Set<ProblemGenre> genres, Set<ProblemType> types,
+			Set<RandomFlag> randomFlags, int offset, int limit) throws DatabaseException {
+		FullTextSearch.SearchProblemPageResult page = fullTextSearch.searchProblemPage(query, creator,
+				creatorPerfectMatching, genres, types, randomFlags, offset, limit);
+		PacketProblemSearchResult result = new PacketProblemSearchResult();
+		result.offset = page.offset;
+		result.limit = page.limit;
+		result.totalCount = page.totalCount;
+		Map<Integer, PacketProblem> problemById = Maps.newHashMap();
+		for (PacketProblem problem : getProblem(page.problemIds)) {
+			problemById.put(problem.id, problem);
+		}
+		result.problems = Lists.newArrayListWithCapacity(page.problemIds.size());
+		for (int problemId : page.problemIds) {
+			PacketProblem problem = problemById.get(problemId);
+			if (problem != null) {
+				result.problems.add(problem);
+			}
+		}
+		return result;
 	}
 
 	private String concat(Collection<?> objects) {
@@ -836,16 +857,13 @@ public class DirectDatabase implements Database {
 
 	@Override
 	public Map<Integer, PacketChatMessage> getLatestChatData() throws DatabaseException {
-		Map<Integer, PacketChatMessage> result;
 		try {
-			result = runner.query("SELECT * FROM chat_log ORDER BY RES_ID DESC LIMIT 100", latestChatDataHandler);
+			return runner.query(
+					"SELECT c.*, p.IMAGE_FILE_NAME FROM chat_log c LEFT JOIN player p ON c.USER_CODE = p.USER_CODE ORDER BY c.RES_ID DESC LIMIT 100",
+					latestChatDataHandler);
 		} catch (SQLException e) {
 			throw new DatabaseException(e);
 		}
-		for (PacketChatMessage chatData : result.values()) {
-			chatData.imageFileName = cachedDatabase.getUserData(chatData.userCode).imageFileName;
-		}
-		return result;
 	}
 
 	private static final AbstractKeyedHandler<Integer, PacketChatMessage> latestChatDataHandler = new AbstractKeyedHandler<Integer, PacketChatMessage>() {
@@ -859,6 +877,7 @@ public class DirectDatabase implements Database {
 			data.classLevel = rs.getInt("CLASS_LEVEL");
 			data.userCode = rs.getInt("USER_CODE");
 			data.remoteAddress = rs.getString("MACHINE_IP");
+			data.imageFileName = rs.getString("IMAGE_FILE_NAME");
 			return data;
 		}
 
@@ -946,23 +965,19 @@ public class DirectDatabase implements Database {
 		}
 	}
 
-	private final Object lockBuildBbsThread = new Object();
-
 	@Override
 	public void buildBbsThread(int bbsId, PacketBbsThread thread, PacketBbsResponse response) throws DatabaseException {
-		synchronized (lockBuildBbsThread) {
-			try {
-				runner.update("INSERT INTO bbs_thread (lastUpdate, title, bbsId) VALUES (?, ?, ?)",
-						System.currentTimeMillis(), thread.title, bbsId);
-				thread.id = runner.query("SELECT MAX(id) FROM bbs_thread", new ScalarHandler<BigInteger>()).longValue();
-				response.threadId = thread.id;
-				runner.update(
-						"INSERT INTO bbs_response (threadId, name, userCode, machineIp, dispInfo, postTime, body) VALUES (?, ?, ?, ?, ?, ?, ?)",
-						response.threadId, response.name, response.userCode, response.remoteAddress, response.dispInfo,
-						System.currentTimeMillis(), response.body);
-			} catch (SQLException e) {
-				throw new DatabaseException(e);
-			}
+		try {
+			Number generatedId = runner.insert("INSERT INTO bbs_thread (lastUpdate, title, bbsId) VALUES (?, ?, ?)",
+					new ScalarHandler<Number>(), System.currentTimeMillis(), thread.title, bbsId);
+			thread.id = Preconditions.checkNotNull(generatedId).longValue();
+			response.threadId = thread.id;
+			runner.update(
+					"INSERT INTO bbs_response (threadId, name, userCode, machineIp, dispInfo, postTime, body) VALUES (?, ?, ?, ?, ?, ?, ?)",
+					response.threadId, response.name, response.userCode, response.remoteAddress, response.dispInfo,
+					System.currentTimeMillis(), response.body);
+		} catch (SQLException e) {
+			throw new DatabaseException(e);
 		}
 	}
 

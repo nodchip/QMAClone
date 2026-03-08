@@ -5,6 +5,7 @@ param(
   [switch]$SkipBuild,
   [int]$GwtLocalWorkers = 0,
   [bool]$GwtDraftCompile = $true,
+  [switch]$AnalyzeGwtCompile,
   [switch]$ReleaseBuild,
   [string]$HostName = "localhost",
   [int]$StartupWaitTimeoutSeconds = 300
@@ -400,16 +401,19 @@ if (-not $SkipBuild) {
   $resolvedGwtLocalWorkers = Resolve-GwtLocalWorkers -RequestedWorkers $GwtLocalWorkers
   $effectiveGwtDraftCompile = if ($ReleaseBuild) { $false } else { $GwtDraftCompile }
   $draftCompileValue = $effectiveGwtDraftCompile.ToString().ToLowerInvariant()
-
-  Invoke-ExternalCommand -FilePath $maven -Arguments @("compile")
-  Invoke-ExternalCommand -FilePath $maven -Arguments @(
+  [string[]]$gwtCompileArguments = @(
     "-Dgwt.skipCompilation=false",
     "-Dgwt.localWorkers=$resolvedGwtLocalWorkers",
     "-Dgwt.draftCompile=$draftCompileValue",
-    "-Dgwt.style=PRETTY",
-    "-Dgwt.optimize=9",
-    "gwt:compile"
-  ) -ForbiddenOutputPatterns @(
+    "-Dgwt.optimize=9"
+  )
+  if ($AnalyzeGwtCompile) {
+    $gwtCompileArguments += "-Pgwt-compile-analyze"
+  }
+  $gwtCompileArguments += "gwt:compile"
+
+  Invoke-ExternalCommand -FilePath $maven -Arguments @("compile")
+  Invoke-ExternalCommand -FilePath $maven -Arguments $gwtCompileArguments -ForbiddenOutputPatterns @(
     "Ignored\\s+\\d+\\s+units\\s+with\\s+compilation errors"
   )
 

@@ -21,7 +21,6 @@
 //THE SOFTWARE.
 package tv.dyndns.kishibe.qmaclone.server;
 
-import java.util.Map.Entry;
 import java.util.NavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.ExecutionException;
@@ -118,6 +117,13 @@ public class ChatManager {
 
     message.remoteAddress = remoteAddress;
     message.date = System.currentTimeMillis();
+    try {
+      message.restricted = restrictedUserUtils.isRestrictedUser(message.userCode, remoteAddress,
+          RestrictionType.CHAT);
+    } catch (DatabaseException e) {
+      logger.log(Level.WARNING, "制限ユーザー判定に失敗しました。通常ユーザーとして処理を続行します。", e);
+      message.restricted = false;
+    }
     synchronized (writeLock) {
       message.resId = data.isEmpty() ? 1 : (data.lastEntry().getValue().resId + 1);
       data.put(message.resId, message);
@@ -146,18 +152,16 @@ public class ChatManager {
    */
   public PacketChatMessages read(int nextResponseId) {
     NavigableMap<Integer, PacketChatMessage> data = getData();
-    for (Entry<Integer, PacketChatMessage> entry : data.entrySet()) {
-      PacketChatMessage chatData = entry.getValue();
-      int userCode = chatData.userCode;
-      String remoteAddress = chatData.remoteAddress;
+    NavigableMap<Integer, PacketChatMessage> unreadMessages = data.tailMap(nextResponseId, true);
+    for (PacketChatMessage chatData : unreadMessages.values()) {
       try {
-        chatData.restricted = restrictedUserUtils.checkAndUpdateRestrictedUser(userCode,
-            remoteAddress, RestrictionType.CHAT);
+        chatData.restricted = restrictedUserUtils.isRestrictedUser(chatData.userCode,
+            chatData.remoteAddress, RestrictionType.CHAT);
       } catch (DatabaseException e) {
-        logger.log(Level.WARNING, "制限ユーザーの取得に失敗しました。処理を続行します。", entry);
+        logger.log(Level.WARNING, "制限ユーザーの取得に失敗しました。処理を続行します。", e);
       }
     }
-    return PacketChatMessages.fromMessages(data.tailMap(nextResponseId).values());
+    return PacketChatMessages.fromMessages(unreadMessages.values());
   }
 
   /**

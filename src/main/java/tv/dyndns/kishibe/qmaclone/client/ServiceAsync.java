@@ -45,6 +45,7 @@ import tv.dyndns.kishibe.qmaclone.client.packet.PacketMonth;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketPlayerSummary;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblem;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblemCreationLog;
+import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblemSearchResult;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketRankingData;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketRatingDistribution;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketReadyForGame;
@@ -171,6 +172,13 @@ public interface ServiceAsync {
 	// 問題の検索を行う
 	void searchProblem(String query, String creator, boolean creatorPerfectMatching, Set<ProblemGenre> genres,
 			Set<ProblemType> types, Set<RandomFlag> randomFlag, AsyncCallback<List<PacketProblem>> callback);
+
+	/**
+	 * 問題の検索を行い、ページング情報付きで返す。
+	 */
+	void searchProblemPage(String query, String creator, boolean creatorPerfectMatching, Set<ProblemGenre> genres,
+			Set<ProblemType> types, Set<RandomFlag> randomFlag, int offset, int limit,
+			AsyncCallback<PacketProblemSearchResult> callback);
 
 	// 類似問題を検索する
 	void searchSimilarProblem(PacketProblem problem, AsyncCallback<List<PacketSimilarProblem>> callback);

@@ -2,8 +2,10 @@ package tv.dyndns.kishibe.qmaclone.client;
 
 import org.junit.Test;
 
+import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Widget;
 
 public class PanelSearchProblemTextTest extends QMACloneGWTTestCaseBase {
 	@Test
@@ -20,5 +22,31 @@ public class PanelSearchProblemTextTest extends QMACloneGWTTestCaseBase {
 		PanelSearchProblem panel = new PanelSearchProblem();
 		Button searchButton = (Button) panel.getWidget(panel.getWidgetCount() - 2);
 		assertEquals("検索する", searchButton.getText());
+	}
+
+	@Test
+	public void testPaginationButtonsExist() {
+		PanelSearchProblem panel = new PanelSearchProblem();
+		assertNotNull(findButton(panel, "前へ"));
+		assertNotNull(findButton(panel, "次へ"));
+	}
+
+	private Button findButton(Widget root, String text) {
+		if (root instanceof Button) {
+			Button button = (Button) root;
+			if (text.equals(button.getText())) {
+				return button;
+			}
+		}
+		if (root instanceof ComplexPanel) {
+			ComplexPanel panel = (ComplexPanel) root;
+			for (int i = 0; i < panel.getWidgetCount(); i++) {
+				Button found = findButton(panel.getWidget(i), text);
+				if (found != null) {
+					return found;
+				}
+			}
+		}
+		return null;
 	}
 }

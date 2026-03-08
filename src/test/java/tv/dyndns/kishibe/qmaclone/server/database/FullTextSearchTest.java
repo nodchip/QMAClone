@@ -12,6 +12,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -30,6 +31,7 @@ import tv.dyndns.kishibe.qmaclone.server.util.IntArray;
 import tv.dyndns.kishibe.qmaclone.server.util.Normalizer;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
@@ -64,6 +66,16 @@ public class FullTextSearchTest {
     Path actual = FullTextSearch.resolveIndexFileDirectory();
     assertNotNull(actual);
     assertEquals(tempIndexDirectory, actual);
+  }
+
+  @Test
+  public void calculateSearchProblemPageWindowSizeShouldUseOffsetPlusLimit() {
+    assertEquals(12, FullTextSearch.calculateSearchProblemPageWindowSize(5, 7));
+  }
+
+  @Test
+  public void calculateSearchProblemPageWindowSizeShouldBeCappedAtMaximum() {
+    assertEquals(10000, FullTextSearch.calculateSearchProblemPageWindowSize(9999, 10));
   }
 
   @Test
@@ -464,5 +476,16 @@ public class FullTextSearchTest {
 
     assertTrue(hasGiants);
     assertTrue(hasTigers);
+  }
+
+  @Test
+  public void getThemeModeProblemMinimumsShouldReturnResultsForMultipleThemes() throws Exception {
+    Map<String, IntArray> actual = fullTextSearch.getThemeModeProblemMinimums(ImmutableMap.of(
+        "theme1", ImmutableList.of("ファッション"),
+        "theme2", ImmutableList.of("ヨーロッパ ランダム:1")));
+
+    assertEquals(2, actual.size());
+    assertThat(actual.get("theme1").size(), greaterThan(0));
+    assertThat(actual.get("theme2").size(), greaterThan(0));
   }
 }

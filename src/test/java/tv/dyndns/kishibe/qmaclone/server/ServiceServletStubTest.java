@@ -37,6 +37,7 @@ import tv.dyndns.kishibe.qmaclone.client.game.GameMode;
 import tv.dyndns.kishibe.qmaclone.client.constant.Constant;
 import tv.dyndns.kishibe.qmaclone.client.packet.NewAndOldProblems;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblem;
+import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblemSearchResult;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketPlayerSummary;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketRegistrationData;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketUserData;
@@ -164,6 +165,35 @@ public class ServiceServletStubTest {
         GENRES, TYPES, RANDOM_FLAGS);
 
     assertEquals(ImmutableList.of(expected1, expected2, expected3), problems);
+  }
+
+  @Test
+  public void searchProblemPageShouldFilterAndKeepPagingMetadata() throws Exception {
+    PacketProblem expected1 = TestDataProvider.getProblem();
+    expected1.id = 1;
+    expected1.testing = true;
+
+    PacketProblem expected2 = TestDataProvider.getProblem();
+    expected2.id = 2;
+
+    PacketProblemSearchResult response = new PacketProblemSearchResult();
+    response.problems = ImmutableList.of(problem1, problem2);
+    response.totalCount = 200;
+    response.offset = 20;
+    response.limit = 2;
+
+    when(mockGameManager.getTestingProblemIds()).thenReturn(ImmutableSet.of(1));
+    when(mockDatabase.searchProblemPage(
+        QUERY, CREATOR, CREATOR_PERFECT_MATCHING, GENRES, TYPES, RANDOM_FLAGS, 20, 2))
+            .thenReturn(response);
+
+    PacketProblemSearchResult actual = service.searchProblemPage(
+        QUERY, CREATOR, CREATOR_PERFECT_MATCHING, GENRES, TYPES, RANDOM_FLAGS, 20, 2);
+
+    assertEquals(200, actual.totalCount);
+    assertEquals(20, actual.offset);
+    assertEquals(2, actual.limit);
+    assertEquals(ImmutableList.of(expected1, expected2), actual.problems);
   }
 
   @Test

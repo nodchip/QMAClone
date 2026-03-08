@@ -6,16 +6,16 @@ import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -29,10 +29,13 @@ import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field.Store;
 import org.apache.lucene.document.IntPoint;
+import org.apache.lucene.document.SortedNumericDocValuesField;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.CorruptIndexException;
+import org.apache.lucene.index.DocValuesType;
 import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.index.FieldInfos;
 import org.apache.lucene.index.IndexFormatTooOldException;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
@@ -45,6 +48,9 @@ import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.ScoreMode;
+import org.apache.lucene.search.Scorable;
+import org.apache.lucene.search.SimpleCollector;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.MatchNoDocsQuery;
@@ -88,7 +94,9 @@ public class FullTextSearch {
       FileSystems.getDefault().getPath("/home/tomcat/qmaclone/lucene");
   private static final int TIME_OUT_SEC = 10;
   private static final int MAX_NUMBER_OF_SEARCH_REUSLTS = 10000;
+  private static final int MAX_THEME_MODE_SEARCH_RESULTS = 10000;
   private static final String FIELD_PROBLEM_ID = "problemId";
+  private static final String FIELD_PROBLEM_ID_SORT = "problemIdSort";
   private static final String FIELD_SENTENCE = "sentence";
   private static final String FIELD_SEARCH = "search";
   private static final String FIELD_CREATOR = "creator";
@@ -113,6 +121,29 @@ public class FullTextSearch {
   private final ViterbiTokenizer.Factory viterbiTokenizerfactory;
   private final ViterbiAnalyzer.Factory viterbiAnalyzerFactory;
   private final Path indexFileDirectory;
+
+  /**
+   * 問題検索のページング結果です。
+   */
+  public static class SearchProblemPageResult {
+    public List<Integer> problemIds = Lists.newArrayList();
+    public int totalCount;
+    public int offset;
+    public int limit;
+  }
+
+  /**
+   * テーマモード検索の結果です。
+   */
+  private static class ThemeSearchResult {
+    private final String theme;
+    private final IntArray problemIds;
+
+    private ThemeSearchResult(String theme, IntArray problemIds) {
+      this.theme = theme;
+      this.problemIds = problemIds;
+    }
+  }
 
   @Inject
   public FullTextSearch(ThreadPool threadPool, DevelopmentUtil developmentUtil, QueryRunner queryRunner,
@@ -180,7 +211,13 @@ public class FullTextSearch {
   private IndexReader newIndexReader() throws IOException {
     ensureIndexReadable();
     try {
-      return DirectoryReader.open(FSDirectory.open(indexFileDirectory));
+      IndexReader reader = DirectoryReader.open(FSDirectory.open(indexFileDirectory));
+      if (isProblemIdSortFieldMissing(reader)) {
+        reader.close();
+        regenerateIndexForProblemIdSort();
+        return DirectoryReader.open(FSDirectory.open(indexFileDirectory));
+      }
+      return reader;
     } catch (IndexFormatTooOldException e) {
       recreateIndexOnOldFormat(e);
       return DirectoryReader.open(FSDirectory.open(indexFileDirectory));
@@ -209,6 +246,7 @@ public class FullTextSearch {
 
     // 問題番号
     document.add(new StringField(FIELD_PROBLEM_ID, String.valueOf(problem.id), Store.YES));
+    document.add(new SortedNumericDocValuesField(FIELD_PROBLEM_ID_SORT, problem.id));
 
     // 問題文
     String sentence = problem.sentence;
@@ -319,41 +357,56 @@ public class FullTextSearch {
   }
 
   public Map<String, IntArray> getThemeModeProblemMinimums(Map<String, List<String>> themeAndQueryStrings) {
-    ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-
     final Map<String, IntArray> themeToProblems = Maps.newConcurrentMap();
+    List<Future<ThemeSearchResult>> futures = Lists.newArrayListWithCapacity(themeAndQueryStrings.size());
 
     for (final Entry<String, List<String>> entry : themeAndQueryStrings.entrySet()) {
-      executorService.submit(new Runnable() {
+      futures.add(threadPool.submit(new Callable<ThemeSearchResult>() {
         @Override
-        public void run() {
-          String theme = entry.getKey();
-          List<String> queryStrings = entry.getValue();
-
-          IntArray problemIds = null;
-          try {
-            problemIds = searchProblemsForThemeMode(queryStrings);
-          } catch (Exception e) {
-            logger.log(Level.WARNING, "テーマモードの問題検索に失敗しました: " + theme, e);
-          }
-
-          if (problemIds == null) {
-            return;
-          }
-
-          themeToProblems.put(theme, problemIds);
+        public ThemeSearchResult call() {
+          return searchThemeModeProblemMinimum(entry.getKey(), entry.getValue());
         }
-      });
+      }));
     }
 
-    executorService.shutdown();
-    try {
-      executorService.awaitTermination(1, TimeUnit.HOURS);
-    } catch (InterruptedException e) {
-      // 何もしない
+    for (Future<ThemeSearchResult> future : futures) {
+      try {
+        ThemeSearchResult result = future.get(1, TimeUnit.HOURS);
+        if (result == null || result.problemIds == null) {
+          continue;
+        }
+        themeToProblems.put(result.theme, result.problemIds);
+      } catch (Exception e) {
+        logger.log(Level.WARNING, "テーマモード検索結果の取得に失敗しました", e);
+      }
     }
 
     return ImmutableMap.copyOf(themeToProblems);
+  }
+
+  private ThemeSearchResult searchThemeModeProblemMinimum(String theme, List<String> queryStrings) {
+    try {
+      IntArray problemIds = searchProblemsForThemeMode(queryStrings);
+      return new ThemeSearchResult(theme, problemIds);
+    } catch (Exception e) {
+      logger.log(Level.WARNING, "テーマモードの問題検索に失敗しました: " + theme, e);
+      return null;
+    }
+  }
+
+  private boolean isProblemIdSortFieldMissing(IndexReader reader) {
+    org.apache.lucene.index.FieldInfo fieldInfo =
+        FieldInfos.getMergedFieldInfos(reader).fieldInfo(FIELD_PROBLEM_ID_SORT);
+    return fieldInfo == null || fieldInfo.getDocValuesType() != DocValuesType.SORTED_NUMERIC;
+  }
+
+  private void regenerateIndexForProblemIdSort() throws IOException {
+    logger.log(Level.INFO, "problemIdSort を持たないため Lucene インデクスを再生成します");
+    try {
+      generateIndex();
+    } catch (DatabaseException e) {
+      throw new IOException("problemIdSort 用インデクス再生成に失敗しました", e);
+    }
   }
 
   private Query queryStringToThemeModeQuery(String string) throws IOException {
@@ -423,7 +476,7 @@ public class FullTextSearch {
       IntArray problemIds = new IntArray();
 
       IndexSearcher searcher = new IndexSearcher(reader);
-      TopDocs docs = searcher.search(query.build(), Integer.MAX_VALUE);
+      TopDocs docs = searcher.search(query.build(), MAX_THEME_MODE_SEARCH_RESULTS);
 
       for (ScoreDoc doc : docs.scoreDocs) {
         Document document = reader.storedFields().document(doc.doc);
@@ -431,8 +484,15 @@ public class FullTextSearch {
         problemIds.add(problemId);
       }
 
+      if (docs.scoreDocs.length >= MAX_THEME_MODE_SEARCH_RESULTS) {
+        logger.log(Level.INFO,
+            String.format("searchProblemsForThemeMode(): result reached limit=%d query=%s",
+                MAX_THEME_MODE_SEARCH_RESULTS, queryStrings));
+      }
+
       logger.log(Level.INFO,
-          String.format("searchProblem(): time=%d result=%d query=%s", stopwatch.elapsed(TimeUnit.MILLISECONDS),
+          String.format("searchProblemsForThemeMode(): time=%d result=%d query=%s",
+              stopwatch.elapsed(TimeUnit.MILLISECONDS),
               problemIds.size(), MoreObjects.toStringHelper(this).add("queryStrings", queryStrings).toString()));
 
       return problemIds;
@@ -502,11 +562,24 @@ public class FullTextSearch {
   public List<Integer> searchProblem(final String queryString, final String creator,
       final boolean creatorPerfectMatching, final Set<ProblemGenre> genresFinal, final Set<ProblemType> typesFinal,
       final Set<RandomFlag> randomFlagsFinal) {
-    Stopwatch stopwatch = Stopwatch.createStarted();
+    return searchProblemPage(queryString, creator, creatorPerfectMatching, genresFinal, typesFinal,
+        randomFlagsFinal, 0, MAX_NUMBER_OF_SEARCH_REUSLTS).problemIds;
+  }
 
-    Future<List<Integer>> future = threadPool.submit(new Callable<List<Integer>>() {
+  public SearchProblemPageResult searchProblemPage(final String queryString, final String creator,
+      final boolean creatorPerfectMatching, final Set<ProblemGenre> genresFinal, final Set<ProblemType> typesFinal,
+      final Set<RandomFlag> randomFlagsFinal, final int offset, final int limit) {
+    Stopwatch stopwatch = Stopwatch.createStarted();
+    final int safeOffset = Math.max(0, offset);
+    final int safeLimit = Math.max(0, limit);
+
+    Future<SearchProblemPageResult> future = threadPool.submit(new Callable<SearchProblemPageResult>() {
       @Override
-      public List<Integer> call() throws Exception {
+      public SearchProblemPageResult call() throws Exception {
+        SearchProblemPageResult result = new SearchProblemPageResult();
+        result.offset = safeOffset;
+        result.limit = safeLimit;
+
         Set<ProblemGenre> genres = genresFinal == null ? EnumSet.noneOf(ProblemGenre.class)
             : Sets.newEnumSet(genresFinal, ProblemGenre.class);
         Set<ProblemType> types = typesFinal == null ? EnumSet.noneOf(ProblemType.class)
@@ -519,7 +592,7 @@ public class FullTextSearch {
         boolean genreEmpty = (genres.isEmpty() || genres.equals(EnumSet.of(ProblemGenre.Random)));
         boolean typeEmpty = (types.isEmpty() || types.equals(EnumSet.of(ProblemType.Random)));
         if (queryEmpty && creatorEmpty && genreEmpty && typeEmpty) {
-          return new ArrayList<Integer>();
+          return result;
         }
 
         if (genres.isEmpty() || genres.contains(ProblemGenre.Random)) {
@@ -542,7 +615,7 @@ public class FullTextSearch {
             query.add(stringToQuery(FIELD_SEARCH, queryString), Occur.MUST);
           } catch (Exception e) {
             logger.log(Level.WARNING, "クエリの追加に失敗しました", e);
-            return null;
+            return result;
           }
         }
 
@@ -555,7 +628,7 @@ public class FullTextSearch {
               query.add(stringToQuery(FIELD_CREATOR, creator), Occur.MUST);
             } catch (Exception e) {
               logger.log(Level.WARNING, "クエリの追加に失敗しました", e);
-              return null;
+              return result;
             }
           }
         }
@@ -571,33 +644,114 @@ public class FullTextSearch {
 
         try (IndexReader reader = newIndexReader()) {
           IndexSearcher searcher = new IndexSearcher(reader);
-          TopDocs docs = searcher.search(query.build(), MAX_NUMBER_OF_SEARCH_REUSLTS);
-          List<Integer> problemIds = new ArrayList<Integer>(docs.scoreDocs.length);
-          for (ScoreDoc doc : docs.scoreDocs) {
-            Document document = reader.storedFields().document(doc.doc);
-            int problemId = Integer.parseInt(document.get(FIELD_PROBLEM_ID));
-            problemIds.add(problemId);
+          Query builtQuery = query.build();
+          int requestedWindowSize = calculateSearchProblemPageWindowSize(safeOffset, safeLimit);
+          List<Integer> orderedProblemIds =
+              searchProblemPageProblemIds(searcher, builtQuery, requestedWindowSize);
+          result.totalCount = Math.min(MAX_NUMBER_OF_SEARCH_REUSLTS, searcher.count(builtQuery));
+          if (safeLimit == 0 || orderedProblemIds.size() <= safeOffset) {
+            return result;
           }
+          int end = Math.min(orderedProblemIds.size(), safeOffset + safeLimit);
+          List<Integer> problemIds = new ArrayList<Integer>(orderedProblemIds.subList(safeOffset, end));
 
-          return problemIds;
+          result.problemIds = problemIds;
+          return result;
         }
       }
     });
 
     try {
-      List<Integer> problemIds = future.get(getTimeOutSec(), TimeUnit.SECONDS);
+      SearchProblemPageResult result = future.get(getTimeOutSec(), TimeUnit.SECONDS);
       logger.log(Level.INFO,
           String.format("searchProblem(): time=%d result=%d query=%s", stopwatch.elapsed(TimeUnit.MILLISECONDS),
-              problemIds.size(),
+              result.totalCount,
               MoreObjects.toStringHelper(this).add("queryString", queryString).add("creator", creator)
                   .add("creatorPerfectMatching", creatorPerfectMatching).add("genresFinal", genresFinal)
-                  .add("typesFinal", typesFinal).add("randomFlagsFinal", randomFlagsFinal).toString()));
-      return problemIds;
+                  .add("typesFinal", typesFinal).add("randomFlagsFinal", randomFlagsFinal).add("offset", safeOffset)
+                  .add("limit", safeLimit).toString()));
+      return result;
     } catch (Exception e) {
       Object[] args = { queryString, creator, genresFinal, typesFinal, randomFlagsFinal };
       logger.log(Level.WARNING, "問題検索でタイムアウトが発生しました " + Arrays.deepToString(args), e);
-      return null;
+      SearchProblemPageResult result = new SearchProblemPageResult();
+      result.offset = safeOffset;
+      result.limit = safeLimit;
+      return result;
     }
+  }
+
+  @VisibleForTesting
+  static int calculateSearchProblemPageWindowSize(int offset, int limit) {
+    if (limit <= 0) {
+      return 0;
+    }
+    long requestedWindowSize = (long) Math.max(0, offset) + Math.max(0, limit);
+    return (int) Math.min(MAX_NUMBER_OF_SEARCH_REUSLTS, requestedWindowSize);
+  }
+
+  private List<Integer> searchProblemPageProblemIds(IndexSearcher searcher, Query query,
+      int requestedWindowSize) throws IOException {
+    if (requestedWindowSize <= 0) {
+      return Collections.emptyList();
+    }
+
+    try {
+      return collectProblemIdsInAscendingOrder(searcher, query, requestedWindowSize);
+    } catch (IllegalStateException e) {
+      logger.log(Level.WARNING, "problemIdSort 取得に失敗したため従来検索へフォールバックします", e);
+      TopDocs docs = searcher.search(query, MAX_NUMBER_OF_SEARCH_REUSLTS);
+      List<Integer> orderedProblemIds = new ArrayList<Integer>(docs.scoreDocs.length);
+      IndexReader reader = searcher.getIndexReader();
+      for (ScoreDoc doc : docs.scoreDocs) {
+        Document document = reader.storedFields().document(doc.doc);
+        int problemId = Integer.parseInt(document.get(FIELD_PROBLEM_ID));
+        orderedProblemIds.add(problemId);
+      }
+      Collections.sort(orderedProblemIds);
+      int end = Math.min(orderedProblemIds.size(), requestedWindowSize);
+      return new ArrayList<Integer>(orderedProblemIds.subList(0, end));
+    }
+  }
+
+  private List<Integer> collectProblemIdsInAscendingOrder(IndexSearcher searcher, Query query,
+      final int requestedWindowSize) throws IOException {
+    final PriorityQueue<Integer> smallestProblemIds =
+        new PriorityQueue<Integer>(requestedWindowSize, Collections.reverseOrder());
+
+    searcher.search(query, new SimpleCollector() {
+      private org.apache.lucene.index.StoredFields storedFields;
+
+      @Override
+      protected void doSetNextReader(org.apache.lucene.index.LeafReaderContext context)
+          throws IOException {
+        storedFields = context.reader().storedFields();
+      }
+
+      @Override
+      public void setScorer(Scorable scorer) throws IOException {
+      }
+
+      @Override
+      public void collect(int doc) throws IOException {
+        int problemId = Integer.parseInt(storedFields.document(doc).get(FIELD_PROBLEM_ID));
+        if (smallestProblemIds.size() < requestedWindowSize) {
+          smallestProblemIds.offer(problemId);
+        } else if (problemId < smallestProblemIds.peek()) {
+          smallestProblemIds.poll();
+          smallestProblemIds.offer(problemId);
+        }
+      }
+
+      @Override
+      public ScoreMode scoreMode() {
+        return ScoreMode.COMPLETE_NO_SCORES;
+      }
+    });
+
+    List<Integer> orderedProblemIds = new ArrayList<Integer>(smallestProblemIds);
+    Collections.sort(orderedProblemIds);
+    return orderedProblemIds;
   }
 
   /**
