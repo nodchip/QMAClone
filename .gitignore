@@ -20,6 +20,10 @@
 !/ops/config/live/nginx/.gitkeep
 !/ops/config/live/nginx/sites-enabled/
 !/ops/config/live/nginx/sites-enabled/.gitkeep
+!/ops/config/live/nginx/nginx.conf
+!/ops/config/live/nginx/sites-enabled/default
+!/ops/config/live/logrotate/
+!/ops/config/live/logrotate/tomcat10
 !/ops/config/live/tomcat9/
 !/ops/config/live/tomcat9/.gitkeep
 /dom.html

@@ -34,6 +34,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.io.Files;
+import com.google.common.util.concurrent.UncheckedExecutionException;
 import com.google.inject.Inject;
 
 import tv.dyndns.kishibe.qmaclone.client.constant.Constant;
@@ -96,7 +97,7 @@ public class ImageUtils {
             return getImage(key);
           } catch (Exception e) {
             logger.log(Level.WARNING, "画像の取得に失敗しました。 key=" + key, e);
-            return null;
+            throw new RuntimeException(e);
           }
         }
       });
@@ -215,6 +216,11 @@ public class ImageUtils {
       outputStream.write(cache.get(parameter));
     } catch (ExecutionException e) {
       throw new IOException(e);
+    } catch (UncheckedExecutionException e) {
+      if (e.getCause() != null && e.getCause().getCause() instanceof IOException) {
+        throw (IOException) e.getCause().getCause();
+      }
+      throw new IOException(e);
     }
   }
 
@@ -237,6 +243,13 @@ public class ImageUtils {
     // 画像がダウンロードされていなければダウンロードする
     // double-check
     // TODO(nodchip): 実行速度が早くシンプルな方法に変更する
+    if (inputCacheFile.isFile() && !isImage(inputCacheFile)) {
+      logger.warning(String.format("壊れた入力画像キャッシュを削除して再取得します。 inputCacheFile=%s", inputCacheFile));
+      if (!inputCacheFile.delete() && inputCacheFile.exists()) {
+        throw new IOException(String.format("壊れた入力画像キャッシュを削除できませんでした。 inputCacheFile=%s", inputCacheFile));
+      }
+    }
+
     if (!inputCacheFile.isFile()) {
       // BugTrack-QMAClone/434 - QMAClone wiki
       // http://kishibe.dyndns.tv/qmaclone/wiki/wiki.cgi?page=BugTrack%2DQMAClone%2F434#1330156832
@@ -253,9 +266,15 @@ public class ImageUtils {
         throw new IOException("ダウンロードに失敗しました: url=" + url, e);
       }
 
+      if (!isImage(tempFile)) {
+        java.nio.file.Files.deleteIfExists(tempFile.toPath());
+        throw new IOException(String.format("ダウンロード結果が画像ではありませんでした。 url=%s tempFile=%s", url, tempFile));
+      }
+
       logger.info(String.format("画像ファイルのダウンロードに成功しました。 tempFile=%s", tempFile));
 
       java.nio.file.Files.copy(tempFile.toPath(), inputCacheFile.toPath());
+      java.nio.file.Files.deleteIfExists(tempFile.toPath());
 
       logger.info(String.format("画像ファイルをコピーしました。 tempFile=%s inputCacheFile=%s", tempFile, inputCacheFile));
 

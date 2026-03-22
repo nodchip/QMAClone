@@ -7,6 +7,7 @@
 - `ops/config/live/nginx/`: nginx 設定ファイル
 - `ops/config/live/nginx/sites-enabled/`: nginx 仮想ホスト設定
 - `ops/config/live/tomcat10/`: tomcat10 設定ファイル
+- `ops/config/live/logrotate/`: サーバー運用用 logrotate 設定
 
 ## 配置例
 - `ops/config/live/nginx/nginx.conf`
@@ -14,6 +15,7 @@
 - `ops/config/live/tomcat10/server.xml`
 - `ops/config/live/tomcat10/web.xml`
 - `ops/config/live/tomcat10/qmaclone-admin.properties`
+- `ops/config/live/logrotate/tomcat10`
 
 `qmaclone-admin.properties` には管理者判定の設定を記述します。
 

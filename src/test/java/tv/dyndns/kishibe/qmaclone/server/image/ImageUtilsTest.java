@@ -14,18 +14,22 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 
 import javax.imageio.ImageIO;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
 
 import com.google.common.io.Files;
 import com.google.inject.Inject;
 
 import tv.dyndns.kishibe.qmaclone.client.constant.Constant;
+import tv.dyndns.kishibe.qmaclone.server.ThreadPool;
 import tv.dyndns.kishibe.qmaclone.server.image.ImageUtils.Parameter;
+import tv.dyndns.kishibe.qmaclone.server.util.Downloader;
 import tv.dyndns.kishibe.qmaclone.server.testing.GuiceInjectionExtension;
 
 @ExtendWith(GuiceInjectionExtension.class)
@@ -151,6 +155,53 @@ public class ImageUtilsTest {
     assertEquals(file.lastModified(), imageUtils.getLastModified(new Parameter("QMAClone", 512, 384, true)));
   }
 
+  @Test
+  public void getImageShouldRejectDownloadedNonImageResponseAndLeaveNoCorruptCache() throws Exception {
+    Downloader downloader = Mockito.mock(Downloader.class);
+    ImageUtils imageUtils =
+        new ImageUtils(Mockito.mock(ThreadPool.class), downloader);
+    Parameter parameter = new Parameter("https://example.com/not-image.txt", 32, 16, true);
+    File inputCacheFile = imageUtils.getInputCacheFile(parameter.url);
+    deleteIfExists(inputCacheFile);
+
+    Mockito.doAnswer(invocation -> {
+      File destination = invocation.getArgument(1);
+      Files.write("These aren't the droids you're looking for.", destination, StandardCharsets.UTF_8);
+      return null;
+    }).when(downloader).downloadToFile(Mockito.any(), Mockito.any(File.class), Mockito.any());
+
+    try (OutputStream stream = new BufferedOutputStream(new FileOutputStream(File.createTempFile("QMAClone", ".jpg")))) {
+      assertThrows(IOException.class, () -> imageUtils.writeToStream(parameter, stream));
+    }
+
+    assertTrue(!inputCacheFile.exists());
+  }
+
+  @Test
+  public void getImageShouldReplaceCorruptCachedInputFileByRedownloading() throws Exception {
+    Downloader downloader = Mockito.mock(Downloader.class);
+    ImageUtils imageUtils =
+        new ImageUtils(Mockito.mock(ThreadPool.class), downloader);
+    Parameter parameter = new Parameter("https://example.com/retry-image.png", 32, 16, true);
+    File inputCacheFile = imageUtils.getInputCacheFile(parameter.url);
+    deleteIfExists(inputCacheFile);
+    Files.createParentDirs(inputCacheFile);
+    Files.write("<html>broken cache</html>", inputCacheFile, StandardCharsets.UTF_8);
+
+    Mockito.doAnswer(invocation -> {
+      File destination = invocation.getArgument(1);
+      File sourceImage = createInputImage("png", 32, 16, false);
+      java.nio.file.Files.copy(sourceImage.toPath(), destination.toPath(),
+          java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+      return null;
+    }).when(downloader).downloadToFile(Mockito.any(), Mockito.any(File.class), Mockito.any());
+
+    byte[] imageBytes = imageUtils.getImage(parameter);
+
+    assertTrue(imageBytes.length > 0);
+    assertTrue(imageUtils.isImage(inputCacheFile));
+  }
+
   private static File createInputImage(String format, int width, int height, boolean transparent) throws IOException {
     File file = File.createTempFile("QMACloneInput", "." + format);
     file.deleteOnExit();
@@ -172,5 +223,10 @@ public class ImageUtilsTest {
     g.dispose();
     ImageIO.write(image, format, file);
     return file;
+  }
+
+  private static void deleteIfExists(File file) throws IOException {
+    Path path = file.toPath();
+    java.nio.file.Files.deleteIfExists(path);
   }
 }

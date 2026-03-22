@@ -1,0 +1,10 @@
+/var/log/tomcat10/catalina.out {
+  copytruncate
+  weekly
+  rotate 52
+  compress
+  delaycompress
+  missingok
+  create 640 syslog adm
+  su root adm
+}
