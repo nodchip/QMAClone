@@ -69,6 +69,8 @@
 4. `/QMAClone/tv.dyndns.kishibe.qmaclone.QMAClone/service?warmup=1` の `HTTP 200`
 5. `/QMAClone/websocket` の Upgrade 疎通（`101 Switching Protocols` もしくはサーバーログで Upgrade 成功を確認）
 6. ローカル配備時は `/QMAClone-1.0-SNAPSHOT/` の `HTTP 404`（誤配備なし）を確認する
+- `ops/config/live/**` は既定で ignore されるため、追跡対象の設定スナップショットや補助スクリプトを追加・更新する場合は `.gitignore` の除外設定も同時に整備し、完了前に `git status --short` で意図したファイルが追跡対象として見えていることを確認する。
+- `ops/config/live` 配下の PowerShell スクリプトを更新した場合は、使用前と完了前に `powershell -NoProfile -Command "[scriptblock]::Create((Get-Content '<path>' -Raw)) | Out-Null"` で構文エラーがないことを確認する。
 - 新規の運用ログ/メモはルート直下へ置かず、`ops/log/` と `ops/notes/` 配下へ配置する。
 - 新規/更新の運用補助スクリプトは `ops/scripts/` 配下へ配置し、既存ルートスクリプトは段階移行で扱う。
 
