@@ -54,7 +54,8 @@ public class SceneLobby extends SceneBase {
 	private static final int UPDATE_INTERVAL = 3 * 1000;
 	private LobbyUi lobbyUi = new LobbyUi(this);
 	private final StatusUpdater<PacketServerStatus> updater = new StatusUpdater<PacketServerStatus>(
-			PacketServerStatus.class.getName(), UPDATE_INTERVAL) {
+			Constant.buildWebSocketChannelPath(Constant.WEB_SOCKET_CHANNEL_SERVER_STATUS, null),
+			UPDATE_INTERVAL) {
 		@Override
 		protected void request(AsyncCallback<PacketServerStatus> callback) {
 			Service.Util.getInstance().getServerStatus(callback);

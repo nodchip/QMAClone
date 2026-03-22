@@ -67,4 +67,17 @@ public class ConstantTest {
     assertEquals(true, Constant.isWebSocketAvailableForLocation(true, "localhost:8080",
         "/QMAClone-1.0-SNAPSHOT/"));
   }
+
+  @Test
+  public void buildWebSocketChannelPathShouldUseStableServerStatusPathWithoutQuery() {
+    assertEquals("tv.dyndns.kishibe.qmaclone.client.packet.PacketServerStatus",
+        Constant.buildWebSocketChannelPath(Constant.WEB_SOCKET_CHANNEL_SERVER_STATUS, null));
+  }
+
+  @Test
+  public void buildWebSocketChannelPathShouldAppendGameSessionIdQueryWhenPresent() {
+    assertEquals(
+        "tv.dyndns.kishibe.qmaclone.client.packet.PacketGameStatus?game_session_id=121",
+        Constant.buildWebSocketChannelPath(Constant.WEB_SOCKET_CHANNEL_GAME_STATUS, 121));
+  }
 }

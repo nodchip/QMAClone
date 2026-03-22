@@ -47,8 +47,8 @@ public class SceneReadyForGame extends SceneBase {
     private final SessionData sessionData;
 
     public ReadyForGameStatusUpdater(SceneReadyForGame scene, SessionData sessionData) {
-      super(PacketReadyForGame.class.getName() + "?" + Constant.KEY_GAME_SESSION_ID + "="
-          + sessionData.getSessionId(), UPDATE_INTERVAL);
+      super(Constant.buildWebSocketChannelPath(Constant.WEB_SOCKET_CHANNEL_READY_FOR_GAME,
+          sessionData.getSessionId()), UPDATE_INTERVAL);
       this.scene = Preconditions.checkNotNull(scene);
       this.sessionData = Preconditions.checkNotNull(sessionData);
     }

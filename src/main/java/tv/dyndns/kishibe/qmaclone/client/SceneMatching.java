@@ -42,8 +42,10 @@ public class SceneMatching extends SceneBase {
     private final SessionData sessionData;
 
     public MatchingStatusUpdater(SceneMatching scene, SessionData sessionData) {
-      super(PacketMatchingStatus.class.getName() + "?" + Constant.KEY_GAME_SESSION_ID + "="
-          + sessionData.getSessionId(), TIMER_INTERVAL);
+      super(
+          Constant.buildWebSocketChannelPath(Constant.WEB_SOCKET_CHANNEL_MATCHING_STATUS,
+              sessionData.getSessionId()),
+          TIMER_INTERVAL);
       this.scene = Preconditions.checkNotNull(scene);
       this.sessionData = Preconditions.checkNotNull(sessionData);
     }

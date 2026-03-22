@@ -134,6 +134,16 @@ public class Constant {
   public static final int MIN_NUMBER_OF_THEME_MODE_PROBLEMS = 100;
   public static final int MAX_NUMBER_OF_CREATION_PER_HOUR = 3;
   public static final int WEB_SOCKET_PORT = 60080;
+  public static final String WEB_SOCKET_CHANNEL_CHAT_MESSAGES =
+      "tv.dyndns.kishibe.qmaclone.client.packet.PacketChatMessages";
+  public static final String WEB_SOCKET_CHANNEL_GAME_STATUS =
+      "tv.dyndns.kishibe.qmaclone.client.packet.PacketGameStatus";
+  public static final String WEB_SOCKET_CHANNEL_MATCHING_STATUS =
+      "tv.dyndns.kishibe.qmaclone.client.packet.PacketMatchingStatus";
+  public static final String WEB_SOCKET_CHANNEL_READY_FOR_GAME =
+      "tv.dyndns.kishibe.qmaclone.client.packet.PacketReadyForGame";
+  public static final String WEB_SOCKET_CHANNEL_SERVER_STATUS =
+      "tv.dyndns.kishibe.qmaclone.client.packet.PacketServerStatus";
   private static final String WEB_SOCKET_URL_REMOTE = "ws://kishibe.dyndns.tv/QMAClone/websocket/";
   private static final String WEB_SOCKET_PATH = "/websocket/";
   public static final String WEB_SOCKET_URL = getWebSocketUrl();
@@ -188,6 +198,13 @@ public class Constant {
   static boolean isWebSocketAvailableForLocation(boolean isClient, String host,
       String locationPath) {
     return true;
+  }
+
+  public static String buildWebSocketChannelPath(String channelName, Integer gameSessionId) {
+    if (gameSessionId == null) {
+      return channelName;
+    }
+    return channelName + "?" + KEY_GAME_SESSION_ID + "=" + gameSessionId;
   }
 
   public static boolean isWebSocketAvailableOnCurrentLocation() {

@@ -69,7 +69,8 @@ public class PanelRealtime extends Composite implements KeyDownHandler {
 
   private int nextArrayIndex = 1;
   private final StatusUpdater<PacketChatMessages> updater = new StatusUpdater<PacketChatMessages>(
-      PacketChatMessages.class.getName(), TIMER_INTERVAL) {
+      Constant.buildWebSocketChannelPath(Constant.WEB_SOCKET_CHANNEL_CHAT_MESSAGES, null),
+      TIMER_INTERVAL) {
     @Override
     protected void request(AsyncCallback<PacketChatMessages> callback) {
       Service.Util.getInstance().receiveMessageFromChat(nextArrayIndex, callback);

@@ -64,8 +64,8 @@ public class SceneGame extends SceneBase implements ClosingHandler, CloseHandler
 		private final SessionData sessionData;
 
 		public GameStatusUpdater(SceneGame scene, SessionData sessionData) {
-			super(PacketGameStatus.class.getName() + "?" + Constant.KEY_GAME_SESSION_ID + "="
-					+ sessionData.getSessionId(), 1000);
+			super(Constant.buildWebSocketChannelPath(Constant.WEB_SOCKET_CHANNEL_GAME_STATUS,
+					sessionData.getSessionId()), 1000);
 			this.scene = Preconditions.checkNotNull(scene);
 			this.sessionData = Preconditions.checkNotNull(sessionData);
 		}
