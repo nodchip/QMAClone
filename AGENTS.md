@@ -57,6 +57,7 @@
 - ローカル開発環境の Tomcat 再起動は、事前確認なしで実行してよい。
 - 自宅サーバーでは `/var/www/html/qmaclone` が `/home/nodchip/QMAClone/landing-site/` へのシンボリックリンクで配信される。`landing-site/icon` などの運用ファイルを保護するため、サーバー作業でクリーンアップが必要でも `git clean -fd` を直接実行せず、`git clean -fd -e landing-site/` か別ディレクトリのクリーン clone/worktree を使う。
 - 本番環境へデプロイした後は、ランディングサイト配信内容を最新化するため `ssh nighthawk "cd /home/nodchip/QMAClone && git pull --ff-only"` を実行する。
+- `ops/scripts/deploy/deploy_qmaclone_tomcat10.sh` を本番 `nighthawk` 上で実行する前に、対象ユーザーで `command -v mvn` を確認する。`mvn` が見つからない場合はサーバー側ビルドを中止し、ローカルで WAR をビルドして `/var/lib/tomcat10/webapps/QMAClone.war` へ配備する経路へ切り替える。
 - Tomcat 再配備時は、旧展開物削除とサービス再起動で静的状態を破棄する。本番で再起動が必要な場合は上記の許可を先に取得する。
 - Eclipse で不整合が疑われる場合は、`target` と `gwt-unitCache` のクリーンを実施する。
 - 検証（`build` / `test` / `gwt:compile`）が1つでも失敗した場合はデプロイを中断し、修正と再検証完了まで配備しない。
