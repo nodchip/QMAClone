@@ -488,4 +488,18 @@ public class FullTextSearchTest {
     assertThat(actual.get("theme1").size(), greaterThan(0));
     assertThat(actual.get("theme2").size(), greaterThan(0));
   }
+
+  @Test
+  public void searchProblemsForThemeModeShouldRegenerateIndexWhenDirectoryExistsButIndexIsMissing()
+      throws Exception {
+    FileUtils.deleteDirectory(tempIndexDirectory.toFile());
+    Files.createDirectories(tempIndexDirectory);
+
+    IntArray problemIds = fullTextSearch.searchProblemsForThemeMode(ImmutableList.of("ファッション"));
+
+    assertNotNull(problemIds);
+    assertFalse(problemIds.isEmpty());
+    assertTrue(Files.list(tempIndexDirectory).anyMatch(path -> path.getFileName().toString()
+        .startsWith("segments")));
+  }
 }

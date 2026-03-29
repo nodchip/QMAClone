@@ -4,10 +4,17 @@ import static org.hamcrest.number.OrderingComparison.greaterThanOrEqualTo;
 import static org.hamcrest.number.OrderingComparison.lessThanOrEqualTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.ArgumentMatchers.anyMap;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.HashSet;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -20,8 +27,10 @@ import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import tv.dyndns.kishibe.qmaclone.client.packet.PacketThemeQuery;
 import tv.dyndns.kishibe.qmaclone.client.constant.Constant;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketProblemMinimum;
+import tv.dyndns.kishibe.qmaclone.server.database.Database;
 import tv.dyndns.kishibe.qmaclone.server.testing.GuiceInjectionExtension;
 import tv.dyndns.kishibe.qmaclone.server.util.IntArray;
 
@@ -130,6 +139,24 @@ public class ThemeModeProblemManagerTest {
 
 		for (int problemId : problemIds) {
 			assertThat(problemIds.count(problemId), lessThanOrEqualTo(5));
+		}
+	}
+
+	@Test
+	public void getThemesShouldReturnEmptyListsWhenNoThemeLearningDataIsAvailable() throws Exception {
+		Database database = mock(Database.class);
+		ThreadPool threadPool = mock(ThreadPool.class);
+		when(database.getThemeModeQueries()).thenReturn(Collections.<PacketThemeQuery>emptyList());
+		when(database.getThemeToProblems(anyMap())).thenReturn(Collections.<String, IntArray>emptyMap());
+		doNothing().when(threadPool).addHourTask(org.mockito.ArgumentMatchers.any(Runnable.class));
+
+		ThemeModeProblemManager manager = new ThemeModeProblemManager(database, threadPool);
+
+		List<List<String>> themes = assertDoesNotThrow(() -> manager.getThemes());
+		assertNotNull(themes);
+		assertEquals(6, themes.size());
+		for (List<String> themesForEachGenre : themes) {
+			assertTrue(themesForEachGenre.isEmpty());
 		}
 	}
 }

@@ -37,6 +37,7 @@ import org.apache.lucene.index.DocValuesType;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.FieldInfos;
 import org.apache.lucene.index.IndexFormatTooOldException;
+import org.apache.lucene.index.IndexNotFoundException;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
@@ -221,6 +222,9 @@ public class FullTextSearch {
     } catch (IndexFormatTooOldException e) {
       recreateIndexOnOldFormat(e);
       return DirectoryReader.open(FSDirectory.open(indexFileDirectory));
+    } catch (IndexNotFoundException e) {
+      recreateMissingIndex(e);
+      return DirectoryReader.open(FSDirectory.open(indexFileDirectory));
     }
   }
 
@@ -229,11 +233,22 @@ public class FullTextSearch {
       DirectoryReader.open(FSDirectory.open(indexFileDirectory)).close();
     } catch (IndexFormatTooOldException e) {
       recreateIndexOnOldFormat(e);
+    } catch (IndexNotFoundException e) {
+      recreateMissingIndex(e);
     }
   }
 
   private void recreateIndexOnOldFormat(IndexFormatTooOldException e) throws IOException {
     logger.log(Level.WARNING, "古いLuceneインデクス形式を検出したため再作成します", e);
+    try {
+      generateIndex();
+    } catch (DatabaseException databaseException) {
+      throw new IOException("インデクス再作成に失敗しました", databaseException);
+    }
+  }
+
+  private void recreateMissingIndex(IndexNotFoundException e) throws IOException {
+    logger.log(Level.WARNING, "Luceneインデクスが見つからないため再作成します", e);
     try {
       generateIndex();
     } catch (DatabaseException databaseException) {

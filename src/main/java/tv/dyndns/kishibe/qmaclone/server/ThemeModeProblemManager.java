@@ -83,9 +83,21 @@ public class ThemeModeProblemManager extends ProblemManager {
 
 		Map<String, IntArray> themeToProblems = database.getThemeToProblems(getThemeModeQueries());
 
+		if (themeToProblems.isEmpty()) {
+			this.themeToProblems = themeToProblems;
+			this.themes = themes;
+			return;
+		}
+
 		double[] min = new double[ProblemGenre.values().length];
 		double[] max = new double[ProblemGenre.values().length];
 		svm_model model = createSvmModel(themeToProblems, min, max);
+		if (model == null) {
+			logger.log(Level.WARNING, "テーマ分類の学習データが不足しているため一覧を空で初期化します");
+			this.themeToProblems = themeToProblems;
+			this.themes = themes;
+			return;
+		}
 
 		for (Entry<String, IntArray> entry : themeToProblems.entrySet()) {
 			String theme = entry.getKey();
@@ -255,6 +267,10 @@ public class ThemeModeProblemManager extends ProblemManager {
 
 		for (svm_node[] node : x) {
 			scale(node, min, max);
+		}
+
+		if (x.isEmpty()) {
+			return null;
 		}
 
 		svm_problem problem = new svm_problem();
