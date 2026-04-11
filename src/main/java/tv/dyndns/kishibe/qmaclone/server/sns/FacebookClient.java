@@ -16,6 +16,7 @@ import com.restfb.types.FacebookType;
 
 public class FacebookClient implements SnsClient {
   private static final Logger logger = Logger.getLogger(FacebookClient.class.getName());
+  private static final String REDACTED = "<redacted>";
   private final FacebookAuthService authService;
 
   @Inject
@@ -69,7 +70,7 @@ public class FacebookClient implements SnsClient {
       publishWithAccessToken(accessToken, message);
       return true;
     } catch (RuntimeException e) {
-      logger.log(Level.WARNING, "Facebook投稿に失敗しました。", e);
+      logger.log(Level.WARNING, "Facebook投稿に失敗しました。 detail=" + sanitizeForLog(e));
       return false;
     }
   }
@@ -78,5 +79,35 @@ public class FacebookClient implements SnsClient {
   void publishWithAccessToken(String accessToken, String message) {
     com.restfb.FacebookClient facebookClient = new DefaultFacebookClient(accessToken, Version.UNVERSIONED);
     facebookClient.publish("me/feed", FacebookType.class, Parameter.with("message", message));
+  }
+
+  @VisibleForTesting
+  static String sanitizeForLog(Throwable throwable) {
+    if (throwable == null) {
+      return "";
+    }
+    StringBuilder builder = new StringBuilder();
+    Throwable current = throwable;
+    while (current != null) {
+      if (builder.length() > 0) {
+        builder.append(" causedBy=");
+      }
+      builder.append(current.getClass().getName());
+      if (!Strings.isNullOrEmpty(current.getMessage())) {
+        builder.append(": ").append(sanitizeSensitiveQueryParameters(current.getMessage()));
+      }
+      current = current.getCause();
+    }
+    return builder.toString();
+  }
+
+  private static String sanitizeSensitiveQueryParameters(String message) {
+    return message
+        .replaceAll("(access_token=)[^&\\s]+", "$1" + REDACTED)
+        .replaceAll("(appsecret_proof=)[^&\\s]+", "$1" + REDACTED)
+        .replaceAll("(client_secret=)[^&\\s]+", "$1" + REDACTED)
+        .replaceAll("(fb_exchange_token=)[^&\\s]+", "$1" + REDACTED)
+        .replaceAll("(refresh_token=)[^&\\s]+", "$1" + REDACTED)
+        .replaceAll("(code=)[^&\\s]+", "$1" + REDACTED);
   }
 }

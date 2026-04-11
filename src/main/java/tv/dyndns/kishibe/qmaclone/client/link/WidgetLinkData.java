@@ -49,11 +49,11 @@ public class WidgetLinkData extends VerticalPanel implements ClickHandler {
 	private static final Logger logger = Logger.getLogger(WidgetLinkData.class.getName());
 
 	interface LinkDataTemplate extends SafeHtmlTemplates {
-		@Template("<a href='{0}' target='_blank'>{1}</a> / {2} - 最終更新:{3}")
+		@Template("<a href='{0}' target='_blank' rel='noopener noreferrer'>{1}</a> / {2} - 最終更新:{3}")
 		SafeHtml messageWithLink(SafeUri url, String homePageName, String authorName,
 				String lastUpdate);
 
-		@Template("<a href='{0}' target='_blank'><img src='{1}' class='linkBannerImage' /></a>")
+		@Template("<a href='{0}' target='_blank' rel='noopener noreferrer'><img src='{1}' class='linkBannerImage' /></a>")
 		SafeHtml image(SafeUri url, String bannerUrl);
 	}
 

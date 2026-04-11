@@ -54,7 +54,7 @@ public class PanelStatisticsRatingHistory extends VerticalPanel {
 				+ "<div class='statisticsRatingHistoryMetric'><span class='statisticsRatingHistoryMetricLabel'>平均</span><span class='statisticsRatingHistoryMetricValue'>{2}</span></div>"
 				+ "</div>"
 				+ "<div class='statisticsRatingHistorySummaryNote'>"
-				+ "個人レーティングの計算式: <a href='http://apps.topcoder.com/wiki/display/tc/Algorithm+Competition+Rating+System' target='_blank'>Algorithm Competition Rating System - TopCoder Wiki</a>"
+				+ "個人レーティングの計算式: <a href='http://apps.topcoder.com/wiki/display/tc/Algorithm+Competition+Rating+System' target='_blank' rel='noopener noreferrer'>Algorithm Competition Rating System - TopCoder Wiki</a>"
 				+ "</div>"
 				+ "</div>")
 		SafeHtml description(int min, int max, int average);

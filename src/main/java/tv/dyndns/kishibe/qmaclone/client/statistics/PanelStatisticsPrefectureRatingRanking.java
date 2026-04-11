@@ -35,8 +35,8 @@ public class PanelStatisticsPrefectureRatingRanking extends VerticalPanel {
 	private static final Logger logger = Logger
 			.getLogger(PanelStatisticsPrefectureRatingRanking.class.getName());
 	private static final String DESCRIPTION_HTML = "県別に集計したトップランカーたちの平均レーティングです<br>"
-			+ "個人レーティングの計算式は<a href='http://apps.topcoder.com/wiki/display/tc/Algorithm+Competition+Rating+System' target='_blank'>Algorithm Competition Rating System - TopCoder Wiki</a><br>"
-			+ "平均レーティングの計算式は<a href='http://www.topcoder.com/tc?module=Static&d1=statistics&d2=info&d3=topSchools' target='_blank'>TopCoder Info</a>";
+			+ "個人レーティングの計算式は<a href='http://apps.topcoder.com/wiki/display/tc/Algorithm+Competition+Rating+System' target='_blank' rel='noopener noreferrer'>Algorithm Competition Rating System - TopCoder Wiki</a><br>"
+			+ "平均レーティングの計算式は<a href='http://www.topcoder.com/tc?module=Static&d1=statistics&d2=info&d3=topSchools' target='_blank' rel='noopener noreferrer'>TopCoder Info</a>";
 	private final GridPrefectureRanking gridPrefectureRanking = new GridPrefectureRanking();
 	private boolean first = true;
 	private final AsyncCallback<int[][]> callbackGetPrefectureRanking = new tv.dyndns.kishibe.qmaclone.client.RpcAsyncCallback<int[][]>() {
