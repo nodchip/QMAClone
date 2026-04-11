@@ -14,6 +14,10 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -133,6 +137,51 @@ public class DownloaderTest {
     verify(request).setThrowExceptionOnExecuteError(false);
   }
 
+  @Test
+  public void downloadToFileShouldRedactSensitiveQueryParametersInExceptionMessage() throws Exception {
+    HttpResponseException e =
+        new HttpResponseException.Builder(403, "Forbidden", new HttpHeaders()).build();
+    Downloader downloader = newDownloader(null, e);
+
+    File file = File.createTempFile("QMAClone", null);
+    file.deleteOnExit();
+    DownloaderException actual = assertThrows(DownloaderException.class,
+        () -> downloader.downloadToFile(
+            new URL("https://graph.facebook.com/v22.0/me/accounts?access_token=secret-token&appsecret_proof=proof"),
+            file));
+
+    assertTrue(actual.getMessage().contains("access_token=<redacted>"));
+    assertTrue(actual.getMessage().contains("appsecret_proof=<redacted>"));
+    assertTrue(!actual.getMessage().contains("secret-token"));
+    assertTrue(!actual.getMessage().contains("=proof"));
+  }
+
+  @Test
+  public void downloadAsStringShouldRedactSensitiveQueryParametersInInfoLog() throws Exception {
+    Downloader downloader = newDownloader("OK".getBytes(StandardCharsets.UTF_8), null);
+    Logger logger = Logger.getLogger(Downloader.class.getName());
+    CapturingHandler handler = new CapturingHandler();
+    Level previousLevel = logger.getLevel();
+    boolean previousUseParentHandlers = logger.getUseParentHandlers();
+    logger.addHandler(handler);
+    logger.setUseParentHandlers(false);
+    logger.setLevel(Level.INFO);
+    try {
+      downloader.downloadAsString(
+          new URL("https://graph.facebook.com/v22.0/me/accounts?access_token=secret-token&client_secret=client-secret"));
+    } finally {
+      logger.removeHandler(handler);
+      logger.setLevel(previousLevel);
+      logger.setUseParentHandlers(previousUseParentHandlers);
+    }
+
+    String message = handler.messages.isEmpty() ? "" : handler.messages.get(0);
+    assertTrue(message.contains("access_token=<redacted>"));
+    assertTrue(message.contains("client_secret=<redacted>"));
+    assertTrue(!message.contains("secret-token"));
+    assertTrue(!message.contains("client-secret"));
+  }
+
   private static Downloader newDownloader(byte[] body, HttpResponseException exception) throws Exception {
     HttpTransport transport = Mockito.mock(HttpTransport.class);
     HttpRequestFactory factory = Mockito.mock(HttpRequestFactory.class);
@@ -147,5 +196,22 @@ public class DownloaderTest {
       when(response.getContent()).thenReturn(new ByteArrayInputStream(body));
     }
     return new Downloader(transport);
+  }
+
+  private static final class CapturingHandler extends Handler {
+    private final List<String> messages = new ArrayList<>();
+
+    @Override
+    public void publish(LogRecord record) {
+      messages.add(record.getMessage());
+    }
+
+    @Override
+    public void flush() {
+    }
+
+    @Override
+    public void close() throws SecurityException {
+    }
   }
 }

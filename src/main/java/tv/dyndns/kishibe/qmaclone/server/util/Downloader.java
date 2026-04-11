@@ -24,6 +24,9 @@ package tv.dyndns.kishibe.qmaclone.server.util;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -41,6 +44,9 @@ import com.google.inject.Inject;
 public class Downloader {
   private static Logger logger = Logger.getLogger(Downloader.class.getName());
   private static final int MAX_REDIRECTS = 5;
+  private static final Set<String> SENSITIVE_QUERY_KEYS = new LinkedHashSet<>(
+      Arrays.asList("access_token", "client_secret", "fb_exchange_token", "code",
+          "appsecret_proof", "refresh_token"));
   private final HttpTransport httpTransport;
 
   /**
@@ -57,7 +63,7 @@ public class Downloader {
   }
 
   public byte[] downloadAsByteArray(URL url) throws DownloaderException {
-    logger.info(String.format("Downloading: %s", url.toString()));
+    logger.info(String.format("Downloading: %s", sanitizeUrlForLog(url)));
 
     HttpRequestFactory requestFactory = httpTransport.createRequestFactory();
     try {
@@ -65,16 +71,17 @@ public class Downloader {
       HttpResponse getResponse = getRequest.execute();
       return ByteStreams.toByteArray(getResponse.getContent());
     } catch (HttpResponseException e) {
-      String message = String.format("\"ファイルのダウンロードに失敗しました: url=%s e.getStatusCode()=%d e.getStatusMessage()=%s", url,
+      String message = String.format("\"ファイルのダウンロードに失敗しました: url=%s e.getStatusCode()=%d e.getStatusMessage()=%s",
+          sanitizeUrlForLog(url),
           e.getStatusCode(), e.getStatusMessage());
       throw new DownloaderException(message);
     } catch (IOException e) {
-      throw new DownloaderException("ファイルのダウンロードに失敗しました: url=" + url, e);
+      throw new DownloaderException("ファイルのダウンロードに失敗しました: url=" + sanitizeUrlForLog(url), e);
     }
   }
 
   public String downloadAsString(URL url) throws DownloaderException {
-    logger.info(String.format("Downloading: %s", url.toString()));
+    logger.info(String.format("Downloading: %s", sanitizeUrlForLog(url)));
 
     HttpRequestFactory requestFactory = httpTransport.createRequestFactory();
     try {
@@ -82,11 +89,12 @@ public class Downloader {
       HttpResponse getResponse = getRequest.execute();
       return getResponse.parseAsString();
     } catch (HttpResponseException e) {
-      String message = String.format("\"ファイルのダウンロードに失敗しました: url=%s e.getStatusCode()=%d e.getStatusMessage()=%s", url,
+      String message = String.format("\"ファイルのダウンロードに失敗しました: url=%s e.getStatusCode()=%d e.getStatusMessage()=%s",
+          sanitizeUrlForLog(url),
           e.getStatusCode(), e.getStatusMessage());
       throw new DownloaderException(message);
     } catch (IOException e) {
-      throw new DownloaderException("ファイルのダウンロードに失敗しました: url=" + url, e);
+      throw new DownloaderException("ファイルのダウンロードに失敗しました: url=" + sanitizeUrlForLog(url), e);
     }
   }
 
@@ -111,7 +119,7 @@ public class Downloader {
    * @throws DownloaderException ダウンロード失敗時
    */
   public void downloadToFile(URL url, File file, UrlAccessValidator urlValidator) throws DownloaderException {
-    logger.log(Level.INFO, String.format("Downloading: %s to %s", url.toString(), file.toString()));
+    logger.log(Level.INFO, String.format("Downloading: %s to %s", sanitizeUrlForLog(url), file.toString()));
 
     file.getParentFile().mkdirs();
 
@@ -148,11 +156,32 @@ public class Downloader {
       }
       throw new DownloaderException("リダイレクト回数が上限を超えました: url=" + url);
     } catch (HttpResponseException e) {
-      String message = String.format("\"ファイルのダウンロードに失敗しました: url=%s e.getStatusCode()=%d e.getStatusMessage()=%s", url,
+      String message = String.format("\"ファイルのダウンロードに失敗しました: url=%s e.getStatusCode()=%d e.getStatusMessage()=%s",
+          sanitizeUrlForLog(url),
           e.getStatusCode(), e.getStatusMessage());
       throw new DownloaderException(message);
     } catch (IOException e) {
-      throw new DownloaderException("ファイルのダウンロードに失敗しました: url=" + url, e);
+      throw new DownloaderException("ファイルのダウンロードに失敗しました: url=" + sanitizeUrlForLog(url), e);
     }
+  }
+
+  static String sanitizeUrlForLog(URL url) {
+    String value = url == null ? "" : url.toString();
+    int queryIndex = value.indexOf('?');
+    if (queryIndex < 0) {
+      return value;
+    }
+
+    String base = value.substring(0, queryIndex + 1);
+    String query = value.substring(queryIndex + 1);
+    String[] pairs = query.split("&", -1);
+    for (int i = 0; i < pairs.length; i++) {
+      int equalsIndex = pairs[i].indexOf('=');
+      String key = equalsIndex >= 0 ? pairs[i].substring(0, equalsIndex) : pairs[i];
+      if (SENSITIVE_QUERY_KEYS.contains(key)) {
+        pairs[i] = key + "=<redacted>";
+      }
+    }
+    return base + String.join("&", pairs);
   }
 }
