@@ -433,6 +433,11 @@ if (-not (Test-Path -LiteralPath $webappsPath)) {
   throw "Tomcat webapps directory was not found: $webappsPath"
 }
 
+$service = Get-Service -Name $ServiceName -ErrorAction SilentlyContinue
+if (-not $service) {
+  throw "Tomcat service was not found before deployment; no deployed files were changed: $ServiceName"
+}
+
 $webAppName = "QMAClone"
 $deployedWarPath = Join-Path -Path $webappsPath -ChildPath "$webAppName.war"
 $deployedDirPath = Join-Path -Path $webappsPath -ChildPath $webAppName
