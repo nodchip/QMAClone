@@ -77,8 +77,17 @@ public class FacebookClient implements SnsClient {
 
   @VisibleForTesting
   void publishWithAccessToken(String accessToken, String message) {
-    com.restfb.FacebookClient facebookClient = new DefaultFacebookClient(accessToken, Version.UNVERSIONED);
+    String appSecret = authService.getAppSecretForApiCalls();
+    if (Strings.isNullOrEmpty(appSecret)) {
+      throw new IllegalStateException("Facebook App Secretが未設定です");
+    }
+    com.restfb.FacebookClient facebookClient = createFacebookClient(accessToken, appSecret);
     facebookClient.publish("me/feed", FacebookType.class, Parameter.with("message", message));
+  }
+
+  @VisibleForTesting
+  com.restfb.FacebookClient createFacebookClient(String accessToken, String appSecret) {
+    return new DefaultFacebookClient(accessToken, appSecret, Version.UNVERSIONED);
   }
 
   @VisibleForTesting

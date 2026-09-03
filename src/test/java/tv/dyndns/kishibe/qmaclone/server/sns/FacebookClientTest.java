@@ -3,6 +3,7 @@ package tv.dyndns.kishibe.qmaclone.server.sns;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -16,6 +17,9 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 import org.junit.jupiter.api.Test;
+
+import com.restfb.Parameter;
+import com.restfb.types.FacebookType;
 
 /**
  * {@link FacebookClient} のテスト。
@@ -71,6 +75,38 @@ public class FacebookClientTest {
     client.postThemeModeUpdate("test");
     verify(authService).getValidPageAccessToken();
     verify(authService).refreshPageAccessTokenFromUserToken();
+  }
+
+  @Test
+  public void publishWithAccessTokenShouldConstructClientWithAppSecret() {
+    FacebookAuthService authService = mock(FacebookAuthService.class);
+    when(authService.getAppSecretForApiCalls()).thenReturn("app-secret");
+    com.restfb.FacebookClient restFbClient = mock(com.restfb.FacebookClient.class);
+    List<String> constructorArguments = new ArrayList<>();
+
+    FacebookClient client = new FacebookClient(authService) {
+      @Override
+      com.restfb.FacebookClient createFacebookClient(String accessToken, String appSecret) {
+        constructorArguments.add(accessToken);
+        constructorArguments.add(appSecret);
+        return restFbClient;
+      }
+    };
+
+    client.publishWithAccessToken("page-token", "message");
+
+    assertEquals(List.of("page-token", "app-secret"), constructorArguments);
+    verify(restFbClient).publish("me/feed", FacebookType.class, Parameter.with("message", "message"));
+  }
+
+  @Test
+  public void publishWithAccessTokenShouldFailClosedWhenAppSecretIsMissing() {
+    FacebookAuthService authService = mock(FacebookAuthService.class);
+    when(authService.getAppSecretForApiCalls()).thenReturn(null);
+    FacebookClient client = new FacebookClient(authService);
+
+    assertThrows(IllegalStateException.class,
+        () -> client.publishWithAccessToken("page-token", "message"));
   }
 
   @Test

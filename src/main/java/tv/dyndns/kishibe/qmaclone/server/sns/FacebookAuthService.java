@@ -40,6 +40,18 @@ public class FacebookAuthService {
     }
   }
 
+  /**
+   * Graph API 呼び出しに使用する App Secret を取得する。
+   */
+  String getAppSecretForApiCalls() {
+    try {
+      return repository.loadAppSecret();
+    } catch (DatabaseException e) {
+      logger.log(Level.WARNING, "Facebook App Secretの読み込みに失敗しました", e);
+      return null;
+    }
+  }
+
   public String refreshPageAccessTokenFromUserToken() {
     try {
       FacebookTokenState state = repository.load();

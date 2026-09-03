@@ -24,6 +24,17 @@ public class FacebookAuthServiceTest {
   }
 
   @Test
+  public void getAppSecretForApiCallsShouldReturnStoredSecret() throws Exception {
+    FacebookTokenRepository repository = mock(FacebookTokenRepository.class);
+    FacebookGraphApiClient graphApiClient = mock(FacebookGraphApiClient.class);
+    when(repository.loadAppSecret()).thenReturn("app-secret");
+
+    FacebookAuthService service = new FacebookAuthService(repository, graphApiClient);
+
+    assertEquals("app-secret", service.getAppSecretForApiCalls());
+  }
+
+  @Test
   public void refreshPageAccessTokenFromUserTokenShouldPersistNewPageToken() throws Exception {
     FacebookTokenRepository repository = mock(FacebookTokenRepository.class);
     FacebookGraphApiClient graphApiClient = mock(FacebookGraphApiClient.class);
