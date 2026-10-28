@@ -29,6 +29,8 @@ import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.HttpResponse;
 import com.google.api.client.http.HttpResponseException;
 import com.google.api.client.http.HttpTransport;
+import com.google.api.client.testing.http.MockHttpTransport;
+import com.google.api.client.testing.http.MockLowLevelHttpResponse;
 
 public class DownloaderTest {
   @Test
@@ -65,6 +67,66 @@ public class DownloaderTest {
     file.deleteOnExit();
     assertThrows(DownloaderException.class,
         () -> downloader.downloadToFile(new URL("https://example.com/notfound.png"), file));
+  }
+
+  @Test
+  public void downloadToFileRejectsResponseWithoutBody() throws Exception {
+    HttpTransport transport = Mockito.mock(HttpTransport.class);
+    HttpRequestFactory factory = Mockito.mock(HttpRequestFactory.class);
+    HttpRequest request = Mockito.mock(HttpRequest.class);
+    HttpResponse response = Mockito.mock(HttpResponse.class);
+    when(transport.createRequestFactory()).thenReturn(factory);
+    when(factory.buildGetRequest(any(GenericUrl.class))).thenReturn(request);
+    when(request.execute()).thenReturn(response);
+    when(response.getStatusCode()).thenReturn(204);
+    when(response.getContent()).thenReturn(null);
+
+    File file = File.createTempFile("QMAClone", null);
+    file.deleteOnExit();
+    java.nio.file.Files.writeString(file.toPath(), "existing");
+    DownloaderException error = assertThrows(DownloaderException.class,
+        () -> new Downloader(transport).downloadToFile(new URL("https://example.com/empty"), file));
+
+    assertTrue(error.getMessage().contains("本文がありません"));
+    assertEquals("existing", java.nio.file.Files.readString(file.toPath()));
+    verify(response).disconnect();
+  }
+
+  @Test
+  public void downloadToFileHandlesNoContentThroughHttpTransport() throws Exception {
+    MockLowLevelHttpResponse response = new MockLowLevelHttpResponse().setStatusCode(204);
+    Downloader downloader = new Downloader(new MockHttpTransport.Builder()
+        .setLowLevelHttpResponse(response).build());
+    File file = File.createTempFile("QMAClone", null);
+    file.deleteOnExit();
+
+    assertThrows(DownloaderException.class,
+        () -> downloader.downloadToFile(new URL("https://example.com/empty"), file));
+    assertTrue(response.isDisconnected());
+  }
+
+  @Test
+  public void downloadToFileRejectsHttpErrorAndPreservesStatus() throws Exception {
+    HttpTransport transport = Mockito.mock(HttpTransport.class);
+    HttpRequestFactory factory = Mockito.mock(HttpRequestFactory.class);
+    HttpRequest request = Mockito.mock(HttpRequest.class);
+    HttpResponse response = Mockito.mock(HttpResponse.class);
+    when(transport.createRequestFactory()).thenReturn(factory);
+    when(factory.buildGetRequest(any(GenericUrl.class))).thenReturn(request);
+    when(request.execute()).thenReturn(response);
+    when(response.getStatusCode()).thenReturn(404);
+    when(response.getStatusMessage()).thenReturn("Not Found");
+
+    File file = File.createTempFile("QMAClone", null);
+    file.deleteOnExit();
+    java.nio.file.Files.writeString(file.toPath(), "existing");
+    DownloaderException error = assertThrows(DownloaderException.class,
+        () -> new Downloader(transport).downloadToFile(new URL("https://example.com/missing"), file));
+
+    assertTrue(error.hasStatusCode());
+    assertEquals(404, error.getStatusCode());
+    assertEquals("existing", java.nio.file.Files.readString(file.toPath()));
+    verify(response).disconnect();
   }
 
   @Test

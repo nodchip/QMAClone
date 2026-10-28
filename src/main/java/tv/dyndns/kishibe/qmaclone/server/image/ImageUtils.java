@@ -262,21 +262,19 @@ public class ImageUtils {
             throw new DownloaderException("画像取得URLの安全性検証に失敗しました: url=" + candidate, e);
           }
         });
+
+        if (!isImage(tempFile)) {
+          throw new IOException(String.format("ダウンロード結果が画像ではありませんでした。 url=%s tempFile=%s", url, tempFile));
+        }
+
+        logger.info(String.format("画像ファイルのダウンロードに成功しました。 tempFile=%s", tempFile));
+        java.nio.file.Files.copy(tempFile.toPath(), inputCacheFile.toPath());
+        logger.info(String.format("画像ファイルをコピーしました。 tempFile=%s inputCacheFile=%s", tempFile, inputCacheFile));
       } catch (DownloaderException e) {
         throw new IOException("ダウンロードに失敗しました: url=" + url, e);
-      }
-
-      if (!isImage(tempFile)) {
+      } finally {
         java.nio.file.Files.deleteIfExists(tempFile.toPath());
-        throw new IOException(String.format("ダウンロード結果が画像ではありませんでした。 url=%s tempFile=%s", url, tempFile));
       }
-
-      logger.info(String.format("画像ファイルのダウンロードに成功しました。 tempFile=%s", tempFile));
-
-      java.nio.file.Files.copy(tempFile.toPath(), inputCacheFile.toPath());
-      java.nio.file.Files.deleteIfExists(tempFile.toPath());
-
-      logger.info(String.format("画像ファイルをコピーしました。 tempFile=%s inputCacheFile=%s", tempFile, inputCacheFile));
 
       if (!inputCacheFile.isFile()) {
         throw new IOException(String.format("画像ファイルが見つかりませんでした。 inputCacheFile=%s", inputCacheFile));

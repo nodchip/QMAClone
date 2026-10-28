@@ -21,6 +21,11 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
 import com.google.common.collect.ImmutableList;
+import com.google.api.client.http.GenericUrl;
+import com.google.api.client.http.HttpRequest;
+import com.google.api.client.http.HttpRequestFactory;
+import com.google.api.client.http.HttpResponse;
+import com.google.api.client.http.HttpTransport;
 
 import tv.dyndns.kishibe.qmaclone.client.game.ProblemType;
 import tv.dyndns.kishibe.qmaclone.client.packet.PacketImageLink;
@@ -69,6 +74,31 @@ public class ImageLinkCheckerTest {
     expectedImageLink.url = IMAGE_URL_NOT_FOUND;
     expectedImageLink.statusCode = ImageLinkChecker.STATUS_CODE_DOWNLOAD_FAILURE;
     assertThat(imageLinkChecker.getImageLinks()).isEqualTo(ImmutableList.of(expectedImageLink));
+  }
+
+  @Test
+  public void processReportsHttpStatusWhenDownloadResponseHasNoBody() throws Exception {
+    HttpTransport transport = org.mockito.Mockito.mock(HttpTransport.class);
+    HttpRequestFactory factory = org.mockito.Mockito.mock(HttpRequestFactory.class);
+    HttpRequest request = org.mockito.Mockito.mock(HttpRequest.class);
+    HttpResponse response = org.mockito.Mockito.mock(HttpResponse.class);
+    when(transport.createRequestFactory()).thenReturn(factory);
+    when(factory.buildGetRequest(any(GenericUrl.class))).thenReturn(request);
+    when(request.execute()).thenReturn(response);
+    when(response.getStatusCode()).thenReturn(404);
+    when(response.getStatusMessage()).thenReturn("Not Found");
+    File file = File.createTempFile("QMAClone", ".png");
+    file.deleteOnExit();
+    when(imageUtils.getInputCacheFile(IMAGE_URL_NOT_FOUND)).thenReturn(file);
+
+    ImageLinkChecker imageLinkChecker = new ImageLinkChecker(imageUtils, new Downloader(transport));
+    imageLinkChecker.process(createProblem(IMAGE_URL_NOT_FOUND));
+
+    PacketImageLink expected = new PacketImageLink();
+    expected.problemId = PROBLEM_ID;
+    expected.url = IMAGE_URL_NOT_FOUND;
+    expected.statusCode = 404;
+    assertThat(imageLinkChecker.getImageLinks()).containsExactly(expected);
   }
 
   @Test

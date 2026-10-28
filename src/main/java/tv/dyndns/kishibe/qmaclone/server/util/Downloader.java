@@ -23,6 +23,7 @@ package tv.dyndns.kishibe.qmaclone.server.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
@@ -31,6 +32,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.api.client.http.GenericUrl;
+import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.HttpResponse;
@@ -141,25 +143,41 @@ public class Downloader {
           throw new DownloaderException(e);
         }
 
-        int statusCode = getResponse.getStatusCode();
-        if (statusCode >= 300 && statusCode < 400) {
-          String location = getResponse.getHeaders().getLocation();
-          if (location == null || location.trim().isEmpty()) {
-            throw new DownloaderException("リダイレクト先が不正です: url=" + currentUrl);
+        try {
+          int statusCode = getResponse.getStatusCode();
+          if (statusCode >= 300 && statusCode < 400) {
+            String location = getResponse.getHeaders().getLocation();
+            if (location == null || location.trim().isEmpty()) {
+              throw new DownloaderException("リダイレクト先が不正です: url=" + sanitizeUrlForLog(currentUrl));
+            }
+            currentUrl = new URL(currentUrl, location);
+            continue;
           }
-          currentUrl = new URL(currentUrl, location);
-          continue;
-        }
 
-        Files.asByteSink(file).writeFrom(getResponse.getContent());
-        return;
+          if (statusCode >= 400) {
+            HttpResponseException cause = new HttpResponseException.Builder(
+                statusCode, getResponse.getStatusMessage(), new HttpHeaders()).build();
+            throw new DownloaderException("ファイルのダウンロードに失敗しました: url="
+                + sanitizeUrlForLog(currentUrl) + " status=" + statusCode, cause);
+          }
+
+          InputStream content = getResponse.getContent();
+          if (content == null) {
+            throw new DownloaderException("ダウンロード応答に本文がありません: url="
+                + sanitizeUrlForLog(currentUrl) + " status=" + statusCode);
+          }
+          Files.asByteSink(file).writeFrom(content);
+          return;
+        } finally {
+          getResponse.disconnect();
+        }
       }
-      throw new DownloaderException("リダイレクト回数が上限を超えました: url=" + url);
+      throw new DownloaderException("リダイレクト回数が上限を超えました: url=" + sanitizeUrlForLog(url));
     } catch (HttpResponseException e) {
       String message = String.format("\"ファイルのダウンロードに失敗しました: url=%s e.getStatusCode()=%d e.getStatusMessage()=%s",
           sanitizeUrlForLog(url),
           e.getStatusCode(), e.getStatusMessage());
-      throw new DownloaderException(message);
+      throw new DownloaderException(message, e);
     } catch (IOException e) {
       throw new DownloaderException("ファイルのダウンロードに失敗しました: url=" + sanitizeUrlForLog(url), e);
     }

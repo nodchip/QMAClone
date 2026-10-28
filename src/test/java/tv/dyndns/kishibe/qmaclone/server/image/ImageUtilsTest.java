@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.imageio.ImageIO;
 
@@ -30,6 +31,7 @@ import tv.dyndns.kishibe.qmaclone.client.constant.Constant;
 import tv.dyndns.kishibe.qmaclone.server.ThreadPool;
 import tv.dyndns.kishibe.qmaclone.server.image.ImageUtils.Parameter;
 import tv.dyndns.kishibe.qmaclone.server.util.Downloader;
+import tv.dyndns.kishibe.qmaclone.server.util.DownloaderException;
 import tv.dyndns.kishibe.qmaclone.server.testing.GuiceInjectionExtension;
 
 @ExtendWith(GuiceInjectionExtension.class)
@@ -174,6 +176,25 @@ public class ImageUtilsTest {
       assertThrows(IOException.class, () -> imageUtils.writeToStream(parameter, stream));
     }
 
+    assertTrue(!inputCacheFile.exists());
+  }
+
+  @Test
+  public void getImageShouldDeleteTemporaryFileWhenDownloadFails() throws Exception {
+    Downloader downloader = Mockito.mock(Downloader.class);
+    ImageUtils imageUtils = new ImageUtils(Mockito.mock(ThreadPool.class), downloader);
+    Parameter parameter = new Parameter("https://example.com/download-failure.png", 32, 16, true);
+    File inputCacheFile = imageUtils.getInputCacheFile(parameter.url);
+    deleteIfExists(inputCacheFile);
+    AtomicReference<File> temporaryFile = new AtomicReference<>();
+    Mockito.doAnswer(invocation -> {
+      temporaryFile.set(invocation.getArgument(1));
+      throw new DownloaderException("download failed");
+    }).when(downloader).downloadToFile(Mockito.any(), Mockito.any(File.class), Mockito.any());
+
+    assertThrows(IOException.class, () -> imageUtils.getImage(parameter));
+    assertTrue(temporaryFile.get() != null);
+    assertTrue(!temporaryFile.get().exists());
     assertTrue(!inputCacheFile.exists());
   }
 
